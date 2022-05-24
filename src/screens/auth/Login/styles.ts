@@ -18,4 +18,11 @@ export const styles = StyleSheet.create({
   footer: {
     marginBottom: hp(20),
   },
+  lowerContainer: {
+    width: '90%',
+    padding: hp(15),
+  },
+  width90: {
+    width: '90%',
+  },
 });
