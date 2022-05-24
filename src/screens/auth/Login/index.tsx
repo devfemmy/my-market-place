@@ -8,7 +8,11 @@ import {hp} from '../../../utils';
 import {View} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
+import {useNavigation} from '@react-navigation/native';
+import {LoginScreenNavigationProp} from '../../../navigations/types';
+
 const Login = (): JSX.Element => {
+  const navigation = useNavigation<LoginScreenNavigationProp>();
   const initialValues: LoginFormData = {
     email: '',
     password: '',
@@ -41,8 +45,12 @@ const Login = (): JSX.Element => {
         isPassword
         errorMsg={touched.password ? errors.password : undefined}
       />
-      <View style={{width: "90%", alignItems: "flex-start", alignSelf: "center", marginTop: hp(0)}}>
-        <Text fontWeight="500" text="Forgot password?" />
+      <View style={[globalStyles.rowStart, styles.width90]}>
+        <Text
+          onPress={() => navigation.navigate('ForgotPassword')}
+          fontWeight="500"
+          text="Forgot password?"
+        />
       </View>
     </SafeAreaView>
   );

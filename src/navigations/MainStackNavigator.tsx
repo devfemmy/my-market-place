@@ -1,5 +1,5 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator as createNativeStackNavigator} from '@react-navigation/stack';
 import {MainStackParamList} from './types';
 import {colors} from '../constants';
 import {hp} from '../utils';
