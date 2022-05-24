@@ -18,7 +18,7 @@ export const WelcomeScreen = (): JSX.Element => {
     const navigation = useNavigation()
     const [selected, setSelected] = useState("")
 
-    const welcomeInfo = [
+    let welcomeInfo = [
         {
             id: 1,
             header: "Continue as a Seller",
