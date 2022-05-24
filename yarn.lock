@@ -3238,11 +3238,7 @@
   "resolved" "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-3.3.0.tgz"
   "version" "3.3.0"
 
-<<<<<<< HEAD
-"eslint@*", "eslint@^3 || ^4 || ^5 || ^6 || ^7 || ^8", "eslint@^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0", "eslint@^3.17.0 || ^4 || ^5 || ^6 || ^7", "eslint@^5.0.0 || ^6.0.0 || ^7.0.0", "eslint@^6.0.0 || ^7.0.0 || ^8.0.0", "eslint@^7.32.0", "eslint@>= 4.12.1", "eslint@>= 5.0.0", "eslint@>=2.0.0", "eslint@>=3.14.1", "eslint@>=4.19.1", "eslint@>=5", "eslint@>=6":
-=======
 "eslint@*", "eslint@^3 || ^4 || ^5 || ^6 || ^7 || ^8", "eslint@^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0", "eslint@^3.17.0 || ^4 || ^5 || ^6 || ^7", "eslint@^5.0.0 || ^6.0.0 || ^7.0.0", "eslint@^6.0.0 || ^7.0.0 || ^8.0.0", "eslint@^7.32.0", "eslint@>= 4.12.1", "eslint@>= 5.0.0", "eslint@>=2.0.0", "eslint@>=3.14.1", "eslint@>=4.19.1", "eslint@>=5", "eslint@>=6", "eslint@>=7.0.0":
->>>>>>> 49aeb8df0781fc529e285e7c0d5bbe60ec585611
   "integrity" "sha512-VHZ8gX+EDfz+97jGcgyGCyRia/dPOd6Xh9yPv8Bl1+SoaIwD+a/vlrOmGRUyOYu7MwUhc7CxqeaDZU13S4+EpA=="
   "resolved" "https://registry.npmjs.org/eslint/-/eslint-7.32.0.tgz"
   "version" "7.32.0"
@@ -3680,13 +3676,6 @@
   "resolved" "https://registry.npmjs.org/fs/-/fs-0.0.1-security.tgz"
   "version" "0.0.1-security"
 
-<<<<<<< HEAD
-"function-bind@^1.1.1":
-  "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
-  "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
-  "version" "1.1.1"
-
-=======
 "fsevents@^2.1.2", "fsevents@^2.3.2":
   "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
   "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
@@ -3697,7 +3686,6 @@
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
   "version" "1.1.1"
 
->>>>>>> 49aeb8df0781fc529e285e7c0d5bbe60ec585611
 "function.prototype.name@^1.1.5":
   "integrity" "sha512-uN7m/BzVKQnCUF/iW8jYea67v++2u7m5UgENbHRtdDVclOUP+FMPlCNdmk0h/ysGyo2tavMJEDqJAkJdRa1vMA=="
   "resolved" "https://registry.npmjs.org/function.prototype.name/-/function.prototype.name-1.1.5.tgz"
@@ -3992,14 +3980,11 @@
   "resolved" "https://registry.npmjs.org/human-signals/-/human-signals-1.1.1.tgz"
   "version" "1.1.1"
 
-<<<<<<< HEAD
-=======
 "husky@^8.0.1":
   "integrity" "sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw=="
   "resolved" "https://registry.npmjs.org/husky/-/husky-8.0.1.tgz"
   "version" "8.0.1"
 
->>>>>>> 49aeb8df0781fc529e285e7c0d5bbe60ec585611
 "iconv-lite@^0.6.2":
   "integrity" "sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw=="
   "resolved" "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.6.3.tgz"
@@ -6189,11 +6174,7 @@
   dependencies:
     "fast-diff" "^1.1.2"
 
-<<<<<<< HEAD
-"prettier@^2.0.2", "prettier@>= 1.13.0":
-=======
 "prettier@^2.0.2", "prettier@^2.6.2", "prettier@>= 1.13.0":
->>>>>>> 49aeb8df0781fc529e285e7c0d5bbe60ec585611
   "integrity" "sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew=="
   "resolved" "https://registry.npmjs.org/prettier/-/prettier-2.6.2.tgz"
   "version" "2.6.2"
@@ -6497,14 +6478,6 @@
     "react-freeze" "^1.0.0"
     "warn-once" "^0.1.0"
 
-<<<<<<< HEAD
-"react-native-select-dropdown@^1.13.0":
-  "integrity" "sha512-UGXWbuEqsG6B6O+tle77yJH3+DXfmh4cpit0v8az824y0rZLUWuRzlfeLYlaeZ80mqIF6Xtvx/pBtIsG1OdaLg=="
-  "resolved" "https://registry.npmjs.org/react-native-select-dropdown/-/react-native-select-dropdown-1.13.0.tgz"
-  "version" "1.13.0"
-
-=======
->>>>>>> 49aeb8df0781fc529e285e7c0d5bbe60ec585611
 "react-native-smooth-pincode-input@^1.0.9":
   "integrity" "sha512-4V4tyUGJaze55FHuJW/gYVOD3fc4Pd7cTIrv7liTRIXR49y09C2O3XqJUdgNR+UwTgLrTt/8L2lvEuEVUk3kig=="
   "resolved" "https://registry.npmjs.org/react-native-smooth-pincode-input/-/react-native-smooth-pincode-input-1.0.9.tgz"

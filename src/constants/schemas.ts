@@ -27,7 +27,6 @@ export const ForgotPasswordSchema = yup.object().shape({
   email: yup.string().email().required('email is required'),
 });
 
-
 export const StoreFormSchema = yup.object().shape({
   storeName: yup.string().required('Store name is required'),
   description: yup.string().required('Store description is required'),
