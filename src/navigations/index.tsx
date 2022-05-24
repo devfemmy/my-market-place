@@ -22,7 +22,7 @@ export const NavigationContainerComponent = (): JSX.Element => {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {userToken === null ? <AuthStackNavigator /> : <MainStackNavigator />}
+        {!userToken === null ? <AuthStackNavigator /> : <MainStackNavigator />}
       </NavigationContainer>
     </AuthContext.Provider>
   );
