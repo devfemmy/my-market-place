@@ -1,10 +1,5 @@
 import React, {ComponentProps, memo} from 'react';
-import {
-  StyleSheet,
-  ScrollView as BaseScrollView,
-  ViewStyle,
-  StyleProp,
-} from 'react-native';
+import { StyleSheet, ScrollView as BaseScrollView, ViewStyle, StyleProp } from 'react-native';
 import {globalStyles} from '../../styles/globalStyles';
 
 type Props = ComponentProps<typeof BaseScrollView> & {
