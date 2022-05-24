@@ -1,7 +1,5 @@
 module.exports = {
   root: true,
-  extends: '@react-native-community',
-  parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   overrides: [
     {
@@ -13,4 +11,18 @@ module.exports = {
       },
     },
   ],
+  extends: [
+    'eslint:recommended',
+    '@react-native-community',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 'latest',
+  },
+  rules: {
+    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+  },
 };
