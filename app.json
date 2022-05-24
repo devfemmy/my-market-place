@@ -1,4 +1,7 @@
 {
   "name": "Bazara",
-  "displayName": "Bazara"
+  "displayName": "Bazara",
+  "splash": {
+    "backgroundColor": "red"
+  }
 }

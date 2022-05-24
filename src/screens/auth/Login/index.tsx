@@ -1,10 +1,11 @@
 import React from 'react';
 import {useFormik} from 'formik';
-import {SafeAreaView, Text} from '../../../components/common';
+import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
 import {LoginFormData} from '../../../models';
 import {LoginSchema} from '../../../constants';
-
+import { hp } from '../../../utils';
+import {View} from 'react-native';
 const Login = (): JSX.Element => {
   const initialValues: LoginFormData = {
     email: '',
@@ -18,7 +19,11 @@ const Login = (): JSX.Element => {
     });
   return (
     <SafeAreaView>
-      <Text text="Login" />
+      <Separator/>
+      <View style={{width: "90%", alignItems: "flex-start", alignSelf: "center", marginBottom: hp(25)}}>
+        <Text fontWeight='500' fontSize={hp(16)} text="Sign in with your:" />
+      </View>
+      
       <Input
         label={'Email'}
         value={values.email}
@@ -31,8 +36,12 @@ const Login = (): JSX.Element => {
         value={values.password}
         onBlur={handleBlur('password')}
         onChangeText={handleChange('password')}
+        isPassword
         errorMsg={touched.password ? errors.password : undefined}
       />
+      <View style={{width: "90%", alignItems: "flex-start", alignSelf: "center", marginTop: hp(0)}}>
+        <Text fontWeight='500' text="Forgot password?" />
+      </View>
     </SafeAreaView>
   );
 };
