@@ -5,6 +5,7 @@ import {
   ViewStyle,
   StyleProp,
 } from 'react-native';
+
 import {globalStyles} from '../../styles/globalStyles';
 
 type Props = ComponentProps<typeof BaseScrollView> & {
