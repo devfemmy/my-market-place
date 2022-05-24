@@ -26,3 +26,12 @@ export const RegisterSchema = yup.object().shape({
 export const ForgotPasswordSchema = yup.object().shape({
   email: yup.string().email().required('email is required'),
 });
+
+export const StoreFormSchema = yup.object().shape({
+  storeName: yup.string().required('Store name is required'),
+  description: yup.string().required('Store description is required'),
+  phoneNumber: yup.string().required('Phone number is required'),
+  street: yup.string().required('Street name is required'),
+  city: yup.string().required('City is required'),
+  state: yup.string().required('State is required'),
+});

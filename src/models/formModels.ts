@@ -15,3 +15,12 @@ export type RegisterFormData = {
 export type ForgotPasswordFormData = {
   email: string;
 };
+
+export type StoreFormData = {
+  storeName: string;
+  description: string;
+  phoneNumber: string;
+  street: string;
+  city: string;
+  state: string;
+};

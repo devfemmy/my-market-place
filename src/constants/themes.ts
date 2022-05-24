@@ -3,4 +3,6 @@ export default {
   bazaraTint: '#F80595',
   gray: '#9B9B9B',
   white: '#FFFFFF',
+  black: '#242424',
+  darkBlack: '#171717',
 };

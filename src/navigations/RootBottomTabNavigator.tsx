@@ -21,8 +21,18 @@ export const RootBottomTabNavigator = (): JSX.Element => {
         headerShown: false,
         tabBarIcon: ({focused, color, size}) => {
           let iconName = '';
-          if (route.name === 'Home') {
+          if (route.name === 'Store') {
             iconName = focused ? 'ios-home' : 'ios-home-outline';
+          } else if (route.name === 'Product') {
+            iconName = focused ? 'cube-outline' : 'cube-outline';
+          } else if (route.name === 'Order') {
+            iconName = focused ? 'medkit-outline' : 'medkit-outline';
+          }
+          if (route.name === 'Inbox') {
+            iconName = focused ? 'chatbubble-outline' : 'chatbubble-outline';
+          }
+          if (route.name === 'Settings') {
+            iconName = focused ? 'settings-outline' : 'settings-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -30,7 +40,11 @@ export const RootBottomTabNavigator = (): JSX.Element => {
         tabBarInactiveTintColor: colors.gray,
         tabBarHideOnKeyboard: true,
       })}>
-      <RootBottomTab.Screen name="Home" component={Home} />
+      <RootBottomTab.Screen name="Store" component={Home} />
+      <RootBottomTab.Screen name="Product" component={Home} />
+      <RootBottomTab.Screen name="Order" component={Home} />
+      <RootBottomTab.Screen name="Inbox" component={Home} />
+      <RootBottomTab.Screen name="Settings" component={Home} />
     </RootBottomTab.Navigator>
   );
 };
