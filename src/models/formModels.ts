@@ -12,6 +12,7 @@ export type RegisterFormData = {
   confirmPassword: string;
 };
 
+
 export type ForgotPasswordFormData = {
   email: string;
 };
