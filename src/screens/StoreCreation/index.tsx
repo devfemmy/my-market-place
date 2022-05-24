@@ -85,6 +85,7 @@ export const StoreCreation = (): JSX.Element => {
               items={locationState}
               setState={setState}
               placeholder="Select State"
+              
             />
 
             <Select
