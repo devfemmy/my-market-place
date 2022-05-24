@@ -23,18 +23,16 @@ export const RootBottomTabNavigator = (): JSX.Element => {
           let iconName = '';
           if (route.name === 'Store') {
             iconName = focused ? 'ios-home' : 'ios-home-outline';
-          }
-          else if (route.name === 'Product') {
+          } else if (route.name === 'Product') {
             iconName = focused ? 'cube-outline' : 'cube-outline';
-          }
-          else if (route.name === 'Order') {
+          } else if (route.name === 'Order') {
             iconName = focused ? 'medkit-outline' : 'medkit-outline';
           }
           if (route.name === 'Inbox') {
             iconName = focused ? 'chatbubble-outline' : 'chatbubble-outline';
           }
-          if(route.name === "Settings") {
-            iconName = focused ? "settings-outline" : "settings-outline"
+          if (route.name === 'Settings') {
+            iconName = focused ? 'settings-outline' : 'settings-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },

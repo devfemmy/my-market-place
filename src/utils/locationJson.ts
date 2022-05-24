@@ -1,15 +1,7 @@
 export const locationData = [
   {
     state: 'Abia',
-    city: [
-      'Aba',
-      'Amaeke',
-      'Arochukwu',
-      'Ikwuano',
-      'Ohafia',
-      'Umuahia',
-      'Umudike',
-    ],
+    city: ['Aba', 'Amaeke', 'Arochukwu', 'Ikwuano', 'Ohafia', 'Umuahia', 'Umudike'],
   },
   {
     state: 'Adamawa',
@@ -700,16 +692,7 @@ export const locationData = [
   },
   {
     state: 'Jigawa',
-    city: [
-      'Dutse',
-      'Gumel',
-      'Hadeja',
-      'Hadejia',
-      'Jahum',
-      'Jahun',
-      'Kazaure',
-      'Ringim',
-    ],
+    city: ['Dutse', 'Gumel', 'Hadeja', 'Hadejia', 'Jahum', 'Jahun', 'Kazaure', 'Ringim'],
   },
   {
     state: 'Kaduna',

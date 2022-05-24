@@ -4,7 +4,7 @@ import {SafeAreaView, Text} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
 import {LoginFormData} from '../../../models';
 import {LoginSchema} from '../../../constants';
-import { Pressable, View } from 'react-native';
+import {Pressable, View} from 'react-native';
 
 const Login = (navigation: any): JSX.Element => {
   const initialValues: LoginFormData = {
@@ -34,8 +34,10 @@ const Login = (navigation: any): JSX.Element => {
         onChangeText={handleChange('password')}
         errorMsg={touched.password ? errors.password : undefined}
       />
-      <Pressable onPress={() => navigation.navigate("StoreCreation") }>
-        <View><Text text='Go to store creation' /></View>
+      <Pressable onPress={() => navigation.navigate('StoreCreation')}>
+        <View>
+          <Text text="Go to store creation" />
+        </View>
       </Pressable>
     </SafeAreaView>
   );

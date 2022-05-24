@@ -4,8 +4,8 @@ import {MainStackParamList} from './types';
 import {colors} from '../constants';
 import {hp} from '../utils';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
-import { StoreCreation } from '../screens';
-import { WelcomeScreen } from '../screens/WelcomeScreen';
+import {StoreCreation} from '../screens';
+import {WelcomeScreen} from '../screens/WelcomeScreen';
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
