@@ -101,7 +101,7 @@ const Register = (): JSX.Element => {
         <View>
           <View style={globalStyles.rowCenter}>
             <Button
-              title={'Sign in'}
+              title={'Sign up'}
               style={styles.btn}
               onPress={handleSubmit}
             />

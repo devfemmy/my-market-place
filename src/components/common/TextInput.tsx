@@ -35,7 +35,7 @@ export const Input = memo(
           label={label}
           mode="outlined"
           placeholder={placeholder}
-          placeholderTextColor={'#BABABA'}
+          placeholderTextColor={colors.white}
           secureTextEntry={secureTextEntry}
           autoCapitalize="none"
           autoCorrect={false}
@@ -46,7 +46,7 @@ export const Input = memo(
             colors: {
               primary: colors.bazaraTint,
               background: colors.primaryBg,
-              text: colors.bazaraTint,
+              text: colors.white,
               placeholder: colors.gray,
             },
           }}
