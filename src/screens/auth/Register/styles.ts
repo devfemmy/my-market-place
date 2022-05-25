@@ -38,4 +38,7 @@ export const styles = StyleSheet.create({
   margTop: {
     marginTop: hp(20),
   },
+  scroll: {
+    paddingBottom: hp(50),
+  },
 });

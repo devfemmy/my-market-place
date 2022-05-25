@@ -10,7 +10,6 @@ import {ApplicationProvider as UIKittenProvider} from '@ui-kitten/components';
 import {NavigationContainerComponent} from './src/navigations';
 
 const App = (): JSX.Element => {
-  
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />

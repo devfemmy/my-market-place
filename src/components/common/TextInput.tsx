@@ -7,7 +7,7 @@ import {globalStyles} from '../../styles/globalStyles';
 import {hp} from '../../utils';
 import {useSecureTextEntry} from '../../hooks';
 import {colors} from '../../constants';
-import { ViewPager } from '@ui-kitten/components';
+// import {ViewPager} from '@ui-kitten/components';
 
 type InputProps = ComponentProps<typeof BaseInput> & {
   errorMsg?: any;
@@ -30,7 +30,7 @@ export const Input = memo(
   }: InputProps) => {
     const {secureTextEntry, toggleEntry} = useSecureTextEntry(isPassword);
     return (
-      <View style={[{marginBottom: hp(20), width: "90%", alignSelf: "center"}, containerStyle]}>
+      <View style={[containerStyle, styles.containerStyle]}>
         <BaseInput
           label={label}
           mode="outlined"
@@ -62,13 +62,14 @@ export const Input = memo(
           {...rest}
         />
         {errorMsg !== undefined ? (
-          <View style={globalStyles.rowStart}>
-            {/* <Text
+          <View style={[globalStyles.rowStart, styles.errorHold]}>
+            <Text
               text={errorMsg}
               category="s1"
+              fontSize={hp(12)}
               style={styles.error}
               textAlign="left"
-            /> */}
+            />
           </View>
         ) : null}
       </View>
@@ -89,6 +90,11 @@ const styles = StyleSheet.create({
     color: 'tomato',
   },
   containerStyle: {
-    backgroundColor: 'yellow',
+    marginBottom: hp(20),
+    width: '90%',
+    alignSelf: 'center',
+  },
+  errorHold: {
+    marginTop: hp(10),
   },
 });

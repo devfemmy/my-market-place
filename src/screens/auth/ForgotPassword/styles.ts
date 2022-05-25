@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
   upperContainer: {
     width: '90%',
     paddingTop: hp(15),
+    paddingBottom: hp(35),
     alignSelf: 'center',
   },
   width90: {

@@ -1,60 +1,59 @@
 import React, {ComponentProps, memo, useMemo} from 'react';
-import {StyleProp, TextStyle, ViewStyle, View} from 'react-native';
+import {StyleProp, StyleSheet, ViewStyle, View, ViewBase} from 'react-native';
 
 import {Text as BaseText} from '@ui-kitten/components';
 import {hp} from '../../utils';
 import {colors} from '../../constants';
+// import {globalStyles} from '../../styles/globalStyles';
 
-type SeparatorProps = ComponentProps<typeof BaseText> & {
+type SeparatorProps = ComponentProps<typeof ViewBase> & {
   text?: string;
-  color?: string;
-  height?: number;
-  width?: number;
+  backgroundColor?: string;
+  height?: string | number;
+  width?: string | number;
   style?: StyleProp<ViewStyle>;
 };
 
 export const Separator = memo(
   ({
-    text = "OR",
+    text = 'OR',
     height = 1,
-    width,
-    color = colors.gray,
+    width = '44%',
+    backgroundColor = colors.gray,
     style,
-    ...rest
   }: SeparatorProps) => {
-    const propsStyle = useMemo(
+    const lineStyle = useMemo(
       () => ({
-        text,
         height,
         width,
-        color,
+        backgroundColor,
       }),
-      [text, height, width, color],
+      [height, width, backgroundColor],
     );
 
     return (
-      <View style={{paddingHorizontal: "5%", marginBottom: hp(30), flexDirection: "row", alignSelf: "center", alignItems: "center"}}>
-        <View
-        style={{
-            height: height,
-            width: "44%",
-            backgroundColor: color
-        }}
-        />
-        <BaseText
-        category="p2"
-        style={{fontSize: 20, marginHorizontal: 5, color: colors.gray}}
-        >
+      <View style={[styles.lineContainer]}>
+        <View style={[lineStyle, style]} />
+        <BaseText category="p2" style={styles.textStyle}>
           {text}
         </BaseText>
-        <View
-        style={{
-            height: height,
-            width: "44%",
-            backgroundColor: color
-        }}
-        />
+        <View style={[lineStyle, style]} />
       </View>
     );
   },
 );
+
+const styles = StyleSheet.create({
+  lineContainer: {
+    paddingHorizontal: '5%',
+    marginBottom: hp(30),
+    flexDirection: 'row',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  textStyle: {
+    fontSize: 20,
+    marginHorizontal: 5,
+    color: colors.gray,
+  },
+});

@@ -65,9 +65,18 @@ export const globalStyles = StyleSheet.create({
     bottom: hp(15),
     paddingHorizontal: wp(15),
   },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: hp(15),
+  },
   timesIcon: {
     position: 'absolute',
     right: wp(15),
     zIndex: 10,
+  },
+  line: {
+    width: '44%',
   },
 });
