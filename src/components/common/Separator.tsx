@@ -18,7 +18,7 @@ export const Separator = memo(
     text = 'OR',
     height = 1,
     width = '44%',
-    backgroundColor = colors.gray,
+    backgroundColor = globalTheme.gray,
     style,
   }: SeparatorProps) => {
     const lineStyle = useMemo(
