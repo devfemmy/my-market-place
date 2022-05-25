@@ -24,3 +24,4 @@ export type StoreFormData = {
   city: string;
   state: string;
 };
+

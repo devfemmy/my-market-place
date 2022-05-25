@@ -43,7 +43,7 @@ export const StoreCreation = (): JSX.Element => {
     useFormik({
       initialValues,
       validationSchema: StoreFormSchema,
-      onSubmit: (val: StoreFormData) => console.log(val),
+      onSubmit: (val: StoreFormData) => console.log("valuessss",val),
     });
 
   return (
@@ -129,7 +129,7 @@ export const StoreCreation = (): JSX.Element => {
 
 const styles = StyleSheet.create({
   StoreCard: {
-    marginBottom: hp(20),
+    paddingVertical: hp(20),
     cursor: 'pointer',
   },
   formContainer: {

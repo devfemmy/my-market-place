@@ -18,7 +18,7 @@ export const RootBottomTabNavigator = (): JSX.Element => {
           fontWeight: '500',
           fontSize: hp(12),
         },
-        tabBarStyle: {backgroundColor: globalTheme.primaryBg},
+        tabBarStyle: {backgroundColor: globalTheme.primaryBg, borderTopColor: globalTheme.darkBlack},
         headerShown: false,
         tabBarIcon: ({focused, color, size}) => {
           let iconName = '';
