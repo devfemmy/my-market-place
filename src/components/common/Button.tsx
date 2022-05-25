@@ -1,9 +1,10 @@
 import React, {ComponentProps, memo, useMemo} from 'react';
-import {Pressable, StyleProp, TextStyle} from 'react-native';
+import { StyleProp, TextStyle} from 'react-native';
 
 import {Text as BaseText} from '@ui-kitten/components';
-import {hp} from '../../utils';
-import {colors} from '../../constants';
+import {hp} from '../../utils/helpers';
+// import {colors} from '../../utils/constants';
+import {globalTheme } from "../../utils/themes/themes"
 
 type ButtonProps = ComponentProps<typeof BaseText> & {
   text: string;
@@ -32,13 +33,13 @@ type ButtonProps = ComponentProps<typeof BaseText> & {
 export const Button = memo(
   ({
     text,
-    backgroundColor = colors.bazaraTint,
+    backgroundColor = globalTheme.bazaraTint,
     fontSize = hp(15),
     lineHeight,
     onPress,
     textAlign = 'center',
     borderRadius = 10,
-    color = colors.white,
+    color = globalTheme.white,
     padding = 15,
     fontWeight = '400',
     style,
@@ -55,7 +56,7 @@ export const Button = memo(
         padding,
         borderRadius,
       }),
-      [color, textAlign, fontWeight, lineHeight, fontSize],
+      [color, textAlign, fontWeight, lineHeight, fontSize, backgroundColor, borderRadius, padding],
     );
 
     return (

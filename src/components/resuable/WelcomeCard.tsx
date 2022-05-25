@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Pressable, StyleSheet, Image} from 'react-native';
-import {colors} from '../../constants';
-import {hp, wp} from '../../utils';
+import { globalTheme } from '../../utils/themes';
+import {hp, wp} from '../../utils/helpers';
 import {Text} from '../common';
+import {checkbox} from "../../assets/index"
+import { globalStyles } from "../../styles/globalStyles"
 
 type IProp = {
   header: string;
@@ -11,6 +13,7 @@ type IProp = {
   selected: string;
   handleClick?: () => void;
 };
+
 
 const WelcomeCard: React.FC<IProp> = ({
   header,
@@ -21,13 +24,13 @@ const WelcomeCard: React.FC<IProp> = ({
 }) => {
   return (
     <Pressable onPress={handleClick}>
-      <View style={selected === type ? styles.selected : styles.container}>
-        <View style={styles.cardView}>
-          <Text text={header} fontSize={20} style={styles.header} />
+      <View style={selected === type ? styles.selected : styles. welcomeContainer}>
+        <View style={[styles.cardView, globalStyles.rowBetweenNoCenter]}>
+          <Text text={header} fontSize={20} />
           <View style={selected !== type && styles.checkbox}>
             {selected === type && (
               <Image
-                source={require('../../assets/Checkbox.png')}
+                source={checkbox}
                 style={styles.image}
               />
             )}
@@ -42,42 +45,39 @@ const WelcomeCard: React.FC<IProp> = ({
 export default WelcomeCard;
 
 const styles = StyleSheet.create({
-  container: {
+  welcomeContainer: {
     padding: 10,
     // borderWidth: 1,
-    borderColor: colors.gray,
+    borderColor: globalTheme.gray,
     borderRadius: 10,
     marginVertical: 10,
     height: hp(150),
-    backgroundColor: colors.darkBlack,
+    backgroundColor: globalTheme.darkBlack,
   },
   image: {
     width: 20,
     height: 20,
   },
   selected: {
-    borderColor: colors.bazaraTint,
+    borderColor: globalTheme.bazaraTint,
     padding: 10,
     borderWidth: 1,
     borderRadius: 10,
     marginVertical: 10,
     height: hp(150),
-    backgroundColor: colors.darkBlack,
+    backgroundColor: globalTheme.darkBlack,
   },
   cardView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: 10,
   },
-  header: {},
   title: {
-    color: colors.gray,
+    color: globalTheme.gray,
     width: wp(284),
   },
   checkbox: {
-    backgroundColor: colors.black,
+    backgroundColor: globalTheme.black,
     borderWidth: 1,
-    borderColor: colors.gray,
+    borderColor: globalTheme.gray,
     width: 20,
     height: 20,
     borderRadius: 50,

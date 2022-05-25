@@ -1,17 +1,22 @@
 import React from 'react';
 import {SafeAreaView, Text} from '../../../components/common';
 import {useNavigation} from '@react-navigation/native';
-import {Pressable} from 'react-native';
+
+
+type Nav = {
+  navigate: (value: string) => void;
+}
+
 
 export const Home = (): JSX.Element => {
-  const navigation = useNavigation();
+  const {navigate} = useNavigation<Nav>();
 
   return (
     <SafeAreaView>
       <Text text="Home" />
       <Text
         text="Go to Welcome screen"
-        onPress={() => navigation.navigate('WelcomeScreen')}
+        onPress={() => navigate('WelcomeScreen')}
       />
     </SafeAreaView>
   );

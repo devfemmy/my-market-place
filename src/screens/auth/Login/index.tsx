@@ -2,20 +2,25 @@ import React from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
-import {LoginFormData} from '../../../models';
-import {LoginSchema} from '../../../constants';
+import {LoginFormData} from '../../../utils/types';
+import {LoginSchema} from '../../../utils/constants';
 import {Pressable, View} from 'react-native';
 
-const Login = (navigation: any): JSX.Element => {
+
+type Nav = {
+  navigate: (value: string) => void;
+}
+
+const Login = (navigation: Nav): JSX.Element => {
   const initialValues: LoginFormData = {
     email: '',
     password: '',
   };
-  const {values, errors, touched, handleChange, handleSubmit, handleBlur} =
+  const {values, errors, touched, handleChange, handleBlur} =
     useFormik({
       initialValues,
       validationSchema: LoginSchema,
-      onSubmit: (values: LoginFormData) => console.log(values),
+      onSubmit: (val: LoginFormData) => console.log(val),
     });
   return (
     <SafeAreaView>

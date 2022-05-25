@@ -1,48 +1,43 @@
-import React, {ComponentProps} from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import React from 'react';
+import { StyleSheet, View} from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDropdown from 'react-native-select-dropdown';
-import {hp} from '../../utils';
-import {useSecureTextEntry} from '../../hooks';
-import {colors} from '../../constants';
+import {hp} from '../../utils/helpers';
 
-type SelectProps = ComponentProps<typeof SelectDropdown> & {
-  errorMsg?: any;
-  searchInput?: boolean;
-  placeholder?: string;
-  containerStyle?: StyleProp<ViewStyle>;
-  style?: StyleProp<ViewStyle>;
+
+
+
+
+type IProp = {
+  items: Array<string> | undefined,
+  defaultValue: string,
+  placeholder: string
+  setState: (value: string) => void;
 };
 
-export const Select = (props: any) => {
-  const {items, setState, placeholder} = props;
+
+export const Select = (props: IProp) => {
+  const {items, setState, placeholder, defaultValue} = props;
 
   return (
     <View style={[{marginBottom: hp(20)}, styles.input]}>
       <SelectDropdown
-        data={items}
-        onSelect={(selectedItem, index) => {
+        defaultValue={defaultValue}
+        data={items === undefined ? [] : items}
+        onSelect={(selectedItem: string) => {
           setState(selectedItem);
         }}
-        disabled={items?.length < 1}
         defaultButtonText={placeholder}
         buttonStyle={styles.input}
         buttonTextStyle={styles.inputText}
-        dropdownStyle={{
-          backgroundColor: 'grey',
-        }}
-        rowStyle={{
-          padding: 10,
-        }}
-        rowTextStyle={{
-          color: 'white',
-          textAlign: 'left',
-        }}
-        buttonTextAfterSelection={(selectedItem, index) => {
+        dropdownStyle={styles.dropdownStyle}
+        rowStyle={styles.rowStyle}
+        rowTextStyle={styles.rowTextStyle}
+        buttonTextAfterSelection={(selectedItem: string) => {
           return selectedItem;
         }}
-        rowTextForSelection={(item, index) => {
+        rowTextForSelection={(item: string) => {
           return item;
         }}
         renderDropdownIcon={() => {
@@ -78,4 +73,14 @@ const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'yellow',
   },
+  dropdownStyle: {
+    backgroundColor: 'grey',
+  },
+  rowStyle: {
+    padding: 10,
+  },
+  rowTextStyle:{
+    color: 'white',
+    textAlign: 'left',
+  }
 });

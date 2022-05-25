@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  plugins: ['@typescript-eslint', 'react', 'react-hooks', '@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'prettier', 'react', 'react-hooks', '@typescript-eslint'],
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
@@ -24,11 +24,13 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
-    project: './tsconfig.json',
+    project: ['./tsconfig.json', './babel.config.js', './metro.config.js'],
   },
   rules: {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-    'prettier/prettier': 'error',
+    'react/display-name': 'off',
+    'prettier/prettier': ['off', {endOfLine: 'auto'}],
   },
+  ignorePatterns: ['.eslintrc.js'],
 };

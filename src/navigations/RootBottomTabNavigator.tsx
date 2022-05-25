@@ -4,8 +4,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {Home} from '../screens';
 import {RootBottomTabParamList} from './types';
-import {hp} from '../utils';
-import {colors} from '../constants';
+import {hp} from '../utils/helpers';
+import { globalTheme } from '../utils/themes';
+import { StoreScreen } from '../screens/StoreScreen';
 
 const RootBottomTab = createBottomTabNavigator<RootBottomTabParamList>();
 
@@ -17,7 +18,7 @@ export const RootBottomTabNavigator = (): JSX.Element => {
           fontWeight: '500',
           fontSize: hp(12),
         },
-        tabBarStyle: {backgroundColor: colors.primaryBg},
+        tabBarStyle: {backgroundColor: globalTheme.primaryBg},
         headerShown: false,
         tabBarIcon: ({focused, color, size}) => {
           let iconName = '';
@@ -36,11 +37,11 @@ export const RootBottomTabNavigator = (): JSX.Element => {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: colors.bazaraTint,
-        tabBarInactiveTintColor: colors.gray,
+        tabBarActiveTintColor: globalTheme.bazaraTint,
+        tabBarInactiveTintColor: globalTheme.gray,
         tabBarHideOnKeyboard: true,
       })}>
-      <RootBottomTab.Screen name="Store" component={Home} />
+      <RootBottomTab.Screen name="Store" component={StoreScreen} />
       <RootBottomTab.Screen name="Product" component={Home} />
       <RootBottomTab.Screen name="Order" component={Home} />
       <RootBottomTab.Screen name="Inbox" component={Home} />

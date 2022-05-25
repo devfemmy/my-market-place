@@ -1,8 +1,9 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {MainStackParamList} from './types';
-import {colors} from '../constants';
-import {hp} from '../utils';
+// import {colors} from '../utils/constants';
+import { globalTheme } from '../utils/themes';
+import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
 import {StoreCreation} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
@@ -21,7 +22,7 @@ export const MainStackNavigator = (): JSX.Element => {
         },
         headerBackTitleVisible: false,
         headerTitleAlign: 'left',
-        headerTintColor: colors.primaryBg,
+        headerTintColor: globalTheme.primaryBg,
       })}>
       <MainStack.Screen
         name="HomeTab"

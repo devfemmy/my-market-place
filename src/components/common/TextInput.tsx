@@ -4,12 +4,13 @@ import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {TextInput as BaseInput} from 'react-native-paper';
 import {Text} from './Text';
 import {globalStyles} from '../../styles/globalStyles';
-import {hp} from '../../utils';
+import {hp} from '../../utils/helpers';
 import {useSecureTextEntry} from '../../hooks';
-import {colors} from '../../constants';
+// import {colors} from '../../utils/constants';
+import { globalTheme } from "../../utils/themes/themes"
 
 type InputProps = ComponentProps<typeof BaseInput> & {
-  errorMsg?: any;
+  errorMsg?: string;
   label: string;
   isPassword?: boolean;
   searchInput?: boolean;
@@ -38,21 +39,21 @@ export const Input = memo(
           secureTextEntry={secureTextEntry}
           autoCapitalize="none"
           autoCorrect={false}
-          outlineColor={colors.gray}
+          outlineColor={globalTheme.gray}
           theme={{
             roundness: 10,
 
             colors: {
-              primary: colors.bazaraTint,
-              background: colors.primaryBg,
-              text: colors.bazaraTint,
-              placeholder: colors.gray,
+              primary: globalTheme.bazaraTint,
+              background: globalTheme.primaryBg,
+              text: globalTheme.bazaraTint,
+              placeholder: globalTheme.gray,
             },
           }}
           right={
             isPassword ? (
               <BaseInput.Icon
-                color={colors.white}
+                color={globalTheme.white}
                 onPress={toggleEntry}
                 name={secureTextEntry ? 'eye' : 'eye-off'}
               />

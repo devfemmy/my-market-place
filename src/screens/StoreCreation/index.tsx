@@ -1,15 +1,22 @@
-import React, {useState} from 'react';
-import {useFormik} from 'formik';
-import {StatusBar, View, StyleSheet, ScrollView} from 'react-native';
-import {SafeAreaView, Text} from '../../components/common';
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import { StatusBar, View, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView, Text } from '../../components/common';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Input} from '../../components/common/TextInput';
-import {StoreFormData} from '../../models';
-import {StoreFormSchema} from '../../constants';
-import {locationData} from '../../utils/locationJson';
-import {Select} from '../../components/common/SelectInput';
-import {useNavigation} from '@react-navigation/native';
-import {Button} from '../../components/common/Button';
+import { Input } from '../../components/common/TextInput';
+import { StoreFormData } from '../../utils/types';
+import { StoreFormSchema } from '../../utils/constants';
+import { locationData } from '../../utils/constants/locations';
+import { Select } from '../../components/common/SelectInput';
+import { useNavigation } from '@react-navigation/native';
+import { Button } from '../../components/common/Button';
+import { globalStyles } from "../../styles/globalStyles"
+import { hp } from '../../utils/helpers';
+
+type locationProp = {
+   state: string,
+   city:  Array<string>,
+}
 
 export const StoreCreation = (): JSX.Element => {
   const navigation = useNavigation();
@@ -17,11 +24,12 @@ export const StoreCreation = (): JSX.Element => {
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
 
-  const locationState = locationData?.map((data: any) => data?.state);
+  const locationState = locationData?.map((data: locationProp) => data?.state);
 
   const locationCity = locationData?.find(
-    (data: any) => data?.state === state,
+    (data: locationProp) => data?.state === state,
   )?.city;
+
 
   const initialValues: StoreFormData = {
     storeName: '',
@@ -31,18 +39,18 @@ export const StoreCreation = (): JSX.Element => {
     city: '',
     state: '',
   };
-  const {values, errors, touched, handleChange, handleSubmit, handleBlur} =
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
     useFormik({
       initialValues,
       validationSchema: StoreFormSchema,
-      onSubmit: (values: StoreFormData) => console.log(values),
+      onSubmit: (val: StoreFormData) => console.log(val),
     });
 
   return (
     <SafeAreaView>
       <StatusBar translucent={true} backgroundColor={'white'} />
       <ScrollView>
-        <View style={styles.StoreCard}>
+        <View style={[globalStyles.container, globalStyles.rowBetween, styles.StoreCard]}>
           <Ionicons
             name={'chevron-back-outline'}
             size={30}
@@ -53,7 +61,7 @@ export const StoreCreation = (): JSX.Element => {
           <View />
         </View>
 
-        <View style={styles.container}>
+        <View style={globalStyles.container}>
           <View style={styles.formContainer}>
             <Input
               label={'Store Name'}
@@ -84,16 +92,18 @@ export const StoreCreation = (): JSX.Element => {
             <Text
               text="Store Location"
               fontSize={18}
-              style={{marginVertical: 15}}
+              style={styles.locationText}
             />
 
             <Select
+              defaultValue={state}
               items={locationState}
               setState={setState}
               placeholder="Select State"
             />
 
             <Select
+              defaultValue={city}
               items={locationCity}
               setState={setCity}
               placeholder="Select City"
@@ -119,14 +129,8 @@ export const StoreCreation = (): JSX.Element => {
 
 const styles = StyleSheet.create({
   StoreCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
+    marginBottom: hp(20),
     cursor: 'pointer',
-  },
-  container: {
-    paddingHorizontal: 20,
   },
   formContainer: {
     flex: 1,
@@ -134,4 +138,7 @@ const styles = StyleSheet.create({
   btn: {
     marginTop: 20,
   },
+  locationText: {
+     marginVertical: 15 
+  }
 });
