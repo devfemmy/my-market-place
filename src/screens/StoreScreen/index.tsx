@@ -12,15 +12,8 @@ import {colorCart} from "../../assets"
 
 
 
-type Nav = {
-  navigate: (value: string) => void;
-}
 
 export const StoreScreen = (): JSX.Element => {
-  const { navigate } = useNavigation<Nav>();
-
-
-
 
   return (
     <SafeAreaView>
@@ -29,17 +22,17 @@ export const StoreScreen = (): JSX.Element => {
         <StoreHeader />
         <View style={globalStyles.container}>
           <ScrollCard />
-          <View style={globalStyles.rowBetweenNoCenter}>
+          <View style={[globalStyles.rowBetweenNoCenter, styles.rowMargin]}>
             <View style={globalStyles.rowStart}>
               <Image source={colorCart} style={styles.cart} />
               <Text text="Order" />
             </View>
             <View style={globalStyles.rowStart}>
-              <Text text="100" />
+              <Text text="100" style={styles.greyColor} />
               <Ionicons
-                name={"copy-outline"}
+                name={"chevron-forward-outline"}
                 size={15}
-                color={'white'}
+                color={'grey'}
               />
             </View>
           </View>
@@ -54,5 +47,11 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: 5
+  },
+  greyColor: {
+    color: globalTheme.gray
+  },
+  rowMargin: {
+    marginVertical: 20
   }
 });

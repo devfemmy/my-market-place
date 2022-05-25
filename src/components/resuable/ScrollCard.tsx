@@ -9,7 +9,7 @@ import { hp, wp } from '../../utils/helpers'
 const ScrollCard = () => {
   return (
     <SafeAreaView>
-        <ScrollView horizontal>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.activeCard}>
                 <Text text="₦ 0.00" fontSize={18} />
                 <Text text="Expected Earnings" fontSize={15} style={styles.earningText} />
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         width: wp(250),
         height: hp(150),
         padding: 20,
-        marginVertical: 20,
+        marginVertical: 0,
         borderRadius: 10,
     },
     inactiveCard: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         width: wp(250),
         height: hp(150),
         padding: 20,
-        marginVertical: 20,
+        marginVertical: 0,
         borderRadius: 10,
         marginHorizontal: 10
     },

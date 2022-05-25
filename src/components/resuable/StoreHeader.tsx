@@ -11,7 +11,6 @@ import { globalTheme } from '../../utils/themes'
 
 const StoreHeader = () => {
     return (
-        <SafeAreaView>
             <View style={[globalStyles.container, globalStyles.rowBetween, styles.comp]}>
                 <View style={styles.container}>
                     <View style={styles.imageCard}>
@@ -29,13 +28,14 @@ const StoreHeader = () => {
                         </View>
                     </View>
                 </View>
-                <Ionicons
-                    name={'notifications-outline'}
-                    size={30}
-                    color={'white'}
-                />
+                <View style={styles.iconCard}>
+                    <Ionicons
+                        name={'notifications-outline'}
+                        size={20}
+                        color={'white'}
+                    />
+                </View>
             </View>
-        </SafeAreaView>
     )
 }
 
@@ -44,7 +44,7 @@ export default StoreHeader
 
 const styles = StyleSheet.create({
     comp: {
-        paddingTop: 10,
+        paddingTop: 15,
     },
     container: {
         flexDirection: 'row'
@@ -69,6 +69,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: globalTheme.black,
         padding: 5,
-        marginTop: 3
+        marginTop: 3,
+        borderRadius: 5,
+    },
+    iconCard: {
+        height: '100%',
+        marginTop: 5
     }
 })
