@@ -4,15 +4,16 @@ import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
 import {Button} from '../../../components/common/Button';
 import {AuthButton} from '../../../components/common/AuthButtons';
-import {RegisterFormData} from '../../../models';
-import {RegisterSchema} from '../../../constants';
-import {hp} from '../../../utils';
 import {View, ScrollView} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {RegisterScreenNavigationProp} from '../../../navigations/types';
-import {colors} from '../../../constants';
+import { RegisterFormData } from '../../../utils/types';
+import { RegisterSchema } from '../../../utils/constants';
+import { globalTheme } from '../../../utils/themes';
+import { hp } from '../../../utils/helpers';
+
 
 const Register = (): JSX.Element => {
   const navigation = useNavigation<RegisterScreenNavigationProp>();
@@ -118,7 +119,7 @@ const Register = (): JSX.Element => {
               onPress={() => navigation.navigate('Login')}
               fontWeight="600"
               text="Sign in"
-              color={colors.bazaraTint}
+              color={globalTheme.bazaraTint}
             />
           </View>
         </View>

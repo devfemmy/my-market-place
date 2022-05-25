@@ -2,9 +2,8 @@ import React, {ComponentProps, memo, useMemo} from 'react';
 import {StyleProp, StyleSheet, ViewStyle, View, ViewBase} from 'react-native';
 
 import {Text as BaseText} from '@ui-kitten/components';
-import {hp} from '../../utils';
-import {colors} from '../../constants';
-// import {globalStyles} from '../../styles/globalStyles';
+import { hp } from '../../utils/helpers';
+import { globalTheme } from '../../utils/themes';
 
 type SeparatorProps = ComponentProps<typeof ViewBase> & {
   text?: string;
@@ -54,6 +53,6 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: 20,
     marginHorizontal: 5,
-    color: colors.gray,
+    color: globalTheme.gray,
   },
 });

@@ -1,9 +1,12 @@
 import React from 'react';
 import {createStackNavigator as createNativeStackNavigator} from '@react-navigation/stack';
 import {MainStackParamList} from './types';
-import {colors} from '../constants';
-import {hp} from '../utils';
+
+import { globalTheme } from '../utils/themes';
+import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
+import {StoreCreation} from '../screens';
+import {WelcomeScreen} from '../screens/WelcomeScreen';
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -19,11 +22,25 @@ export const MainStackNavigator = (): JSX.Element => {
         },
         headerBackTitleVisible: false,
         headerTitleAlign: 'left',
-        headerTintColor: colors.primaryBg,
+        headerTintColor: globalTheme.primaryBg,
       })}>
       <MainStack.Screen
         name="HomeTab"
         component={RootBottomTabNavigator}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+      <MainStack.Screen
+        name="StoreCreationScreen"
+        component={StoreCreation}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+      <MainStack.Screen
+        name="WelcomeScreen"
+        component={WelcomeScreen}
         options={() => ({
           headerShown: false,
         })}

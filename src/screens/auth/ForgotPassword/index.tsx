@@ -3,14 +3,14 @@ import React from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text} from '../../../components/common';
 import {View} from 'react-native';
-import {hp} from '../../../utils';
 import {styles} from './styles';
 import {Input} from '../../../components/common/TextInput';
 import {Button} from '../../../components/common/Button';
-import {ForgotPasswordFormData} from '../../../models';
-import {ForgotPasswordSchema} from '../../../constants';
 import {globalStyles} from '../../../styles';
 import {ForgotPasswordScreenNavigationProp} from '../../../navigations/types';
+import { ForgotPasswordFormData } from '../../../utils/types';
+import { ForgotPasswordSchema } from '../../../utils/constants';
+import { hp } from '../../../utils/helpers';
 
 const ForgotPassword = () => {
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();

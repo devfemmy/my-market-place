@@ -2,8 +2,8 @@ import React, {ComponentProps, memo, useMemo} from 'react';
 import {StyleProp, TextStyle} from 'react-native';
 
 import {Text as BaseText} from '@ui-kitten/components';
-import {hp} from '../../utils';
-import {colors} from '../../constants';
+import {hp} from '../../utils/helpers';
+import { globalTheme } from "../../utils/themes/themes"
 
 type TextProps = ComponentProps<typeof BaseText> & {
   text: string;
@@ -33,7 +33,7 @@ export const Text = memo(
     lineHeight,
     onPress,
     textAlign,
-    color = colors.white,
+    color = globalTheme.white,
     fontWeight = '400',
     style,
     ...rest

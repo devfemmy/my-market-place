@@ -4,9 +4,6 @@ import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
 import {Button} from '../../../components/common/Button';
 import {AuthButton} from '../../../components/common/AuthButtons';
-import {LoginFormData} from '../../../models';
-import {LoginSchema} from '../../../constants';
-import {hp} from '../../../utils';
 import {View, Alert} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
@@ -14,6 +11,9 @@ import {useNavigation} from '@react-navigation/native';
 import {LoginScreenNavigationProp} from '../../../navigations/types';
 import {appleAuth} from '@invertase/react-native-apple-authentication';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { LoginFormData } from '../../../utils/types';
+import { LoginSchema } from '../../../utils/constants';
+import { hp } from '../../../utils/helpers';
 
 const Login = (): JSX.Element => {
   const navigation = useNavigation<LoginScreenNavigationProp>();

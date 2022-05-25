@@ -5,9 +5,7 @@ type useSecureTextEntryReturnType = {
   toggleEntry: () => void;
 };
 
-export const useSecureTextEntry = (
-  isPassword: boolean,
-): useSecureTextEntryReturnType => {
+export const useSecureTextEntry = (isPassword: boolean): useSecureTextEntryReturnType => {
   const [secureTextEntry, setSecureTextEntry] = useState(isPassword);
 
   const toggleEntry = useCallback(() => {

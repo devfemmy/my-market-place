@@ -4,13 +4,12 @@ import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {TextInput as BaseInput} from 'react-native-paper';
 import {Text} from './Text';
 import {globalStyles} from '../../styles/globalStyles';
-import {hp} from '../../utils';
+import {hp} from '../../utils/helpers';
 import {useSecureTextEntry} from '../../hooks';
-import {colors} from '../../constants';
-// import {ViewPager} from '@ui-kitten/components';
+import { globalTheme } from "../../utils/themes/themes"
 
 type InputProps = ComponentProps<typeof BaseInput> & {
-  errorMsg?: any;
+  errorMsg?: string;
   label: string;
   isPassword?: boolean;
   searchInput?: boolean;
@@ -35,25 +34,25 @@ export const Input = memo(
           label={label}
           mode="outlined"
           placeholder={placeholder}
-          placeholderTextColor={colors.white}
+          placeholderTextColor={globalTheme.white}
           secureTextEntry={secureTextEntry}
           autoCapitalize="none"
           autoCorrect={false}
-          outlineColor={colors.gray}
+          outlineColor={globalTheme.gray}
           theme={{
             roundness: 7,
 
             colors: {
-              primary: colors.bazaraTint,
-              background: colors.primaryBg,
-              text: colors.white,
-              placeholder: colors.gray,
+              primary: globalTheme.bazaraTint,
+              background: globalTheme.primaryBg,
+              text: globalTheme.bazaraTint,
+              placeholder: globalTheme.gray,
             },
           }}
           right={
             isPassword ? (
               <BaseInput.Icon
-                color={colors.white}
+                color={globalTheme.white}
                 onPress={toggleEntry}
                 name={secureTextEntry ? 'eye-off' : 'eye'}
               />

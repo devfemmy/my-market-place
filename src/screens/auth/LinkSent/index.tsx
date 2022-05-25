@@ -2,13 +2,13 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {SafeAreaView, Text} from '../../../components/common';
 import {View, Image} from 'react-native';
-import {hp} from '../../../utils';
 import {styles} from './styles';
 import {Button} from '../../../components/common/Button';
 import {globalStyles} from '../../../styles';
-import {colors} from '../../../constants';
 
 import {LinkSentScreenNavigationProp} from '../../../navigations/types';
+import { globalTheme } from '../../../utils/themes';
+import { hp } from '../../../utils/helpers';
 
 const LinkSent = () => {
   const navigation = useNavigation<LinkSentScreenNavigationProp>();
@@ -55,7 +55,7 @@ const LinkSent = () => {
           />
           <Text
             fontWeight="400"
-            color={colors.bazaraTint}
+            color={globalTheme.bazaraTint}
             fontSize={hp(16)}
             lineHeight={hp(25)}
             style={styles.sub}

@@ -8,11 +8,17 @@ export type AuthStackParamList = {
   LinkSent: undefined;
 };
 export type RootBottomTabParamList = {
-  Home: undefined;
+  Store: undefined;
+  Product: undefined;
+  Order: undefined;
+  Inbox: undefined;
+  Settings: undefined;
 };
 export type MainStackParamList = {
   HomeTab: NavigatorScreenParams<RootBottomTabParamList>;
   Home: undefined;
+  StoreCreationScreen: undefined;
+  WelcomeScreen: undefined;
 };
 export type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
