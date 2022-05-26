@@ -14,12 +14,12 @@ import { store } from './src/redux/store';
 
 const App = (): JSX.Element => {
   return (
-    <Provider store={store}>
-      <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" />
-        <NavigationContainerComponent />
-      </SafeAreaProvider>
-    </Provider>
+    // <Provider store={store}>
+    <SafeAreaProvider>
+      <StatusBar barStyle="dark-content" />
+      <NavigationContainerComponent />
+    </SafeAreaProvider>
+    // </Provider>
   );
 };
 

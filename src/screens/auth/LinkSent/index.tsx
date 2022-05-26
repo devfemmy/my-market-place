@@ -55,6 +55,7 @@ const LinkSent = () => {
           />
           <Text
             fontWeight="400"
+            onPress={() => navigation.goBack()}
             color={colors.bazaraTint}
             fontSize={hp(16)}
             lineHeight={hp(25)}

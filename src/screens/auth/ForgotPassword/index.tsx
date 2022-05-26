@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text} from '../../../components/common';
 import {View} from 'react-native';
@@ -11,8 +11,10 @@ import {ForgotPasswordScreenNavigationProp} from '../../../navigations/types';
 import { ForgotPasswordFormData } from '../../../utils/types';
 import { ForgotPasswordSchema } from '../../../utils/constants';
 import { hp } from '../../../utils/helpers';
+import {doPost} from '../../../utils/server';
 
 const ForgotPassword = () => {
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
   const initialValues: ForgotPasswordFormData = {
     email: '',
@@ -22,10 +24,24 @@ const ForgotPassword = () => {
       initialValues,
       validationSchema: ForgotPasswordSchema,
       onSubmit: (data: ForgotPasswordFormData) => {
-        console.log(data);
-        navigation.navigate('LinkSent');
+        handleCredentialSubmit(data);
       },
     });
+
+  const handleCredentialSubmit = async(data : Object) => {
+      setLoading(true)
+      try{
+        var response = await doPost(data, `/auth/request_reset`)
+        if(response.data.success === true){
+          navigation.navigate('LinkSent');
+        }
+        setLoading(false)
+      }catch (e){
+        console.log(e)
+        setLoading(false)
+      }
+  }
+
   return (
     <SafeAreaView>
       {/* <Text onPress={() => navigation.goBack()} text="Back to login" /> */}
@@ -45,7 +61,7 @@ const ForgotPassword = () => {
         errorMsg={touched.email ? errors.email : undefined}
       />
       <View style={globalStyles.rowCenter}>
-        <Button title={'Send link'} style={styles.btn} onPress={handleSubmit} />
+        <Button isLoading={loading} title={'Send link'} style={styles.btn} onPress={handleSubmit} />
       </View>
     </SafeAreaView>
   );
