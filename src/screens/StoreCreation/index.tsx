@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp } from '../../utils/helpers';
+import { sendPost} from '../../utils/server';
 
 
 type locationProp = {
@@ -31,11 +32,38 @@ export const StoreCreation = (): JSX.Element => {
     city: '',
     state: '',
   };
+
+  const handleStoreSubmission = async (data: StoreFormData) => {
+    const payload = {
+      category: "Men's Clothing",
+      brandName: data.storeName,
+      description: data.description,
+      imgUrl: "https://res.cloudinary.com/doouwbecx/image/upload/v1650540415/DSC_4876_mnalix.jpg",
+      address: data.street + " " + data.city + " " + data.state,
+      shippingFees: {
+        withinLocation: 1000,
+        outsideLocation: 2000
+      },
+      location: {
+        state: data.state,
+        city: data.city,
+        street: data.street,
+      },
+    };
+
+    console.log("------",{payload})
+      const response = await sendPost(payload, "/sidehustle/account/create")
+      console.log(response)
+      console.log("------",{payload})
+  }
+
+
+
   const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
     useFormik({
       initialValues,
       validationSchema: StoreFormSchema,
-      onSubmit: (val: StoreFormData) => console.log("valuessss", val),
+      onSubmit: (val: StoreFormData) => handleStoreSubmission(val),
     });
 
 
