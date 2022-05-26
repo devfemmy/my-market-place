@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
@@ -13,13 +13,17 @@ import { RegisterFormData } from '../../../utils/types';
 import { RegisterSchema } from '../../../utils/constants';
 import { globalTheme } from '../../../utils/themes';
 import { hp } from '../../../utils/helpers';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {doPost} from '../../../utils/server';
+import {AuthContext} from '../../../context/context';
 
 const Register = (): JSX.Element => {
+  const [loading, setLoading] = useState(false);
+  const {signIn} = useContext(AuthContext)
   const navigation = useNavigation<RegisterScreenNavigationProp>();
   const initialValues: RegisterFormData = {
-    firstName: '',
-    lastName: '',
+    fName: '',
+    lName: '',
     phoneNumber: '',
     email: '',
     password: '',
@@ -29,8 +33,25 @@ const Register = (): JSX.Element => {
     useFormik({
       initialValues,
       validationSchema: RegisterSchema,
-      onSubmit: (data: RegisterFormData) => console.log(data),
+      onSubmit: (data: RegisterFormData) => handleCredentialSubmit(data),
     });
+  
+  const handleCredentialSubmit = async(data : Object) => {
+      setLoading(true)
+      try{
+        var response = await doPost(data, `/auth/regUser`)
+        if(response.data.success === true){
+          AsyncStorage.setItem("token", response.data.token);
+          AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          signIn(response.data.token)
+        }
+        setLoading(false)
+      }catch (e){
+        console.log(e)
+        setLoading(false)
+      }
+  }
+
   return (
     <SafeAreaView>
       <View style={[globalStyles.rowBetween, styles.width90]}>
@@ -55,17 +76,17 @@ const Register = (): JSX.Element => {
 
         <Input
           label={'First Name'}
-          value={values.firstName}
-          onBlur={handleBlur('firstName')}
-          onChangeText={handleChange('firstName')}
-          errorMsg={touched.firstName ? errors.firstName : undefined}
+          value={values.fName}
+          onBlur={handleBlur('fName')}
+          onChangeText={handleChange('fName')}
+          errorMsg={touched.fName ? errors.fName : undefined}
         />
         <Input
           label={'Last Name'}
-          value={values.lastName}
-          onBlur={handleBlur('lastName')}
-          onChangeText={handleChange('lastName')}
-          errorMsg={touched.lastName ? errors.lastName : undefined}
+          value={values.lName}
+          onBlur={handleBlur('lName')}
+          onChangeText={handleChange('lName')}
+          errorMsg={touched.lName ? errors.lName : undefined}
         />
         <Input
           label={'Email Address'}
@@ -103,6 +124,7 @@ const Register = (): JSX.Element => {
           <View style={globalStyles.rowCenter}>
             <Button
               title={'Sign up'}
+              isLoading={loading} 
               style={styles.btn}
               onPress={handleSubmit}
             />

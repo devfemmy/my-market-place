@@ -1,5 +1,5 @@
 import React, {memo, ComponentProps} from 'react';
-import {StyleSheet, View, StyleProp, ViewStyle} from 'react-native';
+import {StyleSheet, View, StyleProp, ViewStyle, ActivityIndicator} from 'react-native';
 import {Button as BaseButton} from '@ui-kitten/components';
 import { globalTheme } from '../../utils/themes';
 import { hp } from '../../utils/helpers';
@@ -30,7 +30,7 @@ export const Button = memo(
           size="medium"
           style={[styles.btn, style]}
           {...rest}>
-          {title}
+          {isLoading ? <ActivityIndicator size={"small"}/> : title}
         </BaseButton>
       </View>
     );

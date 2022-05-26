@@ -4,8 +4,8 @@ export type LoginFormData = {
 };
 
 export type RegisterFormData = {
-  firstName: string;
-  lastName: string;
+  fName: string;
+  lName: string;
   phoneNumber: string;
   email: string;
   password: string;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
@@ -14,8 +14,15 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import { LoginFormData } from '../../../utils/types';
 import { LoginSchema } from '../../../utils/constants';
 import { hp } from '../../../utils/helpers';
+import axios from "axios";
+import config from '../../../config/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {doPost} from '../../../utils/server';
+import {AuthContext} from '../../../context/context';
 
 const Login = (): JSX.Element => {
+  const [loading, setLoading] = useState(false);
+  const {signIn} = useContext(AuthContext)
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const initialValues: LoginFormData = {
     email: '',
@@ -26,7 +33,7 @@ const Login = (): JSX.Element => {
     useFormik({
       initialValues,
       validationSchema: LoginSchema,
-      onSubmit: (data: LoginFormData) => console.log(data),
+      onSubmit: (data: LoginFormData) => handleCredentialSubmit(data),
     });
   // Apple SignIn
   const AppleSignIn = async () => {
@@ -61,6 +68,25 @@ const Login = (): JSX.Element => {
     // const userInfo = await GoogleSignin.signIn();
     // const tokenInfo = await GoogleSignin.getTokens();
   };
+
+  const handleCredentialSubmit = async(data : Object) => {
+    setLoading(true)
+    try{
+      var response = await doPost(data, `/auth/login`)
+      console.log(response)
+      if(response.data.success === true){
+        AsyncStorage.setItem("token", response.data.token);
+        AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        signIn(response.data.token)
+        console.log(response.data.user)
+      }
+      setLoading(false)
+    }catch (e){
+      console.log(e)
+      setLoading(false)
+    }
+  }
+
   return (
     <SafeAreaView>
       <View style={[globalStyles.rowBetween, styles.width90]}>
@@ -107,7 +133,7 @@ const Login = (): JSX.Element => {
       </View>
       <View style={globalStyles.footer}>
         <View style={globalStyles.rowCenter}>
-          <Button title={'Sign in'} style={styles.btn} onPress={handleSubmit} />
+          <Button isLoading={loading} title={'Sign in'} style={styles.btn} onPress={handleSubmit} />
         </View>
         <View style={[globalStyles.rowCenter, styles.width90, styles.margTop]}>
           <Text

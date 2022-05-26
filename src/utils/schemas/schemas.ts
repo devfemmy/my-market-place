@@ -4,13 +4,13 @@ export const LoginSchema = yup.object().shape({
   email: yup.string().email().required('email is required'),
   password: yup
     .string()
-    .min(8, ({min}) => `Password must be at least ${min} characters`)
+    .min(7, ({min}) => `Password must be at least ${min} characters`)
     .required('Password is required'),
 });
 
 export const RegisterSchema = yup.object().shape({
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('last name is required'),
+  fName: yup.string().required('First name is required'),
+  lName: yup.string().required('last name is required'),
   phoneNumber: yup.string().required('phone is required'),
   email: yup.string().email().required('email is required'),
   password: yup
