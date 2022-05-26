@@ -1,12 +1,12 @@
 import {StyleSheet} from 'react-native';
 // import {colors} from '../constants';
-import {globalTheme} from '../utils/themes';
+import {colors} from '../utils/themes';
 import {wp, hp} from '../utils/helpers/index';
 
 export const globalStyles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: globalTheme.primaryBg,
+    backgroundColor: colors.primaryBg,
   },
   container: {
     paddingHorizontal: wp(15),

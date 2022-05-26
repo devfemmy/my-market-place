@@ -3,7 +3,7 @@ import {StyleProp, StyleSheet, ViewStyle, View, ViewBase} from 'react-native';
 
 import {Text as BaseText} from '@ui-kitten/components';
 import { hp } from '../../utils/helpers';
-import { globalTheme } from '../../utils/themes';
+import { colors } from '../../utils/themes';
 
 type SeparatorProps = ComponentProps<typeof ViewBase> & {
   text?: string;
@@ -18,7 +18,7 @@ export const Separator = memo(
     text = 'OR',
     height = 1,
     width = '44%',
-    backgroundColor = globalTheme.gray,
+    backgroundColor = colors.gray,
     style,
   }: SeparatorProps) => {
     const lineStyle = useMemo(
@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: 20,
     marginHorizontal: 5,
-    color: globalTheme.gray,
+    color: colors.gray,
   },
 });

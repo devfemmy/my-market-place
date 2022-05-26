@@ -2,7 +2,7 @@ import { View } from 'react-native'
 import React from 'react'
 import { StyleSheet, ScrollView } from 'react-native'
 import { SafeAreaView, Text } from '../common'
-import { globalTheme } from '../../utils/themes'
+import { colors } from '../../utils/themes'
 import { hp, wp } from '../../utils/helpers'
 
 
@@ -31,7 +31,7 @@ export default ScrollCard
 
 const styles = StyleSheet.create({
     activeCard: {
-        backgroundColor: globalTheme.bazaraTint,
+        backgroundColor: colors.bazaraTint,
         width: wp(250),
         height: hp(150),
         padding: 20,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     inactiveCard: {
-        backgroundColor: globalTheme.black,
+        backgroundColor: colors.black,
         width: wp(250),
         height: hp(150),
         padding: 20,
@@ -48,12 +48,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     earningText: {
-        color: globalTheme.white,
+        color: colors.white,
         opacity: 0.7
     },
     balanceText: {
         marginTop: 20,
-        color: globalTheme.white,
+        color: colors.white,
         opacity: 0.7
     }
 })

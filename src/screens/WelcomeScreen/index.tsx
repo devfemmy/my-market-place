@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 import {StatusBar, View, StyleSheet, ScrollView} from 'react-native';
 import {SafeAreaView, Text} from '../../components/common';
-import { globalTheme } from '../../utils/themes';
+import { colors } from '../../utils/themes';
 import { useNavigation} from '@react-navigation/native';
 import {Button} from '../../components/common/Button';
 import {hp, wp} from '../../utils/helpers';
@@ -76,10 +76,7 @@ export const WelcomeScreen = (): JSX.Element => {
             </View>
           </View>
           <View style={styles.btn}>
-            <Button
-              text="Continue"
-              onPress={() => navigate('StoreCreationScreen')}
-            />
+             <Button title={'Continue'} onPress={() => navigate('StoreCreationScreen')} />
           </View>
         </View>
       </ScrollView>
@@ -100,7 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   text: {
-    color: globalTheme.gray,
+    color: colors.gray,
     width: wp(280),
     lineHeight: 20,
   },

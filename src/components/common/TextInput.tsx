@@ -6,7 +6,7 @@ import {Text} from './Text';
 import {globalStyles} from '../../styles/globalStyles';
 import {hp} from '../../utils/helpers';
 import {useSecureTextEntry} from '../../hooks';
-import { globalTheme } from "../../utils/themes/themes"
+import { colors } from "../../utils/themes/themes"
 
 type InputProps = ComponentProps<typeof BaseInput> & {
   errorMsg?: string;
@@ -34,25 +34,25 @@ export const Input = memo(
           label={label}
           mode="outlined"
           placeholder={placeholder}
-          placeholderTextColor={globalTheme.white}
+          placeholderTextColor={colors.white}
           secureTextEntry={secureTextEntry}
           autoCapitalize="none"
           autoCorrect={false}
-          outlineColor={globalTheme.gray}
+          outlineColor={colors.gray}
           theme={{
             roundness: 7,
 
             colors: {
-              primary: globalTheme.bazaraTint,
-              background: globalTheme.primaryBg,
-              text: globalTheme.bazaraTint,
-              placeholder: globalTheme.gray,
+              primary: colors.bazaraTint,
+              background: colors.primaryBg,
+              text: colors.bazaraTint,
+              placeholder: colors.gray,
             },
           }}
           right={
             isPassword ? (
               <BaseInput.Icon
-                color={globalTheme.white}
+                color={colors.white}
                 onPress={toggleEntry}
                 name={secureTextEntry ? 'eye-off' : 'eye'}
               />

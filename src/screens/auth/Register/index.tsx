@@ -11,7 +11,7 @@ import {useNavigation} from '@react-navigation/native';
 import {RegisterScreenNavigationProp} from '../../../navigations/types';
 import { RegisterFormData } from '../../../utils/types';
 import { RegisterSchema } from '../../../utils/constants';
-import { globalTheme } from '../../../utils/themes';
+import { colors } from '../../../utils/themes';
 import { hp } from '../../../utils/helpers';
 
 
@@ -119,7 +119,7 @@ const Register = (): JSX.Element => {
               onPress={() => navigation.navigate('Login')}
               fontWeight="600"
               text="Sign in"
-              color={globalTheme.bazaraTint}
+              color={colors.bazaraTint}
             />
           </View>
         </View>

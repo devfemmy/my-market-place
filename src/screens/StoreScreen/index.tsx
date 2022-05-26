@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { StatusBar, View, StyleSheet, ScrollView, Image,ImageSourcePropType } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
-import { globalTheme } from '../../utils/themes';
+import { colors } from '../../utils/themes';
 import { useNavigation } from '@react-navigation/native';
 import { globalStyles } from "../../styles/globalStyles"
 import StoreHeader from '../../components/resuable/StoreHeader';
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   greyColor: {
-    color: globalTheme.gray
+    color: colors.gray
   },
   rowMargin: {
     marginVertical: 20

@@ -5,7 +5,7 @@ import { globalStyles } from '../../styles'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import { storeImage, checkbox } from "../../assets"
-import { globalTheme } from '../../utils/themes'
+import { colors } from '../../utils/themes'
 
 
 
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         width: 50,
         height: 50,
-        backgroundColor: globalTheme.darkBlack
+        backgroundColor: colors.darkBlack
 
     },
     imageContainer: {
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     },
     copyCard: {
         flexDirection: 'row',
-        backgroundColor: globalTheme.black,
+        backgroundColor: colors.black,
         padding: 5,
         marginTop: 3,
         borderRadius: 5,

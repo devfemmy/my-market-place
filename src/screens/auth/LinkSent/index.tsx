@@ -7,7 +7,7 @@ import {Button} from '../../../components/common/Button';
 import {globalStyles} from '../../../styles';
 
 import {LinkSentScreenNavigationProp} from '../../../navigations/types';
-import { globalTheme } from '../../../utils/themes';
+import { colors } from '../../../utils/themes';
 import { hp } from '../../../utils/helpers';
 
 const LinkSent = () => {
@@ -55,7 +55,7 @@ const LinkSent = () => {
           />
           <Text
             fontWeight="400"
-            color={globalTheme.bazaraTint}
+            color={colors.bazaraTint}
             fontSize={hp(16)}
             lineHeight={hp(25)}
             style={styles.sub}

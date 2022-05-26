@@ -9,7 +9,7 @@ import {
 import {Button as BaseButton} from '@ui-kitten/components';
 import {Avatar} from '@ui-kitten/components';
 import { hp } from '../../utils/helpers';
-import { globalTheme } from '../../utils/themes';
+import { colors } from '../../utils/themes';
 
 
 type ButtonProps = ComponentProps<typeof BaseButton> & {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   btn: {
     borderRadius: hp(8),
     height: hp(50),
-    backgroundColor: globalTheme.light_gray,
+    backgroundColor: colors.light_gray,
     borderWidth: 0,
   },
   container: {

@@ -1,7 +1,7 @@
 import React, {memo, ComponentProps} from 'react';
 import {StyleSheet, View, StyleProp, ViewStyle} from 'react-native';
 import {Button as BaseButton} from '@ui-kitten/components';
-import { globalTheme } from '../../utils/themes';
+import { colors } from '../../utils/themes';
 import { hp } from '../../utils/helpers';
 
 type ButtonProps = ComponentProps<typeof BaseButton> & {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   btn: {
     borderRadius: hp(10),
     height: hp(50),
-    backgroundColor: globalTheme.bazaraTint,
+    backgroundColor: colors.bazaraTint,
     borderWidth: 0,
   },
   container: {

@@ -1,1 +1,1 @@
-export {globalTheme} from './themes';
+export {colors} from './themes';

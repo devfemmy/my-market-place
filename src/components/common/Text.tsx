@@ -3,7 +3,7 @@ import {StyleProp, TextStyle} from 'react-native';
 
 import {Text as BaseText} from '@ui-kitten/components';
 import {hp} from '../../utils/helpers';
-import { globalTheme } from "../../utils/themes/themes"
+import { colors } from "../../utils/themes/themes"
 
 type TextProps = ComponentProps<typeof BaseText> & {
   text: string;
@@ -33,7 +33,7 @@ export const Text = memo(
     lineHeight,
     onPress,
     textAlign,
-    color = globalTheme.white,
+    color = colors.white,
     fontWeight = '400',
     style,
     ...rest

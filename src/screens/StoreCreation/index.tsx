@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useFormik } from 'formik';
 import { StatusBar, View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
@@ -13,22 +13,14 @@ import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp } from '../../utils/helpers';
 
+
 type locationProp = {
-   state: string,
-   city:  Array<string>,
+  state: string,
+  city: Array<string>,
 }
 
 export const StoreCreation = (): JSX.Element => {
   const navigation = useNavigation();
-
-  const [state, setState] = useState('');
-  const [city, setCity] = useState('');
-
-  const locationState = locationData?.map((data: locationProp) => data?.state);
-
-  const locationCity = locationData?.find(
-    (data: locationProp) => data?.state === state,
-  )?.city;
 
 
   const initialValues: StoreFormData = {
@@ -43,8 +35,16 @@ export const StoreCreation = (): JSX.Element => {
     useFormik({
       initialValues,
       validationSchema: StoreFormSchema,
-      onSubmit: (val: StoreFormData) => console.log("valuessss",val),
+      onSubmit: (val: StoreFormData) => console.log("valuessss", val),
     });
+
+
+    const locationState = locationData?.map((data: locationProp) => data?.state);
+
+  const locationCity = locationData?.find(
+    (data: locationProp) => data?.state === values.state,
+  )?.city;
+
 
   return (
     <SafeAreaView>
@@ -92,22 +92,27 @@ export const StoreCreation = (): JSX.Element => {
             <Text
               text="Store Location"
               fontSize={18}
-              style={styles.locationText}
+              style={[styles.locationText, styles.horizon]}
             />
 
-            <Select
-              defaultValue={state}
-              items={locationState}
-              setState={setState}
-              placeholder="Select State"
-            />
-
-            <Select
-              defaultValue={city}
-              items={locationCity}
-              setState={setCity}
-              placeholder="Select City"
-            />
+            <View style={styles.horizon}>
+              <Select
+                defaultValue={values.state}
+                items={locationState}
+                setState={handleChange('state')}
+                placeholder="Select State"
+                errorMsg={touched.state ? errors.state : undefined}
+              />
+            </View>
+            <View style={styles.horizon}>
+              <Select
+                defaultValue={values.city}
+                items={locationCity}
+                setState={handleChange('city')}
+                placeholder="Select City"
+                errorMsg={touched.city ? errors.city : undefined}
+              />
+            </View>
 
             <Input
               label={'Street name'}
@@ -119,7 +124,7 @@ export const StoreCreation = (): JSX.Element => {
           </View>
 
           <View style={styles.btn}>
-            <Button text="Create Store" onPress={() => console.log('clicked')} />
+            <Button title={'Create Store'} onPress={handleSubmit} />
           </View>
         </View>
       </ScrollView>
@@ -137,8 +142,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginTop: 20,
+    marginBottom: 10
   },
   locationText: {
-     marginVertical: 15 
+    marginVertical: 15
+  },
+  horizon: {
+    marginHorizontal: 20
   }
 });

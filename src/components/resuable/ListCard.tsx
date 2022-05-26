@@ -4,7 +4,7 @@ import { ListCardProps } from "../../interfaces"
 import { Text } from '../common'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { globalStyles } from '../../styles'
-import { globalTheme } from '../../utils/themes'
+import { colors } from '../../utils/themes'
 
 
 
@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
     },
     underline: {
         borderBottomWidth: 0.4, 
-        borderBottomColor: globalTheme.gray,
+        borderBottomColor: colors.gray,
         paddingVertical: 10
     },
     text: {
-        color: globalTheme.gray,
+        color: colors.gray,
         marginTop: "-2%"
     }
 })

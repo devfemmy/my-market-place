@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Pressable, StyleSheet, Image} from 'react-native';
-import { globalTheme } from '../../utils/themes';
+import { colors } from '../../utils/themes';
 import {hp, wp} from '../../utils/helpers';
 import {Text} from '../common';
 import {checkbox} from "../../assets/index"
@@ -48,36 +48,36 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     padding: 10,
     // borderWidth: 1,
-    borderColor: globalTheme.gray,
+    borderColor: colors.gray,
     borderRadius: 10,
     marginVertical: 10,
     height: hp(150),
-    backgroundColor: globalTheme.darkBlack,
+    backgroundColor: colors.darkBlack,
   },
   image: {
     width: 20,
     height: 20,
   },
   selected: {
-    borderColor: globalTheme.bazaraTint,
+    borderColor: colors.bazaraTint,
     padding: 10,
     borderWidth: 1,
     borderRadius: 10,
     marginVertical: 10,
     height: hp(150),
-    backgroundColor: globalTheme.darkBlack,
+    backgroundColor: colors.darkBlack,
   },
   cardView: {
     marginTop: 10,
   },
   title: {
-    color: globalTheme.gray,
+    color: colors.gray,
     width: wp(284),
   },
   checkbox: {
-    backgroundColor: globalTheme.black,
+    backgroundColor: colors.black,
     borderWidth: 1,
-    borderColor: globalTheme.gray,
+    borderColor: colors.gray,
     width: 20,
     height: 20,
     borderRadius: 50,
