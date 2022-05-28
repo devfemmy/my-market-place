@@ -8,7 +8,7 @@ import {Button} from '../../components/common/Button';
 import {hp, wp} from '../../utils/helpers';
 import WelcomeCard from '../../components/resuable/WelcomeCard';
 import {globalStyles} from "../../styles/globalStyles"
-
+import { Nav } from '../../utils/types';
 
 type WelcomeProp = {
   id: number,
@@ -19,9 +19,6 @@ type WelcomeProp = {
 
 
 
-type Nav = {
-  navigate: (value: string) => void;
-}
 
 export const WelcomeScreen = (): JSX.Element => {
   const  { navigate } = useNavigation<Nav>();

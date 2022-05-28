@@ -18,6 +18,7 @@ export type MainStackParamList = {
   HomeTab: NavigatorScreenParams<RootBottomTabParamList>;
   Home: undefined;
   StoreCreationScreen: undefined;
+  StoreSuccessScreen: undefined;
   WelcomeScreen: undefined;
 };
 export type LoginScreenNavigationProp = StackNavigationProp<

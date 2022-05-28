@@ -7,6 +7,7 @@ import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
 import {StoreCreation} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
+import StoreSuccessScreen from '../screens/StoreSuccessScreen';
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -41,6 +42,13 @@ export const MainStackNavigator = (): JSX.Element => {
       <MainStack.Screen
         name="WelcomeScreen"
         component={WelcomeScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+       <MainStack.Screen
+        name="StoreSuccessScreen"
+        component={StoreSuccessScreen}
         options={() => ({
           headerShown: false,
         })}

@@ -5,3 +5,12 @@ export interface ListCardProps {
     title: string,
     icon: ImageSourcePropType
 }
+
+export interface StoreHeaderProps {
+    name: string
+ }
+
+ export interface WalletProps {
+     escrow: number,
+     balance: number
+ }

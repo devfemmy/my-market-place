@@ -12,6 +12,12 @@ export type RegisterFormData = {
   confirmPassword: string;
 };
 
+export type Nav = {
+  goBack(): void;
+  navigate: (value: string) => void;
+}
+
+
 export type ForgotPasswordFormData = {
   email: string;
 };
@@ -25,3 +31,27 @@ export type StoreFormData = {
   state: string;
 };
 
+
+export type StoreState = {
+  myStore: Array<any>,
+  allStores: Array<any>,
+  error: any,
+  loading: boolean
+}
+
+export type StoreCreateFormData = {
+  category: string,
+  brandName: string,
+  description: string,
+  imgUrl: string,
+  address: string,
+  shippingFees: {
+      withinLocation: number,
+      outsideLocation: number
+  },
+  location: {
+      state: string,
+      city: string,
+      street: string,
+  },
+}

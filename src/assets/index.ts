@@ -7,3 +7,4 @@ export const productLogo: ImageSourcePropType = require('../assets/package.png')
 export const usersLogo: ImageSourcePropType = require('../assets/users.png');
 export const truckLogo: ImageSourcePropType = require('../assets/truck.png');
 export const universityLogo: ImageSourcePropType = require('../assets/university.png');
+export const correctLogo: ImageSourcePropType = require('../assets/correct.png');

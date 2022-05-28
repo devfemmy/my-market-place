@@ -6,10 +6,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import { storeImage, checkbox } from "../../assets"
 import { colors } from '../../utils/themes'
+import { StoreHeaderProps } from '../../interfaces'
 
 
 
-const StoreHeader = () => {
+const StoreHeader:React.FC<StoreHeaderProps> = ({name}) => {
     return (
             <View style={[globalStyles.container, globalStyles.rowBetween, styles.comp]}>
                 <View style={styles.container}>
@@ -17,7 +18,7 @@ const StoreHeader = () => {
                         <Image source={storeImage} style={styles.imageContainer} />
                     </View>
                     <View style={styles.textCard}>
-                        <Text text="Justbubu Store" fontSize={18} />
+                        <Text text={name} fontSize={18} />
                         <View style={styles.copyCard}>
                             <Ionicons
                                 name={"copy-outline"}

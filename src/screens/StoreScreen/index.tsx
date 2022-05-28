@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { StatusBar, View, StyleSheet, ScrollView, Image,ImageSourcePropType } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
@@ -10,7 +10,8 @@ import ScrollCard from '../../components/resuable/ScrollCard';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../../assets"
 import ListCard from '../../components/resuable/ListCard';
-
+import { useAppDispatch, useAppSelector } from "../../redux/hooks"
+import { getPersonalStore, myStore } from '../../redux/slices/StoreSlice';
 
 
 type ArrayType = {
@@ -21,6 +22,13 @@ type ArrayType = {
 
 
 export const StoreScreen = (): JSX.Element => {
+  const dispatch = useAppDispatch()
+  const myStoreList = useAppSelector(myStore)
+
+
+  useEffect(() => {
+    dispatch(getPersonalStore())
+}, [])
 
   const quickActionArray = [
      {
@@ -50,9 +58,9 @@ export const StoreScreen = (): JSX.Element => {
     <SafeAreaView>
       <StatusBar translucent={true} backgroundColor={'white'} />
       <ScrollView>
-        <StoreHeader />
+        <StoreHeader name={myStoreList[0]?.brandName} />
         <View style={[globalStyles.container]}>
-          <ScrollCard />
+          <ScrollCard escrow={myStoreList[0]?.wallet?.escrow} balance={myStoreList[0]?.wallet?.balance} />
           <View style={[globalStyles.rowBetweenNoCenter, styles.rowMargin]}>
             <View style={globalStyles.rowStart}>
               <Image source={colorCart} style={styles.cart} />

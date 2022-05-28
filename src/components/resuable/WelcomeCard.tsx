@@ -6,7 +6,7 @@ import {Text} from '../common';
 import {checkbox} from "../../assets/index"
 import { globalStyles } from "../../styles/globalStyles"
 
-type IProp = {
+interface IProp {
   header: string;
   title: string;
   type: string;

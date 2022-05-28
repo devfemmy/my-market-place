@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useFormik } from 'formik';
 import { StatusBar, View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
@@ -13,7 +13,11 @@ import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp } from '../../utils/helpers';
 import { sendPost} from '../../utils/server';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {useAppDispatch} from "../../redux/hooks"
+import { createStore } from "../../redux/slices/StoreSlice"
+import {Nav} from "../../utils/types"
 
 type locationProp = {
   state: string,
@@ -21,8 +25,9 @@ type locationProp = {
 }
 
 export const StoreCreation = (): JSX.Element => {
-  const navigation = useNavigation();
-
+  const navigation = useNavigation<Nav>();
+  const [loader, setLoader] = useState(false)
+  const dispatch = useAppDispatch()
 
   const initialValues: StoreFormData = {
     storeName: '',
@@ -51,11 +56,24 @@ export const StoreCreation = (): JSX.Element => {
       },
     };
 
-    console.log("------",{payload})
-      const response = await sendPost(payload, "/sidehustle/account/create")
-      console.log(response)
-      console.log("------",{payload})
+    setLoader(true)
+    const resultAction = await dispatch(createStore(payload))
+    if (createStore.fulfilled.match(resultAction)) {
+        setLoader(false)
+       return navigation.navigate('StoreSuccessScreen')
+    } else {
+        if (resultAction.payload) {
+          setLoader(false)
+            console.log('error1', `Update failed: ${resultAction?.payload}`)
+        } else {
+           setLoader(false)
+            console.log('error', `Updated failed: ${resultAction?.payload}`)
+        }
+    }
+
+
   }
+
 
 
 
@@ -152,7 +170,7 @@ export const StoreCreation = (): JSX.Element => {
           </View>
 
           <View style={styles.btn}>
-            <Button title={'Create Store'} onPress={handleSubmit} />
+            <Button isLoading={loader} title={'Create Store'} onPress={handleSubmit} />
           </View>
         </View>
       </ScrollView>

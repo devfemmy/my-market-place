@@ -31,7 +31,7 @@ export const doPost = async (payload: Object, url: String, v?: String) => {
 };
 
 
-export const getRequest = async (payload: String, url: String, v?: String) => {
+export const getRequest = async (url: String, v?: String) => {
 
     if(API_ENV == "Staging"){
         var SERVER_URL = "https://api.bazara.co/api/v1/staging";
@@ -47,17 +47,17 @@ export const getRequest = async (payload: String, url: String, v?: String) => {
 
     const token = await AsyncStorage.getItem("token");
 
-    var response = await axios.get(SERVER_URL + url + payload, {
+    var response = await axios.get(SERVER_URL + url, {
         headers: {
           authorization: `Bearer ${token}`,
         },
-      });
+      })
 
     return response
 }
 
 
-export const sendPost = async (payload: Object, url: String, v?: String) => {
+export const sendPost = async ( url: String, payload: any, v?: String) => {
     
     if(API_ENV == "Staging"){
         var SERVER_URL = "https://api.bazara.co/api/v1/staging";
@@ -73,15 +73,20 @@ export const sendPost = async (payload: Object, url: String, v?: String) => {
 
     const token = await AsyncStorage.getItem("token");
 
+    console.log("action payload---", payload)
 
-    var response = await axios.get(SERVER_URL + url + payload, {
+    var response = await axios.post(SERVER_URL + url, payload, {
         headers: {
           authorization: `Bearer ${token}`,
         },
       });
 
+
+      console.log("responsen payload---", payload)
+
     return response
         
 };
+ 
 
 export default {doPost} 

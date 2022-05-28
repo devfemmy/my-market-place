@@ -1,11 +1,7 @@
 import React from 'react';
 import {SafeAreaView, Text} from '../../../components/common';
 import {useNavigation} from '@react-navigation/native';
-
-
-type Nav = {
-  navigate: (value: string) => void;
-}
+import { Nav } from '../../../utils/types';
 
 
 export const Home = (): JSX.Element => {
@@ -14,10 +10,14 @@ export const Home = (): JSX.Element => {
   return (
     <SafeAreaView>
       <Text text="Home" />
-      <Text
+      {/* <Text
         text="Go to Welcome screen"
         onPress={() => navigate('WelcomeScreen')}
       />
+      <Text
+        text="Go to Store success screen"
+        onPress={() => navigate('StoreSuccessScreen')}
+      /> */}
     </SafeAreaView>
   );
 };
