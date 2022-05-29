@@ -9,6 +9,7 @@ import {globalStyles} from '../../../styles';
 import {LinkSentScreenNavigationProp} from '../../../navigations/types';
 import { globalTheme } from '../../../utils/themes';
 import { hp } from '../../../utils/helpers';
+import LinkLogo from '../../../constants/images';
 
 const LinkSent = () => {
   const navigation = useNavigation<LinkSentScreenNavigationProp>();
@@ -17,7 +18,7 @@ const LinkSent = () => {
       <View style={[styles.container, styles.width80]}>
         <Image
           style={styles.logo}
-          source={require('../../../assets/images/message.png')}
+          source={LinkLogo}
         />
         <Text fontWeight="400" fontSize={hp(26)} text="Check your email" />
         <Text

@@ -31,6 +31,8 @@ module.exports = {
     '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
     'react/display-name': 'off',
     'prettier/prettier': ['off', {endOfLine: 'auto'}],
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-var-requires": "off",
   },
   ignorePatterns: ['.eslintrc.js'],
 };
