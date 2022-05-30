@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, {useState, useContext} from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
 import {Button} from '../../../components/common/Button';
 import {AuthButton} from '../../../components/common/AuthButtons';
-import {View, ScrollView, Alert} from 'react-native';
+import {View, ScrollView, Alert, Platform} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -19,6 +21,7 @@ import {AuthContext} from '../../../context/context';
 
 import {appleAuth} from '@invertase/react-native-apple-authentication';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { AppleLogo, GoogleLogo } from '../../../constants/images';
 
 const Register = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
@@ -39,13 +42,13 @@ const Register = (): JSX.Element => {
       onSubmit: (data: RegisterFormData) => handleCredentialSubmit(data),
     });
   
-  const handleCredentialSubmit = async(data : Object) => {
+  const handleCredentialSubmit = async(data : RegisterFormData) => {
       setLoading(true)
       try{
-        var response = await doPost(data, `/auth/regUser`)
+        const response = await doPost(data, `/auth/regUser`)
         if(response.data.success === true){
-          AsyncStorage.setItem("token", response.data.token);
-          AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          await AsyncStorage.setItem("token", response.data.token);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
           signIn(response.data.token)
         }
         setLoading(false)
@@ -60,7 +63,6 @@ const Register = (): JSX.Element => {
     try {
       await GoogleSignin.hasPlayServices();
       //const currentUser = await GoogleSignin.getCurrentUser();
-      const userInfo = await GoogleSignin.signIn();
       const tokenInfo = await GoogleSignin.getTokens();
       const payload = {
         "authToken": tokenInfo.idToken,
@@ -97,9 +99,9 @@ const Register = (): JSX.Element => {
       appleAuthRequestResponse.user,
     );
     if (credentialState === appleAuth.State.AUTHORIZED) {
-      var result = appleAuthRequestResponse;
+      const result = appleAuthRequestResponse;
       try {
-        var payload = {
+        const payload = {
           //"email": result.email,
           "familyName": result?.fullName?.familyName,
           "givenName": result?.fullName?.givenName,
@@ -138,17 +140,19 @@ const Register = (): JSX.Element => {
     <SafeAreaView>
       <View style={[globalStyles.rowBetween, styles.width90]}>
         <AuthButton
-          image={require('../../../assets/images/google.png')}
+          image={GoogleLogo}
           title={'Google'}
           style={styles.btn}
           onPress={googleSignUp}
         />
+        {Platform.OS === 'ios' ? 
         <AuthButton
-          image={require('../../../assets/images/Apple.png')}
-          title={'Apple'}
-          style={styles.btn}
-          onPress={AppleSignUp}
-        />
+        image={AppleLogo}
+        title={'Apple'}
+        style={styles.btn}
+        onPress={AppleSignUp}
+      /> : null    
+      }
       </View>
       <ScrollView>
         <Separator />

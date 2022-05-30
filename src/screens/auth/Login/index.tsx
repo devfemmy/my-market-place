@@ -4,7 +4,7 @@ import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
 import {Button} from '../../../components/common/Button';
 import {AuthButton} from '../../../components/common/AuthButtons';
-import {View, Alert} from 'react-native';
+import {View, Alert, Platform} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -157,12 +157,14 @@ const Login = (): JSX.Element => {
           style={styles.btn}
           onPress={googleSignIn}
         />
-        <AuthButton
-          image={AppleLogo}
-          title={'Apple'}
-          style={styles.btn}
-          onPress={AppleSignIn}
-        />
+        {Platform.OS === 'ios' ? 
+            <AuthButton
+            image={AppleLogo}
+            title={'Apple'}
+            style={styles.btn}
+            onPress={AppleSignIn}
+          /> : null    
+      }
       </View>
       <Separator />
       <View style={[globalStyles.rowStart, styles.lowerContainer]}>
