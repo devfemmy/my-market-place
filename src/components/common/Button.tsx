@@ -3,15 +3,8 @@ import {StyleSheet, View, StyleProp, ViewStyle, ActivityIndicator} from 'react-n
 import {Button as BaseButton} from '@ui-kitten/components';
 import { colors } from '../../utils/themes';
 import { hp } from '../../utils/helpers';
+import{ ButtonProps } from '../../utils/types'
 
-type ButtonProps = ComponentProps<typeof BaseButton> & {
-  title: string;
-  isLoading?: boolean;
-  loaderColor?: string;
-  outlined?: boolean;
-  style?: StyleProp<ViewStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
-};
 
 export const Button = memo(
   ({

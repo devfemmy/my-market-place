@@ -1,3 +1,13 @@
+import { ComponentProps } from "react";
+import {Button as BaseButton} from '@ui-kitten/components';
+import {
+  StyleSheet,
+  View,
+  StyleProp,
+  ViewStyle,
+  ImageSourcePropType,
+} from 'react-native';
+
 export type LoginFormData = {
   email: string;
   password: string;
@@ -55,3 +65,41 @@ export type StoreCreateFormData = {
       street: string,
   },
 }
+
+export type locationProp = {
+  state: string,
+  city: Array<string>,
+}
+
+export type ArrayType = {
+  id: number,
+  title: string,
+  icon: ImageSourcePropType
+}
+
+export type WelcomeType = {
+  id: number,
+  header: string,
+  type: string,
+  title: string
+}
+
+
+export type AuthButtonProps = ComponentProps<typeof BaseButton> & {
+  title: string;
+  image?: ImageSourcePropType;
+  isLoading?: boolean;
+  loaderColor?: string;
+  outlined?: boolean;
+  style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+};
+
+export type ButtonProps = ComponentProps<typeof BaseButton> & {
+  title: string;
+  isLoading?: boolean;
+  loaderColor?: string;
+  outlined?: boolean;
+  style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+};

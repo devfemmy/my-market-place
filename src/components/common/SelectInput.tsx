@@ -6,6 +6,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { hp } from '../../utils/helpers';
 import { globalStyles } from '../../styles';
 import { Text } from './Text';
+import { colors } from '../../utils/themes';
 
 
 
@@ -77,10 +78,10 @@ const styles = StyleSheet.create({
   input: {
     flexDirection: 'row-reverse',
     backgroundColor: 'transparent',
-    borderRadius: hp(15),
+    borderRadius: hp(7),
     width: '100%',
-    borderColor: 'grey',
-    borderWidth: 1,
+    borderColor: colors.darkGrey,
+    borderWidth: 0.4,
   },
   inputText: {
     color: 'white',

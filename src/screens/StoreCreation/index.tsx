@@ -4,7 +4,6 @@ import { StatusBar, View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Input } from '../../components/common/TextInput';
-import { StoreFormData } from '../../utils/types';
 import { StoreFormSchema } from '../../utils/constants';
 import { locationData } from '../../utils/constants/locations';
 import { Select } from '../../components/common/SelectInput';
@@ -12,17 +11,10 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp } from '../../utils/helpers';
-import { sendPost} from '../../utils/server';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+
 import {useAppDispatch} from "../../redux/hooks"
 import { createStore } from "../../redux/slices/StoreSlice"
-import {Nav} from "../../utils/types"
-
-type locationProp = {
-  state: string,
-  city: Array<string>,
-}
+import { locationProp, Nav, StoreFormData } from '../../utils/types';
 
 export const StoreCreation = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
@@ -194,6 +186,6 @@ const styles = StyleSheet.create({
     marginVertical: 15
   },
   horizon: {
-    marginHorizontal: 20
+    marginHorizontal: 15
   }
 });

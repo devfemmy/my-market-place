@@ -14,3 +14,11 @@ export const hp = (value: number): number => {
   const dimension = (value / customHeight) * 100;
   return hdp(`${dimension}%`);
 };
+
+
+export const numberFormat = (value: number) => {
+  var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')';
+  var num = value.toFixed(Math.max(0, ~~2));
+  var str = num.replace(new RegExp(re, 'g'), '$&' + ',');
+  return str;
+}

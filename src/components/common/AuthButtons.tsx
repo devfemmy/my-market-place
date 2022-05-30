@@ -1,26 +1,15 @@
-import React, {memo, ComponentProps} from 'react';
+import React, {memo} from 'react';
 import {
   StyleSheet,
-  View,
-  StyleProp,
-  ViewStyle,
-  ImageSourcePropType,
+  View
 } from 'react-native';
 import {Button as BaseButton} from '@ui-kitten/components';
 import {Avatar} from '@ui-kitten/components';
 import { hp } from '../../utils/helpers';
 import { colors } from '../../utils/themes';
+import { AuthButtonProps } from '../../utils/types';
 
 
-type ButtonProps = ComponentProps<typeof BaseButton> & {
-  title: string;
-  image?: ImageSourcePropType;
-  isLoading?: boolean;
-  loaderColor?: string;
-  outlined?: boolean;
-  style?: StyleProp<ViewStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
-};
 
 export const AuthButton = memo(
   ({
@@ -31,7 +20,7 @@ export const AuthButton = memo(
     style,
     containerStyle,
     ...rest
-  }: ButtonProps) => {
+  }: AuthButtonProps) => {
     return (
       <View style={[containerStyle, styles.container]}>
         <BaseButton

@@ -8,14 +8,9 @@ import {Button} from '../../components/common/Button';
 import {hp, wp} from '../../utils/helpers';
 import WelcomeCard from '../../components/resuable/WelcomeCard';
 import {globalStyles} from "../../styles/globalStyles"
-import { Nav } from '../../utils/types';
+import { Nav, WelcomeType } from '../../utils/types';
 
-type WelcomeProp = {
-  id: number,
-  header: string,
-  type: string,
-  title: string
-}
+
 
 
 
@@ -58,7 +53,7 @@ export const WelcomeScreen = (): JSX.Element => {
               style={styles.text}
             />
             <View>
-              {welcomeInfo?.map((data: WelcomeProp) => {
+              {welcomeInfo?.map((data: WelcomeType) => {
                 return (
                   <WelcomeCard
                     key={data?.id}

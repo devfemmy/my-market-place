@@ -6,28 +6,32 @@ import { colors } from '../../utils/themes'
 import { hp, wp } from '../../utils/helpers'
 import { WalletProps } from '../../interfaces'
 
+import { numberFormat } from '../../utils/helpers';
 
 
 
 
-const ScrollCard:React.FC<WalletProps> = ({escrow, balance}) => {
-  return (
-    <SafeAreaView>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.activeCard}>
-                <Text text={`₦ ${escrow}`} fontSize={18} />
-                <Text text="Expected Earnings" fontSize={15} style={styles.earningText} />
-                <Text text={`₦ ${balance} Store Balance`} fontSize={15} style={styles.balanceText} />
-            </View>
+const ScrollCard: React.FC<WalletProps> = ({ escrow, balance }) => {
+    return (
+        <SafeAreaView>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.activeCard}>
+                    <Text text={`₦ ${numberFormat(escrow)}`} fontSize={18} />
 
-            <View style={styles.inactiveCard}>
-                <Text text={`₦ ${escrow}`} fontSize={18} />
-                <Text text="Expected Earnings" fontSize={15} style={styles.earningText} />
-                <Text text={`₦ ${balance} Store Balance`} fontSize={15} style={styles.balanceText} />
-            </View>
-        </ScrollView>
-    </SafeAreaView>
-  )
+                    <Text text="Expected Earnings" fontSize={15} style={styles.earningText} />
+                    <Text 
+                        text={`₦ ${numberFormat(balance)} Store Balance`}   
+                        fontSize={15} style={styles.balanceText} />
+                </View>
+
+                <View style={styles.inactiveCard}>
+                    <Text text={`₦ ${numberFormat(escrow)}`} fontSize={18} />
+                    <Text text="Expected Earnings" fontSize={15} style={styles.earningText} />
+                    <Text text={`₦ ${numberFormat(balance)} Store Balance`}  fontSize={15} style={styles.balanceText} />
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    )
 }
 
 export default ScrollCard

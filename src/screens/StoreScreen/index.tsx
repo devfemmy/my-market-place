@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import { StatusBar, View, StyleSheet, ScrollView, Image,ImageSourcePropType } from 'react-native';
+import { StatusBar, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
 import { colors } from '../../utils/themes';
-import { useNavigation } from '@react-navigation/native';
 import { globalStyles } from "../../styles/globalStyles"
 import StoreHeader from '../../components/resuable/StoreHeader';
 import ScrollCard from '../../components/resuable/ScrollCard';
@@ -12,13 +11,7 @@ import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../.
 import ListCard from '../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
 import { getPersonalStore, myStore } from '../../redux/slices/StoreSlice';
-
-
-type ArrayType = {
-  id: number,
-  title: string,
-  icon: ImageSourcePropType
-}
+import { ArrayType } from '../../utils/types';
 
 
 export const StoreScreen = (): JSX.Element => {
