@@ -23,9 +23,11 @@ const Login = (): JSX.Element => {
 
   useEffect(() => {
     // onCredentialRevoked returns a function that will remove the event listener. useEffect will call this function when the component unmounts
-    return appleAuth.onCredentialRevoked(() => {
-      console.log('If this function executes, User Credentials have been Revoked');
-    });
+    if (Platform.OS === 'ios') {
+      return appleAuth.onCredentialRevoked(() => {
+        console.log('If this function executes, User Credentials have been Revoked');
+      });
+    }
   }, []);
 
   const [loading, setLoading] = useState(false);
@@ -133,7 +135,6 @@ const Login = (): JSX.Element => {
     setLoading(true)
     try{
       const response = await doPost(data, `/auth/login`)
-      console.log(response)
       if(response.data.success === true){
         try{
           await AsyncStorage.setItem("token", response.data.token);

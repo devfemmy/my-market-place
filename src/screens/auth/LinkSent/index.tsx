@@ -9,7 +9,7 @@ import {globalStyles} from '../../../styles';
 import {LinkSentScreenNavigationProp} from '../../../navigations/types';
 import { colors } from '../../../utils/themes';
 import { hp } from '../../../utils/helpers';
-import LinkLogo from '../../../constants/images';
+import { LinkLogo } from '../../../constants/images';
 
 const LinkSent = () => {
   const navigation = useNavigation<LinkSentScreenNavigationProp>();
