@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useCallback} from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {doPost} from '../../../utils/server';
 import {AuthContext} from '../../../context/context';
 import { AppleLogo, GoogleLogo } from '../../../constants/images';
+import CustomModal from '../../../components/common/CustomModal';
 const Login = (): JSX.Element => {
 
   useEffect(() => {
@@ -28,6 +29,8 @@ const Login = (): JSX.Element => {
   }, []);
 
   const [loading, setLoading] = useState(false);
+  const [visibleBoolean, setVisibleBoolen] = useState<boolean>(true);
+  const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
   const {signIn} = useContext(AuthContext)
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const initialValues: LoginFormData = {
@@ -126,7 +129,7 @@ const Login = (): JSX.Element => {
     }
   };
 
-  const handleCredentialSubmit = async(data : Object) => {
+  const handleCredentialSubmit = async(data : LoginFormData) => {
     setLoading(true)
     try{
       const response = await doPost(data, `/auth/login`)
@@ -147,6 +150,9 @@ const Login = (): JSX.Element => {
       setLoading(false)
     }
   }
+  const handleVisible = useCallback(() => {
+    setVisibleBoolen(!visibleBoolean);
+  }, [visibleBoolean]);
 
   return (
     <SafeAreaView>
@@ -194,6 +200,11 @@ const Login = (): JSX.Element => {
           text="Forgot password?"
         />
       </View>
+      <CustomModal 
+        msg="You have successfully updated your store information" 
+        headerText="Success" 
+        visibleBoolean={visibleBoolean} handleVisible={handleVisible} 
+        isSuccess={isSuccessful} />
       <View style={globalStyles.footer}>
         <View style={globalStyles.rowCenter}>
           <Button isLoading={loading} title={'Sign in'} style={styles.btn} onPress={handleSubmit} />
