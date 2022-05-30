@@ -4,7 +4,7 @@ import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
 import {Button} from '../../../components/common/Button';
 import {AuthButton} from '../../../components/common/AuthButtons';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Alert} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -16,6 +16,9 @@ import { hp } from '../../../utils/helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {doPost} from '../../../utils/server';
 import {AuthContext} from '../../../context/context';
+
+import {appleAuth} from '@invertase/react-native-apple-authentication';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Register = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
@@ -52,6 +55,85 @@ const Register = (): JSX.Element => {
       }
   }
 
+  const googleSignUp = async () => {
+    setLoading(true)
+    try {
+      await GoogleSignin.hasPlayServices();
+      //const currentUser = await GoogleSignin.getCurrentUser();
+      const userInfo = await GoogleSignin.signIn();
+      const tokenInfo = await GoogleSignin.getTokens();
+      const payload = {
+        "authToken": tokenInfo.idToken,
+        "authType": "google",
+        "account": {
+          "type": "sidehustle",
+          "variant": "seller"
+        }
+      }
+      const response = await doPost(payload, '/auth/login/oAuthGo')
+      if(response.data.success === true){
+        try{
+          await AsyncStorage.setItem("token", response.data.token);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        } catch (error){
+          console.log(error)
+        }
+        signIn(response.data.token)
+        console.log(response.data.user)
+      }
+      setLoading(false)
+    }catch(err){
+      console.log(err)
+      setLoading(false)
+    }
+  };
+
+  const AppleSignUp = async () => {
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+    });
+    const credentialState = await appleAuth.getCredentialStateForUser(
+      appleAuthRequestResponse.user,
+    );
+    if (credentialState === appleAuth.State.AUTHORIZED) {
+      var result = appleAuthRequestResponse;
+      try {
+        var payload = {
+          //"email": result.email,
+          "familyName": result?.fullName?.familyName,
+          "givenName": result?.fullName?.givenName,
+          "identityToken": result?.identityToken,
+          "user": result.user
+          //"authType":"Apple",
+        }
+        const response = await doPost(payload, '/auth/login/oAuthApple')
+        if(response.data.success === true){
+          try{
+            await AsyncStorage.setItem("token", response.data.token);
+            await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          } catch (error){
+            console.log(error)
+          }
+          signIn(response.data.token)
+          console.log(response.data.user)
+        }
+        setLoading(false)
+      } catch (error) {
+        Alert.alert(
+          'Authentication failed',
+          'Authentication was unsuccessful, kindly try again',
+        );
+      }
+      // user is authenticated
+    } else {
+      Alert.alert(
+        'Authentication failed',
+        'Authentication was unsuccessful, kindly try again',
+      );
+    }
+  };
+
   return (
     <SafeAreaView>
       <View style={[globalStyles.rowBetween, styles.width90]}>
@@ -59,13 +141,13 @@ const Register = (): JSX.Element => {
           image={require('../../../assets/images/google.png')}
           title={'Google'}
           style={styles.btn}
-          onPress={handleSubmit}
+          onPress={googleSignUp}
         />
         <AuthButton
           image={require('../../../assets/images/Apple.png')}
           title={'Apple'}
           style={styles.btn}
-          onPress={handleSubmit}
+          onPress={AppleSignUp}
         />
       </View>
       <ScrollView>

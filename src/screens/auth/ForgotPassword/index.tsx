@@ -28,10 +28,10 @@ const ForgotPassword = () => {
       },
     });
 
-  const handleCredentialSubmit = async(data : Object) => {
+  const handleCredentialSubmit = async (data: ForgotPasswordFormData) => {
       setLoading(true)
       try{
-        var response = await doPost(data, `/auth/request_reset`)
+        const response = await doPost(data, `/auth/request_reset`)
         if(response.data.success === true){
           navigation.navigate('LinkSent');
         }

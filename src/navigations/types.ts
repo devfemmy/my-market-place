@@ -7,6 +7,9 @@ export type AuthStackParamList = {
   ForgotPassword: undefined;
   LinkSent: undefined;
 };
+export type UserDataToken = {
+  token: string;
+}
 export type RootBottomTabParamList = {
   Store: undefined;
   Product: undefined;

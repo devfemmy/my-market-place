@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {useFormik} from 'formik';
 import {SafeAreaView, Text, Separator} from '../../../components/common';
 import {Input} from '../../../components/common/TextInput';
@@ -14,13 +14,19 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import { LoginFormData } from '../../../utils/types';
 import { LoginSchema } from '../../../utils/constants';
 import { hp } from '../../../utils/helpers';
-import axios from "axios";
-import config from '../../../config/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {doPost} from '../../../utils/server';
 import {AuthContext} from '../../../context/context';
-
+import { AppleLogo, GoogleLogo } from '../../../constants/images';
 const Login = (): JSX.Element => {
+
+  useEffect(() => {
+    // onCredentialRevoked returns a function that will remove the event listener. useEffect will call this function when the component unmounts
+    return appleAuth.onCredentialRevoked(() => {
+      console.log('If this function executes, User Credentials have been Revoked');
+    });
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const {signIn} = useContext(AuthContext)
   const navigation = useNavigation<LoginScreenNavigationProp>();
@@ -39,6 +45,7 @@ const Login = (): JSX.Element => {
     });
   // Apple SignIn
   const AppleSignIn = async () => {
+    setLoading(true)
     const appleAuthRequestResponse = await appleAuth.performRequest({
       requestedOperation: appleAuth.Operation.LOGIN,
       requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
@@ -47,15 +54,34 @@ const Login = (): JSX.Element => {
       appleAuthRequestResponse.user,
     );
     if (credentialState === appleAuth.State.AUTHORIZED) {
-      var result = appleAuthRequestResponse;
+      const result = appleAuthRequestResponse;
       try {
-        // setShowLoading(true)
-        console.log(result);
+        const payload = {
+          //"email": result.email,
+          "familyName": result?.fullName?.familyName,
+          "givenName": result?.fullName?.givenName,
+          "identityToken": result?.identityToken,
+          "user": result.user
+          //"authType":"Apple",
+        }
+        const response = await doPost(payload, '/auth/login/oAuthApple')
+        if(response.data.success === true){
+          try{
+            await AsyncStorage.setItem("token", response.data.token);
+            await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          } catch (error){
+            console.log(error)
+          }
+          signIn(response.data.token)
+          console.log(response.data.user)
+        }
+        setLoading(false)
       } catch (error) {
         Alert.alert(
           'Authentication failed',
           'Authentication was unsuccessful, kindly try again',
         );
+        setLoading(false)
       }
       // user is authenticated
     } else {
@@ -63,22 +89,55 @@ const Login = (): JSX.Element => {
         'Authentication failed',
         'Authentication was unsuccessful, kindly try again',
       );
+      setLoading(false)
     }
   };
+
   const googleSignIn = async () => {
-    await GoogleSignin.hasPlayServices();
-    // const userInfo = await GoogleSignin.signIn();
-    // const tokenInfo = await GoogleSignin.getTokens();
+    setLoading(true)
+    try {
+      await GoogleSignin.hasPlayServices();
+      //const currentUser = await GoogleSignin.getCurrentUser();
+      const userInfo = await GoogleSignin.signIn();
+      const tokenInfo = await GoogleSignin.getTokens();
+      const payload = {
+        "authToken": tokenInfo.idToken,
+        "authType": "google",
+        "account": {
+          "type": "sidehustle",
+          "variant": "seller"
+        }
+      }
+      const response = await doPost(payload, '/auth/login/oAuthGo')
+      if(response.data.success === true){
+        try{
+          await AsyncStorage.setItem("token", response.data.token);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        } catch (error){
+          console.log(error)
+        }
+        signIn(response.data.token)
+        console.log(response.data.user)
+      }
+      setLoading(false)
+    }catch(err){
+      console.log(err)
+      setLoading(false)
+    }
   };
 
   const handleCredentialSubmit = async(data : Object) => {
     setLoading(true)
     try{
-      var response = await doPost(data, `/auth/login`)
+      const response = await doPost(data, `/auth/login`)
       console.log(response)
       if(response.data.success === true){
-        AsyncStorage.setItem("token", response.data.token);
-        AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        try{
+          await AsyncStorage.setItem("token", response.data.token);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        } catch (error){
+          console.log(error)
+        }
         signIn(response.data.token)
         console.log(response.data.user)
       }
@@ -93,16 +152,16 @@ const Login = (): JSX.Element => {
     <SafeAreaView>
       <View style={[globalStyles.rowBetween, styles.width90]}>
         <AuthButton
-          image={require('../../../assets/images/google.png')}
+          image={GoogleLogo}
           title={'Google'}
           style={styles.btn}
-          onPress={() => googleSignIn()}
+          onPress={googleSignIn}
         />
         <AuthButton
-          image={require('../../../assets/images/Apple.png')}
+          image={AppleLogo}
           title={'Apple'}
           style={styles.btn}
-          onPress={() => AppleSignIn()}
+          onPress={AppleSignIn}
         />
       </View>
       <Separator />
