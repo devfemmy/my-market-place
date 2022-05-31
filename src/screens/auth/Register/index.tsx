@@ -23,6 +23,8 @@ import {appleAuth} from '@invertase/react-native-apple-authentication';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import { AppleLogo, GoogleLogo } from '../../../constants/images';
 
+import {Notifier, NotifierComponents} from 'react-native-notifier';
+
 const Register = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const {signIn} = useContext(AuthContext)
@@ -49,10 +51,30 @@ const Register = (): JSX.Element => {
         if(response.data.success === true){
           await AsyncStorage.setItem("token", response.data.token);
           await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
-          signIn(response.data.token)
+          Notifier.showNotification({
+            title: 'Registration Successful!',
+            // description: "tghdddfdfd",
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+              alertType: 'success',
+            },
+          });
+          setTimeout(function(){
+            signIn(response.data.token) 
+         }, 2000);
         }
         setLoading(false)
       }catch (e){
+        Notifier.showNotification({
+          title: 'Registration failed!',
+          description: e.message,
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
         console.log(e)
         setLoading(false)
       }
@@ -63,6 +85,7 @@ const Register = (): JSX.Element => {
     try {
       await GoogleSignin.hasPlayServices();
       //const currentUser = await GoogleSignin.getCurrentUser();
+      const userInfo = await GoogleSignin.signIn();
       const tokenInfo = await GoogleSignin.getTokens();
       const payload = {
         "authToken": tokenInfo.idToken,
@@ -77,14 +100,34 @@ const Register = (): JSX.Element => {
         try{
           await AsyncStorage.setItem("token", response.data.token);
           await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          Notifier.showNotification({
+            title: 'Registration Successful!',
+            // description: "tghdddfdfd",
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+              alertType: 'success',
+            },
+          });
+          setTimeout(function(){
+            signIn(response.data.token) 
+         }, 2000);
+          console.log(response.data.user)
         } catch (error){
           console.log(error)
         }
-        signIn(response.data.token)
-        console.log(response.data.user)
       }
       setLoading(false)
     }catch(err){
+      Notifier.showNotification({
+        title: 'Registration failed!',
+        description: 'Authentication was unsuccessful, kindly try again',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'error',
+        },
+      });
       console.log(err)
       setLoading(false)
     }
@@ -114,25 +157,46 @@ const Register = (): JSX.Element => {
           try{
             await AsyncStorage.setItem("token", response.data.token);
             await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+            Notifier.showNotification({
+              title: 'Registration Successful!',
+              // description: "tghdddfdfd",
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'success',
+              },
+            });
+            setTimeout(function(){
+                signIn(response.data.token) 
+            }, 2000);
+            console.log(response.data.user)
           } catch (error){
             console.log(error)
           }
-          signIn(response.data.token)
-          console.log(response.data.user)
         }
         setLoading(false)
       } catch (error) {
-        Alert.alert(
-          'Authentication failed',
-          'Authentication was unsuccessful, kindly try again',
-        );
+        Notifier.showNotification({
+          title: 'Registration failed!',
+          description: 'Authentication was unsuccessful, kindly try again',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
       }
       // user is authenticated
     } else {
-      Alert.alert(
-        'Authentication failed',
-        'Authentication was unsuccessful, kindly try again',
-      );
+      Notifier.showNotification({
+        title: 'Registration failed!',
+        description: 'Authentication was unsuccessful, kindly try again',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'error',
+        },
+      });
     }
   };
 

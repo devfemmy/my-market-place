@@ -19,6 +19,9 @@ import {doPost} from '../../../utils/server';
 import {AuthContext} from '../../../context/context';
 import { AppleLogo, GoogleLogo } from '../../../constants/images';
 import CustomModal from '../../../components/common/CustomModal';
+
+import {Notifier, NotifierComponents} from 'react-native-notifier';
+
 const Login = (): JSX.Element => {
 
   useEffect(() => {
@@ -74,26 +77,45 @@ const Login = (): JSX.Element => {
           try{
             await AsyncStorage.setItem("token", response.data.token);
             await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+            Notifier.showNotification({
+              title: 'Login Successful!',
+              // description: "tghdddfdfd",
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'success',
+              },
+            });
+            signIn(response.data.token)
+            console.log(response.data.user)
           } catch (error){
             console.log(error)
           }
-          signIn(response.data.token)
-          console.log(response.data.user)
         }
         setLoading(false)
       } catch (error) {
-        Alert.alert(
-          'Authentication failed',
-          'Authentication was unsuccessful, kindly try again',
-        );
+        Notifier.showNotification({
+          title: 'Login failed!',
+          description: 'Authentication was unsuccessful, kindly try again',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
         setLoading(false)
       }
       // user is authenticated
     } else {
-      Alert.alert(
-        'Authentication failed',
-        'Authentication was unsuccessful, kindly try again',
-      );
+      Notifier.showNotification({
+        title: 'Login failed!',
+        description: 'Authentication was unsuccessful, kindly try again',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'error',
+        },
+      });
       setLoading(false)
     }
   };
@@ -118,14 +140,32 @@ const Login = (): JSX.Element => {
         try{
           await AsyncStorage.setItem("token", response.data.token);
           await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          Notifier.showNotification({
+            title: 'Login Successful!',
+            // description: "tghdddfdfd",
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+              alertType: 'success',
+            },
+          });
+          signIn(response.data.token)
+          console.log(response.data.user)
         } catch (error){
           console.log(error)
         }
-        signIn(response.data.token)
-        console.log(response.data.user)
       }
       setLoading(false)
     }catch(err){
+      Notifier.showNotification({
+        title: 'Login failed!',
+        description: 'Authentication was unsuccessful, kindly try again',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'error',
+        },
+      });
       console.log(err)
       setLoading(false)
     }
@@ -139,14 +179,32 @@ const Login = (): JSX.Element => {
         try{
           await AsyncStorage.setItem("token", response.data.token);
           await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          Notifier.showNotification({
+            title: 'Login Successful!',
+            // description: "tghdddfdfd",
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+              alertType: 'success',
+            },
+          });
+          signIn(response.data.token)
+          console.log(response.data.user)
         } catch (error){
           console.log(error)
         }
-        signIn(response.data.token)
-        console.log(response.data.user)
       }
       setLoading(false)
     }catch (e){
+      Notifier.showNotification({
+        title: 'Login failed!',
+        description: 'Authentication was unsuccessful, kindly try again',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'error',
+        },
+      });
       console.log(e)
       setLoading(false)
     }

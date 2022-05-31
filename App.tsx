@@ -11,6 +11,7 @@ import { NavigationContainerComponent } from './src/navigations';
 import { Provider } from "react-redux"
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { store } from './src/redux/store';
+import {NotifierWrapper} from 'react-native-notifier';
 
 const App = (): JSX.Element => {
   useEffect(()=> {
@@ -20,12 +21,14 @@ const App = (): JSX.Element => {
     });
 })
   return (
-    <Provider store={store}>
-    <SafeAreaProvider>
-      <StatusBar barStyle="dark-content" />
-      <NavigationContainerComponent />
-    </SafeAreaProvider>
-    </Provider>
+    <NotifierWrapper>
+      <Provider store={store}>
+      <SafeAreaProvider>
+        <StatusBar barStyle="dark-content" />
+        <NavigationContainerComponent />
+      </SafeAreaProvider>
+      </Provider>
+    </NotifierWrapper>
   );
 };
 
