@@ -27,7 +27,7 @@ export const Select = (props: IProp) => {
   return (
     <View style={[styles.containerStyle]}>
       <View style={styles.contain}>
-        <View style={[{ marginBottom: hp(20) }, styles.input]}>
+        <View style={[{}, styles.input]}>
           <SelectDropdown
             defaultValue={defaultValue}
             data={items === undefined ? [] : items}
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
   inputText: {
     color: 'white',
     textAlign: 'left',
+    fontSize: hp(15),
   },
   textStyle: {
     fontSize: hp(15),
@@ -95,7 +96,8 @@ const styles = StyleSheet.create({
     color: 'tomato',
   },
   dropdownStyle: {
-    backgroundColor: 'grey',
+    backgroundColor: colors.darkBlack,
+    maxHeight: hp(250)
   },
   rowStyle: {
     padding: 10,
@@ -103,9 +105,15 @@ const styles = StyleSheet.create({
   rowTextStyle: {
     color: 'white',
     textAlign: 'left',
+    fontSize: hp(15),
   },
   errorHold: {
     marginTop: hp(-15),
     marginBottom: hp(10)
+  },
+  containerStyle: {
+    marginBottom: hp(20),
+    width: '90%',
+    alignSelf: 'center',
   },
 });

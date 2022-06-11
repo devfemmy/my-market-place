@@ -5,7 +5,7 @@ import {MainStackParamList} from './types';
 import { colors } from '../utils/themes';
 import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
-import {StoreCreation} from '../screens';
+import {StoreCreation, AddProduct, PublishProduct} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
 import StoreSuccessScreen from '../screens/StoreSuccessScreen';
 
@@ -19,11 +19,15 @@ export const MainStackNavigator = (): JSX.Element => {
         headerShadowVisible: false,
         headerTitleStyle: {
           fontWeight: '500',
-          fontSize: hp(12),
+          fontSize: hp(15),
+        },
+        headerStyle: {
+          backgroundColor: colors.primaryBg,
         },
         headerBackTitleVisible: false,
-        headerTitleAlign: 'left',
-        headerTintColor: colors.primaryBg,
+        headerTitleAlign: 'center',
+        headerTintColor: colors.darkGrey,
+        
       })}>
       <MainStack.Screen
         name="HomeTab"
@@ -51,6 +55,22 @@ export const MainStackNavigator = (): JSX.Element => {
         component={StoreSuccessScreen}
         options={() => ({
           headerShown: false,
+        })}
+      />
+      <MainStack.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={() => ({
+          title: 'Product Details',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="PublishProduct"
+        component={PublishProduct}
+        options={() => ({
+          title: 'Product Details',
+          headerShown: true,
         })}
       />
     </MainStack.Navigator>

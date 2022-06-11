@@ -45,6 +45,15 @@ export type StoreFormData = {
 export type StoreState = {
   myStore: Array<any>,
   allStores: Array<any>,
+  allCategories: Array<any>,
+  error: any,
+  loading: boolean
+}
+
+export type ProductState = {
+  myProducts: Array<any>,
+  images: Array<string>,
+  categories: Array<string>,
   error: any,
   loading: boolean
 }
@@ -102,4 +111,23 @@ export type ButtonProps = ComponentProps<typeof BaseButton> & {
   outlined?: boolean;
   style?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
+};
+
+export type MiniButtonProps = ComponentProps<typeof BaseButton> & {
+  icon: string;
+  iconColor?: string;
+  iconSize?: number;
+  isLoading?: boolean;
+  loaderColor?: string;
+  outlined?: boolean;
+  style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+};
+
+export type ProductFormData1 = {
+  name: string;
+  description: string;
+  category: string;
+  sizes: boolean;
+  colours: boolean;
 };

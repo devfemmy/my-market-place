@@ -188,6 +188,7 @@ const Login = (): JSX.Element => {
               alertType: 'success',
             },
           });
+          console.log(response.data.token)
           signIn(response.data.token)
           console.log(response.data.user)
         } catch (error){

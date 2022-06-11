@@ -80,4 +80,29 @@ export const globalStyles = StyleSheet.create({
   line: {
     width: '44%',
   },
+  selfCenter: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: hp(210),
+    height: '100%',
+  },
+  selfCenterImage: {
+    width: hp(70),
+    height: hp(70),
+  },
+  Verticalspacing: {
+    marginVertical: hp(10),
+  },
+  Horizontalspacing: {
+    marginHorizontal: hp(10),
+  },
+  littleButton: {
+    height: hp(20),
+    width: hp(20),
+    marginLeft: hp(0),
+    borderRadius: hp(5),
+    backgroundColor: colors.bazaraTint,
+    borderWidth: 0
+  }
 });

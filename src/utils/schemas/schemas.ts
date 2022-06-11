@@ -35,3 +35,11 @@ export const StoreFormSchema = yup.object().shape({
   city: yup.string().required('City is required'),
   state: yup.string().required('State is required'),
 });
+
+export const ProductFormData1Schema = yup.object().shape({
+  name: yup.string().required('Product name is required'),
+  description: yup.string(),
+  category: yup.string().required('Category is required'),
+  sizes: yup.bool(),
+  colours: yup.bool(),
+});

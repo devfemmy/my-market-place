@@ -3,6 +3,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {Home} from '../screens';
+import {Product} from '../screens';
 import {RootBottomTabParamList} from './types';
 import {hp} from '../utils/helpers';
 import { colors } from '../utils/themes';
@@ -42,7 +43,7 @@ export const RootBottomTabNavigator = (): JSX.Element => {
         tabBarHideOnKeyboard: true,
       })}>
       <RootBottomTab.Screen name="Store" component={StoreScreen} />
-      <RootBottomTab.Screen name="Product" component={Home} />
+      <RootBottomTab.Screen name="Product" component={Product} />
       <RootBottomTab.Screen name="Order" component={Home} />
       <RootBottomTab.Screen name="Inbox" component={Home} />
       <RootBottomTab.Screen name="Settings" component={Home} />
