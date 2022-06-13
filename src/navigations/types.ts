@@ -24,7 +24,8 @@ export type MainStackParamList = {
   StoreSuccessScreen: undefined;
   WelcomeScreen: undefined;
   AddProduct: undefined;
-  PublishProduct: undefined;
+  PublishProduct: {data: {}};
+  OrderDetails: {order: {}};
 };
 export type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,

@@ -6,5 +6,10 @@ export const colors = {
   white: '#FFFFFF',
   black: '#242424',
   darkBlack: '#171717',
-  darkGrey: '#AEAEAE'
+  darkGrey: '#AEAEAE',
+  pending: 'rgba(248, 142, 21,0.8)',
+  processing: 'rgba(83, 130, 251,0.8)',
+  dispatched: 'rgba(112, 80, 251, 0.8)',
+  completed: 'rgba(37, 152, 18,0.8)',
+  cancelled: 'rgba(195, 0, 20,0.8)'
 };

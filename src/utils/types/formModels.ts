@@ -50,8 +50,20 @@ export type StoreState = {
   loading: boolean
 }
 
+export type OrderState = {
+  allOrders: Array<any>,
+  selectedOrders: Array<any>,
+  selected: string,
+  availableStatus: Array<string>,
+  error: any,
+  loading: boolean,
+  searching: boolean
+}
+
 export type ProductState = {
   myProducts: Array<any>,
+  newSizes: Array<any>,
+  newColours: Array<any>,
   images: Array<string>,
   categories: Array<string>,
   error: any,

@@ -58,4 +58,34 @@ export const styles = StyleSheet.create({
     marginHorizontal: 15,
     alignItems: "center"
   },
+  image: {
+    height: hp(50),
+    width: hp(50),
+    borderRadius: hp(5),
+    marginRight: hp(15),
+  },
+  cardContainer: {
+      flexDirection: 'column',
+      paddingVertical: hp(10),
+      paddingHorizontal: hp(15)
+  },
+  underline: {
+      borderBottomWidth: 1, 
+      borderBottomColor: colors.gray,
+      paddingVertical: hp(10)
+  },
+  text: {
+      // marginTop: "-2%"
+  },
+  detContainer: {
+      height: hp(50),
+      justifyContent: 'space-evenly',
+  },
+  iconContainer: {
+      height: hp(50),
+      width: hp(50),
+      marginRight: hp(15),
+      alignItems: 'center',
+      justifyContent: 'center'
+  }
 });

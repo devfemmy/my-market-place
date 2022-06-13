@@ -46,7 +46,7 @@ export const AddProduct = (): JSX.Element => {
         validationSchema: ProductFormData1Schema,
         onSubmit: (val: ProductFormData1) => {
             dispatch(resetImage())
-            navigation.navigate('PublishProduct')
+            navigation.navigate('PublishProduct', {data: val})
         },
     });
 

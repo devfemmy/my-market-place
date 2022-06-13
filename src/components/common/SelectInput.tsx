@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: hp(15),
   },
   error: {
-    paddingTop: hp(-8),
+    paddingTop: hp(25),
     color: 'tomato',
   },
   dropdownStyle: {

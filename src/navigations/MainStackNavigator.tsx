@@ -5,7 +5,7 @@ import {MainStackParamList} from './types';
 import { colors } from '../utils/themes';
 import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
-import {StoreCreation, AddProduct, PublishProduct} from '../screens';
+import {StoreCreation, AddProduct, PublishProduct, OrderDetails} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
 import StoreSuccessScreen from '../screens/StoreSuccessScreen';
 
@@ -70,6 +70,14 @@ export const MainStackNavigator = (): JSX.Element => {
         component={PublishProduct}
         options={() => ({
           title: 'Product Details',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="OrderDetails"
+        component={OrderDetails}
+        options={() => ({
+          title: 'Order Details',
           headerShown: true,
         })}
       />

@@ -1,9 +1,14 @@
 import {ImageSourcePropType} from 'react-native';
 
 export interface ListCardProps {
-    id: number,
+    id?: number,
     title: string,
-    icon: ImageSourcePropType
+    icon?: ImageSourcePropType,
+    onPress?: any
+}
+
+export interface OrderCardProps {
+    item: any,
 }
 
 export interface StoreHeaderProps {

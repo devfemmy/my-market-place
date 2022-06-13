@@ -22,6 +22,7 @@ export const Input = memo(
   ({
     errorMsg,
     isPassword = false,
+    searchInput = false,
     containerStyle,
     placeholder,
     label,
@@ -38,14 +39,14 @@ export const Input = memo(
           secureTextEntry={secureTextEntry}
           autoCapitalize="none"
           autoCorrect={false}
-          outlineColor={colors.gray}
+          outlineColor={searchInput ? "transparent" : colors.gray}
           theme={{
             roundness: 7,
 
             colors: {
               primary: colors.bazaraTint,
-              background: colors.primaryBg,
-              text: colors.bazaraTint,
+              background: searchInput ? colors.black : colors.primaryBg,
+              text: searchInput ? colors.white : colors.bazaraTint,
               placeholder: colors.gray,
             },
           }}
@@ -55,6 +56,16 @@ export const Input = memo(
                 color={colors.white}
                 onPress={toggleEntry}
                 name={secureTextEntry ? 'eye-off' : 'eye'}
+              />
+            ) : null
+          }
+          left={
+            searchInput ? (
+              <BaseInput.Icon
+                color={colors.white}
+                onPress={toggleEntry}
+                name={'magnify'}
+                size={hp(25)}
               />
             ) : null
           }
