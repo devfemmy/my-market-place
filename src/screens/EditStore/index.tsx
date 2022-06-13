@@ -1,69 +1,70 @@
-
-
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { StatusBar, View, StyleSheet, ScrollView, Image, Pressable, Platform } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Input } from '../../components/common/TextInput';
 import { StoreFormSchema } from '../../utils/constants';
-import { locationData } from '../../utils/constants';
+import { locationData } from '../../utils/constants/locations';
 import { Select } from '../../components/common/SelectInput';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp, wp } from '../../utils/helpers';
-
+;
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
-import { addStoreImage, createStore, resetStoreImage, storeImage } from "../../redux/slices/StoreSlice"
+import { addStoreImage, createStore, getStoreById, resetStoreImage, storebyId, storeImage } from "../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../utils/types';
 import CustomModal from '../../components/common/CustomModal';
 import { colors } from '../../utils/themes';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import NavHeader from '../../components/resuable/NavHeader';
 import { launchImageLibrary } from 'react-native-image-picker';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+
 import { styles } from '../main/Product/AddProduct/styles';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
-
-export const StoreCreation = (): JSX.Element => {
+const EditStore = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
   const [loader, setLoader] = useState(false)
   const dispatch = useAppDispatch()
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
-  const [headerText, setHeaderText] = useState('');
-  const [msg, setMsg] = useState('');
-
-
-  const [query, setQuery] = useState('');
   const imageData = useAppSelector(storeImage)
+  const storeIdData = useAppSelector(storebyId)
+  const [activeId, setActiveId] = useState<string>('')
+  const [editImg, setEditImg] = useState<string>(storeIdData?.imgUrl)
 
 
-  const onSearch = (text: any) => {
-    setQuery(text);
-  };
+  useEffect(() => {
+    const loadActiveId = async () => {
+      const id = await AsyncStorage.getItem('activeId')
+       setActiveId(id)
+      dispatch(getStoreById(id))
+    }
+
+    loadActiveId()
+  }, [activeId])
+
+
 
   const initialValues: StoreFormData = {
-    storeName: '',
-    description: '',
+    storeName: storeIdData?.brandName,
+    description: storeIdData?.description,
     phoneNumber: '',
-    street: '',
-    city: '',
-    state: '',
+    street: storeIdData?.location.street,
+    city: storeIdData?.location?.city,
+    state: storeIdData?.location?.state,
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
-    if (imageData?.length < 1) {
-      setVisibleBoolen(true)
-      setHeaderText('Error')
-      setMsg('Image is required')
-      return
-    }
     const payload = {
       category: "Men's Clothing",
       brandName: data.storeName,
       description: data.description,
-      imgUrl: imageData,
+      imgUrl: imageData?.length > 1 ? imageData : editImg,
       address: data.street + " " + data.city + " " + data.state,
       shippingFees: {
         withinLocation: 1000,
@@ -80,20 +81,15 @@ export const StoreCreation = (): JSX.Element => {
     const resultAction = await dispatch(createStore(payload))
     if (createStore.fulfilled.match(resultAction)) {
       setLoader(false)
-      await dispatch(resetStoreImage())
-      return navigation.navigate('StoreSuccessScreen')
+      return navigation.navigate('AuthStoreSuccessScreen')
     } else {
       if (resultAction.payload) {
         setLoader(false)
         setVisibleBoolen(true)
-        setHeaderText('Error')
-        setMsg('Problem creating store')
         console.log('error1', `Update failed: ${resultAction?.payload}`)
       } else {
         setLoader(false)
         setVisibleBoolen(true)
-        setHeaderText('Error')
-        setMsg('Problem creating store')
         console.log('error', `Updated failed: ${resultAction?.payload}`)
       }
     }
@@ -110,22 +106,15 @@ export const StoreCreation = (): JSX.Element => {
       initialValues,
       validationSchema: StoreFormSchema,
       onSubmit: (val: StoreFormData) => handleStoreSubmission(val),
+      enableReinitialize: true
     });
 
 
-  const locationState: Array<any> = locationData && locationData?.map((data: locationProp, index: number) => {
-    return data?.state
-  });
+  const locationState = locationData?.map((data: locationProp) => data?.state);
 
   const locationCity = locationData?.find(
     (data: locationProp) => data?.state === values.state,
-  );
-
-  const newCity = locationCity?.city
-
-
-
-
+  )?.city;
 
 
   const pickImage = async () => {
@@ -138,8 +127,13 @@ export const StoreCreation = (): JSX.Element => {
     }
   };
 
+
   const resetImage = () => {
     dispatch(resetStoreImage())
+  }
+
+  const removeImage = () => {
+    setEditImg('')
   }
 
 
@@ -147,29 +141,24 @@ export const StoreCreation = (): JSX.Element => {
     <SafeAreaView>
       <StatusBar translucent={true} backgroundColor={'white'} />
       <ScrollView>
-        <View style={[globalStyles.container, globalStyles.rowBetween, gbStyle.StoreCard]}>
-          <Ionicons
-            name={'chevron-back-outline'}
-            size={30}
-            color={'white'}
-            onPress={() => navigation.goBack()}
-          />
-          <Text text="Store Information" fontSize={hp(18)} />
-          <View />
-        </View>
+        <NavHeader
+          icon='chevron-back-outline'
+          handlePress={() => navigation.goBack()}
+          title="Store Information"
+        />
 
-        <View style={gbStyle.imageContainer}>
-          <Text text="Store Cover Image" fontSize={hp(16)} />
+        <View style={gbStyles.imageContainer}>
+          <Text text="Edit Cover Image" fontSize={hp(16)} fontWeight='700' />
 
-          <View style={gbStyle.formContainer}>
+          <View style={gbStyles.formContainer}>
             {
-              imageData?.length > 1 ?
-                <Pressable onPress={() => resetImage()}>
-                  <View style={gbStyle.image}>
-                    <View style={gbStyle.round}>
+             editImg || imageData?.length > 1 ?
+                <Pressable onPress={editImg?.length > 1 ? () => removeImage() :() => resetImage()}>
+                  <View style={gbStyles.image}>
+                    <View style={gbStyles.round}>
                       <AntDesign name="minus" size={hp(15)} style={{ color: colors.white }} />
                     </View>
-                    <Image source={{ uri: imageData }} style={gbStyle.image} />
+                    <Image source={{ uri: editImg ? editImg : imageData }} style={gbStyles.image} />
                   </View>
                 </Pressable>
                 :
@@ -183,7 +172,7 @@ export const StoreCreation = (): JSX.Element => {
         </View>
 
         <View style={globalStyles.container}>
-          <View style={gbStyle.formContainer}>
+          <View style={gbStyles.formContainer}>
             <Input
               label={'Store Name'}
               value={values.storeName}
@@ -210,27 +199,28 @@ export const StoreCreation = (): JSX.Element => {
               errorMsg={touched.phoneNumber ? errors.phoneNumber : undefined}
             />
 
-              <Text
-                text="Store Location"
-                fontSize={hp(16)}
-                style={[gbStyle.locationText, gbStyle.horizon]}
-              />
-            <View >
+            <Text
+              text="Store Location"
+              fontSize={hp(16)}
+              fontWeight='700'
+              style={[gbStyles.locationText, gbStyles.horizon]}
+            />
+
+            <View>
               <Select
-                items={locationState}
                 defaultValue={values.state}
-                placeholder={'state'}
+                items={locationState}
                 setState={handleChange('state')}
+                placeholder="Select State"
                 errorMsg={touched.state ? errors.state : undefined}
               />
-
             </View>
             <View>
               <Select
-                items={newCity}
                 defaultValue={values.city}
-                placeholder={'city'}
+                items={locationCity}
                 setState={handleChange('city')}
+                placeholder="Select City"
                 errorMsg={touched.city ? errors.city : undefined}
               />
             </View>
@@ -244,23 +234,23 @@ export const StoreCreation = (): JSX.Element => {
             />
           </View>
 
-          <View style={gbStyle.btn}>
-            <Button isLoading={loader} title={'Create Store'} onPress={handleSubmit} />
+          <View style={gbStyles.btn}>
+            <Button isLoading={loader} title={'Update Store'} onPress={handleSubmit} />
           </View>
         </View>
       </ScrollView>
       <CustomModal
-        msg={msg}
-        headerText={headerText}
+        msg="You have successfully updated your store information"
+        headerText="Success"
         visibleBoolean={visibleBoolean} handleVisible={handleVisible}
         isSuccess={isSuccessful} />
     </SafeAreaView>
   );
 };
 
+export default EditStore
 
-
-const gbStyle = StyleSheet.create({
+const gbStyles = StyleSheet.create({
   StoreCard: {
     paddingVertical: hp(20),
     cursor: 'pointer',
@@ -275,6 +265,9 @@ const gbStyle = StyleSheet.create({
   },
   locationText: {
     marginVertical: 15
+  },
+  horizon: {
+    marginHorizontal: 15
   },
   imageContainer: {
     marginHorizontal: 30
@@ -302,9 +295,5 @@ const gbStyle = StyleSheet.create({
     borderRadius: 50,
     marginBottom: -15,
     zIndex: 1111,
-  },
-  horizon: {
-    marginHorizontal: 15
-  },
+  }
 });
-

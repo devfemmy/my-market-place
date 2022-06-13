@@ -6,6 +6,7 @@ export const colors = {
   white: '#FFFFFF',
   black: '#242424',
   darkBlack: '#171717',
+  dimBlack: '#333333',
   darkGrey: '#AEAEAE',
   pending: 'rgba(248, 142, 21,0.8)',
   processing: 'rgba(83, 130, 251,0.8)',

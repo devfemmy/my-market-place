@@ -1,5 +1,3 @@
-
-
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormik } from 'formik';
 import { StatusBar, View, StyleSheet, ScrollView, Image, Pressable, Platform } from 'react-native';
@@ -25,7 +23,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { styles } from '../main/Product/AddProduct/styles';
 
 
-export const StoreCreation = (): JSX.Element => {
+const AuthStoreCreationScreen = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
   const [loader, setLoader] = useState(false)
   const dispatch = useAppDispatch()
@@ -81,7 +79,7 @@ export const StoreCreation = (): JSX.Element => {
     if (createStore.fulfilled.match(resultAction)) {
       setLoader(false)
       await dispatch(resetStoreImage())
-      return navigation.navigate('StoreSuccessScreen')
+      return navigation.navigate('AuthStoreSuccessScreen')
     } else {
       if (resultAction.payload) {
         setLoader(false)
@@ -258,7 +256,7 @@ export const StoreCreation = (): JSX.Element => {
   );
 };
 
-
+export default AuthStoreCreationScreen
 
 const gbStyle = StyleSheet.create({
   StoreCard: {
@@ -293,6 +291,9 @@ const gbStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  horizon: {
+    marginHorizontal: 15
+  },
   round: {
     backgroundColor: colors.cancelled,
     width: hp(15),
@@ -302,9 +303,5 @@ const gbStyle = StyleSheet.create({
     borderRadius: 50,
     marginBottom: -15,
     zIndex: 1111,
-  },
-  horizon: {
-    marginHorizontal: 15
-  },
+  }
 });
-

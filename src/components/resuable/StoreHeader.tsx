@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { storeImage, checkbox } from "../../assets"
 import { colors } from '../../utils/themes'
 import { StoreHeaderProps } from '../../interfaces'
+import { hp } from '../../utils/helpers'
 
 
 
@@ -18,14 +19,14 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name}) => {
                         <Image source={storeImage} style={styles.imageContainer} />
                     </View>
                     <View style={styles.textCard}>
-                        <Text text={name} fontSize={18} />
+                        <Text text={name} fontSize={hp(18)} />
                         <View style={styles.copyCard}>
                             <Ionicons
                                 name={"copy-outline"}
-                                size={15}
+                                size={hp(15)}
                                 color={'white'}
                             />
-                            <Text text="Copy store link" />
+                            <Text text="Copy store link" fontSize={hp(12)} fontWeight='600' style={styles.div} />
                         </View>
                     </View>
                 </View>
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         width: 50,
         height: 50,
-        backgroundColor: colors.darkBlack
+        backgroundColor: colors.dimBlack
 
     },
     imageContainer: {
@@ -76,5 +77,8 @@ const styles = StyleSheet.create({
     iconCard: {
         height: '100%',
         marginTop: 5
+    },
+    div: {
+        marginLeft: 5
     }
 })
