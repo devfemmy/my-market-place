@@ -13,6 +13,7 @@ import { Nav } from '../../utils/types'
 const ListCard: React.FC<ListCardProps> = ({ title, icon, route }) => {
     const navigation = useNavigation<Nav>()
 
+    
     return (
         <Pressable onPress={() => navigation.navigate(route) }>
             <View style={styles.cardContainer}>

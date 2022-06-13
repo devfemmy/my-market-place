@@ -30,22 +30,26 @@ export const StoreScreen = (): JSX.Element => {
      {
       id: 1,
       title: "Add your first product",
-      icon: productLogo
+      icon: productLogo,
+      route: 'Product'
      },
      {
       id: 2,
       title: "Add users / staff to your store",
-      icon: usersLogo
+      icon: usersLogo,
+      route: ''
      },
      {
       id: 3,
       title: "Set delivery or shipping fee",
-      icon: truckLogo
+      icon: truckLogo,
+      route: 'DeliveryScreen'
      },
      {
       id: 4,
       title: "Add payout bank account",
-      icon: universityLogo
+      icon: universityLogo,
+      route: ''
      }
 
   ]
