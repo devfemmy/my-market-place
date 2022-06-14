@@ -70,6 +70,22 @@ export const buttonMessage = (value: string) =>{
     }
 }
 
+export const nextStatus = (value: string) =>{
+    
+    if(value === "pending"){
+        return "processing"
+    }
+    else if(value === "processing"){
+        return "dispatched"
+    }
+    else if(value === "dispatched"){
+        return "completed"
+    }
+    else{
+        return ""
+    }
+}
+
 export const firstLetterUppercase = (value: string) =>{
     return value.charAt(0).toUpperCase() + value.slice(1)
 }

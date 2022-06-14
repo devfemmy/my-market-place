@@ -2,14 +2,11 @@ import React, {useContext, useState, useEffect, useRef} from 'react';
 import {Text, SafeAreaView} from '../../../../components/common';
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
-import { AuthContext } from '../../../../context/context';
 import { Button } from '../../../../components/common/Button';
 import {View, Image, FlatList, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 import {globalStyles} from '../../../../styles';
-import {hp,wp} from '../../../../utils/helpers';
-import {NoProducts} from '../../../../constants/images';
+import {hp} from '../../../../utils/helpers';
 import { Input } from '../../../../components/common/TextInput';
-import {useFormik} from 'formik';
 import {styles} from './styles';
 import { colors } from '../../../../utils/themes';
 import { MiniButton } from '../../../../components/common/MiniButton';
@@ -22,7 +19,6 @@ import { currencyFormat, Notify, firstLetterUppercase } from '../../../../utils/
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { useRoute } from '@react-navigation/native';
-import { Alert } from 'react-native-notifier/lib/typescript/components';
 
 export const PublishProduct = (): JSX.Element => {
     const route = useRoute();

@@ -8,7 +8,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
 import {OrderState} from "../../utils/types";
-import {getRequest} from "../../utils/server"
+import {getRequest, sendPost} from "../../utils/server"
+import {Notify} from "../../utils/functions";
 
 const initialState: OrderState = {
     allOrders: [],
@@ -44,6 +45,23 @@ export const getAllOrders = createAsyncThunk(
 //     }
 // )
 
+export const updateOrderStatus = createAsyncThunk(
+    'store/updateStatus',
+    async (payload: {status: string, orderId: string}) => {
+        const link = "/sidehustle/orders/update/status?orderStatus=" + payload.status + "&orderId=" + payload.orderId
+        try {
+            const response = await sendPost(link, {})
+            if (response?.status === 200) {
+                Notify("Success", "Order marked as " + payload.status, "success")
+                return response
+            }
+        } catch (error) {
+            Notify("Failed", "", "error")
+            console.log(error)
+        }
+    }
+)
+
 export const filterOrders = createAsyncThunk(
     'order/selectedOrder',
     (payload: string) => {
@@ -78,6 +96,18 @@ export const OrderSlice = createSlice({
             }).filter((v: any, i: any, a: string) => a.indexOf(v) === i)
         })
         builder.addCase(getAllOrders.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+        
+
+        builder.addCase(updateOrderStatus.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(updateOrderStatus.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+        })
+        builder.addCase(updateOrderStatus.rejected, (state, action) => {
             state.error = action.error.message
         })
 

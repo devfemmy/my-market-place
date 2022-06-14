@@ -1,31 +1,32 @@
-import React, {useContext, useRef} from 'react';
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable react/prop-types */
+import React, {useRef} from 'react';
 import {Text} from '../../../components/common';
-import {useNavigation} from '@react-navigation/native';
-import { Nav } from '../../../utils/types';
-import { AuthContext } from '../../../context/context';
-import { Button } from '../../../components/common/Button';
-import {View, Image, FlatList, TouchableOpacity, SafeAreaView} from 'react-native';
+import {View, FlatList, TouchableOpacity} from 'react-native';
 import {globalStyles} from '../../../styles';
-import {hp,wp} from '../../../utils/helpers';
-import {NoOrders} from '../../../constants/images';
+import {hp} from '../../../utils/helpers';
 import { colors } from '../../../utils/themes';
 import OrderCard from '../../../components/resuable/OrderCard';
 import { Input } from '../../../components/common/TextInput';
 import { styles } from './styles';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { filterOrders, availableStatus, selected, searchOrders, searching } from '../../../redux/slices/orderSlice';
+import { filterOrders, availableStatus, selected, searchOrders} from '../../../redux/slices/orderSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { Modalize } from 'react-native-modalize';
+import {Modalize} from 'react-native-modalize';
 import SelectListCard from '../../../components/resuable/SelectListCard';
-import { firstLetterUppercase } from '../../../utils/functions';
+import {firstLetterUppercase} from '../../../utils/functions';
 
 export const Orders = ({data}): JSX.Element => {
   const modalizeRef = useRef(null);
-  const {navigate} = useNavigation<Nav>();
   const dispatch = useAppDispatch()
   const status = useAppSelector(availableStatus)
   const selectedStatus = useAppSelector(selected)
-  const search = useAppSelector(searching)
 
   const renderItem = ({item}: any) => (
     <OrderCard item={item}/>

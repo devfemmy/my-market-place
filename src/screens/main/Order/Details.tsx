@@ -16,15 +16,20 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { currencyFormat, copyToClipboard } from '../../../utils/functions';
 import {Layout} from '@ui-kitten/components';
-import { statusColor, statusMessage, buttonMessage, rejectionMsg } from '../../../utils/functions';
+import { statusColor, statusMessage, buttonMessage, rejectionMsg, nextStatus } from '../../../utils/functions';
 import { Modalize } from 'react-native-modalize';
 import { CheckBox } from '../../../components/common/CheckBox';
 import { SuccesssLogo } from '../../../constants/images';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { updateOrderStatus, getAllOrders, loading } from '../../../redux/slices/orderSlice';
 
 export const OrderDetails = ({order}: any): JSX.Element => {
-  const {navigate} = useNavigation<Nav>();
+  const dispatch = useAppDispatch()
+  const navigation = useNavigation<Nav>();
+  const loader = useAppSelector(loading)
+
   const [cancelled, setCancelled] = useState(false)
 
   const [selectedReason, setSelectedreason] = useState('')
@@ -112,6 +117,14 @@ export const OrderDetails = ({order}: any): JSX.Element => {
     setTimeout(() => {setCancelled(true)}, 1000)
     setTimeout(() => {modalizeRef.current?.open()}, 1000)
 
+  }
+
+  const updateStatus = async (status: string) => {
+    const next = nextStatus(status)
+    console.log(next)
+    await dispatch(updateOrderStatus({status: next, orderId: item._id}))
+    await dispatch(getAllOrders())
+    navigation.goBack()
   }
 
   return (
@@ -203,7 +216,7 @@ export const OrderDetails = ({order}: any): JSX.Element => {
                 </View>
                 { item?.orderInfo?.status == 'completed' || item?.orderInfo?.status == 'rejected' || item?.orderInfo?.status == 'cancelled' ? null :
                 <View style={[globalStyles.Verticalspacing, {marginBottom: hp(50)}]}>
-                    <Button title={buttonMessage(item?.orderInfo?.status)}/>
+                    <Button isLoading={loader} onPress={() => updateStatus(item?.orderInfo?.status)} title={buttonMessage(item?.orderInfo?.status)}/>
                     <View style={[item?.orderInfo?.status == 'pending' || item?.orderInfo?.status == 'processing' ? globalStyles.rowBetween : globalStyles.rowCenter, globalStyles.cardSeparator, globalStyles.noSeparator, globalStyles.Verticalspacing]}>
                         <TouchableOpacity ><Text text={"Message Buyer"} color={colors.white} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text}/></TouchableOpacity>
                         { item?.orderInfo?.status == 'pending' || item?.orderInfo?.status == 'processing' ?
