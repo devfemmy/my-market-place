@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable prefer-spread */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { OrderState} from "../../utils/types";
-import { sendPost, getRequest } from "../../utils/server"
-import { string } from "yup";
+import {OrderState} from "../../utils/types";
+import {getRequest} from "../../utils/server"
 
 const initialState: OrderState = {
     allOrders: [],
@@ -20,7 +25,6 @@ export const getAllOrders = createAsyncThunk(
     async () => {
         const response = await getRequest("/sidehustle/orders/sales?isGrouped=true&withOrderList=true")
         if (response?.status === 200) {
-            const orderResponse: Array<any> = []
             const total = response?.data?.data
             const orders = total.map(function(val: any){
                 return val.orders
@@ -30,56 +34,26 @@ export const getAllOrders = createAsyncThunk(
     }
 )
 
-export const rejectOrder = createAsyncThunk(
-    'order/rejectOrder',
-    async (payload: {}) => {
-        const response = await getRequest("/sidehustle/orders/sales?isGrouped=true&withOrderList=true")
-        if (response?.status === 200) {
+// export const rejectOrder = createAsyncThunk(
+//     'order/rejectOrder',
+//     async (payload: {}) => {
+//         const response = await getRequest("/sidehustle/orders/sales?isGrouped=true&withOrderList=true")
+//         if (response?.status === 200) {
             
-        }
-    }
-)
-
-export const markAsComplete = createAsyncThunk(
-    'order/markAsComplete',
-    async (payload: {}) => {
-        const response = await sendPost(payload, 'sidehustle/orders/'+payload.orderId+'/markAsComplete', payload, 'v2')
-        if (response?.status === 200) {
-            
-        }
-    }
-)
-
-export const markAsProcessing = createAsyncThunk(
-    'order/markAsProcessing',
-    async (payload: {}) => {
-        const response = await sendPost("/sidehustle/orders/sales?isGrouped=true&withOrderList=true", {}, 'v2')
-        if (response?.status === 200) {
-            
-        }
-    }
-)
-
-export const markAsDispatched = createAsyncThunk(
-    'order/markAsDispatched',
-    async (payload: {}) => {
-        const response = await sendPost("/sidehustle/orders/sales?isGrouped=true&withOrderList=true", {}, 'v2')
-        if (response?.status === 200) {
-            
-        }
-    }
-)
+//         }
+//     }
+// )
 
 export const filterOrders = createAsyncThunk(
     'order/selectedOrder',
-    async (payload: string) => {
+    (payload: string) => {
         return payload
     }
 )
 
 export const searchOrders = createAsyncThunk(
     'order/searchingOrder',
-    async (payload: string) => {
+    (payload: string) => {
         return payload
     }
 )
@@ -91,13 +65,13 @@ export const OrderSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
 
-        builder.addCase(getAllOrders.pending, (state, action) => {
+        builder.addCase(getAllOrders.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(getAllOrders.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.selected = ''
-            state.selectedOrders = action.payload,
+            state.selectedOrders = action.payload
             state.allOrders = action.payload
             state.availableStatus = action.payload.map(function(val: any){
                 return val.orderInfo.status
@@ -109,16 +83,16 @@ export const OrderSlice = createSlice({
 
 
 
-        builder.addCase(filterOrders.pending, (state, action) => {
+        builder.addCase(filterOrders.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(filterOrders.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false
-            if(action.payload == 'All'){
+            if(action.payload === 'All'){
                 state.selectedOrders = state.allOrders
             }else{
                 state.selectedOrders = state.allOrders.filter(function(val: any){
-                    if(val?.orderInfo?.status.toLowerCase() == action.payload.toLowerCase()){
+                    if(val?.orderInfo?.status.toLowerCase() === action.payload.toLowerCase()){
                         return val
                     }
                 })
@@ -130,9 +104,9 @@ export const OrderSlice = createSlice({
         })
 
 
-        builder.addCase(searchOrders.pending, (state, action) => {
+        builder.addCase(searchOrders.pending, (state) => {
             state.searching = true
-        }),
+        })
         builder.addCase(searchOrders.fulfilled, (state, action: PayloadAction<any>) => {
             state.selectedOrders = state.allOrders.filter(function(val: any){
                 if(val?.orderInfo?.name.toLowerCase().startsWith(action.payload.toLowerCase()) || val?.orderInfo?.orderRef.toLowerCase().startsWith(action.payload.toLowerCase())){

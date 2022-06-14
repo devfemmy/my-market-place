@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
 import { ProductState } from "../../utils/types";
-import { sendPost, getRequest } from "../../utils/server"
+import {getRequest} from "../../utils/server"
 
 const initialState: ProductState = {
     myProducts: [],
@@ -26,42 +30,49 @@ export const getAllProducts = createAsyncThunk(
 
 export const addImage = createAsyncThunk(
     'product/images',
-    async (payload: {index: number, uri: string}) => {
+    (payload: {index: number, uri: string}) => {
         return payload
     }
 )
 
 export const addSize = createAsyncThunk(
     'product/sizesadd',
-    async (payload: {size: string, price: number, quantity: number}) => {
+    (payload: {size: string, price: number, quantity: number}) => {
         return payload
     }
 )
 
 export const addColour = createAsyncThunk(
     'product/coloursadd',
-    async (payload: {colour: string, price: number, quantity: number, images: Array<any>}) => {
+    (payload: {colour: string, price: number, quantity: number, images: Array<string>}) => {
         return payload
     }
 )
 
 export const editSize = createAsyncThunk(
     'product/sizesedit',
-    async (payload: {index: number, item: {size: string, price: number, quantity: number}}) => {
+    (payload: {index: number, item: {size: string, price: number, quantity: number}}) => {
+        return payload
+    }
+)
+
+export const editColour = createAsyncThunk(
+    'product/coloursedit',
+    (payload: {index: number, item: {colour: string, price: number, quantity: number, images: Array<string>}}) => {
         return payload
     }
 )
 
 export const deleteSize = createAsyncThunk(
     'product/sizesdelete',
-    async (payload: number) => {
+    (payload: number) => {
         return payload
     }
 )
 
 export const deleteColour = createAsyncThunk(
     'product/coloursdelete',
-    async (payload: number) => {
+    (payload: number) => {
         return payload
     }
 )
@@ -69,7 +80,7 @@ export const deleteColour = createAsyncThunk(
 
 export const resetImage = createAsyncThunk(
     'product/resetimages',
-    async () => {
+    () => {
         return ["", "", "", "", "", ""]
     }
 )
@@ -82,55 +93,60 @@ export const ProductSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         // IMAGES
-        builder.addCase(addImage.pending, (state, action) => {
+        builder.addCase(addImage.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(addImage.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.images[action.payload.index] = action.payload.uri
         })
         builder.addCase(addImage.rejected, (state, action) => {
             state.error = action.error.message
         })
+
+
+
         // SIZES
-        builder.addCase(addSize.pending, (state, action) => {
+        builder.addCase(addSize.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(addSize.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.newSizes = state.newSizes.concat([action.payload])
         })
         builder.addCase(addSize.rejected, (state, action) => {
             state.error = action.error.message
         })
 
-        builder.addCase(editSize.pending, (state, action) => {
+        builder.addCase(editSize.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(editSize.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.newSizes[action.payload.index] = action.payload.item
         })
         builder.addCase(editSize.rejected, (state, action) => {
             state.error = action.error.message
         })
 
-        builder.addCase(deleteSize.pending, (state, action) => {
+        builder.addCase(deleteSize.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(deleteSize.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.newSizes.splice(action.payload, 1)
         })
         builder.addCase(deleteSize.rejected, (state, action) => {
             state.error = action.error.message
         })
 
-        builder.addCase(resetImage.pending, (state, action) => {
+        
+
+        builder.addCase(resetImage.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(resetImage.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.images = action.payload
         })
         builder.addCase(resetImage.rejected, (state, action) => {
@@ -139,22 +155,37 @@ export const ProductSlice = createSlice({
 
 
         // COLOURS
-        builder.addCase(addColour.pending, (state, action) => {
+        builder.addCase(addColour.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(addColour.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.newColours = state.newColours.concat([action.payload])
         })
         builder.addCase(addColour.rejected, (state, action) => {
             state.error = action.error.message
         })
 
-        builder.addCase(deleteColour.pending, (state, action) => {
+
+
+        builder.addCase(editColour.pending, (state) => {
             state.loading = true
-        }),
+        })
+        builder.addCase(editColour.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.newColours[action.payload.index] = action.payload.item
+        })
+        builder.addCase(editColour.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+
+        builder.addCase(deleteColour.pending, (state) => {
+            state.loading = true
+        })
         builder.addCase(deleteColour.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.newColours.splice(action.payload, 1)
         })
         builder.addCase(deleteColour.rejected, (state, action) => {
@@ -163,11 +194,11 @@ export const ProductSlice = createSlice({
 
 
         // GET ALL PRODUCTS
-        builder.addCase(getAllProducts.pending, (state, action) => {
+        builder.addCase(getAllProducts.pending, (state) => {
             state.loading = true
-        }),
+        })
         builder.addCase(getAllProducts.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
+            state.loading = false
             state.myProducts = action.payload
         })
         builder.addCase(getAllProducts.rejected, (state, action) => {

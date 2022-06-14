@@ -17,7 +17,7 @@ import { ImageSelect } from './ImageSelect';
 import { Modalize } from 'react-native-modalize';
 import { Select } from '../../../../components/common/SelectInput';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { addSize, newSizes, deleteSize, editSize, addColour, newColours, deleteColour, images, resetImage } from '../../../../redux/slices/productSlice';
+import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage } from '../../../../redux/slices/productSlice';
 import { currencyFormat, Notify, firstLetterUppercase } from '../../../../utils/functions';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -144,9 +144,9 @@ export const PublishProduct = (): JSX.Element => {
                                 fontSize={hp(12)}
                                 style={styles.text} />
                                 <Text
-                                text={item?.price}
+                                text={currencyFormat(item?.price)}
                                 fontWeight={"300"}
-                                fontSize={hp(11)}
+                                fontSize={hp(12)}
                                 color={colors.bazaraTint}
                                 style={styles.text} />
                             </View>
@@ -154,7 +154,7 @@ export const PublishProduct = (): JSX.Element => {
                     </View>
 
                     <View style={[globalStyles.rowStart]}>
-                        <TouchableOpacity style={globalStyles.mini_button}>
+                        <TouchableOpacity onPress={() => editPrevColor(index, item)} style={globalStyles.mini_button}>
                             <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => dispatch(deleteColour(index))} style={globalStyles.mini_button}>
@@ -173,6 +173,18 @@ export const PublishProduct = (): JSX.Element => {
         setEditable(index)
         setEdit(true)
         setTimeout(() => {modalizeRef.current?.open()}, 200)
+    }
+
+    const editPrevColor = (index: number, item: {colour: string, price: number, quantity: number, images: Array<any>}) => {
+        dispatch(resetImage())
+        item.images.map((val: string, index: number) => {
+            dispatch(addImage({index: index, uri: val}))
+        })
+        setColorDescription(item.colour)
+        setSelectedPrice(item.price.toString())
+        setSelectedQuantity(item.quantity.toString())
+        setEditable(index)
+        setEdit(true)
     }
 
     const addNewSize = (val?: string) => {
@@ -205,7 +217,13 @@ export const PublishProduct = (): JSX.Element => {
             Notify('Error!', 'Please check your form', 'error')
             return
         }
-        dispatch(addColour({colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}))
+
+        if(edit){
+            dispatch(editColour({index: editable, item: {colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}}))
+            setEdit(false)
+        }else{
+            dispatch(addColour({colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}))
+        }
         dispatch(resetImage())
     }
 
@@ -308,7 +326,7 @@ export const PublishProduct = (): JSX.Element => {
                     color={colors.white}
                     textAlign='left'
                     fontSize={hp(16)}
-                    text="Add Another Colour" />
+                    text={edit ? "Update" : "Add Another Colour"} />
                 </View>
             </>
         )
@@ -323,6 +341,11 @@ export const PublishProduct = (): JSX.Element => {
                         value={""}
                     />
                 </View>
+                <FlatList
+                    data={sizes}
+                    renderItem={renderSizesList}
+                    scrollEnabled={false}
+                />
                 <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Colour sizes *" />
                 <View style={[globalStyles.rowStart, styles.lowerContainer]}>
                     <MiniButton 
@@ -340,8 +363,6 @@ export const PublishProduct = (): JSX.Element => {
             </>
         )
     }
-
-
 
     return (
         <>
