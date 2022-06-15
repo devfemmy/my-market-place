@@ -260,7 +260,7 @@ const Register = (): JSX.Element => {
           isPassword
           errorMsg={touched.password ? errors.password : undefined}
         />
-        <Input
+        {/* <Input
           label={'Confirm Password'}
           value={values.confirmPassword}
           onBlur={handleBlur('confirmPassword')}
@@ -269,7 +269,7 @@ const Register = (): JSX.Element => {
           errorMsg={
             touched.confirmPassword ? errors.confirmPassword : undefined
           }
-        />
+        /> */}
         <View>
           <View style={globalStyles.rowCenter}>
             <Button

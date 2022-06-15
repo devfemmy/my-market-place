@@ -46,7 +46,7 @@ export const Input = memo(
             colors: {
               primary: colors.bazaraTint,
               background: searchInput ? colors.black : colors.primaryBg,
-              text: searchInput ? colors.white : colors.bazaraTint,
+              text: searchInput ? colors.white : colors.white,
               placeholder: colors.gray,
             },
           }}
