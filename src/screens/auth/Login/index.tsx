@@ -34,7 +34,7 @@ const Login = (): JSX.Element => {
   }, []);
 
   const [loading, setLoading] = useState(false);
-  const [visibleBoolean, setVisibleBoolen] = useState<boolean>(true);
+  const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
   const {signIn} = useContext(AuthContext)
   const navigation = useNavigation<LoginScreenNavigationProp>();

@@ -1,20 +1,26 @@
-import { View, Image, StyleSheet } from 'react-native'
+import { View, Image, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
 import { ListCardProps } from "../../interfaces"
 import { Text } from '../common'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { globalStyles } from '../../styles'
 import { colors } from '../../utils/themes'
+import { hp } from '../../utils/helpers'
+import { useNavigation } from '@react-navigation/native'
+import { Nav } from '../../utils/types'
 
 
+const ListCard: React.FC<ListCardProps> = ({ title, icon, route }) => {
+    const navigation = useNavigation<Nav>()
 
-const ListCard: React.FC<ListCardProps> = ({ title, icon }) => {
+    
     return (
-        <View style={styles.cardContainer}>
+        <Pressable onPress={() => navigation.navigate(route) }>
+            <View style={styles.cardContainer}>
             <View style={[globalStyles.rowBetween]}>
                 <View style={globalStyles.rowStart}>
                     <Image source={icon} style={styles.image} />
-                    <Text text={title} fontSize={16} style={styles.text} />
+                    <Text text={title} fontSize={hp(16)} style={styles.text} />
                 </View>
                 <Ionicons
                     name={"chevron-forward-outline"}
@@ -26,6 +32,7 @@ const ListCard: React.FC<ListCardProps> = ({ title, icon }) => {
             <View style={styles.underline}>
             </View>
         </View>
+        </Pressable>
     )
 }
 
