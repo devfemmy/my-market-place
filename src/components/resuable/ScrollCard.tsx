@@ -16,18 +16,18 @@ const ScrollCard: React.FC<WalletProps> = ({ escrow, balance }) => {
         <SafeAreaView>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.activeCard}>
-                    <Text text={`₦ ${numberFormat(escrow)}`} fontSize={18} />
+                    <Text text={`₦ ${numberFormat(escrow)}`} fontSize={hp(18)} />
 
-                    <Text text="Expected Earnings" fontSize={15} style={styles.earningText} />
+                    <Text text="Expected Earnings" fontSize={hp(15)} style={styles.earningText} />
                     <Text 
                         text={`₦ ${numberFormat(balance)} Store Balance`}   
-                        fontSize={15} style={styles.balanceText} />
+                        fontSize={hp(15)} style={styles.balanceText} />
                 </View>
 
                 <View style={styles.inactiveCard}>
-                    <Text text={`₦ ${numberFormat(escrow)}`} fontSize={18} />
-                    <Text text="Expected Earnings" fontSize={15} style={styles.earningText} />
-                    <Text text={`₦ ${numberFormat(balance)} Store Balance`}  fontSize={15} style={styles.balanceText} />
+                    <Text text={`₦ ${numberFormat(escrow)}`} fontSize={hp(18)} />
+                    <Text text="Expected Earnings" fontSize={hp(15)} style={styles.earningText} />
+                    <Text text={`₦ ${numberFormat(balance)} Store Balance`}  fontSize={hp(15)} style={styles.balanceText} />
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     activeCard: {
         backgroundColor: colors.bazaraTint,
         width: wp(250),
-        height: hp(150),
+        height: hp(130),
         padding: 20,
         marginVertical: 0,
         borderRadius: 10,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     inactiveCard: {
         backgroundColor: colors.black,
         width: wp(250),
-        height: hp(150),
+        height: hp(130),
         padding: 20,
         marginVertical: 0,
         borderRadius: 10,

@@ -44,3 +44,15 @@ export const ProductFormData1Schema = yup.object().shape({
   sizes: yup.bool(),
   colours: yup.bool(),
 });
+
+
+
+export const DeliveryFormSchema = yup.object().shape({  
+  state: yup.string().required('State is required'),
+  price: yup.string().required('Price is required')
+});
+
+export const LandmarkFormSchema = yup.object().shape({  
+  city: yup.string().required('City is required'),
+  price: yup.string().required('Price is required')
+});

@@ -9,8 +9,10 @@ import { sendPost, getRequest } from "../../utils/server"
 
 const initialState: StoreState = {
     myStore: [],
+    storeById: null,
     allStores: [],
     allCategories: [],
+    storeImage: '',
     loading: false,
     error: null
 }
@@ -21,6 +23,21 @@ export const createStore = createAsyncThunk(
     'store/createStore',
     async (payload: StoreCreateFormData) => {
         const response = await sendPost("/sidehustle/account/create", payload)
+    }
+)
+
+
+export const addStoreImage = createAsyncThunk(
+    'store/images',
+    async (payload: {uri: string}) => {
+        return payload
+    }
+)
+
+export const resetStoreImage = createAsyncThunk(
+    'store/resetimages',
+    async () => {
+        return ""
     }
 )
 
@@ -62,8 +79,19 @@ export const getAllCategories = createAsyncThunk(
     }
 )
 
+export const getStoreById = createAsyncThunk(
+    'store/getStoreById',
+    async (payload: string) => {
+        const response = await getRequest(`/sidehustle/${payload}/details`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+
 export const StoreSlice = createSlice({
-    name: 'auth',
+    name: 'store',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
@@ -77,7 +105,26 @@ export const StoreSlice = createSlice({
             state.loading = false,
             state.error = action.payload
         }),
-
+        builder.addCase(addStoreImage.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(addStoreImage.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.storeImage = action.payload.uri
+        })
+        builder.addCase(addStoreImage.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+        builder.addCase(resetStoreImage.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(resetStoreImage.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.storeImage = action.payload
+        })
+        builder.addCase(resetStoreImage.rejected, (state, action) => {
+            state.error = action.error.message
+        })
         builder.addCase(getAllCategories.pending, (state, action) => {
             state.loading = true
         }),
@@ -109,14 +156,29 @@ export const StoreSlice = createSlice({
         })
         builder.addCase(getAllStore.rejected, (state, action) => {
             state.error = action.error.message
+        }),
+        builder.addCase(getStoreById.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(getStoreById.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+                state.storeById = action.payload
+            })
+        builder.addCase(getStoreById.rejected, (state, action) => {
+            state.error = action.error.message
         })
     }
 })
+
+
+export const storeImage = (state: RootState) => state.store.storeImage;
 
 export const myStore = (state: RootState) => state.store.myStore;
 
 export const allStores = (state: RootState) => state.store.allStores;
 
 export const allCategories = (state: RootState) => state.store.allCategories;
+
+export const storebyId = (state: RootState) => state.store.storeById;
 
 export default StoreSlice.reducer;

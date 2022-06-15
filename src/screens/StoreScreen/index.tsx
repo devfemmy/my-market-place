@@ -12,12 +12,15 @@ import ListCard from '../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
 import { getPersonalStore, myStore } from '../../redux/slices/StoreSlice';
 import { ArrayType } from '../../utils/types';
+import { hp } from '../../utils/helpers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export const StoreScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
 
+  AsyncStorage.setItem('activeId', myStoreList[0]?.id)
 
   useEffect(() => {
     dispatch(getPersonalStore())
@@ -27,22 +30,26 @@ export const StoreScreen = (): JSX.Element => {
      {
       id: 1,
       title: "Add your first product",
-      icon: productLogo
+      icon: productLogo,
+      route: 'Product'
      },
      {
       id: 2,
       title: "Add users / staff to your store",
-      icon: usersLogo
+      icon: usersLogo,
+      route: ''
      },
      {
       id: 3,
       title: "Set delivery or shipping fee",
-      icon: truckLogo
+      icon: truckLogo,
+      route: 'DeliveryScreen'
      },
      {
       id: 4,
       title: "Add payout bank account",
-      icon: universityLogo
+      icon: universityLogo,
+      route: ''
      }
 
   ]
@@ -69,7 +76,7 @@ export const StoreScreen = (): JSX.Element => {
             </View>
           </View>
 
-          <Text text="Quick Actions" fontSize={18} style={styles.rowMargin} />
+          <Text text="Quick Actions" fontSize={hp(18)} style={styles.rowMargin} />
 
           <View>
           {

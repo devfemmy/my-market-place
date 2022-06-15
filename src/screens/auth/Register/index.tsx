@@ -60,9 +60,10 @@ const Register = (): JSX.Element => {
               alertType: 'success',
             },
           });
-          setTimeout(function(){
-            signIn(response.data.token) 
-         }, 2000);
+          navigation.navigate('StoreCreationScreen')
+        //   setTimeout(function(){
+        //     signIn(response.data.token) 
+        //  }, 2000);
         }
         setLoading(false)
       }catch (e){
@@ -109,9 +110,10 @@ const Register = (): JSX.Element => {
               alertType: 'success',
             },
           });
-          setTimeout(function(){
-            signIn(response.data.token) 
-         }, 2000);
+          navigation.navigate('StoreCreationScreen')
+        //   setTimeout(function(){
+        //     signIn(response.data.token) 
+        //  }, 2000);
           console.log(response.data.user)
         } catch (error){
           console.log(error)
@@ -166,9 +168,10 @@ const Register = (): JSX.Element => {
                 alertType: 'success',
               },
             });
-            setTimeout(function(){
-                signIn(response.data.token) 
-            }, 2000);
+            navigation.navigate('StoreCreationScreen')
+            // setTimeout(function(){
+            //     signIn(response.data.token) 
+            // }, 2000);
             console.log(response.data.user)
           } catch (error){
             console.log(error)

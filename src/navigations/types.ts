@@ -6,6 +6,11 @@ export type AuthStackParamList = {
   Register: undefined;
   ForgotPassword: undefined;
   LinkSent: undefined;
+  StoreCreationScreen: undefined;
+  StoreSuccessScreen: undefined;
+  WelcomeScreen: undefined;
+  Store: undefined;
+  AuthStoreSuccess: undefined
 };
 export type UserDataToken = {
   token: string;
@@ -20,9 +25,11 @@ export type RootBottomTabParamList = {
 export type MainStackParamList = {
   HomeTab: NavigatorScreenParams<RootBottomTabParamList>;
   Home: undefined;
-  StoreCreationScreen: undefined;
-  StoreSuccessScreen: undefined;
-  WelcomeScreen: undefined;
+  AuthStoreCreationScreen: undefined;
+  AuthStoreSuccessScreen: undefined;
+  EditStore: undefined;
+  DeliveryScreen: undefined;
+  AddShippingFee: undefined;
   AddProduct: undefined;
   PublishProduct: {data: {}};
   OrderDetails: {order: {}};
@@ -42,4 +49,21 @@ export type ForgotPasswordScreenNavigationProp = StackNavigationProp<
 export type LinkSentScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
   'LinkSent'
+>;
+export type StoreSuccessScreenNavigationProp = StackNavigationProp<
+  AuthStackParamList,
+  'AuthStoreSuccess'
+>;
+export type StoreCreationProp = StackNavigationProp<
+  AuthStackParamList,
+  'StoreCreationScreen'
+>;
+export type StoreSuccessProp = StackNavigationProp<
+  AuthStackParamList,
+  'StoreSuccessScreen'
+>
+
+export type StoreProp = StackNavigationProp<
+  AuthStackParamList,
+  'Store'
 >;

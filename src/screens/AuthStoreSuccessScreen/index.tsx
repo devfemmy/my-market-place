@@ -1,7 +1,7 @@
 
 
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import { SafeAreaView, Text } from '../../components/common';
 import { View, Image } from 'react-native';
 
@@ -11,25 +11,12 @@ import { globalStyles } from '../../styles';
 import { StoreSuccessScreenNavigationProp } from '../../navigations/types';
 import { colors } from '../../utils/themes';
 import { hp } from '../../utils/helpers';
-
+import { styles } from './styles';
+import { correctLogo } from '../../assets';
 import { SuccesssLogo } from '../../constants/images';
-import { styles } from '../AuthStoreSuccessScreen/styles';
-import { Nav } from '../../utils/types';
-import { AuthContext } from '../../context/context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const StoreSuccessScreen = () => {
-    const { navigate } = useNavigation<Nav>()
-    const { signIn } = useContext(AuthContext)
-    const [loader, setLoader] = useState(false)
-
-    const handleClick = async () => {
-        setLoader(true)
-        const token = await AsyncStorage.getItem('token')
-        setLoader(false)
-        signIn(token)
-    }
-    
+const AuthStoreSuccessScreen = () => {
+    const navigation = useNavigation<StoreSuccessScreenNavigationProp>();
     return (
         <SafeAreaView>
             <View style={[styles.container, styles.width80]}>
@@ -51,7 +38,7 @@ const StoreSuccessScreen = () => {
             <View style={[globalStyles.footer, styles.width100]}>
                 <Button
                     title={'Continue'}
-                    onPress={handleClick}
+                    onPress={() => navigation.navigate('Store')}
                 />
 
             </View>
@@ -59,4 +46,4 @@ const StoreSuccessScreen = () => {
     );
 };
 
-export default StoreSuccessScreen;
+export default AuthStoreSuccessScreen;
