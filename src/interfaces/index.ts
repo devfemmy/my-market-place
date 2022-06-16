@@ -5,6 +5,7 @@ export interface ListCardProps {
     title: string,
     route: string,
     icon?: ImageSourcePropType,
+    onPress: undefined,
 }
 
 export interface OrderCardProps {
