@@ -7,8 +7,8 @@ import { hp } from '../../utils/helpers';
 import { globalStyles } from '../../styles';
 import { Text } from './Text';
 import { colors } from '../../utils/themes';
-
-
+import { useAppDispatch } from '../../redux/hooks'
+import {getStorePermission} from '../../redux/slices/StoreSlice'
 
 
 
@@ -18,11 +18,13 @@ type IProp = {
   placeholder: string,
   errorMsg?: string,
   setState: (value: string) => void;
+  roleSelector?: boolean
 };
 
 
 export const Select = (props: IProp) => {
-  const { items, setState, placeholder, defaultValue, errorMsg } = props;
+  const dispatch = useAppDispatch()
+  const { items, setState, placeholder, defaultValue, errorMsg, roleSelector } = props;
 
   return (
     <View style={[styles.containerStyle]}>
@@ -33,6 +35,9 @@ export const Select = (props: IProp) => {
             data={items === undefined ? [] : items}
             onSelect={(selectedItem: string) => {
               setState(selectedItem);
+              if(roleSelector){
+                dispatch(getStorePermission(selectedItem))
+              }
             }}
             defaultButtonText={placeholder}
             buttonStyle={styles.input}

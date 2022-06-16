@@ -11,6 +11,7 @@ const initialState: StoreState = {
     myStore: [],
     allStores: [],
     allCategories: [],
+    permission: [{value: 'View Store Details', bool: false}, {value: 'View Store Analysis', bool: false}, {value: 'Manage Store Locations', bool: false}, {value: 'Manage shipping fee', bool: false}],
     loading: false,
     error: null
 }
@@ -21,6 +22,21 @@ export const createStore = createAsyncThunk(
     'store/createStore',
     async (payload: StoreCreateFormData) => {
         const response = await sendPost("/sidehustle/account/create", payload)
+    }
+)
+
+export const getStorePermission = createAsyncThunk(
+    'store/storePermission',
+    async (payload: string) => {
+        if(payload == 'Store Owner'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else if(payload == 'Store Manager'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: false}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else{
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: false}, {value: 'Manage shipping fee', bool: false}]
+        }
     }
 )
 
@@ -78,6 +94,17 @@ export const StoreSlice = createSlice({
             state.error = action.payload
         }),
 
+        builder.addCase(getStorePermission.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getStorePermission.fulfilled, (state, action) => {
+            state.loading = false
+            state.permission = action.payload
+        }),
+        builder.addCase(getStorePermission.rejected, (state, action) => {
+            state.error = action.error.message
+        }),
+
         builder.addCase(getAllCategories.pending, (state, action) => {
             state.loading = true
         }),
@@ -116,6 +143,8 @@ export const StoreSlice = createSlice({
 export const myStore = (state: RootState) => state.store.myStore;
 
 export const allStores = (state: RootState) => state.store.allStores;
+
+export const permission = (state: RootState) => state.store.permission;
 
 export const allCategories = (state: RootState) => state.store.allCategories;
 

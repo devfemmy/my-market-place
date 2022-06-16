@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-
+import {useNavigation} from '@react-navigation/native';
+import { Nav } from '../../utils/types';
 import { StatusBar, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { SafeAreaView, Text } from '../../components/common';
 import { colors } from '../../utils/themes';
@@ -15,6 +16,7 @@ import { ArrayType } from '../../utils/types';
 
 
 export const StoreScreen = (): JSX.Element => {
+  const navigation = useNavigation<Nav>();
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
 
@@ -27,21 +29,25 @@ export const StoreScreen = (): JSX.Element => {
      {
       id: 1,
       title: "Add your first product",
+      navigation: '',
       icon: productLogo
      },
      {
       id: 2,
       title: "Add users / staff to your store",
+      navigation: 'AddStaff',
       icon: usersLogo
      },
      {
       id: 3,
       title: "Set delivery or shipping fee",
+      navigation: '',
       icon: truckLogo
      },
      {
       id: 4,
       title: "Add payout bank account",
+      navigation: 'Account',
       icon: universityLogo
      }
 
@@ -74,7 +80,7 @@ export const StoreScreen = (): JSX.Element => {
           <View>
           {
             quickActionArray?.map((data: ArrayType) => {
-              return <ListCard key={data?.id} {...data} />
+              return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.navigation)} />
             })
           }
           </View>

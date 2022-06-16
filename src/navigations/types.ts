@@ -26,6 +26,9 @@ export type MainStackParamList = {
   AddProduct: undefined;
   PublishProduct: {data: {}};
   OrderDetails: {order: {}};
+  Staffs: undefined;
+  AddStaff: undefined;
+  Account: undefined;
 };
 export type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,

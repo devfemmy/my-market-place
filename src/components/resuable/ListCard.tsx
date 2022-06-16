@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet } from 'react-native'
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { ListCardProps } from "../../interfaces"
 import { Text } from '../common'
@@ -8,9 +8,9 @@ import { colors } from '../../utils/themes'
 
 
 
-const ListCard: React.FC<ListCardProps> = ({ title, icon }) => {
+const ListCard: React.FC<ListCardProps> = ({ title, icon, onPress }) => {
     return (
-        <View style={styles.cardContainer}>
+        <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={styles.cardContainer}>
             <View style={[globalStyles.rowBetween]}>
                 <View style={globalStyles.rowStart}>
                     <Image source={icon} style={styles.image} />
@@ -25,7 +25,7 @@ const ListCard: React.FC<ListCardProps> = ({ title, icon }) => {
 
             <View style={styles.underline}>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

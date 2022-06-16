@@ -45,6 +45,7 @@ export type StoreFormData = {
 export type StoreState = {
   myStore: Array<any>,
   allStores: Array<any>,
+  permission: Array<any>,
   allCategories: Array<any>,
   error: any,
   loading: boolean
@@ -95,7 +96,8 @@ export type locationProp = {
 export type ArrayType = {
   id: number,
   title: string,
-  icon: ImageSourcePropType
+  icon: ImageSourcePropType,
+  navigation: string,
 }
 
 export type WelcomeType = {
@@ -142,4 +144,11 @@ export type ProductFormData1 = {
   category: string;
   sizes: boolean;
   colours: boolean;
+};
+
+export type StaffFormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
 };

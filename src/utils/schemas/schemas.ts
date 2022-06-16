@@ -43,3 +43,10 @@ export const ProductFormData1Schema = yup.object().shape({
   sizes: yup.bool(),
   colours: yup.bool(),
 });
+
+export const StaffFormDataSchema = yup.object().shape({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup.string().email().required('Email is required'),
+  role: yup.string().required('Role is required'),
+});

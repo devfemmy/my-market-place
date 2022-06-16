@@ -5,7 +5,7 @@ import {MainStackParamList} from './types';
 import { colors } from '../utils/themes';
 import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
-import {StoreCreation, AddProduct, PublishProduct, OrderDetails} from '../screens';
+import {StoreCreation, AddProduct, PublishProduct, OrderDetails, AddStaffScreen, StaffScreen, Account} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
 import StoreSuccessScreen from '../screens/StoreSuccessScreen';
 
@@ -78,6 +78,30 @@ export const MainStackNavigator = (): JSX.Element => {
         component={OrderDetails}
         options={() => ({
           title: 'Order Details',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="Staffs"
+        component={StaffScreen}
+        options={() => ({
+          title: 'All Staff',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="AddStaff"
+        component={AddStaffScreen}
+        options={() => ({
+          title: 'Add New Staff',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="Account"
+        component={Account}
+        options={() => ({
+          title: 'Payout Account',
           headerShown: true,
         })}
       />
