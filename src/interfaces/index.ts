@@ -3,8 +3,8 @@ import {ImageSourcePropType} from 'react-native';
 export interface ListCardProps {
     id?: number,
     title: string,
+    route: string,
     icon?: ImageSourcePropType,
-    onPress?: any
 }
 
 export interface OrderCardProps {
@@ -18,4 +18,9 @@ export interface StoreHeaderProps {
  export interface WalletProps {
      escrow: number,
      balance: number
+ }
+ export interface NavHeaderProps {
+    icon?: string,
+    title: string,
+    handlePress?: () => void
  }

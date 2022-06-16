@@ -16,6 +16,14 @@ export const Home = (): JSX.Element => {
     <SafeAreaView>
       {/* <Text text="Home" /> */}
       <Button title={'Sign Out'} onPress={LogOut} />
+      <Text
+        text="Go to Store success screen"
+        onPress={() => navigate('StoreSuccessScreen')}
+      /> 
+       <Text
+        text="Go to Store creation"
+        onPress={() => navigate('AuthStoreCreationScreen')}
+      /> 
       {/* <Text
         text="Go to Welcome screen"
         onPress={() => navigate('WelcomeScreen')}

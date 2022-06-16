@@ -47,9 +47,13 @@ export type StoreState = {
   allStores: Array<any>,
   permission: Array<any>,
   allCategories: Array<any>,
+  storeById: any,
   error: any,
-  loading: boolean
+  loading: boolean,
+  storeImage: string,
 }
+
+
 
 export type OrderState = {
   allOrders: Array<any>,
@@ -152,3 +156,12 @@ export type StaffFormData = {
   email: string;
   role: string;
 };
+export type DeliveryFormData = {
+  state: string;
+  price: string
+}
+
+export type LandmarkFormData = {
+  city: string;
+  price: string
+}

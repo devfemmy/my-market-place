@@ -8,6 +8,11 @@ import {RootBottomTabNavigator} from './RootBottomTabNavigator';
 import {StoreCreation, AddProduct, PublishProduct, OrderDetails, AddStaffScreen, StaffScreen, Account} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
 import StoreSuccessScreen from '../screens/StoreSuccessScreen';
+import AuthStoreSuccessScreen from '../screens/AuthStoreSuccessScreen';
+import EditStore from '../screens/EditStore';
+import DeliveryScreen from '../screens/DeliveryScreen';
+import AddShippingFee from '../screens/AddShippingFee';
+import AuthStoreCreationScreen from '../screens/AuthStoreCreationScreen';
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -32,27 +37,6 @@ export const MainStackNavigator = (): JSX.Element => {
       <MainStack.Screen
         name="HomeTab"
         component={RootBottomTabNavigator}
-        options={() => ({
-          headerShown: false,
-        })}
-      />
-      <MainStack.Screen
-        name="StoreCreationScreen"
-        component={StoreCreation}
-        options={() => ({
-          headerShown: false,
-        })}
-      />
-      <MainStack.Screen
-        name="WelcomeScreen"
-        component={WelcomeScreen}
-        options={() => ({
-          headerShown: false,
-        })}
-      />
-       <MainStack.Screen
-        name="StoreSuccessScreen"
-        component={StoreSuccessScreen}
         options={() => ({
           headerShown: false,
         })}
@@ -102,7 +86,43 @@ export const MainStackNavigator = (): JSX.Element => {
         component={Account}
         options={() => ({
           title: 'Payout Account',
-          headerShown: true,
+          headerShown: true,})}
+        />
+
+        <MainStack.Screen
+        name="AuthStoreCreationScreen"
+        component={AuthStoreCreationScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+
+       <MainStack.Screen
+        name="AuthStoreSuccessScreen"
+        component={AuthStoreSuccessScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+       <MainStack.Screen
+        name="EditStore"
+        component={EditStore}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+       <MainStack.Screen
+        name="DeliveryScreen"
+        component={DeliveryScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+       <MainStack.Screen
+        name="AddShippingFee"
+        component={AddShippingFee}
+        options={() => ({
+          headerShown: false,
         })}
       />
     </MainStack.Navigator>

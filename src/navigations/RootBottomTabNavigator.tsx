@@ -9,6 +9,7 @@ import {RootBottomTabParamList} from './types';
 import {hp} from '../utils/helpers';
 import { colors } from '../utils/themes';
 import { StoreScreen } from '../screens/StoreScreen';
+import Setting from '../screens/SettingScreen';
 
 const RootBottomTab = createBottomTabNavigator<RootBottomTabParamList>();
 
@@ -47,7 +48,7 @@ export const RootBottomTabNavigator = (): JSX.Element => {
       <RootBottomTab.Screen name="Product" component={Product} />
       <RootBottomTab.Screen name="Order" component={Order} />
       <RootBottomTab.Screen name="Inbox" component={Home} />
-      <RootBottomTab.Screen name="Settings" component={Home} />
+      <RootBottomTab.Screen name="Settings" component={Setting} />
     </RootBottomTab.Navigator>
   );
 };
