@@ -24,8 +24,7 @@ export const doPost = async (payload: Object, url: String, v?: String) => {
     }else{
         SERVER_URL = "https://api.bazara.co/api/v1/dev";
     }
-    SERVER_URL = "https://api.bazara.co/api/v2/dev";
-    console.log(SERVER_URL)
+
     var response = await axios.post(SERVER_URL + url, payload);
 
     return response
@@ -46,8 +45,7 @@ export const getRequest = async (url: String, v?: String) => {
     }else{
         SERVER_URL = "https://api.bazara.co/api/v1/dev";
     }
-    SERVER_URL = "https://api.bazara.co/api/v2/dev";
-    console.log(SERVER_URL)
+
     const token = await AsyncStorage.getItem("token");
 
     var response = await axios.get(SERVER_URL + url, {
@@ -77,8 +75,7 @@ export const sendPost = async ( url: String, payload: any, v?: String) => {
     if(v == "v2"){
         SERVER_URL = "https://api.bazara.co/api/v2/dev";
     }
-    SERVER_URL = "https://api.bazara.co/api/v2/dev";
-    console.log(SERVER_URL)
+
     const token = await AsyncStorage.getItem("token");
 
     console.log("action payload---", payload)
@@ -97,4 +94,4 @@ export const sendPost = async ( url: String, payload: any, v?: String) => {
 };
  
 
-export default {doPost} 
+export default {doPost}
