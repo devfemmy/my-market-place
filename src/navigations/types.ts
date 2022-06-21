@@ -25,6 +25,7 @@ export type RootBottomTabParamList = {
 export type MainStackParamList = {
   HomeTab: NavigatorScreenParams<RootBottomTabParamList>;
   Home: undefined;
+  Profile: undefined;
   AuthStoreCreationScreen: undefined;
   AuthStoreSuccessScreen: undefined;
   EditStore: undefined;

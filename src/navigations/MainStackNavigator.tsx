@@ -13,6 +13,7 @@ import EditStore from '../screens/EditStore';
 import DeliveryScreen from '../screens/DeliveryScreen';
 import AddShippingFee from '../screens/AddShippingFee';
 import AuthStoreCreationScreen from '../screens/AuthStoreCreationScreen';
+import Profile from '../screens/Profile';
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -39,6 +40,13 @@ export const MainStackNavigator = (): JSX.Element => {
         component={RootBottomTabNavigator}
         options={() => ({
           headerShown: false,
+        })}
+      />
+      <MainStack.Screen
+        name="Profile"
+        component={Profile}
+        options={() => ({
+          headerShown: true,
         })}
       />
       <MainStack.Screen

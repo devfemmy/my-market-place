@@ -6,4 +6,6 @@ const FailedLogo = require("../assets/error.png") as number
 const NoProducts = require("../assets/images/package.png") as number
 const NoOrders = require("../assets/images/bag.png") as number
 const UniversityLogo = require("../assets/images/Vector.png") as number
-export { LinkLogo, GoogleLogo, AppleLogo, SuccesssLogo, FailedLogo, NoProducts, NoOrders, UniversityLogo }
+const PayoutBack = require("../assets/images/Payoutback.png") as number
+
+export { LinkLogo, GoogleLogo, AppleLogo, SuccesssLogo, FailedLogo, NoProducts, NoOrders, UniversityLogo, PayoutBack }

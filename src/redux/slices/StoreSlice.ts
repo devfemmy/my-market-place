@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { StoreState, StoreCreateFormData } from "../../utils/types";
+import { StoreState, StoreCreateFormData, PayoutFormData } from "../../utils/types";
 import { sendPost, getRequest } from "../../utils/server"
 
 
@@ -12,6 +12,7 @@ const initialState: StoreState = {
     storeById: null,
     allStores: [],
     allCategories: [],
+    payouts: [],
     permission: [{value: 'View Store Details', bool: false}, {value: 'View Store Analysis', bool: false}, {value: 'Manage Store Locations', bool: false}, {value: 'Manage shipping fee', bool: false}],
     storeImage: '',
     loading: false,
@@ -69,6 +70,33 @@ export const getPersonalStore = createAsyncThunk(
     }
 )
 
+export const getPayouts = createAsyncThunk(
+    'store/myPayouts',
+    async () => {
+        const response = await getRequest("/sidehustle/account/payouts")
+        if (response?.status === 200) {
+            return response?.data?.data?.payouts
+        }
+    }
+)
+
+export const addPayout = createAsyncThunk(
+    'store/addPayouts',
+    async (payload: PayoutFormData) => {
+        const response = await sendPost("/sidehustle/account/payouts", payload, 'v2')
+        console.log(response)
+    }
+)
+
+export const updatePayout = createAsyncThunk(
+    'store/updatePayouts',
+    async (payload: PayoutFormData) => {
+        const id = payload._id
+        delete payload._id
+        const response = await sendPost('/sidehustle/account/payouts/'+id+'/update', payload)
+    }
+)
+
 
 export const getAllStore = createAsyncThunk(
     'store/allStore',
@@ -122,6 +150,8 @@ export const StoreSlice = createSlice({
             state.error = action.payload
         }),
 
+
+
         builder.addCase(getStorePermission.pending, (state, action) => {
             state.loading = true
         }),
@@ -133,6 +163,43 @@ export const StoreSlice = createSlice({
             state.error = action.error.message
         }),
 
+
+        builder.addCase(getPayouts.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getPayouts.fulfilled, (state, action) => {
+            state.loading = false
+            state.payouts = action.payload
+        }),
+        builder.addCase(getPayouts.rejected, (state, action) => {
+            state.error = action.error.message
+        }),
+
+        builder.addCase(addPayout.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(addPayout.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(addPayout.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        }),
+
+
+        builder.addCase(updatePayout.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(updatePayout.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(updatePayout.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        }),
+
+
+
         builder.addCase(addStoreImage.pending, (state, action) => {
             state.loading = true
         }),
@@ -143,6 +210,9 @@ export const StoreSlice = createSlice({
         builder.addCase(addStoreImage.rejected, (state, action) => {
             state.error = action.error.message
         })
+
+
+
         builder.addCase(resetStoreImage.pending, (state, action) => {
             state.loading = true
         }),
@@ -153,6 +223,9 @@ export const StoreSlice = createSlice({
         builder.addCase(resetStoreImage.rejected, (state, action) => {
             state.error = action.error.message
         })
+
+        
+
         builder.addCase(getAllCategories.pending, (state, action) => {
             state.loading = true
         }),
@@ -163,6 +236,8 @@ export const StoreSlice = createSlice({
         builder.addCase(getAllCategories.rejected, (state, action) => {
             state.error = action.error.message
         }),
+
+
 
         builder.addCase(getPersonalStore.pending, (state, action) => {
             state.loading = true
@@ -175,6 +250,9 @@ export const StoreSlice = createSlice({
             state.error = action.error.message
         })
 
+
+
+
         builder.addCase(getAllStore.pending, (state, action) => {
             state.loading = true
         }),
@@ -185,6 +263,9 @@ export const StoreSlice = createSlice({
         builder.addCase(getAllStore.rejected, (state, action) => {
             state.error = action.error.message
         }),
+
+
+
         builder.addCase(getStoreById.pending, (state, action) => {
             state.loading = true
         }),
@@ -206,6 +287,10 @@ export const myStore = (state: RootState) => state.store.myStore;
 export const allStores = (state: RootState) => state.store.allStores;
 
 export const permission = (state: RootState) => state.store.permission;
+
+export const loading = (state: RootState) => state.store.loading;
+
+export const payouts = (state: RootState) => state.store.payouts;
 
 export const allCategories = (state: RootState) => state.store.allCategories;
 

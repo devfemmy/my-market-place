@@ -42,7 +42,6 @@ export const Input = memo(
           outlineColor={searchInput ? "transparent" : colors.gray}
           theme={{
             roundness: 7,
-
             colors: {
               primary: colors.bazaraTint,
               background: searchInput ? colors.black : colors.primaryBg,

@@ -193,4 +193,34 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: hp(5)
   },
+  payoutCard: {
+    width: hp(330),
+    height: hp(130),
+    borderRadius: hp(10),
+    marginTop: hp(30),
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden'
+  },
+  list_header: {
+    backgroundColor: colors.black,
+    justifyContent: 'center',
+    marginBottom: hp(20)
+  },
+  list_header_content: {
+    paddingBottom: 0,
+    marginVertical: hp(10)
+  },
+  floating_button: {
+    width: hp(60),
+    height: hp(60),
+    borderRadius: hp(30),
+    backgroundColor: colors.bazaraTint,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: hp(0),
+    right: hp(10)
+  }
 });

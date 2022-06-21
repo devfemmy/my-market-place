@@ -23,10 +23,19 @@ import { getAllCategories, allCategories} from '../../../../redux/slices/StoreSl
 import { resetImage } from '../../../../redux/slices/productSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
+import { createProduct, loading } from '../../../../redux/slices/productSlice';
+import { myStore } from '../../../../redux/slices/StoreSlice';
+import { Notify } from '../../../../utils/functions';
+
+import { ProductCreateFormData } from '../../../../utils/types';
+
 export const AddProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
     const dispatch = useAppDispatch()
     const getList = useAppSelector(allCategories)
+
+    const mystore = useAppSelector(myStore)
+    const loader = useAppSelector(loading)
     
     const initialValues: ProductFormData1 = {
         name: '',
@@ -46,9 +55,34 @@ export const AddProduct = (): JSX.Element => {
         validationSchema: ProductFormData1Schema,
         onSubmit: (val: ProductFormData1) => {
             dispatch(resetImage())
-            navigation.navigate('PublishProduct', {data: val})
+            DraftProduct(val)
+            // navigation.navigate('PublishProduct', {data: val})
         },
     });
+
+    const DraftProduct = async (data: {name: string, description: string, category: string, sizes: boolean, colours: boolean}) => {
+        const payload: ProductCreateFormData = {
+            id: mystore[0]._id,
+            name: data?.name,
+            description: data?.description,
+            categories: data?.category,
+            variants: [],
+            isDraft: true,
+            status: 'draft'
+        }
+        try {
+            var resultAction = await dispatch(createProduct(payload))
+            if(createProduct.fulfilled.match(resultAction)){
+                Notify('Product Drafted!', 'Your product was successfully added to draft', 'success')
+                navigation.navigate('PublishProduct', {data: data})
+            }else{
+                Notify('Product not Added!', 'Your product was not added to draft', 'error')
+            }
+        } catch (error) {
+            Notify('Product not Added!', 'Your product was not added to draft', 'error')
+            console.log(error)
+        }
+    }
 
     return (
         <SafeAreaView>
@@ -94,7 +128,7 @@ export const AddProduct = (): JSX.Element => {
             />
             
             <View style={[globalStyles.rowCenter, globalStyles.footer]}>
-                <Button title={'Continue'} style={styles.btn} onPress={handleSubmit} />
+                <Button isLoading={loader} title={'Continue'} style={styles.btn} onPress={handleSubmit} />
             </View>
         </SafeAreaView>
     );

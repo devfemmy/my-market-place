@@ -11,9 +11,11 @@ import { colors } from '../../utils/themes';
 import { blueUni, blueUser, storeActive, truckLogo, universityLogo, usersLogo } from '../../assets';
 import ListCard from '../../components/resuable/ListCard';
 import { ArrayType } from '../../utils/types';
-
+import { useNavigation } from '@react-navigation/native'
+import { Nav } from '../../utils/types'
 
 const Setting = () => {
+    const navigation = useNavigation<Nav>();
 
     const { signOut } = useContext(AuthContext)
     const [isEnabled, setIsEnabled] = useState(false);
@@ -52,13 +54,13 @@ const Setting = () => {
             id: 1,
             title: "Profile",
             icon: blueUser,
-            route: ''
+            route: 'Profile'
         },
         {
             id: 2,
             title: "Payout Bank Account",
             icon: blueUni,
-            route: ''
+            route: 'Account'
         }
 
     ]
@@ -84,7 +86,7 @@ const Setting = () => {
             <View style={[localStyle.mTop, styles.width90]}>
                 {
                     quickActionPersonal?.map((data: ArrayType) => {
-                        return <ListCard key={data?.id} {...data} />
+                        return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.route)} />
                     })
                 }
             </View>

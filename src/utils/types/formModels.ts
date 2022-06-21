@@ -46,6 +46,7 @@ export type StoreState = {
   myStore: Array<any>,
   allStores: Array<any>,
   permission: Array<any>,
+  payouts: Array<any>,
   allCategories: Array<any>,
   storeById: any,
   error: any,
@@ -65,8 +66,15 @@ export type OrderState = {
   searching: boolean
 }
 
+export type UserState = {
+  userProfile: Array<any>,
+  error: any,
+  loading: boolean,
+}
+
 export type ProductState = {
   myProducts: Array<any>,
+  productBySlug: any,
   newSizes: Array<any>,
   newColours: Array<any>,
   images: Array<string>,
@@ -92,6 +100,16 @@ export type StoreCreateFormData = {
   },
 }
 
+export type ProductCreateFormData = {
+  id: string,
+  name: string,
+  description: string,
+  categories: string,
+  variants: Array<any>,
+  isDraft: boolean,
+  status: string
+}
+
 export type locationProp = {
   state: string,
   city: Array<string>,
@@ -101,7 +119,9 @@ export type ArrayType = {
   id: number,
   title: string,
   icon: ImageSourcePropType,
-  navigation: string,
+  navigation?: string,
+  route?: string,
+  onPress?: any
 }
 
 export type WelcomeType = {
@@ -156,6 +176,15 @@ export type StaffFormData = {
   email: string;
   role: string;
 };
+
+export type PayoutFormData = {
+  name: string;
+  _id?: string;
+  account: string;
+  bankName: string;
+  bankCode?: string;
+};
+
 export type DeliveryFormData = {
   state: string;
   price: string

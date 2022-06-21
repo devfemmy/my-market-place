@@ -14,13 +14,18 @@ import { ImageSelect } from './ImageSelect';
 import { Modalize } from 'react-native-modalize';
 import { Select } from '../../../../components/common/SelectInput';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage } from '../../../../redux/slices/productSlice';
+import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts } from '../../../../redux/slices/productSlice';
 import { currencyFormat, Notify, firstLetterUppercase } from '../../../../utils/functions';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { useRoute } from '@react-navigation/native';
+import { userProfile } from '../../../../redux/slices/userSilce';
+import { ProductCreateFormData } from '../../../../utils/types';
+
+import { myStore } from '../../../../redux/slices/StoreSlice';
 
 export const PublishProduct = (): JSX.Element => {
+    const navigation = useNavigation<Nav>();
     const route = useRoute();
     const data = route?.params?.data
 
@@ -31,6 +36,11 @@ export const PublishProduct = (): JSX.Element => {
     const sizes = useAppSelector(newSizes)
     const items_by_colors = useAppSelector(newColours)
     const item_images = useAppSelector(images)
+
+    const product_slug = useAppSelector(productBySlug)
+
+    const user = useAppSelector(userProfile)[0]
+    const mystore = useAppSelector(myStore)
 
 
     const [edit, setEdit] = useState(false)
@@ -360,6 +370,195 @@ export const PublishProduct = (): JSX.Element => {
         )
     }
 
+    const SubmitForm = () => {
+        if(data.sizes && !data.colours){
+            handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
+        }
+    }
+
+    const handleBasic = async (
+        draft: boolean, 
+        price: string,
+        quantity: string,
+        id: string,
+        item_images: Array<string>,
+        data: {name: string, description: string, category: string}
+        ) => {
+        const processedImages = item_images.filter((val: string) => {
+            if(val != null && val != ''){
+                return val
+            }
+        })
+        if(processedImages.length < 1){
+            Notify('Failed!', 'Minimum of 1 image upload is required', 'error')
+            return
+        }
+    
+        const payload: ProductCreateFormData = {
+            id: id,
+            name: data?.name,
+            description: data?.description,
+            categories: data?.category,
+            variants: [
+                {
+                    spec: [
+                        price,
+                        quantity
+
+                    ],
+                    variantImg: processedImages
+                }
+            ],
+            isDraft: draft,
+            status: 'active'
+        }
+        try {
+            var resultAction = await dispatch(updateProduct(payload))
+            if(updateProduct.fulfilled.match(resultAction)){
+                Notify('Product Added!', 'Your product was successfully added', 'success')
+            }else{
+                Notify('Product not Added!', 'Your product was not added', 'error')
+            }
+        } catch (error) {
+            Notify('Product not Added!', 'Your product was not added', 'error')
+            console.log(error)
+        }
+    }
+
+    const handleSizeAlone = async (
+        draft: boolean, 
+        sizes: Array<any>,
+        id: string,
+        item_images: Array<string>,
+        data: {name: string, description: string, category: string}
+        ) => {
+        if(product_slug?._id == null){
+            navigation.goBack()
+            return
+        }
+        const processedImages = item_images.filter((val: string) => {
+            if(val != null && val != ''){
+                return val
+            }
+        })
+        if(sizes?.length < 1){
+            Notify('Failed!', 'Minimum of 1 size option is required', 'error')
+            return
+        }
+        if(processedImages.length < 1){
+            Notify('Failed!', 'Minimum of 1 image upload is required', 'error')
+            return
+        }
+
+        const newSizeList = sizes?.map(data => {
+            return {
+                size: data.size,
+                price: data.price,
+                quantity: data.quantity
+            }
+        })
+
+        // console.log(sizes)
+        // console.log(newSizeList)
+        console.log(processedImages)
+
+        const payload: ProductCreateFormData = {
+            id: product_slug._id,
+            name: data?.name,
+            description: data?.description,
+            categories: data?.category,
+            variants: [],
+            isDraft: draft,
+            status: 'active'
+        }
+
+        try {
+            var resultAction = await dispatch(updateProduct(payload))
+            if(updateProduct.fulfilled.match(resultAction)){
+                Notify('Product Added!', 'Your product was successfully added', 'success')
+                await dispatch(getAllProducts(id))
+            }else{
+                Notify('Product not Added!', 'Your product was not added', 'error')
+            }
+        } catch (error) {
+            Notify('Product not Added!', 'Your product was not added', 'error')
+            console.log(error)
+        }
+    }
+
+    const handleColorAlone = async (
+        draft: boolean, 
+        price: string,
+        quantity: string,
+        id: string,
+        item_images: Array<string>,
+        data: {name: string, description: string, category: string}
+        ) => {
+        const processedImages = item_images.filter((val: string) => {
+            if(val != null && val != ''){
+                return val
+            }
+        })
+        if(processedImages.length < 1){
+            Notify('Failed!', 'Minimum of 1 image upload is required', 'error')
+            return
+        }
+    
+        const payload: ProductCreateFormData = {
+            id: id,
+            name: data?.name,
+            description: data?.description,
+            categories: data?.category,
+            variants: [
+                {
+                    spec: [
+                        price,
+                        quantity
+
+                    ],
+                    variantImg: processedImages
+                }
+            ],
+            isDraft: draft,
+            status: 'active'
+        }
+        try {
+            var resultAction = await dispatch(updateProduct(payload))
+            if(updateProduct.fulfilled.match(resultAction)){
+                Notify('Product Added!', 'Your product was successfully added', 'success')
+            }else{
+                Notify('Product not Added!', 'Your product was not added', 'error')
+            }
+        } catch (error) {
+            Notify('Product not Added!', 'Your product was not added', 'error')
+            console.log(error)
+        }
+    }
+
+    const handleColorMultiple = async (id: string, draft: boolean, variants: Array<any>) => {
+        const payload: ProductCreateFormData = {
+            id: id,
+            name: data?.name,
+            description: data?.description,
+            categories: data?.category,
+            variants: variants,
+            isDraft: draft,
+            status: 'active'
+        }
+
+        try {
+            var resultAction = await dispatch(updateProduct(payload))
+            if(updateProduct.fulfilled.match(resultAction)){
+                Notify('Product Added!', 'Your product was successfully added', 'success')
+            }else{
+                Notify('Product not Added!', 'Your product was not added', 'error')
+            }
+        } catch (error) {
+            Notify('Product not Added!', 'Your product was not added', 'error')
+            console.log(error)
+        }
+    }
+
     return (
         <>
         <ScrollView style={[globalStyles.wrapper, {paddingTop: hp(20)}]}>
@@ -370,7 +569,7 @@ export const PublishProduct = (): JSX.Element => {
             {data.sizes && !data.colours ? renderSizePage():null}
             {!data.sizes && data.colours ? renderColourPage():null}
             <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-                <Button title={'Publish'} style={styles.btn}/>
+                <Button title={'Publish'} onPress={SubmitForm} style={styles.btn}/>
             </View>
         </ScrollView>
         <Modalize

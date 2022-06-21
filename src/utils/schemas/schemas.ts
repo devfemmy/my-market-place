@@ -8,6 +8,11 @@ export const LoginSchema = yup.object().shape({
     .required('Password is required'),
 });
 
+export const updateSchema = yup.object().shape({
+  fName: yup.string().required('First Name is required'),
+  lName: yup.string().required('Last Name is required')
+});
+
 export const RegisterSchema = yup.object().shape({
   fName: yup.string().required('First name is required'),
   lName: yup.string().required('Last name is required'),
@@ -50,6 +55,12 @@ export const StaffFormDataSchema = yup.object().shape({
   lastName: yup.string().required('Last name is required'),
   email: yup.string().email().required('Email is required'),
   role: yup.string().required('Role is required'),
+});
+
+export const PayoutFormDataSchema = yup.object().shape({
+  name: yup.string().required('Account name is required'),
+  account: yup.string().required('Account number is required'),
+  bankName: yup.string().required('Bank is required'),
 });
 
 

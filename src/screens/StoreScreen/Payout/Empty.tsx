@@ -13,13 +13,39 @@ import { Modalize } from 'react-native-modalize';
 import { Select } from '../../../components/common/SelectInput';
 import { Input } from '../../../components/common/TextInput';
 import { styles } from './styles';
-
+import banks from '../../../utils/banks';
+import { useFormik } from 'formik';
+import { PayoutFormData } from '../../../utils/types';
+import { PayoutFormDataSchema } from '../../../utils/constants';
+import { addPayout, getPayouts, loading } from '../../../redux/slices/StoreSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 export const NoAccount = (): JSX.Element => {
-  const {navigate} = useNavigation<Nav>();
-  const {signIn} = useContext(AuthContext)
+  const dispatch = useAppDispatch()
+  const loader = useAppSelector(loading)
   const modalizeRef = useRef(null);
+
+  const initialValues: PayoutFormData = {
+    name: '',
+    account: '',
+    bankName: '',
+  };
   
-  const bankList = ["Access", "UBA", "First Bank", "Gtb"]
+
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
+  useFormik({
+    initialValues,
+    validationSchema: PayoutFormDataSchema,
+    onSubmit: async (val: PayoutFormData) => {
+      let form = val
+      const bankCode = banks.find((bank) => val.bankName == bank.label)
+      form.bankCode = bankCode.code
+      await dispatch(addPayout(form))
+      modalizeRef.current?.close()
+      await dispatch(getPayouts())
+    },
+  });
+  
+  const bankList = banks.map((val) => {return val.label})
 
   const renderHeader = () => (
         <View style={styles.modal__header}>
@@ -27,19 +53,31 @@ export const NoAccount = (): JSX.Element => {
         </View>
     );
 
+
   const renderBody = () => (
         <>
             <Select
                 items={bankList}
+                defaultValue={values.bankName}
                 placeholder={'Bank'}
+                setState={handleChange('bankName')}
+                errorMsg={touched.bankName ? errors.bankName : undefined}
             />
             <Input
                 label={'Account Number'}
+                value={values.account}
+                onBlur={handleBlur('account')}
+                onChangeText={handleChange('account')}
+                errorMsg={touched.account ? errors.account : undefined}
             />
             <Input
                 label={'Account Name'}
+                value={values.name}
+                onBlur={handleBlur('name')}
+                onChangeText={handleChange('name')}
+                errorMsg={touched.name ? errors.name : undefined}
             />
-            <Button onPress={() => console.log('Bank')} title={'Add Payout Account'}/>
+            <Button isLoading={loader} onPress={handleSubmit} title={'Add Payout Account'}/>
         </>
     );
 

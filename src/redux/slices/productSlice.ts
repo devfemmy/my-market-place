@@ -5,11 +5,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { ProductState } from "../../utils/types";
-import {getRequest} from "../../utils/server"
+import { ProductState, ProductCreateFormData } from "../../utils/types";
+import {getRequest, sendPost} from "../../utils/server"
 
 const initialState: ProductState = {
     myProducts: [],
+    productBySlug: null,
     newSizes: [],
     newColours: [],
     images: ["", "", "", "", "", ""],
@@ -19,12 +20,58 @@ const initialState: ProductState = {
 }
 
 export const getAllProducts = createAsyncThunk(
-    'product/allProduct',
+    'product/allProducts',
     async (payload: string) => {
         const response = await getRequest("/sidehustle/" + payload + "/products")
         if (response?.status === 200) {
             return response?.data?.data
         }
+    }
+)
+
+export const getProductBySlug = createAsyncThunk(
+    'product/allProduct',
+    async (payload: string) => {
+        const response = await getRequest(`/sidehustle/product/?slug=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const createProduct = createAsyncThunk(
+    'product/createProduct',
+    async (payload: ProductCreateFormData) => {
+        const payloadData = {
+            name: payload?.name,
+            description: payload?.description,
+            categories: payload?.categories,
+            variants: payload?.variants,
+            isDraft: payload?.isDraft,
+            status: payload?.status
+        }
+        const response = await sendPost(`/sidehustle/${payload.id}/products/add`, payloadData)
+        console.log(response?.data)
+        return response?.data
+    }
+)
+
+export const updateProduct = createAsyncThunk(
+    'product/updateProduct',
+    async (payload: ProductCreateFormData) => {
+        // const response = await sendPost(`/sidehustle/product/${payload.id}/update`, payload, 'v2')
+        // console.log(response?.data)
+        try {
+            const response = await sendPost(`/sidehustle/product/${payload.id}/update`, payload)
+            console.log(response?.data)
+            return response?.data
+        } catch (error) {
+            console.log(error)
+            console.log(error?.message)
+            console.log(error?.status)
+            console.log(error?.data)
+        }
+        
     }
 )
 
@@ -193,7 +240,7 @@ export const ProductSlice = createSlice({
         })
 
 
-        // GET ALL PRODUCTS
+        // GET PRODUCTS
         builder.addCase(getAllProducts.pending, (state) => {
             state.loading = true
         })
@@ -204,12 +251,55 @@ export const ProductSlice = createSlice({
         builder.addCase(getAllProducts.rejected, (state, action) => {
             state.error = action.error.message
         })
+
+
+        builder.addCase(getProductBySlug.pending, (state, action) => {
+            state.loading = true,
+            state.productBySlug = null
+        }),
+        builder.addCase(getProductBySlug.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.productBySlug = action.payload
+        })
+        builder.addCase(getProductBySlug.rejected, (state, action) => {
+            state.error = action.error.message,
+            state.productBySlug = null
+        })
+
+
+        //CREATE PRODUCTS
+
+        builder.addCase(createProduct.pending, (state, action) => {
+            state.loading = true
+        })
+        builder.addCase(createProduct.fulfilled, (state, action) => {
+            state.loading = false
+            state.productBySlug = action.payload?.message
+        })
+        builder.addCase(createProduct.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+
+        builder.addCase(updateProduct.pending, (state, action) => {
+            state.loading = true
+        })
+        builder.addCase(updateProduct.fulfilled, (state, action) => {
+            state.loading = false
+        })
+        builder.addCase(updateProduct.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
     }
 })
 
 export const images = (state: RootState) => state.product.images;
 export const myProducts = (state: RootState) => state.product.myProducts;
+export const loading = (state: RootState) => state.product.loading;
+export const productBySlug = (state: RootState) => state.product.productBySlug;
 export const newSizes = (state: RootState) => state.product.newSizes;
 export const newColours = (state: RootState) => state.product.newColours;
+
 
 export default ProductSlice.reducer;
