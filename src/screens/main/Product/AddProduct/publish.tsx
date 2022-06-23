@@ -14,7 +14,7 @@ import { ImageSelect } from './ImageSelect';
 import { Modalize } from 'react-native-modalize';
 import { Select } from '../../../../components/common/SelectInput';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts } from '../../../../redux/slices/productSlice';
+import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts, getProductBySlug } from '../../../../redux/slices/productSlice';
 import { currencyFormat, Notify, firstLetterUppercase } from '../../../../utils/functions';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -23,12 +23,14 @@ import { userProfile } from '../../../../redux/slices/userSilce';
 import { ProductCreateFormData } from '../../../../utils/types';
 
 import { myStore } from '../../../../redux/slices/StoreSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const PublishProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
     const route = useRoute();
     const data = route?.params?.data
-
+    const [slug, setSlug] = useState('')
+   
     const modalizeRef = useRef(null);
     const sizeList = ["S", "M", "L", "XL", "XXL", "XXXL"]
 
@@ -50,6 +52,19 @@ export const PublishProduct = (): JSX.Element => {
     const [colorDescription, setColorDescription] = useState('')
     const [selectedPrice, setSelectedPrice] = useState('0')
     const [selectedQuantity, setSelectedQuantity] = useState('0')
+
+
+
+    
+
+    useEffect(() => {
+        const loadData = async () => {
+            const data = await AsyncStorage.getItem('slug')
+            setSlug(data)
+            dispatch(getProductBySlug(data))
+        }
+        loadData()
+    }, [slug])
 
     const updateQuantity = (val: string) => {
         if(val == 'minus' && Number(selectedQuantity) < 1){
@@ -150,7 +165,8 @@ export const PublishProduct = (): JSX.Element => {
                                 fontSize={hp(12)}
                                 style={styles.text} />
                                 <Text
-                                text={currencyFormat(item?.price)}
+                                // text={currencyFormat(item?.price)}
+                                text={item?.price}
                                 fontWeight={"300"}
                                 fontSize={hp(12)}
                                 color={colors.bazaraTint}
@@ -370,9 +386,45 @@ export const PublishProduct = (): JSX.Element => {
         )
     }
 
-    const SubmitForm = () => {
-        if(data.sizes && !data.colours){
-            handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
+    console.log("sluggggg",{product_slug})
+
+    const SubmitForm = async () => {
+        // if(data.sizes && !data.colours){
+        //     handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
+        // }
+        console.log("datadd", data, product_slug)
+     
+        const payload = {
+            id: product_slug?._id,
+            name: data?.name,
+            description: data?.description,
+            categories: data?.category,
+            variants: [
+                {
+                    spec: [
+                        {
+                            price: 500,
+                            quantity: 2
+                        }
+                    ],
+                    variantImg: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKL4ojtxjpc4G2uWRdvgBZ7bhlTRTUuVtGtM4iRwsf0w&s']
+                }
+            ],
+            isDraft: false,
+            status: 'active'
+        }
+
+        try {
+            var resultAction = await dispatch(updateProduct(payload))
+            if(updateProduct.fulfilled.match(resultAction)){
+                dispatch(getProductBySlug(data))
+                Notify('Product Updated!', 'Your product was successfully updated', 'success')
+            }else{
+                Notify('Product not Updated!', 'Your product was not Updated', 'error')
+            }
+        }
+        catch(e) {
+            console.log({e})
         }
     }
 
@@ -569,7 +621,7 @@ export const PublishProduct = (): JSX.Element => {
             {data.sizes && !data.colours ? renderSizePage():null}
             {!data.sizes && data.colours ? renderColourPage():null}
             <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-                <Button title={'Publish'} onPress={SubmitForm} style={styles.btn}/>
+                <Button title={'Publishs'} onPress={SubmitForm} style={styles.btn}/>
             </View>
         </ScrollView>
         <Modalize

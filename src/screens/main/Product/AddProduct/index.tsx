@@ -28,6 +28,7 @@ import { myStore } from '../../../../redux/slices/StoreSlice';
 import { Notify } from '../../../../utils/functions';
 
 import { ProductCreateFormData } from '../../../../utils/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AddProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
@@ -74,6 +75,7 @@ export const AddProduct = (): JSX.Element => {
             var resultAction = await dispatch(createProduct(payload))
             if(createProduct.fulfilled.match(resultAction)){
                 Notify('Product Drafted!', 'Your product was successfully added to draft', 'success')
+               await AsyncStorage.setItem('slug', resultAction?.payload?.message?.slug)
                 navigation.navigate('PublishProduct', {data: data})
             }else{
                 Notify('Product not Added!', 'Your product was not added to draft', 'error')
