@@ -14,7 +14,7 @@ import { ImageSelect } from './ImageSelect';
 import { Modalize } from 'react-native-modalize';
 import { Select } from '../../../../components/common/SelectInput';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts, getProductBySlug } from '../../../../redux/slices/productSlice';
+import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts, getProductBySlug, loading, addSizeColour } from '../../../../redux/slices/productSlice';
 import { currencyFormat, Notify, firstLetterUppercase } from '../../../../utils/functions';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -38,6 +38,8 @@ export const PublishProduct = (): JSX.Element => {
     const sizes = useAppSelector(newSizes)
     const items_by_colors = useAppSelector(newColours)
     const item_images = useAppSelector(images)
+
+    const loader = useAppSelector(loading)
 
     const product_slug = useAppSelector(productBySlug)
 
@@ -229,23 +231,48 @@ export const PublishProduct = (): JSX.Element => {
         }
     }
 
-    const addNewColour = () => {
+    const addNewColour = async () => {
         const processedImages = item_images.filter((val: string) => {
             if(val != null && val != ''){
                 return val
             }
         })
-        if(processedImages.length < 3 || Number(selectedPrice) < 1 || Number(selectedQuantity) < 1 || colorDescription == ''){
+        if(processedImages.length < 1 || Number(selectedPrice) < 1 || Number(selectedQuantity) < 1 || colorDescription == ''){
             Notify('Error!', 'Please check your form', 'error')
             return
         }
 
         if(edit){
-            dispatch(editColour({index: editable, item: {colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}}))
+            await dispatch(editColour({index: editable, item: {colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}}))
             setEdit(false)
         }else{
-            dispatch(addColour({colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}))
+            await dispatch(addColour({colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}))
+            navigation.goBack()
         }
+        dispatch(resetImage())
+    }
+
+    const addNewSizeColour = async () => {
+        const processedImages = item_images.filter((val: string) => {
+            if(val != null && val != ''){
+                return val
+            }
+        })
+        if(processedImages.length < 1 || colorDescription == ''){
+            Notify('Error!', 'Please check your form', 'error')
+            return
+        }
+        if(sizes?.length < 1){
+            Notify('Failed!', 'Minimum of 1 size option is required', 'error')
+            return
+        }
+        if(colorDescription == ''){
+            Notify('Failed!', 'Check your color descrption.', 'error')
+            return
+        }
+        await dispatch(addSizeColour({colour: colorDescription, size: sizes, images: processedImages}))
+        navigation.goBack()
+
         dispatch(resetImage())
     }
 
@@ -332,7 +359,7 @@ export const PublishProduct = (): JSX.Element => {
                         <MiniButton onPress={() => updateQuantity('plus')} icon={'plus'}/>
                     </View>
                 </View>
-                <FlatList
+                {/* <FlatList
                     data={items_by_colors}
                     renderItem={renderColorList}
                     scrollEnabled={false}
@@ -349,7 +376,7 @@ export const PublishProduct = (): JSX.Element => {
                     textAlign='left'
                     fontSize={hp(16)}
                     text={edit ? "Update" : "Add Another Colour"} />
-                </View>
+                </View> */}
             </>
         )
     }
@@ -360,15 +387,16 @@ export const PublishProduct = (): JSX.Element => {
                 <View>
                     <Input
                         label={'Colour Description'}
-                        value={""}
+                        value={colorDescription}
+                        onChangeText={(text) => setColorDescription(text)}
                     />
                 </View>
+                <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Colour sizes *" />
                 <FlatList
                     data={sizes}
                     renderItem={renderSizesList}
                     scrollEnabled={false}
                 />
-                <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Colour sizes *" />
                 <View style={[globalStyles.rowStart, styles.lowerContainer]}>
                     <MiniButton 
                     iconSize={hp(15)}
@@ -386,45 +414,20 @@ export const PublishProduct = (): JSX.Element => {
         )
     }
 
-    console.log("sluggggg",{product_slug})
-
     const SubmitForm = async () => {
-        // if(data.sizes && !data.colours){
-        //     handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
-        // }
-        console.log("datadd", data, product_slug)
-     
-        const payload = {
-            id: product_slug?._id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: [
-                {
-                    spec: [
-                        {
-                            price: 500,
-                            quantity: 2
-                        }
-                    ],
-                    variantImg: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKL4ojtxjpc4G2uWRdvgBZ7bhlTRTUuVtGtM4iRwsf0w&s']
-                }
-            ],
-            isDraft: false,
-            status: 'active'
+        if(!data.sizes && !data.colours){
+            handleBasic(false, selectedPrice, selectedQuantity, mystore[0]._id, item_images, data)
         }
-
-        try {
-            var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
-                dispatch(getProductBySlug(data))
-                Notify('Product Updated!', 'Your product was successfully updated', 'success')
-            }else{
-                Notify('Product not Updated!', 'Your product was not Updated', 'error')
-            }
+        else if(data.sizes && !data.colours){
+            handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
         }
-        catch(e) {
-            console.log({e})
+        else if(!data.sizes && data.colours){
+            addNewColour()
+        }
+        else if(data.sizes && data.colours){
+            addNewSizeColour()
+        }else{
+            return
         }
     }
 
@@ -445,18 +448,32 @@ export const PublishProduct = (): JSX.Element => {
             Notify('Failed!', 'Minimum of 1 image upload is required', 'error')
             return
         }
+
+        console.log(price)
+        console.log(quantity)
+
+        if(Number(price) < 500){
+            Notify('Failed!', 'Minimum price of N500', 'error')
+            return
+        }
+
+        if(Number(quantity) < 1){
+            Notify('Failed!', 'Invalid quantity', 'error')
+            return
+        }
     
         const payload: ProductCreateFormData = {
-            id: id,
+            id: product_slug._id,
             name: data?.name,
             description: data?.description,
             categories: data?.category,
             variants: [
                 {
                     spec: [
-                        price,
-                        quantity
-
+                        {
+                            price: price,
+                            quantity: quantity
+                        }
                     ],
                     variantImg: processedImages
                 }
@@ -468,6 +485,7 @@ export const PublishProduct = (): JSX.Element => {
             var resultAction = await dispatch(updateProduct(payload))
             if(updateProduct.fulfilled.match(resultAction)){
                 Notify('Product Added!', 'Your product was successfully added', 'success')
+                await dispatch(getAllProducts(id))
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
             }
@@ -502,24 +520,17 @@ export const PublishProduct = (): JSX.Element => {
             return
         }
 
-        const newSizeList = sizes?.map(data => {
-            return {
-                size: data.size,
-                price: data.price,
-                quantity: data.quantity
-            }
-        })
-
-        // console.log(sizes)
-        // console.log(newSizeList)
-        console.log(processedImages)
-
         const payload: ProductCreateFormData = {
             id: product_slug._id,
             name: data?.name,
             description: data?.description,
             categories: data?.category,
-            variants: [],
+            variants: [
+                {
+                    spec: sizes,
+                    variantImg: processedImages
+                }
+            ],
             isDraft: draft,
             status: 'active'
         }
@@ -538,76 +549,15 @@ export const PublishProduct = (): JSX.Element => {
         }
     }
 
-    const handleColorAlone = async (
-        draft: boolean, 
-        price: string,
-        quantity: string,
-        id: string,
-        item_images: Array<string>,
-        data: {name: string, description: string, category: string}
-        ) => {
-        const processedImages = item_images.filter((val: string) => {
-            if(val != null && val != ''){
-                return val
-            }
-        })
-        if(processedImages.length < 1){
-            Notify('Failed!', 'Minimum of 1 image upload is required', 'error')
-            return
+    const BtnTitle = () => {
+        if(!data.sizes && data.colours){
+            return 'Add this colour'
         }
-    
-        const payload: ProductCreateFormData = {
-            id: id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: [
-                {
-                    spec: [
-                        price,
-                        quantity
-
-                    ],
-                    variantImg: processedImages
-                }
-            ],
-            isDraft: draft,
-            status: 'active'
+        else if(data.sizes && data.colours){
+            return 'Add this colour'
         }
-        try {
-            var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
-                Notify('Product Added!', 'Your product was successfully added', 'success')
-            }else{
-                Notify('Product not Added!', 'Your product was not added', 'error')
-            }
-        } catch (error) {
-            Notify('Product not Added!', 'Your product was not added', 'error')
-            console.log(error)
-        }
-    }
-
-    const handleColorMultiple = async (id: string, draft: boolean, variants: Array<any>) => {
-        const payload: ProductCreateFormData = {
-            id: id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: variants,
-            isDraft: draft,
-            status: 'active'
-        }
-
-        try {
-            var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
-                Notify('Product Added!', 'Your product was successfully added', 'success')
-            }else{
-                Notify('Product not Added!', 'Your product was not added', 'error')
-            }
-        } catch (error) {
-            Notify('Product not Added!', 'Your product was not added', 'error')
-            console.log(error)
+        else{
+            return 'Publish'
         }
     }
 
@@ -621,7 +571,7 @@ export const PublishProduct = (): JSX.Element => {
             {data.sizes && !data.colours ? renderSizePage():null}
             {!data.sizes && data.colours ? renderColourPage():null}
             <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-                <Button title={'Publishs'} onPress={SubmitForm} style={styles.btn}/>
+                <Button isLoading={loader} title={BtnTitle()} onPress={SubmitForm} style={styles.btn}/>
             </View>
         </ScrollView>
         <Modalize
