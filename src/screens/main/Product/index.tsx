@@ -18,6 +18,7 @@ import { Products } from './Products';
 export const Product = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const mystore = useAppSelector(myStore)
+  const myproducts = useAppSelector(myProducts)
   const products = useAppSelector(selectedProducts)
   const loader = useAppSelector(loading)
   
@@ -39,7 +40,7 @@ export const Product = (): JSX.Element => {
 
   return (
     <SafeAreaView>
-      {products.length < 1 || mystore.length < 1 ? <NoProduct/> : <Products data={products} store={mystore[0]}/>}
+      {myproducts.length < 1 || mystore.length < 1 ? <NoProduct/> : <Products data={products} store={mystore[0]}/>}
     </SafeAreaView>
   );
 };
