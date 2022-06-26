@@ -2,6 +2,8 @@ import { Platform, AlertType } from "react-native";
 import { colors } from "./themes";
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Notifier, NotifierComponents} from 'react-native-notifier';
+import 'intl'
+import 'intl/locale-data/jsonp/en'
 
 export const currencyFormat = (value: string | number | any) =>{
     if(value == "" || value == null){
