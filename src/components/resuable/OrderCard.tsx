@@ -50,7 +50,8 @@ const OrderCard: React.FC<OrderCardProps> = ({ item }) => {
                         color={colors.gray}
                         style={styles.text} />
                         <Text
-                        text={currencyFormat(item?.orderInfo?.price)}
+                        // text={currencyFormat(item?.orderInfo?.price)}
+                        text={item?.orderInfo?.price}
                         numberOfLines={1} fontWeight={"700"}
                         fontSize={17}
                         style={styles.text} />

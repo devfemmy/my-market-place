@@ -81,8 +81,6 @@ export const sendPost = async ( url: String, payload: any, v?: String) => {
     console.log(SERVER_URL)
     const token = await AsyncStorage.getItem("token");
 
-    console.log("action payload---", payload)
-
     var response = await axios.post(SERVER_URL + url, payload, {
         headers: {
           authorization: `Bearer ${token}`,

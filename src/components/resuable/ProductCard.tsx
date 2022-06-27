@@ -41,7 +41,8 @@ const ProductCard: React.FC<OrderCardProps> = ({ onIconPress, item }) => {
                     <Text text={item?.name} numberOfLines={1} fontWeight={"600"} fontSize={hp(17)} style={styles.text} />
                     <View style={globalStyles.rowStart}>
                         <Text
-                            text={currencyFormat(item?.variants[0]?.spec[0].price)}
+                            // text={currencyFormat(item?.variants[0]?.spec[0].price)}
+                            text={item?.variants[0]?.spec[0].price}
                             numberOfLines={1}
                             fontWeight={"500"}
                             color={colors.darkGrey}
