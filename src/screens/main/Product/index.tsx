@@ -12,14 +12,16 @@ import {NoProduct} from './Empty';
 import { getUserDetails } from '../../../redux/slices/userSilce';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
 import { myStore } from '../../../redux/slices/StoreSlice';
-import { getAllProducts, myProducts, loading } from '../../../redux/slices/productSlice';
+import { getAllProducts, myProducts, loading, selectedProducts, searching } from '../../../redux/slices/productSlice';
 import { Products } from './Products';
 
 export const Product = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const mystore = useAppSelector(myStore)
-  const products = useAppSelector(myProducts)
+  const myproducts = useAppSelector(myProducts)
+  const products = useAppSelector(selectedProducts)
   const loader = useAppSelector(loading)
+  
 
   useEffect(() => {
     dispatch(getUserDetails())
@@ -38,7 +40,7 @@ export const Product = (): JSX.Element => {
 
   return (
     <SafeAreaView>
-      {products.length < 1 ? <NoProduct/> : <Products data={products} store={mystore[0]}/>}
+      {myproducts.length < 1 || mystore.length < 1 ? <NoProduct/> : <Products data={products} store={mystore[0]}/>}
     </SafeAreaView>
   );
 };

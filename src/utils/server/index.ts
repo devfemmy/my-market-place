@@ -95,4 +95,4 @@ export const sendPost = async ( url: String, payload: any, v?: String) => {
 };
  
 
-export default {doPost} 
+export default {doPost}

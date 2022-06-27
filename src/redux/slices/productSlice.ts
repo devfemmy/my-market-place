@@ -7,12 +7,16 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { ProductState, ProductCreateFormData } from "../../utils/types";
 import {getRequest, sendPost} from "../../utils/server"
+import { boolean } from "yup";
 
 const initialState: ProductState = {
     myProducts: [],
+    selectedProducts: [],
+    searching: false,
     productBySlug: null,
     newSizes: [],
     newColours: [],
+    newSizeColours: [],
     images: ["", "", "", "", "", ""],
     categories: [],
     loading: false,
@@ -26,6 +30,13 @@ export const getAllProducts = createAsyncThunk(
         if (response?.status === 200) {
             return response?.data?.data
         }
+    }
+)
+
+export const searchProducts = createAsyncThunk(
+    'product/searchingProduct',
+    (payload: string) => {
+        return payload
     }
 )
 
@@ -96,6 +107,13 @@ export const addColour = createAsyncThunk(
     }
 )
 
+export const addSizeColour = createAsyncThunk(
+    'product/sizecoloursadd',
+    (payload: {colour: string, size: Array<any>, images: Array<string>}) => {
+        return payload
+    }
+)
+
 export const editSize = createAsyncThunk(
     'product/sizesedit',
     (payload: {index: number, item: {size: string, price: number, quantity: number}}) => {
@@ -124,6 +142,13 @@ export const deleteColour = createAsyncThunk(
     }
 )
 
+export const deleteSizeColour = createAsyncThunk(
+    'product/sizecoloursdelete',
+    (payload: number) => {
+        return payload
+    }
+)
+
 
 export const resetImage = createAsyncThunk(
     'product/resetimages',
@@ -131,7 +156,6 @@ export const resetImage = createAsyncThunk(
         return ["", "", "", "", "", ""]
     }
 )
-
 
 
 export const ProductSlice = createSlice({
@@ -240,6 +264,34 @@ export const ProductSlice = createSlice({
         })
 
 
+        // SIZE COLOURS
+
+        builder.addCase(addSizeColour.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(addSizeColour.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.newSizeColours = state.newSizeColours.concat([action.payload])
+            state.newSizes = []
+        })
+        builder.addCase(addSizeColour.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+
+        builder.addCase(deleteSizeColour.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(deleteSizeColour.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.newSizeColours.splice(action.payload, 1)
+        })
+        builder.addCase(deleteSizeColour.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
         // GET PRODUCTS
         builder.addCase(getAllProducts.pending, (state) => {
             state.loading = true
@@ -247,8 +299,24 @@ export const ProductSlice = createSlice({
         builder.addCase(getAllProducts.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false
             state.myProducts = action.payload
+            state.selectedProducts = action.payload
         })
         builder.addCase(getAllProducts.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+        builder.addCase(searchProducts.pending, (state) => {
+            state.searching = true
+        })
+        builder.addCase(searchProducts.fulfilled, (state, action: PayloadAction<any>) => {
+            state.selectedProducts = state.myProducts.filter(function(val: any){
+                if(val?.name.toLowerCase().startsWith(action.payload.toLowerCase())){
+                    return val
+                }
+            })
+            state.searching = false
+        })
+        builder.addCase(searchProducts.rejected, (state, action) => {
             state.error = action.error.message
         })
 
@@ -275,6 +343,10 @@ export const ProductSlice = createSlice({
         builder.addCase(createProduct.fulfilled, (state, action) => {
             state.loading = false
             state.productBySlug = action.payload?.message
+            state.newSizes = []
+            state.newColours = []
+            state.newSizeColours = []
+            state.images = ["", "", "", "", "", ""]
         })
         builder.addCase(createProduct.rejected, (state, action) => {
             state.loading = false,
@@ -286,6 +358,10 @@ export const ProductSlice = createSlice({
         })
         builder.addCase(updateProduct.fulfilled, (state, action) => {
             state.loading = false
+            state.newSizes = []
+            state.newColours = []
+            state.newSizeColours = []
+            state.images = ["", "", "", "", "", ""]
         })
         builder.addCase(updateProduct.rejected, (state, action) => {
             state.loading = false,
@@ -296,10 +372,12 @@ export const ProductSlice = createSlice({
 
 export const images = (state: RootState) => state.product.images;
 export const myProducts = (state: RootState) => state.product.myProducts;
+export const selectedProducts = (state: RootState) => state.product.selectedProducts;
 export const loading = (state: RootState) => state.product.loading;
+export const searching = (state: RootState) => state.product.searching;
 export const productBySlug = (state: RootState) => state.product.productBySlug;
 export const newSizes = (state: RootState) => state.product.newSizes;
 export const newColours = (state: RootState) => state.product.newColours;
-
+export const newSizeColours = (state: RootState) => state.product.newSizeColours;
 
 export default ProductSlice.reducer;

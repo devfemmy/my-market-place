@@ -74,9 +74,12 @@ export type UserState = {
 
 export type ProductState = {
   myProducts: Array<any>,
+  selectedProducts: Array<any>,
+  searching: boolean,
   productBySlug: any,
   newSizes: Array<any>,
   newColours: Array<any>,
+  newSizeColours: Array<any>,
   images: Array<string>,
   categories: Array<string>,
   error: any,

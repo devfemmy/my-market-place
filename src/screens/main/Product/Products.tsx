@@ -26,11 +26,17 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../utils/types';
-
+import { searchProducts, searching } from '../../../redux/slices/productSlice';
 
 export const Products = ({data, store}): JSX.Element => {
   const modalizeRef = useRef(null)
+
+  const dispatch = useAppDispatch()
+
   const {navigate} = useNavigation<Nav>();
+
+  const searcher = useAppSelector(searching)
+
   const renderItem = ({item}: any) => (
     <ProductCard onIconPress={() => modalizeRef.current?.open()} item={item}/>
   );
@@ -90,7 +96,7 @@ const getData = () => [
         <Input
             label={''}
             placeholder={"Search for products"}
-            onChangeText={(text) => console.log(text)}
+            onChangeText={(text) => dispatch(searchProducts(text))}
             searchInput
         />
         
@@ -98,7 +104,8 @@ const getData = () => [
             data={data}
             renderItem={renderItem}
             keyExtractor={item => item?._id}
-            style={{marginBottom: hp(100)}}
+            contentContainerStyle={{paddingBottom: hp(100)}}
+            style={{marginBottom: hp(-50)}}
         />
         <TouchableOpacity onPress={() => navigate('AddProduct')} style={globalStyles.floating_button}>
             <Entypo name={'plus'} size={hp(35)} style={{color: colors.white}} />
