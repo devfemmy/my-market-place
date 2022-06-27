@@ -15,17 +15,20 @@ import { getPersonalStore, myStore } from '../../redux/slices/StoreSlice';
 import { ArrayType } from '../../utils/types';
 import { hp } from '../../utils/helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAllOrders, selectedOrders } from '../../redux/slices/orderSlice';
 
 
 export const StoreScreen = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
-
+  const orders = useAppSelector(selectedOrders)
+  
   AsyncStorage.setItem('activeId', myStoreList[0]?.id)
 
   useEffect(() => {
     dispatch(getPersonalStore())
+    dispatch(getAllOrders())
 }, [])
 
   const quickActionArray = [
@@ -69,7 +72,7 @@ export const StoreScreen = (): JSX.Element => {
               <Text text="Order" />
             </View>
             <View style={globalStyles.rowStart}>
-              <Text text="100" style={styles.greyColor} />
+              <Text text={`${orders?.length}`} style={styles.greyColor} />
               <Ionicons
                 name={"chevron-forward-outline"}
                 size={15}
@@ -83,7 +86,7 @@ export const StoreScreen = (): JSX.Element => {
           <View>
           {
             quickActionArray?.map((data: ArrayType) => {
-              return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.navigation)} />
+              return <ListCard key={data?.id} {...data} />
             })
           }
           </View>

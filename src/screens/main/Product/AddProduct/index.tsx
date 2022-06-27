@@ -31,11 +31,8 @@ import { MiniButton } from '../../../../components/common/MiniButton';
 
 import { ProductCreateFormData } from '../../../../utils/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-<<<<<<< HEAD
-=======
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
->>>>>>> 39b1afd1687a8d610eab2b86d447ee1557dabb56
 
 export const AddProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
@@ -85,11 +82,7 @@ export const AddProduct = (): JSX.Element => {
             var resultAction = await dispatch(createProduct(payload))
             if(createProduct.fulfilled.match(resultAction)){
                 Notify('Product Drafted!', 'Your product was successfully added to draft', 'success')
-<<<<<<< HEAD
-               await AsyncStorage.setItem('slug', resultAction?.payload?.message?.slug)
-=======
                 await AsyncStorage.setItem('slug', resultAction?.payload?.message?.slug)
->>>>>>> 39b1afd1687a8d610eab2b86d447ee1557dabb56
                 navigation.navigate('PublishProduct', {data: data})
             }else{
                 Notify('Product not Added!', 'Your product was not added to draft', 'error')

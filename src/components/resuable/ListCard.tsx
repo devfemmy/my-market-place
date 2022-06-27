@@ -10,9 +10,16 @@ import { useNavigation } from '@react-navigation/native'
 import { Nav } from '../../utils/types'
 
 
-const ListCard: React.FC<ListCardProps> = ({ title, icon, onPress }) => {
+
+const ListCard: React.FC<ListCardProps> = ({ title, icon, route }) => {
+    const navigation = useNavigation<Nav>()
+
+    const handlePress = (data: string) => {
+        return navigation.navigate(data)
+    }
+
     return (
-        <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={styles.cardContainer}>
+        <TouchableOpacity onPress={() => handlePress(route)} activeOpacity={0.8} style={styles.cardContainer}>
             <View style={[globalStyles.rowBetween]}>
                 <View style={globalStyles.rowStart}>
                     <Image source={icon} style={styles.image} />

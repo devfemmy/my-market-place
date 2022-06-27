@@ -87,21 +87,34 @@ export type ProductState = {
 }
 
 export type StoreCreateFormData = {
-  category: string,
   brandName: string,
   description: string,
   imgUrl: string,
   address: string,
-  shippingFees: {
-      withinLocation: number,
-      outsideLocation: number
-  },
+  phoneNumber: string,
+  status?: string,
   location: {
       state: string,
       city: string,
       street: string,
   },
 }
+
+export type StoreUpdateFormData = {
+  id: string,
+  brandName: string,
+  description: string,
+  imgUrl: string,
+  address: string,
+  phoneNumber: string,
+  status?: string,
+  location: {
+      state: string,
+      city: string,
+      street: string,
+  },
+}
+
 
 export type ProductCreateFormData = {
   id: string,

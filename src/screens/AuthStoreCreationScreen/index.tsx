@@ -58,21 +58,17 @@ const AuthStoreCreationScreen = (): JSX.Element => {
       return
     }
     const payload = {
-      category: "Men's Clothing",
       brandName: data.storeName,
       description: data.description,
       imgUrl: imageData,
       address: data.street + " " + data.city + " " + data.state,
-      shippingFees: {
-        withinLocation: 1000,
-        outsideLocation: 2000
-      },
+      phoneNumber: data.phoneNumber,
       location: {
-        state: data.state,
-        city: data.city,
-        street: data.street,
+          state: data.state,
+          city: data.city,
+          street: data.street,
       },
-    };
+  };
 
     setLoader(true)
     const resultAction = await dispatch(createStore(payload))
@@ -180,7 +176,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
           </View>
         </View>
 
-        <View style={globalStyles.container}>
+        <View>
           <View style={gbStyle.formContainer}>
             <Input
               label={'Store Name'}
@@ -275,7 +271,7 @@ const gbStyle = StyleSheet.create({
     marginVertical: 15
   },
   imageContainer: {
-    marginHorizontal: 30
+    marginHorizontal: 15
   },
   image: {
     width: 100,

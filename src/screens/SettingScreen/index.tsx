@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Switch, View } from 'react-native'
 import { globalStyles } from '../../styles'
 import { SafeAreaView, Text, Separator } from '../../components/common';
@@ -13,13 +13,67 @@ import ListCard from '../../components/resuable/ListCard';
 import { ArrayType } from '../../utils/types';
 import { useNavigation } from '@react-navigation/native'
 import { Nav } from '../../utils/types'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getStoreById, storebyId, updateStore } from '../../redux/slices/StoreSlice';
+import CustomModal from '../../components/common/CustomModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Setting = () => {
     const navigation = useNavigation<Nav>();
-
+    const dispatch = useAppDispatch()
     const { signOut } = useContext(AuthContext)
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const [title, setTitle] = useState('')
+    const [type, setType] = useState(false)
+    const [visible, setVisible] = useState(false)
+    const storeIdData = useAppSelector(storebyId)
+    const [activeId, setActiveId] = useState('')
+    const [isEnabled, setIsEnabled] = useState(storeIdData?.status === 'active' ? true : false);
+
+
+    const handleVisible = () => {
+        setVisible(false)
+    }
+
+    45
+useEffect(() => {
+        const loadActiveId = async () => {
+            const id = await AsyncStorage.getItem('activeId')
+            dispatch(getStoreById(id))
+            setActiveId(id)
+        }
+        loadActiveId()
+    }, [activeId])
+
+
+const toggleSwitch = async () => {
+        setIsEnabled(previousState => !previousState)
+        const payload = {
+            id: activeId,
+            brandName: storeIdData.brandName,
+            description: storeIdData.description,
+            imgUrl: storeIdData?.imgUrl,
+            address: storeIdData?.location?.street + " " + storeIdData?.location?.city + " " + storeIdData?.location?.state,
+            phoneNumber: storeIdData.phoneNumber,
+            status: isEnabled ? 'inactive' : 'active',
+            location: {
+                state: storeIdData?.location?.state,
+                city: storeIdData?.location?.city,
+                street: storeIdData?.location?.street,
+            },
+        }
+
+        const resultAction = await dispatch(updateStore(payload))
+        if (updateStore.fulfilled.match(resultAction)) {
+            setType(true)
+            setTitle('Store updated successfully')
+            setVisible(true)
+        }
+        else {
+            setType(false)
+            setTitle('Unable to update store')
+            setVisible(true)
+        }
+    }
 
     const quickActionArray = [
         {
@@ -86,20 +140,26 @@ const Setting = () => {
             <View style={[localStyle.mTop, styles.width90]}>
                 {
                     quickActionPersonal?.map((data: ArrayType) => {
-                        return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.route)} />
+                        return <ListCard key={data?.id} {...data} />
                     })
                 }
             </View>
             <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
                 <Text text='Activate / Deactivate Store' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
-                <Switch
+               <Switch
                     trackColor={{ false: colors.dimBlack, true: colors.bazaraTint }}
                     thumbColor={isEnabled ? colors.bazaraTint : colors.white}
-                    ios_backgroundColor= {colors.dimBlack}
+                    ios_backgroundColor={colors.dimBlack}
                     onValueChange={toggleSwitch}
                     value={isEnabled}
                 />
             </View>
+            <CustomModal
+                handleVisible={handleVisible}
+                visibleBoolean={visible}
+                isSuccess={type}
+                headerText={title}
+            />
         </SafeAreaView>
     )
 }

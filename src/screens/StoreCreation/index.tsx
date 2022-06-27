@@ -60,21 +60,19 @@ export const StoreCreation = (): JSX.Element => {
       return
     }
     const payload = {
-      category: "Men's Clothing",
       brandName: data.storeName,
       description: data.description,
       imgUrl: imageData,
+     // imgUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSDRgNnZRcoHEk0dh5izm9EgaLtor9pC88nnrbbzBcSA&s',
       address: data.street + " " + data.city + " " + data.state,
-      shippingFees: {
-        withinLocation: 1000,
-        outsideLocation: 2000
-      },
+      phoneNumber: data.phoneNumber,
       location: {
-        state: data.state,
-        city: data.city,
-        street: data.street,
+          state: data.state,
+          city: data.city,
+          street: data.street,
       },
-    };
+  };
+
 
     setLoader(true)
     const resultAction = await dispatch(createStore(payload))
@@ -182,7 +180,7 @@ export const StoreCreation = (): JSX.Element => {
           </View>
         </View>
 
-        <View style={globalStyles.container}>
+        <View>
           <View style={gbStyle.formContainer}>
             <Input
               label={'Store Name'}
@@ -277,7 +275,7 @@ const gbStyle = StyleSheet.create({
     marginVertical: 15
   },
   imageContainer: {
-    marginHorizontal: 30
+    marginHorizontal: 15
   },
   image: {
     width: 100,

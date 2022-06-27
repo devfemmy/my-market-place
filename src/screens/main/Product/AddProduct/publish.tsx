@@ -14,11 +14,7 @@ import { ImageSelect } from './ImageSelect';
 import { Modalize } from 'react-native-modalize';
 import { Select } from '../../../../components/common/SelectInput';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-<<<<<<< HEAD
-import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts, getProductBySlug } from '../../../../redux/slices/productSlice';
-=======
 import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts, getProductBySlug, loading, addSizeColour } from '../../../../redux/slices/productSlice';
->>>>>>> 39b1afd1687a8d610eab2b86d447ee1557dabb56
 import { currencyFormat, Notify, firstLetterUppercase } from '../../../../utils/functions';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -418,54 +414,12 @@ export const PublishProduct = (): JSX.Element => {
         )
     }
 
-<<<<<<< HEAD
-    console.log("sluggggg",{product_slug})
-
-    const SubmitForm = async () => {
-        // if(data.sizes && !data.colours){
-        //     handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
-        // }
-        console.log("datadd", data, product_slug)
-     
-        const payload = {
-            id: product_slug?._id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: [
-                {
-                    spec: [
-                        {
-                            price: 500,
-                            quantity: 2
-                        }
-                    ],
-                    variantImg: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKL4ojtxjpc4G2uWRdvgBZ7bhlTRTUuVtGtM4iRwsf0w&s']
-                }
-            ],
-            isDraft: false,
-            status: 'active'
-        }
-
-        try {
-            var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
-                dispatch(getProductBySlug(data))
-                Notify('Product Updated!', 'Your product was successfully updated', 'success')
-            }else{
-                Notify('Product not Updated!', 'Your product was not Updated', 'error')
-            }
-        }
-        catch(e) {
-            console.log({e})
-=======
     const SubmitForm = async () => {
         if(!data.sizes && !data.colours){
             handleBasic(false, selectedPrice, selectedQuantity, mystore[0]._id, item_images, data)
         }
         else if(data.sizes && !data.colours){
             handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
->>>>>>> 39b1afd1687a8d610eab2b86d447ee1557dabb56
         }
         else if(!data.sizes && data.colours){
             addNewColour()
@@ -617,11 +571,7 @@ export const PublishProduct = (): JSX.Element => {
             {data.sizes && !data.colours ? renderSizePage():null}
             {!data.sizes && data.colours ? renderColourPage():null}
             <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-<<<<<<< HEAD
-                <Button title={'Publishs'} onPress={SubmitForm} style={styles.btn}/>
-=======
                 <Button isLoading={loader} title={BtnTitle()} onPress={SubmitForm} style={styles.btn}/>
->>>>>>> 39b1afd1687a8d610eab2b86d447ee1557dabb56
             </View>
         </ScrollView>
         <Modalize

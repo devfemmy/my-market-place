@@ -13,13 +13,13 @@ import { globalStyles } from "../../styles/globalStyles"
 import { hp, wp } from '../../utils/helpers';
 ;
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
-import { addStoreImage, createStore, getStoreById, resetStoreImage, storebyId, storeImage } from "../../redux/slices/StoreSlice"
+import { addStoreImage, createStore, getStoreById, resetStoreImage, storebyId, storeImage, updateStore } from "../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../utils/types';
 import CustomModal from '../../components/common/CustomModal';
 import { colors } from '../../utils/themes';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+
 import NavHeader from '../../components/resuable/NavHeader';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -32,6 +32,7 @@ const EditStore = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
+  const [customMsg, setCustomMsg] = useState('')
   const imageData = useAppSelector(storeImage)
   const storeIdData = useAppSelector(storebyId)
   const [activeId, setActiveId] = useState<string>('')
@@ -48,6 +49,10 @@ const EditStore = (): JSX.Element => {
     loadActiveId()
   }, [activeId])
 
+  useEffect(() => {
+      setEditImg(storeIdData?.imgUrl)
+  }, [storeIdData])
+
 
 
   const initialValues: StoreFormData = {
@@ -61,35 +66,39 @@ const EditStore = (): JSX.Element => {
 
   const handleStoreSubmission = async (data: StoreFormData) => {
     const payload = {
-      category: "Men's Clothing",
+      id: activeId,
       brandName: data.storeName,
       description: data.description,
       imgUrl: imageData?.length > 1 ? imageData : editImg,
       address: data.street + " " + data.city + " " + data.state,
-      shippingFees: {
-        withinLocation: 1000,
-        outsideLocation: 2000
-      },
+      phoneNumber: data?.phoneNumber,
       location: {
         state: data.state,
         city: data.city,
         street: data.street,
       },
+      status: 'active'
     };
 
     setLoader(true)
-    const resultAction = await dispatch(createStore(payload))
-    if (createStore.fulfilled.match(resultAction)) {
+    const resultAction = await dispatch(updateStore(payload))
+    if (updateStore.fulfilled.match(resultAction)) {
       setLoader(false)
-      return navigation.navigate('AuthStoreSuccessScreen')
+      setVisibleBoolen(true)
+      setIsSuccessful(true)
+      setCustomMsg('Success')
     } else {
       if (resultAction.payload) {
         setLoader(false)
         setVisibleBoolen(true)
+        setIsSuccessful(false)
+        setCustomMsg('Error')
         console.log('error1', `Update failed: ${resultAction?.payload}`)
       } else {
         setLoader(false)
         setVisibleBoolen(true)
+        setIsSuccessful(false)
+        setCustomMsg('Error')
         console.log('error', `Updated failed: ${resultAction?.payload}`)
       }
     }
@@ -171,7 +180,7 @@ const EditStore = (): JSX.Element => {
           </View>
         </View>
 
-        <View style={globalStyles.container}>
+        <View>
           <View style={gbStyles.formContainer}>
             <Input
               label={'Store Name'}
@@ -240,8 +249,8 @@ const EditStore = (): JSX.Element => {
         </View>
       </ScrollView>
       <CustomModal
-        msg="You have successfully updated your store information"
-        headerText="Success"
+        msg=""
+        headerText={customMsg}
         visibleBoolean={visibleBoolean} handleVisible={handleVisible}
         isSuccess={isSuccessful} />
     </SafeAreaView>
@@ -270,7 +279,7 @@ const gbStyles = StyleSheet.create({
     marginHorizontal: 15
   },
   imageContainer: {
-    marginHorizontal: 30
+    marginHorizontal: 15
   },
   image: {
     width: 100,
