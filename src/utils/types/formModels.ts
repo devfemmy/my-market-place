@@ -57,6 +57,7 @@ export type StoreState = {
 
 
 export type OrderState = {
+  sellerOrders: Array<any>,
   allOrders: Array<any>,
   selectedOrders: Array<any>,
   selected: string,
