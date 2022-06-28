@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
 import { StoreState, StoreCreateFormData, PayoutFormData, StoreUpdateFormData } from "../../utils/types";
-import { sendPost, getRequest } from "../../utils/server"
+import { sendPost, getRequest, uploadImageFunc } from "../../utils/server"
 
 
 
@@ -25,6 +25,18 @@ export const createStore = createAsyncThunk(
     'store/createStore',
     async (payload: StoreCreateFormData) => {
         const response = await sendPost("/sidehustle/account/create", payload)
+    }
+)
+
+
+export const uploadImage = createAsyncThunk(
+    'store/upload',
+    async (payload: any) => {
+        const response = await uploadImageFunc(payload)
+        console.log("image upload======", response)
+        if (response?.status === 200) {
+            return response?.data?.data?.url
+        }
     }
 )
 
@@ -300,6 +312,16 @@ export const StoreSlice = createSlice({
                 state.storeById = action.payload
             })
         builder.addCase(getStoreById.rejected, (state, action) => {
+            state.error = action.error.message
+        }),
+
+        builder.addCase(uploadImage.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(uploadImage.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(uploadImage.rejected, (state, action) => {
             state.error = action.error.message
         })
     }

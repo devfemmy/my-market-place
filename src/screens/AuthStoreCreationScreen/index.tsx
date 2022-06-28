@@ -13,7 +13,7 @@ import { globalStyles } from "../../styles/globalStyles"
 import { hp, wp } from '../../utils/helpers';
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
-import { addStoreImage, createStore, resetStoreImage, storeImage } from "../../redux/slices/StoreSlice"
+import { addStoreImage, createStore, resetStoreImage, storeImage, uploadImage } from "../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../utils/types';
 import CustomModal from '../../components/common/CustomModal';
 import { colors } from '../../utils/themes';
@@ -128,7 +128,23 @@ const AuthStoreCreationScreen = (): JSX.Element => {
       quality: 1,
     });
     if (!result.didCancel) {
-      dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
+    
+      const data = new FormData()
+      await data.append('file', {
+        name: 'img-upload',
+        type: result?.assets[0].type,
+        uri: result?.assets[0]?.uri,
+      });
+
+      console.log("rrrrrr======", result?.assets[0], data)
+      const resultAction = await dispatch(uploadImage(data))
+      // if(uploadImage.fulfilled.match(resultAction)) {
+      //   console.log("result",{resultAction})
+      // }
+      // else {
+      //   console.log("Error")
+      // }
+      // dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
     }
   };
 

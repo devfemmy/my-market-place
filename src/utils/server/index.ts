@@ -93,6 +93,17 @@ export const sendPost = async ( url: String, payload: any, v?: String) => {
     return response
         
 };
+
+
+export const uploadImageFunc = async (payload: any) => {
+    const token = await AsyncStorage.getItem("token");
+    return axios.post('https://prod.bazara.co/upload-microservice/v1/upload/img', payload, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    })
+  }
+  
  
 
 export default {doPost}
