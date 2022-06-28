@@ -8,11 +8,12 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
 import {UserState} from "../../utils/types";
-import {getRequest, sendPost} from "../../utils/server"
+import {getProfileRequest, getRequest, sendPost, sendProfilePost} from "../../utils/server"
 import {Notify} from "../../utils/functions";
 
 const initialState: UserState = {
     userProfile: [],
+    notifications: [],
     loading: true,
     error: null
 }
@@ -20,7 +21,15 @@ const initialState: UserState = {
 export const getUserDetails = createAsyncThunk(
     'user/getDetails',
     async () => {
-        const response = await getRequest("/auth/identity")
+        const response = await getProfileRequest("/auth/identity", 'Staging')
+        return response?.data?.data
+    }
+)
+
+export const getUserNotifications = createAsyncThunk(
+    'user/notifications',
+    async () => {
+        const response = await getRequest("/sidehustle/notification'")
         return response?.data?.data
     }
 )
@@ -28,14 +37,19 @@ export const getUserDetails = createAsyncThunk(
 export const updateUserDetails = createAsyncThunk(
     'user/updateDetails',
     async (payload: {fName: string, lName: string}) => {
-        const response = await sendPost("/auth/identity/update", payload)
+        const response = await sendProfilePost("/auth/identity/update", payload)
+        if (response?.status === 200) {
+            Notify("Profile Updated Successfully", 'Profile Updated', 'success')
+        }else{
+            Notify("Password Reset", 'Error resetting password', 'error')
+        }
     }
 )
 
 export const updateUserPassword = createAsyncThunk(
     'user/updatePassword',
     async (payload: {email: string}) => {
-        const response = await sendPost("/auth/request_reset", payload)
+        const response = await sendProfilePost("/auth/request_reset", payload)
         if (response?.status === 200) {
             Notify("Password Reset", 'Check your email', 'success')
         }else{
@@ -61,6 +75,21 @@ export const UserSlice = createSlice({
             state.error = action.error.message
         })
 
+
+
+        builder.addCase(getUserNotifications.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(getUserNotifications.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.notifications = action.payload
+        })
+        builder.addCase(getUserNotifications.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+
         builder.addCase(updateUserDetails.pending, (state) => {
             state.loading = true
         })
@@ -84,6 +113,7 @@ export const UserSlice = createSlice({
 })
 
 export const userProfile = (state: RootState) => state.user.userProfile;
+export const notifications = (state: RootState) => state.user.notifications;
 export const loading = (state: RootState) => state.user.loading;
 export const error = (state: RootState) => state.user.error;
 
