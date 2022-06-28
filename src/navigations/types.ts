@@ -37,6 +37,7 @@ export type MainStackParamList = {
   Staffs: undefined;
   AddStaff: undefined;
   Account: undefined;
+  NotificationScreen: undefined;
 };
 export type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,

@@ -1,17 +1,19 @@
-import { View, Image, StyleSheet } from 'react-native'
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SafeAreaView, Text } from "../common"
 import { globalStyles } from '../../styles'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
+import { useNavigation } from '@react-navigation/native'
 import { storeImage, checkbox } from "../../assets"
 import { colors } from '../../utils/themes'
 import { StoreHeaderProps } from '../../interfaces'
 import { hp } from '../../utils/helpers'
-
+import { Nav } from '../../utils/types'
 
 
 const StoreHeader:React.FC<StoreHeaderProps> = ({name}) => {
+    const  { navigate } = useNavigation<Nav>();
+
     return (
             <View style={[globalStyles.container, globalStyles.rowBetween, styles.comp]}>
                 <View style={styles.container}>
@@ -30,13 +32,13 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name}) => {
                         </View>
                     </View>
                 </View>
-                <View style={styles.iconCard}>
+                <TouchableOpacity onPress={() => navigate('NotificationScreen')} style={styles.iconCard}>
                     <Ionicons
                         name={'notifications-outline'}
-                        size={20}
+                        size={25}
                         color={'white'}
                     />
-                </View>
+                </TouchableOpacity>
             </View>
     )
 }

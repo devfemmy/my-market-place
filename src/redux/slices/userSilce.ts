@@ -13,6 +13,7 @@ import {Notify} from "../../utils/functions";
 
 const initialState: UserState = {
     userProfile: [],
+    notifications: [],
     loading: true,
     error: null
 }
@@ -21,6 +22,14 @@ export const getUserDetails = createAsyncThunk(
     'user/getDetails',
     async () => {
         const response = await getRequest("/auth/identity")
+        return response?.data?.data
+    }
+)
+
+export const getUserNotifications = createAsyncThunk(
+    'user/notifications',
+    async () => {
+        const response = await getRequest("/sidehustle/notification'")
         return response?.data?.data
     }
 )
@@ -61,6 +70,21 @@ export const UserSlice = createSlice({
             state.error = action.error.message
         })
 
+
+
+        builder.addCase(getUserNotifications.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(getUserNotifications.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.notifications = action.payload
+        })
+        builder.addCase(getUserNotifications.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+
         builder.addCase(updateUserDetails.pending, (state) => {
             state.loading = true
         })
@@ -84,6 +108,7 @@ export const UserSlice = createSlice({
 })
 
 export const userProfile = (state: RootState) => state.user.userProfile;
+export const notifications = (state: RootState) => state.user.notifications;
 export const loading = (state: RootState) => state.user.loading;
 export const error = (state: RootState) => state.user.error;
 
