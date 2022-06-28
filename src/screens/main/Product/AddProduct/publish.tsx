@@ -486,6 +486,8 @@ export const PublishProduct = (): JSX.Element => {
             if(updateProduct.fulfilled.match(resultAction)){
                 Notify('Product Added!', 'Your product was successfully added', 'success')
                 await dispatch(getAllProducts(id))
+                // Lets check
+                navigation.popToTop() 
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
             }
@@ -539,7 +541,9 @@ export const PublishProduct = (): JSX.Element => {
             var resultAction = await dispatch(updateProduct(payload))
             if(updateProduct.fulfilled.match(resultAction)){
                 Notify('Product Added!', 'Your product was successfully added', 'success')
-                await dispatch(getAllProducts(id))
+                await dispatch(getAllProducts(id));
+                // Lets check
+                navigation.popToTop() 
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
             }

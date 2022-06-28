@@ -18,7 +18,7 @@ const Profile = () => {
     const [editing, setEditing] = useState(false);
     const dispatch = useAppDispatch()
 
-    console.log(user)
+    console.log(user, 'user')
     
     const loader = useAppSelector(loading)
 
@@ -37,7 +37,7 @@ const Profile = () => {
     useEffect(() => {
         dispatch(getUserDetails())
     }, [])
-
+ 
     if(loader){
         return (
             <SafeAreaView>
@@ -65,7 +65,7 @@ const Profile = () => {
             </View>
             <Input
                 label={'Surname'}
-                value={values.lName}
+                value={values?.lName}
                 editable={editing}
                 onBlur={handleBlur('lName')}
                 onChangeText={handleChange('lName')}
@@ -73,7 +73,7 @@ const Profile = () => {
             />
             <Input
                 label={'First Name'}
-                value={values.fName}
+                value={values?.fName}
                 editable={editing}
                 onBlur={handleBlur('fName')}
                 onChangeText={handleChange('fName')}

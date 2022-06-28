@@ -8,7 +8,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
 import {UserState} from "../../utils/types";
-import {getRequest, sendPost} from "../../utils/server"
+import {getProfileRequest, getRequest, sendPost, sendProfilePost} from "../../utils/server"
 import {Notify} from "../../utils/functions";
 
 const initialState: UserState = {
@@ -21,7 +21,7 @@ const initialState: UserState = {
 export const getUserDetails = createAsyncThunk(
     'user/getDetails',
     async () => {
-        const response = await getRequest("/auth/identity")
+        const response = await getProfileRequest("/auth/identity", 'Staging')
         return response?.data?.data
     }
 )
@@ -37,14 +37,19 @@ export const getUserNotifications = createAsyncThunk(
 export const updateUserDetails = createAsyncThunk(
     'user/updateDetails',
     async (payload: {fName: string, lName: string}) => {
-        const response = await sendPost("/auth/identity/update", payload)
+        const response = await sendProfilePost("/auth/identity/update", payload)
+        if (response?.status === 200) {
+            Notify("Profile Updated Successfully", 'Profile Updated', 'success')
+        }else{
+            Notify("Password Reset", 'Error resetting password', 'error')
+        }
     }
 )
 
 export const updateUserPassword = createAsyncThunk(
     'user/updatePassword',
     async (payload: {email: string}) => {
-        const response = await sendPost("/auth/request_reset", payload)
+        const response = await sendProfilePost("/auth/request_reset", payload)
         if (response?.status === 200) {
             Notify("Password Reset", 'Check your email', 'success')
         }else{
