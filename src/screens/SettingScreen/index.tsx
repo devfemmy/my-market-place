@@ -44,6 +44,15 @@ useEffect(() => {
         loadActiveId()
     }, [activeId])
 
+    useEffect(() => {
+        const loadStatus = async () => {
+            const isEnab = storeIdData?.status === 'active' ? true : false
+
+            setIsEnabled(isEnab)
+        }
+        loadStatus()
+    }, [storeIdData])
+
 
 const toggleSwitch = async () => {
         setIsEnabled(previousState => !previousState)

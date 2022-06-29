@@ -129,22 +129,22 @@ const AuthStoreCreationScreen = (): JSX.Element => {
     });
     if (!result.didCancel) {
     
-      const data = new FormData()
-      await data.append('file', {
-        name: 'img-upload',
-        type: result?.assets[0].type,
-        uri: result?.assets[0]?.uri,
-      });
+      // const data = new FormData()
+      // await data.append('file', {
+      //   name: 'img-upload',
+      //   type: result?.assets[0].type,
+      //   uri: result?.assets[0]?.uri,
+      // });
 
-      console.log("rrrrrr======", result?.assets[0], data)
-      const resultAction = await dispatch(uploadImage(data))
+      // console.log("rrrrrr======", result?.assets[0], data)
+      // const resultAction = await dispatch(uploadImage(data))
       // if(uploadImage.fulfilled.match(resultAction)) {
       //   console.log("result",{resultAction})
       // }
       // else {
       //   console.log("Error")
       // }
-      // dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
+       dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
     }
   };
 
