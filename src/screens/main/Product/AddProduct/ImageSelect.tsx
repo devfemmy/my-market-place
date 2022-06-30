@@ -10,6 +10,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { addImage, images } from '../../../../redux/slices/productSlice';
+import { pictureUpload } from '../../../../utils/functions';
 
 export const ImageSelect = (): JSX.Element => {
 
@@ -23,6 +24,7 @@ export const ImageSelect = (): JSX.Element => {
           quality: 1,
         });
         if (!result.didCancel) {
+            // await pictureUpload(result?.assets[0])
             dispatch(addImage({index: index, uri: result?.assets[0]?.uri}))
         }
     };

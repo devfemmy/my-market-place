@@ -32,7 +32,7 @@ export type MainStackParamList = {
   DeliveryScreen: undefined;
   AddShippingFee: undefined;
   AddProduct: undefined;
-  PublishProduct: {data: {}};
+  PublishProduct: {data?: {}, editData?: {}};
   OrderDetails: {order: {}};
   Staffs: undefined;
   AddStaff: undefined;

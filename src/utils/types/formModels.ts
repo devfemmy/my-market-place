@@ -78,6 +78,7 @@ export type ProductState = {
   selectedProducts: Array<any>,
   searching: boolean,
   productBySlug: any,
+  editableSlug: any,
   newSizes: Array<any>,
   newColours: Array<any>,
   newSizeColours: Array<any>,
