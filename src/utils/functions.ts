@@ -4,6 +4,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {Notifier, NotifierComponents} from 'react-native-notifier';
 import 'intl'
 import 'intl/locale-data/jsonp/en'
+import axios from "axios";
 
 export const currencyFormat = (value: string | number | any) =>{
     if(value == "" || value == null){
@@ -89,6 +90,9 @@ export const nextStatus = (value: string) =>{
 }
 
 export const firstLetterUppercase = (value: string) =>{
+    if(value == null){
+        return ''
+    }
     return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
@@ -126,5 +130,36 @@ export const rejectionMsg = (value: string) => {
         return {desc: 'Do you want to add more products to your store now?', btn: 'Edit store'}
     }else {
         return {desc: 'Your order has been cancelled successfully.', btn: 'Dismiss'}
+    }
+}
+
+export const pictureUpload = async (image: any) => {
+    let config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+        },
+    };
+    const request = new FormData();
+    request.append('file', {
+        uri: image.uri,
+        type: image.type,
+        name: image.uri.split('/').pop(),
+    });
+    try {
+        const response = await axios.post(
+            'https://prod.bazara.co/upload-microservice/v1/upload/img',
+            request,
+            config,
+        );
+        if (response.status === 200) {
+            const image = response?.data?.url;
+            console.log(image)
+            return image
+        }else{
+            Notify('Error', 'Problem uploading picture.', 'error')
+        }
+    } catch (error) {
+        console.log(error)
     }
 }

@@ -23,7 +23,7 @@ import { getAllCategories, allCategories} from '../../../../redux/slices/StoreSl
 import { resetImage } from '../../../../redux/slices/productSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
-import { createProduct, loading, productBySlug, newColours, deleteColour, updateProduct, getAllProducts, newSizeColours, deleteSizeColour } from '../../../../redux/slices/productSlice';
+import { createProduct, loading, productBySlug, newColours, deleteColour, updateProduct, getAllProducts, newSizeColours, deleteSizeColour, editableSlug } from '../../../../redux/slices/productSlice';
 import { myStore } from '../../../../redux/slices/StoreSlice';
 import { Notify, firstLetterUppercase } from '../../../../utils/functions';
 
@@ -33,6 +33,7 @@ import { ProductCreateFormData } from '../../../../utils/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { currencyFormat } from '../../../../utils/functions';
 
 export const AddProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
@@ -41,14 +42,15 @@ export const AddProduct = (): JSX.Element => {
 
     const mystore = useAppSelector(myStore)
     const loader = useAppSelector(loading)
+    const EditableSlug = useAppSelector(editableSlug)
     const product_slug = useAppSelector(productBySlug)
     const items_by_colors = useAppSelector(newColours)
     const items_by_size_colors = useAppSelector(newSizeColours)
 
     const initialValues: ProductFormData1 = {
-        name: '',
-        description: '',
-        category: '',
+        name: EditableSlug != null ? EditableSlug.name : '',
+        description: EditableSlug != null ? EditableSlug.description : '',
+        category: EditableSlug != null ? EditableSlug.categories : '',
         sizes: false,
         colours: false,
     };
@@ -368,6 +370,66 @@ export const AddProduct = (): JSX.Element => {
         )
     }
 
+    const renderSpecList = ({index, item}) => {
+        return (
+            <View style={[globalStyles.rowStart, {marginVertical: hp(3)}]}>
+                <Text
+                text={(item?.size || 'Colour') + ' - ' + currencyFormat(item?.price) + ' - x' + item?.quantity}
+                fontWeight={"300"}
+                fontSize={hp(12)}
+                style={styles.text} />
+            </View>
+        )
+    }
+
+    const renderEditableSlugVariant = ({index, item}) => {
+        return (
+            <View style={[globalStyles.rowBetween, globalStyles.minicardSeparator, {paddingHorizontal: hp(15), paddingVertical: hp(15)}]}>
+                <View style={[globalStyles.rowStart]}>
+                    <View style={[globalStyles.rowStartNoOverflow]}>
+                        <Image source={{uri: item?.variantImg[0]}} style={styles.image} />
+                    </View>
+                    <View style={styles.detContainer}>
+                        <FlatList
+                            data={item?.spec}
+                            renderItem={renderSpecList}
+                            keyExtractor={item => item?._id}
+                        />
+                    </View>
+                </View>
+
+                <View style={[globalStyles.rowStart]}>
+                    <TouchableOpacity onPress={() => {dispatch(resetImage()); navigation.navigate('PublishProduct', {editData: item, data: values})}} style={globalStyles.mini_button}>
+                        <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity style={globalStyles.mini_button}>
+                        <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
+                    </TouchableOpacity> */}
+                </View>
+                
+            </View>
+        )
+    }
+ 
+    const renderEditableSlug = () => {
+        return (
+            <>
+                <FlatList
+                    data={EditableSlug.variants}
+                    renderItem={renderEditableSlugVariant}
+                    scrollEnabled={true}
+                />
+                <View style={[globalStyles.rowCenter, {marginBottom: hp(10)}]}>
+                    <Button 
+                    isLoading={loader} 
+                    title={'Update'} 
+                    onPress={() => console.log(EditableSlug.variants)} 
+                    style={styles.btn}/>
+                </View>
+            </>
+        )
+    }
+
     return (
         <SafeAreaView>
             <Text style={[globalStyles.rowStart, styles.lowerContainer]} fontWeight="400" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text="Kindly provide product information" />
@@ -396,7 +458,7 @@ export const AddProduct = (): JSX.Element => {
                 setState={handleChange('category')}
                 errorMsg={touched.category ? errors.category : undefined}
             />
-            {items_by_size_colors.length > 0 ? (renderSizeColourFooter()) : (items_by_colors.length > 0 ? renderColourFooter() : renderFooter())}
+            {EditableSlug != null ? renderEditableSlug() : (items_by_size_colors.length > 0 ? (renderSizeColourFooter()) : (items_by_colors.length > 0 ? renderColourFooter() : renderFooter()))}
         </SafeAreaView>
     );
 };

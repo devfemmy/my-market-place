@@ -14,6 +14,7 @@ const initialState: ProductState = {
     selectedProducts: [],
     searching: false,
     productBySlug: null,
+    editableSlug: null,
     newSizes: [],
     newColours: [],
     newSizeColours: [],
@@ -89,6 +90,13 @@ export const updateProduct = createAsyncThunk(
 export const addImage = createAsyncThunk(
     'product/images',
     (payload: {index: number, uri: string}) => {
+        return payload
+    }
+)
+
+export const UpdateEditableSlug = createAsyncThunk(
+    'product/updateEditableSlug',
+    (payload: any) => {
         return payload
     }
 )
@@ -172,6 +180,19 @@ export const ProductSlice = createSlice({
             state.images[action.payload.index] = action.payload.uri
         })
         builder.addCase(addImage.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+        // EDITABLE SLUG
+        builder.addCase(UpdateEditableSlug.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(UpdateEditableSlug.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.editableSlug = action.payload
+        })
+        builder.addCase(UpdateEditableSlug.rejected, (state, action) => {
             state.error = action.error.message
         })
 
@@ -371,6 +392,7 @@ export const ProductSlice = createSlice({
 })
 
 export const images = (state: RootState) => state.product.images;
+export const editableSlug = (state: RootState) => state.product.editableSlug;
 export const myProducts = (state: RootState) => state.product.myProducts;
 export const selectedProducts = (state: RootState) => state.product.selectedProducts;
 export const loading = (state: RootState) => state.product.loading;

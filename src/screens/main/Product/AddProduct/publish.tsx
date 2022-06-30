@@ -14,7 +14,12 @@ import { ImageSelect } from './ImageSelect';
 import { Modalize } from 'react-native-modalize';
 import { Select } from '../../../../components/common/SelectInput';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { addSize, newSizes, deleteSize, editSize, addColour, newColours, editColour, deleteColour, images, resetImage, addImage, createProduct, updateProduct, productBySlug, getAllProducts, getProductBySlug, loading, addSizeColour } from '../../../../redux/slices/productSlice';
+import { addSize, newSizes, deleteSize, editSize, addColour, 
+    newColours, editColour, deleteColour, images, resetImage, 
+    addImage, createProduct, updateProduct, productBySlug, 
+    getAllProducts, getProductBySlug, loading, addSizeColour,
+    UpdateEditableSlug, editableSlug
+ } from '../../../../redux/slices/productSlice';
 import { currencyFormat, Notify, firstLetterUppercase } from '../../../../utils/functions';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -30,7 +35,7 @@ export const PublishProduct = (): JSX.Element => {
     const route = useRoute();
     const data = route?.params?.data
     const [slug, setSlug] = useState('')
-   
+    
     const modalizeRef = useRef(null);
     const sizeList = ["S", "M", "L", "XL", "XXL", "XXXL"]
 
@@ -50,6 +55,8 @@ export const PublishProduct = (): JSX.Element => {
     const [edit, setEdit] = useState(false)
     const [editable, setEditable] = useState(0)
 
+    const [editData, setEditData] = useState(route?.params?.editData)
+
     const [selectedSize, setSelectedSize] = useState('')
     const [colorDescription, setColorDescription] = useState('')
     const [selectedPrice, setSelectedPrice] = useState('0')
@@ -65,7 +72,13 @@ export const PublishProduct = (): JSX.Element => {
             setSlug(data)
             dispatch(getProductBySlug(data))
         }
-        loadData()
+        if(editData == null){
+            loadData()
+        }else{
+            editData.variantImg.map((val: string, index: number) => {
+                dispatch(addImage({index: index, uri: val}))
+            })
+        }
     }, [slug])
 
     const updateQuantity = (val: string) => {
@@ -486,6 +499,8 @@ export const PublishProduct = (): JSX.Element => {
             if(updateProduct.fulfilled.match(resultAction)){
                 Notify('Product Added!', 'Your product was successfully added', 'success')
                 await dispatch(getAllProducts(id))
+                // Lets check
+                navigation.popToTop() 
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
             }
@@ -539,7 +554,9 @@ export const PublishProduct = (): JSX.Element => {
             var resultAction = await dispatch(updateProduct(payload))
             if(updateProduct.fulfilled.match(resultAction)){
                 Notify('Product Added!', 'Your product was successfully added', 'success')
-                await dispatch(getAllProducts(id))
+                await dispatch(getAllProducts(id));
+                // Lets check
+                navigation.popToTop() 
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
             }
@@ -556,9 +573,70 @@ export const PublishProduct = (): JSX.Element => {
         else if(data.sizes && data.colours){
             return 'Add this colour'
         }
+        else if(editData != null && edit){
+            return 'Update'
+        }
+        else if(editData != null && !edit){
+            return 'Done'
+        }
         else{
             return 'Publish'
         }
+
+    }
+
+    const renderEditableList = ({index, item}) => {
+        
+        return (
+        <View style={globalStyles.minicardSeparator}>
+            <View style={[globalStyles.rowStart, globalStyles.lowerContainerMini]} >
+                <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Size: "} />
+                <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={item?.size} />
+            </View>
+            <View style={[globalStyles.rowStart, globalStyles.lowerContainerMini]} >
+                <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Price: "} />
+                <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={currencyFormat(item?.price)} />
+            </View>
+
+            <View style={[globalStyles.rowBetween, globalStyles.lowerContainerMini]} >
+                <View style={[globalStyles.rowStart]} >
+                    <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Quantity: "} />
+                    <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={item?.quantity} />
+                </View>
+                <View style={[globalStyles.rowBetween]}>
+                    <TouchableOpacity onPress={() => onEdit(item, index)} style={globalStyles.mini_button}>
+                        <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity onPress={() => dispatch(deleteSize(index))} style={globalStyles.mini_button}>
+                        <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
+                    </TouchableOpacity> */}
+                </View>
+            </View>
+        </View>
+        )
+    }
+
+    const onEdit = (item: any, index: number) => {
+        setEdit(true)
+        setEditable(index)
+        setSelectedPrice(item.price.toString())
+        setSelectedQuantity(item.quantity.toString())
+    }
+
+    const onEditUpdate = () => {
+        var newEditData = editData
+        newEditData.spec[editable].quantity = selectedQuantity
+        setEditData(newEditData)
+    }
+
+    const RenderHandleEdit = () => {
+        return (
+            <FlatList
+                data={editData.spec}
+                renderItem={renderEditableList}
+                scrollEnabled={false}
+            />
+        )
     }
 
     return (
@@ -566,13 +644,25 @@ export const PublishProduct = (): JSX.Element => {
         <ScrollView style={[globalStyles.wrapper, {paddingTop: hp(20)}]}>
             <Text style={[styles.lowerContainer]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(16)} text="Upload colour images" />
             <ImageSelect/>
-            {data.sizes && data.colours ? renderColourAndSizePage():null}
-            {!data.sizes && !data.colours ? renderPage():null}
-            {data.sizes && !data.colours ? renderSizePage():null}
-            {!data.sizes && data.colours ? renderColourPage():null}
-            <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-                <Button isLoading={loader} title={BtnTitle()} onPress={SubmitForm} style={styles.btn}/>
-            </View>
+            { editData == null ?
+                <>
+                    {data?.sizes && data?.colours ? renderColourAndSizePage():null}
+                    {!data?.sizes && !data?.colours ? renderPage():null}
+                    {data?.sizes && !data?.colours ? renderSizePage():null}
+                    {!data?.sizes && data?.colours ? renderColourPage():null}
+                    <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
+                        <Button isLoading={loader} title={BtnTitle()} onPress={SubmitForm} style={styles.btn}/>
+                    </View>
+                </>
+                :
+                <>
+                    {renderPage()}
+                    {RenderHandleEdit()}
+                    <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
+                        <Button isLoading={loader} title={BtnTitle()} onPress={() => onEditUpdate()} style={styles.btn}/>
+                    </View>
+                </>
+            }
         </ScrollView>
         <Modalize
         modalStyle={{backgroundColor: colors.primaryBg}}
