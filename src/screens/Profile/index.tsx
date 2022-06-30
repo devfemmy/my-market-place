@@ -66,6 +66,7 @@ const Profile = () => {
             <Input
                 label={'Surname'}
                 value={values?.lName}
+                defaultValue={user?.lName }
                 editable={editing}
                 onBlur={handleBlur('lName')}
                 onChangeText={handleChange('lName')}
@@ -74,6 +75,7 @@ const Profile = () => {
             <Input
                 label={'First Name'}
                 value={values?.fName}
+                defaultValue={user?.fName}
                 editable={editing}
                 onBlur={handleBlur('fName')}
                 onChangeText={handleChange('fName')}

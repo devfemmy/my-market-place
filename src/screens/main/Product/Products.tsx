@@ -6,9 +6,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable react/prop-types */
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Text} from '../../../components/common';
-import {View, FlatList, TouchableOpacity} from 'react-native';
+import {View, FlatList, TouchableOpacity, Share} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {hp} from '../../../utils/helpers';
 import { colors } from '../../../utils/themes';
@@ -26,7 +26,9 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../utils/types';
-import { searchProducts, searching } from '../../../redux/slices/productSlice';
+import { searchProducts, searching, updateProduct, getAllProducts, UpdateEditableSlug } from '../../../redux/slices/productSlice';
+import { Notify } from '../../../utils/functions';
+import { myStore } from '../../../redux/slices/StoreSlice';
 
 export const Products = ({data, store}): JSX.Element => {
   const modalizeRef = useRef(null)
@@ -37,8 +39,12 @@ export const Products = ({data, store}): JSX.Element => {
 
   const searcher = useAppSelector(searching)
 
+  const [selectedItem, setSelectedItem] = useState({})
+
+  const mystore = useAppSelector(myStore)
+
   const renderItem = ({item}: any) => (
-    <ProductCard onIconPress={() => modalizeRef.current?.open()} item={item}/>
+    <ProductCard onIconPress={() => {setSelectedItem(item); modalizeRef.current?.open()}} item={item}/>
   );
 
 //   console.log(data[0].variants[0].spec[0].price)
@@ -51,7 +57,7 @@ const renderHeader = () => (
 
 const renderStatus = ({item}: any) => (
     <View style={[globalStyles.minicardSeparator]}>
-        <TouchableOpacity style={[globalStyles.rowStart, globalStyles.lowerContainer]}>
+        <TouchableOpacity onPress={item.onPress} style={[globalStyles.rowStart, globalStyles.lowerContainer]}>
             {item.icon}
             <View style={globalStyles.Horizontalspacing}/>
             <Text fontWeight="300" fontSize={hp(16)} text={item.label} />
@@ -64,21 +70,93 @@ const getDataa = () => ['Edit', 'Activate', 'Deactivate', 'Share']
 const getData = () => [
     {
         label: 'Edit',
-        icon: <Entypo name="pencil" size={20} color={colors.white} />
+        icon: <Entypo name="pencil" size={20} color={colors.white} />,
+        onPress: () => editItem(selectedItem)
     },
     {
         label: 'Activate',
-        icon: <AntDesign name="checkcircleo" size={20} color={colors.white} />
+        icon: <AntDesign name="checkcircleo" size={20} color={colors.white} />,
+        onPress: () => ActivateProduct()
     },
     {
         label: 'Deactivate',
-        icon: <AntDesign name="warning" size={20} color={colors.white} />
+        icon: <AntDesign name="warning" size={20} color={colors.white} />,
+        onPress: () => DeactivateProduct()
     },
     {
         label: 'Share',
-        icon: <AntDesign name="sharealt" size={20} color={colors.white} />
+        icon: <AntDesign name="sharealt" size={20} color={colors.white} />,
+        onPress: () => onShare()
     },
 ]
+
+const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          'Bazara!!!',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.log(error?.message);
+    }
+  };
+
+const editItem = (item: any) => {
+  dispatch(UpdateEditableSlug(item))
+  setTimeout(() => {navigate('AddProduct')}, 500)
+}
+
+const routeToAdd = () => {
+  dispatch(UpdateEditableSlug(null))
+  setTimeout(() => {navigate('AddProduct')}, 200)
+}
+
+const DeactivateProduct = async () => {
+    const payload = {
+        id: selectedItem?.id,
+        status: 'inactive'
+    }
+    try {
+        var resultAction = await dispatch(updateProduct(payload))
+        if(updateProduct.fulfilled.match(resultAction)){
+            Notify('Product Deactivated!', 'Your product was successfully deactivated', 'success')
+            await dispatch(getAllProducts(mystore[0]._id))
+        }else{
+            Notify('Product not Deactivated!', 'Your product was not deactivated', 'error')
+        }
+    } catch (error) {
+        Notify('Product not Deactivated!', 'Seems something went wrong.', 'error')
+        console.log(error)
+    }
+}
+
+const ActivateProduct = async () => {
+    const payload = {
+        id: selectedItem?.id,
+        status: 'active'
+    }
+    try {
+        var resultAction = await dispatch(updateProduct(payload))
+        if(updateProduct.fulfilled.match(resultAction)){
+            Notify('Product Activated!', 'Your product was successfully activated', 'success')
+            await dispatch(getAllProducts(mystore[0]._id))
+        }else{
+            Notify('Product not Activated!', 'Your product was not activated', 'error')
+        }
+    } catch (error) {
+        Notify('Product not Activated!', 'Seems something went wrong.', 'error')
+        console.log(error)
+    }
+}
 
   return (
     <>
@@ -107,7 +185,7 @@ const getData = () => [
             contentContainerStyle={{paddingBottom: hp(100)}}
             style={{marginBottom: hp(-50)}}
         />
-        <TouchableOpacity onPress={() => navigate('AddProduct')} style={globalStyles.floating_button}>
+        <TouchableOpacity onPress={() => routeToAdd()} style={globalStyles.floating_button}>
             <Entypo name={'plus'} size={hp(35)} style={{color: colors.white}} />
         </TouchableOpacity>
       </View>
