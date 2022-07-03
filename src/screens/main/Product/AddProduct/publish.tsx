@@ -29,6 +29,8 @@ import { ProductCreateFormData } from '../../../../utils/types';
 
 import { myStore } from '../../../../redux/slices/StoreSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SuccesssLogo } from '../../../../constants/images';
+import CustomSlideModal from '../../../../components/common/CustomSlideModal';
 
 export const PublishProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
@@ -37,6 +39,7 @@ export const PublishProduct = (): JSX.Element => {
     const [slug, setSlug] = useState('')
     
     const modalizeRef = useRef(null);
+    const statusRef = useRef(null);
     const sizeList = ["S", "M", "L", "XL", "XXL", "XXXL"]
 
     const dispatch = useAppDispatch()
@@ -62,9 +65,8 @@ export const PublishProduct = (): JSX.Element => {
     const [selectedPrice, setSelectedPrice] = useState('0')
     const [selectedQuantity, setSelectedQuantity] = useState('0')
 
+    const [successModal, setSuccessModal] = useState(false)
 
-
-    
 
     useEffect(() => {
         const loadData = async () => {
@@ -203,7 +205,6 @@ export const PublishProduct = (): JSX.Element => {
     }
 
     const editPrevSize = (index: number, item: {size: string, quantity: string, price: string}) => {
-        console.log(item)
         setSelectedSize(item.size.toString())
         setSelectedPrice(item.price.toString())
         setSelectedQuantity(item.quantity.toString())
@@ -225,7 +226,6 @@ export const PublishProduct = (): JSX.Element => {
     }
 
     const addNewSize = (val?: string) => {
-        console.log(Number(selectedQuantity))
         if(selectedSize == '' || Number(selectedPrice) < 1 || Number(selectedQuantity) < 1){
             return
         }
@@ -462,9 +462,6 @@ export const PublishProduct = (): JSX.Element => {
             return
         }
 
-        console.log(price)
-        console.log(quantity)
-
         if(Number(price) < 500){
             Notify('Failed!', 'Minimum price of N500', 'error')
             return
@@ -497,10 +494,10 @@ export const PublishProduct = (): JSX.Element => {
         try {
             var resultAction = await dispatch(updateProduct(payload))
             if(updateProduct.fulfilled.match(resultAction)){
-                Notify('Product Added!', 'Your product was successfully added', 'success')
+                // Notify('Product Added!', 'Your product was successfully added', 'success')
+                setSuccessModal(true)
                 await dispatch(getAllProducts(id))
-                // Lets check
-                navigation.popToTop() 
+                // Lets check 
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
             }
@@ -553,10 +550,10 @@ export const PublishProduct = (): JSX.Element => {
         try {
             var resultAction = await dispatch(updateProduct(payload))
             if(updateProduct.fulfilled.match(resultAction)){
-                Notify('Product Added!', 'Your product was successfully added', 'success')
+                // Notify('Product Added!', 'Your product was successfully added', 'success')
+                setSuccessModal(true)
                 await dispatch(getAllProducts(id));
                 // Lets check
-                navigation.popToTop() 
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
             }
@@ -624,9 +621,9 @@ export const PublishProduct = (): JSX.Element => {
     }
 
     const onEditUpdate = () => {
-        var newEditData = editData
-        newEditData.spec[editable].quantity = selectedQuantity
-        setEditData(newEditData)
+        let newEditData = editData.spec[editable]
+        newEditData.quantity = selectedQuantity
+        // setEditData(newEditData)
     }
 
     const RenderHandleEdit = () => {
@@ -639,12 +636,28 @@ export const PublishProduct = (): JSX.Element => {
         )
     }
 
+    const statusBody = () => {
+        <>
+            <View style={globalStyles.modal__body}>
+                <Image source={SuccesssLogo} style={[globalStyles.selfCenterImage, globalStyles.Verticalspacing]} resizeMode="contain" />
+                <Text style={[globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Order Rejected" />
+                <Text style={[globalStyles.Verticalspacing]} numberOfLines={2} fontWeight="400" color={colors.darkGrey} textAlign='center' fontSize={hp(15)} text={modalDesc} />
+            </View>
+            <View style={{marginVertical: hp(20)}}>
+                <Button title={modalBtn}/>
+            </View>
+            <TouchableOpacity onPress={() => modalizeRef.current?.close()}>
+                <Text style={[globalStyles.Verticalspacing, {alignSelf: 'center'}]} fontWeight="400" color={colors.white} textAlign='center' fontSize={hp(15)} text="I'll do this later" />
+            </TouchableOpacity>
+        </>
+    } 
+
     return (
         <>
         <ScrollView style={[globalStyles.wrapper, {paddingTop: hp(20)}]}>
             <Text style={[styles.lowerContainer]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(16)} text="Upload colour images" />
             <ImageSelect/>
-            { editData == null ?
+            {/* { editData == null ?
                 <>
                     {data?.sizes && data?.colours ? renderColourAndSizePage():null}
                     {!data?.sizes && !data?.colours ? renderPage():null}
@@ -662,7 +675,14 @@ export const PublishProduct = (): JSX.Element => {
                         <Button isLoading={loader} title={BtnTitle()} onPress={() => onEditUpdate()} style={styles.btn}/>
                     </View>
                 </>
-            }
+            } */}
+            {data?.sizes && data?.colours ? renderColourAndSizePage():null}
+            {!data?.sizes && !data?.colours ? renderPage():null}
+            {data?.sizes && !data?.colours ? renderSizePage():null}
+            {!data?.sizes && data?.colours ? renderColourPage():null}
+            <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
+                <Button isLoading={loader} title={BtnTitle()} onPress={SubmitForm} style={styles.btn}/>
+            </View>
         </ScrollView>
         <Modalize
         modalStyle={{backgroundColor: colors.primaryBg}}
@@ -676,8 +696,26 @@ export const PublishProduct = (): JSX.Element => {
         HeaderComponent={renderHeader}
         >
             {renderSizeBody()}
-            
         </Modalize>
+        {/* STATUS */}
+        {/* <Modalize
+        modalStyle={{backgroundColor: colors.primaryBg}}
+        keyboardAvoidingOffset={100}
+        adjustToContentHeight
+        scrollViewProps={{ keyboardShouldPersistTaps: 'handled' }}
+        ref={statusRef}
+        overlayStyle={{backgroundColor: 'rgba(0, 0, 0, 0.7)'}}
+        handlePosition={'inside'}
+        handleStyle={{backgroundColor: colors.darkGrey}}
+        HeaderComponent={renderHeader}
+        >
+            {statusBody}
+        </Modalize> */}
+        <CustomSlideModal 
+        onButtonPress={() => navigation.popToTop()} 
+        msg={'You have successfully updated your product!'} 
+        headerText={'Success'} 
+        visibleBoolean={successModal}/>
         </>
     );
 };

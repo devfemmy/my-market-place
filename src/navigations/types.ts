@@ -38,6 +38,7 @@ export type MainStackParamList = {
   AddStaff: undefined;
   Account: undefined;
   NotificationScreen: undefined;
+  NotificationDetails: {title: string, type: string};
 };
 export type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,

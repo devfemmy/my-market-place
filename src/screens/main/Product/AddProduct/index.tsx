@@ -35,6 +35,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { currencyFormat } from '../../../../utils/functions';
 
+import CustomSlideModal from '../../../../components/common/CustomSlideModal';
+
 export const AddProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
     const dispatch = useAppDispatch()
@@ -46,6 +48,8 @@ export const AddProduct = (): JSX.Element => {
     const product_slug = useAppSelector(productBySlug)
     const items_by_colors = useAppSelector(newColours)
     const items_by_size_colors = useAppSelector(newSizeColours)
+
+    const [successModal, setSuccessModal] = useState(false)
 
     const initialValues: ProductFormData1 = {
         name: EditableSlug != null ? EditableSlug.name : '',
@@ -59,13 +63,21 @@ export const AddProduct = (): JSX.Element => {
         dispatch(getAllCategories())
     }, [])
 
+    console.log(EditableSlug?.variants[0]?.spec)
+
+    
+
     const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
     useFormik({
         initialValues,
         validationSchema: ProductFormData1Schema,
         onSubmit: (val: ProductFormData1) => {
             dispatch(resetImage())
-            DraftProduct(val)
+            if(EditableSlug?.name != null){
+                UpdateSlugProduct(val)
+            }else{
+                DraftProduct(val)
+            }
             // navigation.navigate('PublishProduct', {data: val})
         },
     });
@@ -95,6 +107,12 @@ export const AddProduct = (): JSX.Element => {
         }
     }
 
+    const UpdateSlugProduct = async (data: {name: string, description: string, category: string, sizes: boolean, colours: boolean}) => {
+        console.log(EditableSlug?.slug)
+        await AsyncStorage.setItem('slug', EditableSlug?.slug)
+        navigation.navigate('PublishProduct', {data: data})
+    }
+
     const handleColorAloneSubmit = async (
         draft: boolean,
         colors: Array<any>,
@@ -121,7 +139,7 @@ export const AddProduct = (): JSX.Element => {
         try {
             var resultAction = await dispatch(updateProduct(payload))
             if(updateProduct.fulfilled.match(resultAction)){
-                Notify('Product Added!', 'Your product was successfully added', 'success')
+                setSuccessModal(true)
                 await dispatch(getAllProducts(id))
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
@@ -166,7 +184,7 @@ export const AddProduct = (): JSX.Element => {
         try {
             var resultAction = await dispatch(updateProduct(payload))
             if(updateProduct.fulfilled.match(resultAction)){
-                Notify('Product Added!', 'Your product was successfully added', 'success')
+                setSuccessModal(true)
                 await dispatch(getAllProducts(id))
             }else{
                 Notify('Product not Added!', 'Your product was not added', 'error')
@@ -399,9 +417,9 @@ export const AddProduct = (): JSX.Element => {
                 </View>
 
                 <View style={[globalStyles.rowStart]}>
-                    <TouchableOpacity onPress={() => {dispatch(resetImage()); navigation.navigate('PublishProduct', {editData: item, data: values})}} style={globalStyles.mini_button}>
+                    {/* <TouchableOpacity onPress={() => {dispatch(resetImage()); navigation.navigate('PublishProduct', {editData: item, data: values})}} style={globalStyles.mini_button}>
                         <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     {/* <TouchableOpacity style={globalStyles.mini_button}>
                         <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
                     </TouchableOpacity> */}
@@ -414,16 +432,27 @@ export const AddProduct = (): JSX.Element => {
     const renderEditableSlug = () => {
         return (
             <>
-                <FlatList
+                <CheckBox
+                label={'Does your product have sizes?'}
+                status={values?.sizes ? 'checked' : 'unchecked'}
+                handleChange={() => setFieldValue('sizes', !values.sizes)}
+                />
+
+                <CheckBox
+                    label={'Does your product have colours?'}
+                    status={values?.colours ? 'checked' : 'unchecked'}
+                    handleChange={() => setFieldValue('colours', !values.colours)}
+                />
+                {/* <FlatList
                     data={EditableSlug.variants}
                     renderItem={renderEditableSlugVariant}
                     scrollEnabled={true}
-                />
+                /> */}
                 <View style={[globalStyles.rowCenter, {marginBottom: hp(10)}]}>
                     <Button 
                     isLoading={loader} 
                     title={'Update'} 
-                    onPress={() => console.log(EditableSlug.variants)} 
+                    onPress={handleSubmit}
                     style={styles.btn}/>
                 </View>
             </>
@@ -458,7 +487,13 @@ export const AddProduct = (): JSX.Element => {
                 setState={handleChange('category')}
                 errorMsg={touched.category ? errors.category : undefined}
             />
-            {EditableSlug != null ? renderEditableSlug() : (items_by_size_colors.length > 0 ? (renderSizeColourFooter()) : (items_by_colors.length > 0 ? renderColourFooter() : renderFooter()))}
+            {EditableSlug != null && items_by_size_colors.length < 1 && items_by_colors.length < 1 ? renderEditableSlug() : (items_by_size_colors.length > 0 ? (renderSizeColourFooter()) : (items_by_colors.length > 0 ? renderColourFooter() : renderFooter()))}
+
+            <CustomSlideModal 
+            onButtonPress={() => navigation.popToTop()} 
+            msg={'You have successfully updated your product!'} 
+            headerText={'Success'} 
+            visibleBoolean={successModal}/>
         </SafeAreaView>
     );
 };

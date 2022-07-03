@@ -69,6 +69,7 @@ export type OrderState = {
 export type UserState = {
   userProfile: Array<any>,
   notifications: Array<any>,
+  notificationStat: Array<any>,
   error: any,
   loading: boolean,
 }

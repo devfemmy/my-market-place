@@ -5,6 +5,7 @@ import {Notifier, NotifierComponents} from 'react-native-notifier';
 import 'intl'
 import 'intl/locale-data/jsonp/en'
 import axios from "axios";
+import banks from "./banks";
 
 export const currencyFormat = (value: string | number | any) =>{
     if(value == "" || value == null){
@@ -142,10 +143,12 @@ export const pictureUpload = async (image: any) => {
     };
     const request = new FormData();
     request.append('file', {
-        uri: image.uri,
-        type: image.type,
-        name: image.uri.split('/').pop(),
+        uri: Platform.OS === "android" ? image.path : image.path.replace("file://", ""),
+        type: image.mime,
+        mime: image.mime,
+        name: image.filename,
     });
+    console.log(request)
     try {
         const response = await axios.post(
             'https://prod.bazara.co/upload-microservice/v1/upload/img',
@@ -163,3 +166,64 @@ export const pictureUpload = async (image: any) => {
         console.log(error)
     }
 }
+
+export const timeSince = (date) => {
+
+    const seconds = Math.floor((new Date() - date) / 1000);
+  
+    let interval = seconds / 31536000;
+  
+    if (interval > 1) {
+      //years
+      return Math.floor(interval) + " years ago";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      //months
+      return Math.floor(interval) + " months ago";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      //days
+      return Math.floor(interval) + " days ago";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      //hours
+      return Math.floor(interval) + " hours ago";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      //minutes
+      return Math.floor(interval) + " minutes ago";
+    }
+    if(!interval){
+        return '...'
+    }
+    return Math.floor(seconds) + " seconds ago";
+}
+
+const validateAccount = async (accountNumber, bankName) => {
+
+    if(accountNumber.length == 10 && bankName){
+      const bankDetails = banks.find((bank) => bankName == bank.label)
+      const bankCode = bankDetails?.code
+
+      let confg = {
+        headers: {
+          authorization: `Bearer ${config.secretOrKey}`,
+        },
+      };
+      try {
+        const response = await axios.post(
+            `https://api.paystack.co/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`,
+            confg,
+        );
+        if (response.status === 200) {
+            console.log(response?.data)
+        }
+      } catch (error) {
+        
+      }
+    }
+  }

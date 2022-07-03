@@ -6,9 +6,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable react/prop-types */
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Text} from '../../../components/common';
-import {View, FlatList, TouchableOpacity, ImageBackground, SafeAreaView} from 'react-native';
+import {View, FlatList, TouchableOpacity, ImageBackground, SafeAreaView, ActivityIndicator} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {hp} from '../../../utils/helpers';
 import { colors } from '../../../utils/themes';
@@ -27,10 +27,18 @@ import { PayoutBack } from '../../../constants/images';
 import { Select } from '../../../components/common/SelectInput';
 import { Button } from '../../../components/common/Button';
 import { updatePayout, getPayouts, loading } from '../../../redux/slices/StoreSlice';
+import axios from 'axios';
+import CONFIG from 'react-native-config';
+import { bankVerification } from '../../../utils/server';
+import { string } from 'yup';
+
 export const Payouts = ({data}): JSX.Element => {
   const modalizeRef = useRef(null);
   const dispatch = useAppDispatch()
   const loader = useAppSelector(loading)
+
+  const [fetching, setFetching] = useState(false)
+  const [accNum, setAccNum] = useState('')
 
   const initialValues: PayoutFormData = {
     name: data.name,
@@ -62,29 +70,62 @@ export const Payouts = ({data}): JSX.Element => {
     </View>
   );
 
+  const validateAccount = async (accountNumber: string, bankName: string) => {
+    if(accountNumber.length == 10 && bankName){
+      setFetching(true)
+      const bankDetails = banks.find((bank) => bankName == bank.label)
+      const bankCode = bankDetails?.code
+      const payload = {
+        bankAccount: accountNumber,
+        bankCode: bankCode
+      }
+      try {
+        const response = await bankVerification(payload)
+        if (response.status === 200) {
+          setFetching(false)
+          setFieldValue('name', response?.data?.data?.account_name)
+        }else{
+          setFetching(false)
+          setFieldValue('name', '')
+        }
+      } catch (error) {
+        console.log(error)
+        setFetching(false)
+        setFieldValue('name', '')
+      }
+    }else{
+      setFieldValue('name', '')
+    }
+  }
+
   const renderBody = () => (
     <>
         <Select
             items={bankList}
             defaultValue={values.bankName}
             placeholder={'Bank'}
-            setState={handleChange('bankName')}
+            setState={(value) => {setFieldValue('bankName', value); setFieldValue('name', ''); setFieldValue('account', '')}}
             errorMsg={touched.bankName ? errors.bankName : undefined}
         />
         <Input
             label={'Account Number'}
             value={values.account}
             onBlur={handleBlur('account')}
-            onChangeText={handleChange('account')}
+            onChangeText={(text) => {setFieldValue('account', text), validateAccount(text, values.bankName)}}
             errorMsg={touched.account ? errors.account : undefined}
         />
-        <Input
+        {/* <Input
             label={'Account Name'}
             value={values.name}
             onBlur={handleBlur('name')}
             onChangeText={handleChange('name')}
             errorMsg={touched.name ? errors.name : undefined}
-        />
+        /> */}
+        <View style={[styles.namePreview, globalStyles.rowBetween]}>
+          {fetching ? <ActivityIndicator size={'small'}/> : <Text fontWeight="400" fontSize={hp(13)} text={values.name} />}
+
+          <Ionicons name="checkmark-circle-outline" size={24} color="#fff" />
+        </View>
         <Button isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
     </>
 );
