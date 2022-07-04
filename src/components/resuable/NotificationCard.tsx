@@ -11,7 +11,8 @@ import { colors } from '../../utils/themes'
 import { hp } from '../../utils/helpers'
 import { currencyFormat, statusColor, firstLetterUppercase, copyToClipboard } from '../../utils/functions'
 import {Modalize} from 'react-native-modalize';
-
+import { timeSince } from '../../utils/functions';
+import { InfoCircle, Danger, Union, Cash, TickSquare, Chat } from '../../constants/images';
 const NotificationCard: React.FC<OrderCardProps> = ({item }) => {
 
     const navigation = useNavigation<Nav>();
@@ -19,19 +20,33 @@ const NotificationCard: React.FC<OrderCardProps> = ({item }) => {
         return null
     }
 
+    const getIcon  = (type: string) => {
+        if(type == 'order-request'){
+            return InfoCircle
+        }
+        if(type == 'order-confirmation'){
+            return TickSquare
+        }
+        return null
+    }
+
+    const handleNavigate = () => {
+        navigation.navigate('NotificationDetails', {title: item?.title, type: item?.type})
+    }
+
 
     return (
-        <View style={[styles.cardContainer, globalStyles.rowStart]}>
+        <View style={[styles.cardContainer, globalStyles.rowStart, globalStyles.rowBetween]}>
             <View style={[globalStyles.rowStart]}>
 
                 <TouchableOpacity style={globalStyles.rowStartNoOverflow}>
-                    <Image source={item?.image} style={styles.image} />
+                    <Image source={item?.image || getIcon(item?.type)} style={styles.image} />
                 </TouchableOpacity>
                 <View style={styles.detContainer}>
                     <Text text={item?.title} numberOfLines={1} fontWeight={"600"} fontSize={hp(15)} style={styles.text} />
                     <View style={globalStyles.rowStart}>
                         <Text
-                            text={(item?.time)}
+                            text={timeSince(new Date(item?.time || item?.createdAt))}
                             numberOfLines={1}
                             fontWeight={"500"}
                             color={colors.darkGrey}
@@ -43,17 +58,21 @@ const NotificationCard: React.FC<OrderCardProps> = ({item }) => {
                 </View>
                 
             </View>
-            <TouchableOpacity style={[globalStyles.rowStart]}>
-                <Text
-                    text={'View'}
-                    numberOfLines={1}
-                    fontWeight={"500"}
-                    color={'#fff'}
-                    fontSize={hp(14)}
-                    style={styles.text}
-                />
-                <Feather name={'arrow-right'} size={hp(20)} style={[globalStyles.Horizontalspacing, {color: '#fff'}]} />
-            </TouchableOpacity>
+            { Number(item?.count) > 1 ?
+                <TouchableOpacity onPress={() => handleNavigate()} style={[globalStyles.rowStart]}>
+                    <Text
+                        text={'View'}
+                        numberOfLines={1}
+                        fontWeight={"500"}
+                        color={'#fff'}
+                        fontSize={hp(14)}
+                        style={styles.text}
+                    />
+                    <Feather name={'arrow-right'} size={hp(20)} style={[globalStyles.Horizontalspacing, {color: '#fff'}]} />
+                </TouchableOpacity>
+                :
+                null
+            }
 
         </View>
     )
@@ -86,7 +105,8 @@ const styles = StyleSheet.create({
     },
     detContainer: {
         height: hp(45),
-        width: hp(250),
+        // width: hp(250),
+        paddingRight: hp(20),
         justifyContent: 'space-between'
     }
 })

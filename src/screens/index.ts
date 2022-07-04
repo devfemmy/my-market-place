@@ -6,4 +6,4 @@ export * from './StoreScreen/Staff';
 export * from './StoreScreen/Staff/AddStaff';
 export * from './StoreScreen/Payout'
 export * from './Notifications'
-
+export * from './Notifications/details'
