@@ -40,7 +40,7 @@ export const PublishProduct = (): JSX.Element => {
     
     const modalizeRef = useRef(null);
     const statusRef = useRef(null);
-    const sizeList = ["S", "M", "L", "XL", "XXL", "XXXL"]
+    const sizeList = ["", "S", "M", "L", "XL", "XXL", "XXXL"]
 
     const dispatch = useAppDispatch()
     const sizes = useAppSelector(newSizes)

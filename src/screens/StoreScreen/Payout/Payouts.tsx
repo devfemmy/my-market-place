@@ -98,6 +98,18 @@ export const Payouts = ({data}): JSX.Element => {
     }
   }
 
+  const colorChange = (color: string) => {
+    if(values?.account?.length < 10){
+      return 'transparent'
+    }
+    if(values?.name == ''){
+      return colors.cancelled
+    }
+    else{
+      return color
+    }
+  }
+
   const renderBody = () => (
     <>
         <Select
@@ -121,17 +133,17 @@ export const Payouts = ({data}): JSX.Element => {
             onChangeText={handleChange('name')}
             errorMsg={touched.name ? errors.name : undefined}
         /> */}
-        <View style={[styles.namePreview, globalStyles.rowBetween]}>
+        <View style={[styles.namePreview, globalStyles.rowBetween, {backgroundColor: colorChange(colors.completed)}]}>
           {fetching ? <ActivityIndicator size={'small'}/> : <Text fontWeight="400" fontSize={hp(13)} text={values.name} />}
 
-          <Ionicons name="checkmark-circle-outline" size={24} color="#fff" />
+          <Ionicons name="checkmark-circle-outline" size={24} color={colorChange("#fff")} />
         </View>
         <Button isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
     </>
 );
 
   const renderItem = ({item}: any) => (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => modalizeRef.current?.open()}>
+    <TouchableOpacity activeOpacity={0.8} onPress={() => {setFieldValue('account', ''); modalizeRef.current?.open()}}>
         <ImageBackground source={PayoutBack} resizeMode="cover" style={[globalStyles.payoutCard]}>
             <Text fontWeight="500" fontSize={hp(17)} text={item.name} />
             <Text style={[globalStyles.Verticalspacing]} fontWeight="500" fontSize={hp(14)} text={item.account + " - " + item.bankName} />
