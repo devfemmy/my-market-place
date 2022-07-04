@@ -134,7 +134,13 @@ export const Payouts = ({data}): JSX.Element => {
             errorMsg={touched.name ? errors.name : undefined}
         /> */}
         <View style={[styles.namePreview, globalStyles.rowBetween, {backgroundColor: colorChange(colors.completed)}]}>
-          {fetching ? <ActivityIndicator size={'small'}/> : <Text fontWeight="400" fontSize={hp(13)} text={values.name} />}
+          {fetching ? <ActivityIndicator size={'small'}/> 
+          : 
+          <Text 
+          color={values?.account?.length < 10 ? 'transparent' : colors.white} 
+          fontWeight="400" fontSize={hp(13)} 
+          text={values.name == '' ? 'Invalid Account' : values.name} />
+          }
 
           <Ionicons name="checkmark-circle-outline" size={24} color={colorChange("#fff")} />
         </View>
