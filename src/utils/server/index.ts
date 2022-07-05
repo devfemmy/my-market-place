@@ -1,9 +1,10 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CONFIG from 'react-native-config';
 
 const UPLOAD_URL = "https://prod.bazara.co/upload-microservice/v1/upload/img";
 const UPLOAD_VIDEO_URL = "https://prod.bazara.co/upload-microservice/v1/upload/video";
-const PAYSTACK_VERIFY_URL = "https://api.flutterwave.com/v3/accounts/resolve";
+const PAYSTACK_VERIFY_URL = "https://api.paystack.co/bank/resolve";
 
 
 var SERVER_URL = "https://api.bazara.co/api/v2/dev";
@@ -148,6 +149,14 @@ export const sendProfilePost = async ( url: String, payload: any, v?: String) =>
     return response
         
 };
+
+export const bankVerification = (payload: {bankAccount: string, bankCode: string}) => {
+    return axios.get(PAYSTACK_VERIFY_URL + `?account_number=${payload.bankAccount}&bank_code=${payload.bankCode}`, {
+      headers: {
+        authorization: `Bearer ${CONFIG.REACT_APP_STAGING_VERIFICATION}`,
+    },
+    })
+}
  
 
 export default {doPost}

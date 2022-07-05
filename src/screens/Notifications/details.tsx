@@ -10,60 +10,27 @@ import {hp, wp} from '../../utils/helpers';
 import {globalStyles} from "../../styles/globalStyles"
 import { Nav } from '../../utils/types';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { loading, getSellerNotificationsStat, notificationStat } from '../../redux/slices/userSilce';
+import { loading, getSellerNotifications, notifications, error } from '../../redux/slices/userSilce';
 import NotificationCard from '../../components/resuable/NotificationCard';
+import { useRoute } from '@react-navigation/native';
 
-export const NotificationScreen = (): JSX.Element => {
-  const  { navigate } = useNavigation<Nav>();
+export const NotificationDetails = (): JSX.Element => {
+  const  navigation = useNavigation<Nav>();
+  const route = useRoute();
+  const title = route?.params?.title
+  const type = route?.params?.type
   const dispatch = useAppDispatch()
 
-  const allNotifications = useAppSelector(notificationStat)
+  const allNotifications = useAppSelector(notifications)
   const loader = useAppSelector(loading)
+  const errorMsg = useAppSelector(error)
 
   useEffect(() => {
-    dispatch(getSellerNotificationsStat())
-  }, [])
-
-  const notificationTypes = [
-    // {
-    //     title: 'New Order',
-    //     time: '2 mins ago',
-    //     image: Union
-    // },
-    {
-        title: 'Order Completed',
-        time: allNotifications?.completedOrders?.lastCreatedAt,
-        image: TickSquare,
-        count: allNotifications?.completedOrders?.count,
-        type: "order-confirmation"
-    },
-    {
-        title: 'Pending Order',
-        time: allNotifications?.pendingOrders?.lastCreatedAt,
-        image: InfoCircle,
-        count: allNotifications?.pendingOrders?.count,
-        type: "order-request"
-    },
-    {
-        title: 'Payment Received',
-        time: allNotifications?.paymentReceived?.lastCreatedAt,
-        image: Cash,
-        count: allNotifications?.paymentReceived?.count,
-        type: ""
-    },
-    {
-        title: 'Product Out of Stock',
-        time: allNotifications?.productsOutOfStock?.lastCreatedAt,
-        image: Danger,
-        count: allNotifications?.productsOutOfStock?.count,
-        type: ""
-    },
-    // {
-    //     title: 'New Message',
-    //     time: '5 Days ago',
-    //     image: Chat
-    // },
-  ]
+    dispatch(getSellerNotifications(type))
+    navigation.setOptions({
+      title: title
+    });
+    }, [navigation]);
 
   const renderItem = ({item}: any) => (
     <NotificationCard item={item}/>
@@ -82,7 +49,7 @@ export const NotificationScreen = (): JSX.Element => {
   return (
     <View style={globalStyles.wrapper}>
       <FlatList
-            data={notificationTypes}
+            data={allNotifications}
             renderItem={renderItem}
             keyExtractor={item => item?.title}
             contentContainerStyle={{paddingBottom: hp(100)}}

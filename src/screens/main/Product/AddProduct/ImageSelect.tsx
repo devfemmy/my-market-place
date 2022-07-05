@@ -11,6 +11,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { addImage, images } from '../../../../redux/slices/productSlice';
 import { pictureUpload } from '../../../../utils/functions';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export const ImageSelect = (): JSX.Element => {
 
@@ -19,20 +20,23 @@ export const ImageSelect = (): JSX.Element => {
     const imageList = useAppSelector(images)
 
     const pickImage = async (index: number) => {
-        let result = await launchImageLibrary({
-          mediaType: 'photo',
-          quality: 1,
+        ImagePicker.openPicker({
+            width: 500,
+            height: 600,
+            cropping: true,
+            mediaType: "photo",
+            multiple: false,
+        }).then(async image => {
+            console.log(image)
+            // await pictureUpload(image)
+            dispatch(addImage({index: index, uri: image.path}))
         });
-        if (!result.didCancel) {
-            // await pictureUpload(result?.assets[0])
-            dispatch(addImage({index: index, uri: result?.assets[0]?.uri}))
-        }
     };
 
     const _renderItem = ({item, index}) => {
         if(item !== ""){
             return (
-                <TouchableOpacity activeOpacity={.8} >
+                <TouchableOpacity  onPress={() => pickImage(index)} activeOpacity={.8} >
                     <View>
                         <Image resizeMode='cover' style={styles.imgStyle2} source={{uri: item}}/>
                     </View>

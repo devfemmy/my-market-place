@@ -34,6 +34,16 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Bazara would like to upload photos from your photo gallery</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Bazara requires to access camera for uploading photos to your profile or posts</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Bazara requires to access Audio recording to record and uplod videos</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
