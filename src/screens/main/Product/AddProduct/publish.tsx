@@ -63,7 +63,7 @@ export const PublishProduct = (): JSX.Element => {
     const [selectedSize, setSelectedSize] = useState('')
     const [colorDescription, setColorDescription] = useState('')
     const [selectedPrice, setSelectedPrice] = useState('0')
-    const [selectedQuantity, setSelectedQuantity] = useState('0')
+    const [selectedQuantity, setSelectedQuantity] = useState('1')
 
     const [successModal, setSuccessModal] = useState(false)
 
@@ -237,7 +237,7 @@ export const PublishProduct = (): JSX.Element => {
         }
         setSelectedSize('')
         setSelectedPrice('0')
-        setSelectedQuantity('0')
+        setSelectedQuantity('1')
 
         if(val == 'close'){
             modalizeRef.current?.close()
