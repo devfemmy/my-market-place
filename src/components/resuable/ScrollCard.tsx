@@ -13,7 +13,7 @@ import { numberFormat } from '../../utils/helpers';
 
 const ScrollCard: React.FC<WalletProps> = ({ escrow, balance }) => {
     return (
-        <SafeAreaView>
+        <View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.activeCard}>
                     <Text text={`₦ ${numberFormat(escrow)}`} fontSize={hp(18)} />
@@ -30,7 +30,7 @@ const ScrollCard: React.FC<WalletProps> = ({ escrow, balance }) => {
                     <Text text={`₦ ${numberFormat(balance)} Store Balance`}  fontSize={hp(15)} style={styles.balanceText} />
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         width: wp(250),
         height: hp(130),
         padding: 20,
-        marginVertical: 0,
+        marginTop: 15,
         borderRadius: 10,
     },
     inactiveCard: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         width: wp(250),
         height: hp(130),
         padding: 20,
-        marginVertical: 0,
+        marginTop: 15,
         borderRadius: 10,
         marginHorizontal: 10
     },
