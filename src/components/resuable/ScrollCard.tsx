@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import React from 'react'
 import { StyleSheet, ScrollView } from 'react-native'
-import { SafeAreaView, Text } from '../common'
+import { Text } from '../common'
 import { colors } from '../../utils/themes'
 import { hp, wp } from '../../utils/helpers'
 import { WalletProps } from '../../interfaces'
