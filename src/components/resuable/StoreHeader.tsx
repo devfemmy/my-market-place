@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
         padding: 5,
         marginTop: 3,
         borderRadius: 5,
+        width: 110,
     },
     iconCard: {
         height: '100%',

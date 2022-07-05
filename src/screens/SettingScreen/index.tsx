@@ -84,6 +84,11 @@ const toggleSwitch = async () => {
         }
     }
 
+    const LogOut = async () => {
+        signOut(null)
+        AsyncStorage.clear()
+    }
+
     const quickActionArray = [
         {
             id: 1,
@@ -132,7 +137,7 @@ const toggleSwitch = async () => {
         <SafeAreaView>
             <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
                 <Text text='Store Information' fontSize={hp(22)} fontWeight="600" lineHeight={28} />
-                <Pressable onPress={signOut}>
+                <Pressable onPress={LogOut}>
                     <Text text='Log out' fontSize={hp(16)} fontWeight="600" color={colors.bazaraTint} />
                 </Pressable>
             </View>

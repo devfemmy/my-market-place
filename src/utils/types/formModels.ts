@@ -70,6 +70,7 @@ export type OrderState = {
 export type UserState = {
   userProfile: Array<any>,
   notifications: Array<any>,
+  notificationStat: Array<any>,
   error: any,
   loading: boolean,
 }
@@ -77,6 +78,7 @@ export type UserState = {
 export type ProductState = {
   myProducts: Array<any>,
   selectedProducts: Array<any>,
+  productBackground: Array<any>,
   searching: boolean,
   productBySlug: any,
   editableSlug: any,

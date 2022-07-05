@@ -9,6 +9,7 @@ import { Text } from './Text';
 import { colors } from '../../utils/themes';
 import { useAppDispatch } from '../../redux/hooks'
 import {getStorePermission} from '../../redux/slices/StoreSlice'
+import { getArchtype } from 'immer/dist/internal';
 
 
 
@@ -45,6 +46,7 @@ export const Select = (props: IProp) => {
             dropdownStyle={styles.dropdownStyle}
             rowStyle={styles.rowStyle}
             rowTextStyle={styles.rowTextStyle}
+            dropdownOverlayColor={'transparent'}
             buttonTextAfterSelection={(selectedItem: string) => {
               return selectedItem;
             }}
@@ -102,7 +104,11 @@ const styles = StyleSheet.create({
   },
   dropdownStyle: {
     backgroundColor: colors.darkBlack,
-    maxHeight: hp(250)
+    height: hp(200),
+    borderBottomLeftRadius: hp(10),
+    borderBottomRightRadius: hp(10),
+    borderWidth: 1,
+    borderColor: colors.gray
   },
   rowStyle: {
     padding: 10,

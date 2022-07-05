@@ -14,6 +14,7 @@ import {Notify} from "../../utils/functions";
 const initialState: UserState = {
     userProfile: [],
     notifications: [],
+    notificationStat: [],
     loading: true,
     error: null
 }
@@ -26,10 +27,24 @@ export const getUserDetails = createAsyncThunk(
     }
 )
 
-export const getUserNotifications = createAsyncThunk(
+export const getSellerNotifications = createAsyncThunk(
     'user/notifications',
+    async (payload: {type: string}) => {
+        const response = await getRequest("/sidehustle/notification")
+        const result = response?.data?.data
+        const filteredResponse = result.filter((val) => {
+            if(val?.type == payload){
+                return val
+            }
+        })
+        return filteredResponse
+    }
+)
+
+export const getSellerNotificationsStat = createAsyncThunk(
+    'user/notificationStat',
     async () => {
-        const response = await getRequest("/sidehustle/notification'")
+        const response = await getRequest("/sidehustle/notification/stat")
         return response?.data?.data
     }
 )
@@ -77,14 +92,27 @@ export const UserSlice = createSlice({
 
 
 
-        builder.addCase(getUserNotifications.pending, (state) => {
+        builder.addCase(getSellerNotifications.pending, (state) => {
             state.loading = true
         })
-        builder.addCase(getUserNotifications.fulfilled, (state, action: PayloadAction<any>) => {
+        builder.addCase(getSellerNotifications.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false
             state.notifications = action.payload
         })
-        builder.addCase(getUserNotifications.rejected, (state, action) => {
+        builder.addCase(getSellerNotifications.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+
+        builder.addCase(getSellerNotificationsStat.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(getSellerNotificationsStat.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.notificationStat = action.payload
+        })
+        builder.addCase(getSellerNotificationsStat.rejected, (state, action) => {
             state.error = action.error.message
         })
 
@@ -114,6 +142,7 @@ export const UserSlice = createSlice({
 
 export const userProfile = (state: RootState) => state.user.userProfile;
 export const notifications = (state: RootState) => state.user.notifications;
+export const notificationStat = (state: RootState) => state.user.notificationStat;
 export const loading = (state: RootState) => state.user.loading;
 export const error = (state: RootState) => state.user.error;
 

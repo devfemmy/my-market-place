@@ -87,5 +87,15 @@ export const styles = StyleSheet.create({
       marginRight: hp(15),
       alignItems: 'center',
       justifyContent: 'center'
+  },
+  namePreview: {
+    height: hp(60),
+    width: hp(340),
+    borderRadius: hp(10),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginBottom: hp(70),
+    paddingHorizontal: hp(20),
+    backgroundColor: colors.completed
   }
 });
