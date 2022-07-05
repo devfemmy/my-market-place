@@ -12,6 +12,7 @@ import { boolean } from "yup";
 const initialState: ProductState = {
     myProducts: [],
     selectedProducts: [],
+    productBackground: [],
     searching: false,
     productBySlug: null,
     editableSlug: null,
@@ -45,6 +46,16 @@ export const getProductBySlug = createAsyncThunk(
     'product/allProduct',
     async (payload: string) => {
         const response = await getRequest(`/sidehustle/product/?slug=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const getPayoutBackground = createAsyncThunk(
+    'product/allProductBack',
+    async () => {
+        const response = await getRequest(`/sidehustle/account/payouts`)
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -326,6 +337,21 @@ export const ProductSlice = createSlice({
             state.error = action.error.message
         })
 
+
+
+        builder.addCase(getPayoutBackground.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(getPayoutBackground.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.productBackground = action.payload
+        })
+        builder.addCase(getPayoutBackground.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+
         builder.addCase(searchProducts.pending, (state) => {
             state.searching = true
         })
@@ -394,6 +420,7 @@ export const ProductSlice = createSlice({
 export const images = (state: RootState) => state.product.images;
 export const editableSlug = (state: RootState) => state.product.editableSlug;
 export const myProducts = (state: RootState) => state.product.myProducts;
+export const productBackground = (state: RootState) => state.product.productBackground;
 export const selectedProducts = (state: RootState) => state.product.selectedProducts;
 export const loading = (state: RootState) => state.product.loading;
 export const searching = (state: RootState) => state.product.searching;

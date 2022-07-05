@@ -77,6 +77,7 @@ export type UserState = {
 export type ProductState = {
   myProducts: Array<any>,
   selectedProducts: Array<any>,
+  productBackground: Array<any>,
   searching: boolean,
   productBySlug: any,
   editableSlug: any,

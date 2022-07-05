@@ -6,9 +6,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable react/prop-types */
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {Text} from '../../../components/common';
-import {View, FlatList, TouchableOpacity, ImageBackground, SafeAreaView, ActivityIndicator} from 'react-native';
+import {View, FlatList, TouchableOpacity, ImageBackground, SafeAreaView, ActivityIndicator, Image} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {hp} from '../../../utils/helpers';
 import { colors } from '../../../utils/themes';
@@ -18,6 +18,7 @@ import { styles } from './styles';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { filterOrders, availableStatus, selected, searchOrders} from '../../../redux/slices/orderSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Entypo from 'react-native-vector-icons/Entypo'
 import {Modalize} from 'react-native-modalize';
 import banks from '../../../utils/banks';
 import { useFormik } from 'formik';
@@ -31,6 +32,8 @@ import axios from 'axios';
 import CONFIG from 'react-native-config';
 import { bankVerification } from '../../../utils/server';
 import { string } from 'yup';
+import { getPayoutBackground, productBackground } from '../../../redux/slices/productSlice';
+import { UniversityLogo } from '../../../constants/images';
 
 export const Payouts = ({data}): JSX.Element => {
   const modalizeRef = useRef(null);
@@ -40,12 +43,12 @@ export const Payouts = ({data}): JSX.Element => {
   const [fetching, setFetching] = useState(false)
   const [accNum, setAccNum] = useState('')
 
+
   const initialValues: PayoutFormData = {
     name: data.name,
     account: data.account,
     bankName: data.bankName,
   };
-  
 
   const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
   useFormik({
@@ -157,17 +160,46 @@ export const Payouts = ({data}): JSX.Element => {
     </TouchableOpacity>
   );
 
+
   return (
     <>
       <View>
-        <FlatList
+        {/* <FlatList
             data={data}
             renderItem={renderItem}
             keyExtractor={item => item?._id}
             style={{marginBottom: hp(100)}}
-        />
-        
+        /> */}
+        <TouchableOpacity activeOpacity={0.8} onPress={() => {setFieldValue('account', ''); modalizeRef.current?.open()}}>
+            <ImageBackground source={PayoutBack} resizeMode="cover" style={[globalStyles.payoutCard]}>
+                <Text fontWeight="500" fontSize={hp(17)} text={data[0]?.name} />
+                <Text style={[globalStyles.Verticalspacing]} fontWeight="500" fontSize={hp(14)} text={data[0]?.account + " - " + data[0]?.bankName} />
+            </ImageBackground>
+        </TouchableOpacity>
+
+
+        <View style={globalStyles.Verticalspacing} />
+        <View style={[globalStyles.rowBetween, globalStyles.lowerContainer, globalStyles.Verticalspacing]}>
+          <Text
+            fontWeight="500"
+            fontSize={hp(17)}
+            text={'Transactions'}
+          />
+          <View style={[globalStyles.rowStart]}>
+            <Entypo name='sound-mix' color={colors.white} size={hp(16)}/>
+            <Text
+              fontWeight="400"
+              fontSize={hp(16)}
+              text={' Filter'}
+            />
+          </View>
+        </View>
       </View>
+      <View style={{alignItems: 'center'}}>
+        <Image source={UniversityLogo} style={[globalStyles.selfCenterImage, globalStyles.Verticalspacing]} resizeMode="contain" />
+        <Text style={[globalStyles.Verticalspacing]} fontWeight="500" fontSize={hp(20)} text="No Transactions at the moment" />
+      </View>
+
       <Modalize
       modalStyle={{backgroundColor: colors.primaryBg}}
       keyboardAvoidingOffset={100}
