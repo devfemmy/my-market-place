@@ -37,6 +37,8 @@ export type MainStackParamList = {
   Staffs: undefined;
   AddStaff: undefined;
   Account: undefined;
+  Reviews: undefined;
+  AllReviews: undefined;
   NotificationScreen: undefined;
   NotificationDetails: {title: string, type: string};
 };

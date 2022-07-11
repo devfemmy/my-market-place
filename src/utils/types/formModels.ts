@@ -47,6 +47,8 @@ export type StoreState = {
   allStores: Array<any>,
   permission: Array<any>,
   payouts: Array<any>,
+  reviews: Array<any>,
+  filteredreviews: Array<any>,
   allCategories: Array<any>,
   storeById: any,
   error: any,

@@ -222,5 +222,40 @@ export const globalStyles = StyleSheet.create({
     position: 'absolute',
     bottom: hp(0),
     right: hp(10)
+  },
+  ratingsContainer: {
+    width: '50%', 
+    alignSelf: 'center',
+    alignItems: 'center'
+  },
+
+  ratingsSubtitle: {
+    width: '80%', 
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    marginVertical: hp(15),
+    borderRadius: hp(50)
+  },
+  ratingsStats: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: hp(5)
+  },
+  commentCard: {
+    width: '100%',
+    minHeight: hp(300),
+    paddingHorizontal: hp(15)
+  },
+  starFilterButton: {
+    height: hp(40),
+    width: hp(80),
+    borderRadius: hp(40),
+    marginHorizontal: hp(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.black
   }
+
 });
