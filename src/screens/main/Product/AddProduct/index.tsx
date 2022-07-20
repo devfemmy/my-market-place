@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
 import { AuthContext } from '../../../../context/context';
 import { Button } from '../../../../components/common/Button';
-import {View, Image, FlatList, TouchableOpacity} from 'react-native';
+import {View, Image, FlatList, TouchableOpacity, StatusBar} from 'react-native';
 import {globalStyles} from '../../../../styles';
 import {hp,wp} from '../../../../utils/helpers';
 import {NoProducts} from '../../../../constants/images';

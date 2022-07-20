@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, StatusBar } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -29,6 +29,7 @@ export const Select = (props: IProp) => {
 
   return (
     <View style={[styles.containerStyle]}>
+      <StatusBar translucent={false}/>
       <View style={styles.contain}>
         <View style={[{}, styles.input]}>
           <SelectDropdown
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: hp(10),
     borderBottomRightRadius: hp(10),
     borderWidth: 1,
-    borderColor: colors.gray
+    borderColor: colors.gray,
   },
   rowStyle: {
     padding: 10,

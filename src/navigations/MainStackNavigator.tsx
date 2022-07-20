@@ -7,7 +7,7 @@ import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
 import {StoreCreation, AddProduct, PublishProduct, 
   OrderDetails, AddStaffScreen, StaffScreen, Account, 
-  NotificationScreen, NotificationDetails} from '../screens';
+  NotificationScreen, NotificationDetails, Reviews, AllReviews} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
 import StoreSuccessScreen from '../screens/StoreSuccessScreen';
 import AuthStoreSuccessScreen from '../screens/AuthStoreSuccessScreen';
@@ -97,6 +97,22 @@ export const MainStackNavigator = (): JSX.Element => {
         options={() => ({
           title: 'Payout Account',
           headerShown: true,})}
+        />
+
+      <MainStack.Screen
+        name="Reviews"
+        component={Reviews}
+        options={() => ({
+          title: 'Ratings and Reviews',
+          headerShown: true,})}
+        />
+
+      <MainStack.Screen
+        name="AllReviews"
+        component={AllReviews}
+        options={() => ({
+          title: 'Ratings and Reviews',
+          headerShown: true})}
         />
 
         <MainStack.Screen

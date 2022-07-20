@@ -27,9 +27,8 @@ export const ImageSelect = (): JSX.Element => {
             mediaType: "photo",
             multiple: false,
         }).then(async image => {
-            console.log(image)
-            // await pictureUpload(image)
-            dispatch(addImage({index: index, uri: image.path}))
+            const ImageUrl = await pictureUpload(image)
+            dispatch(addImage({index: index, uri: ImageUrl}))
         });
     };
 

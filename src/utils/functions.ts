@@ -142,7 +142,7 @@ export const pictureUpload = async (image: any) => {
         },
     };
     const request = new FormData();
-    request.append('file', {
+    request.append('image', {
         uri: Platform.OS === "android" ? image.path : image.path.replace("file://", ""),
         type: image.mime,
         mime: image.mime,
@@ -156,14 +156,15 @@ export const pictureUpload = async (image: any) => {
             config,
         );
         if (response.status === 200) {
-            const image = response?.data?.url;
-            console.log(image)
+            const image = response?.data?.data?.url;
             return image
         }else{
             Notify('Error', 'Problem uploading picture.', 'error')
+            return ''
         }
     } catch (error) {
         console.log(error)
+        return ''
     }
 }
 
