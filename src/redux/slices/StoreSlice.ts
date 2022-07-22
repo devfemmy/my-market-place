@@ -13,6 +13,8 @@ const initialState: StoreState = {
     allStores: [],
     allCategories: [],
     payouts: [],
+    reviews: [],
+    filteredreviews: [],
     permission: [{value: 'View Store Details', bool: false}, {value: 'View Store Analysis', bool: false}, {value: 'Manage Store Locations', bool: false}, {value: 'Manage shipping fee', bool: false}],
     storeImage: '',
     loading: false,
@@ -163,6 +165,23 @@ export const getStoreById = createAsyncThunk(
     }
 )
 
+export const getStoreReviews = createAsyncThunk(
+    'store/getStoreReviews',
+    async (payload: string) => {
+        const response = await getRequest(`/sidehustle/rate/ratings?sidehustleId=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const filterStoreReviews = createAsyncThunk(
+    'store/filterStoreReviews',
+    async (payload: {type: string, value: string}) => {
+        return payload
+    }
+)
+
 
 export const StoreSlice = createSlice({
     name: 'store',
@@ -307,10 +326,10 @@ export const StoreSlice = createSlice({
         builder.addCase(getStoreById.pending, (state, action) => {
             state.loading = true
         }),
-            builder.addCase(getStoreById.fulfilled, (state, action: PayloadAction<any>) => {
-                state.loading = false
-                state.storeById = action.payload
-            })
+        builder.addCase(getStoreById.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.storeById = action.payload
+        })
         builder.addCase(getStoreById.rejected, (state, action) => {
             state.error = action.error.message
         }),
@@ -322,6 +341,66 @@ export const StoreSlice = createSlice({
                 state.loading = false
             })
         builder.addCase(uploadImage.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+        builder.addCase(getStoreReviews.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getStoreReviews.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.reviews = action.payload
+            state.filteredreviews = action.payload
+        })
+        builder.addCase(getStoreReviews.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
+        builder.addCase(filterStoreReviews.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(filterStoreReviews.fulfilled, (state, action: PayloadAction<any>) => {
+            if(action.payload.value == 'All'){
+                state.filteredreviews = state.reviews
+            }
+            if(action.payload.type == 'size' && action.payload.value !== 'All'){
+                state.filteredreviews = state.reviews.filter(function(val: any){
+                    if(val?.rating === Number(action.payload.value)){
+                        return val
+                    }
+                })
+            }
+            if(action.payload.type == 'time'){
+                const WEEK_LENGTH = 604800000
+                const MONTH_LENGTH = 2629746000
+                
+                if(action.payload.value == 'Newest'){
+                    state.filteredreviews =  state.reviews.sort(function(a, b){
+                        return new Date(a?.createdAt) - new Date(b?.createdAt);
+                    })
+                }
+                if(action.payload.value == 'This week'){
+                    state.filteredreviews = state.reviews.filter(function(val: any){
+                        if((new Date().getTime() - new Date(val?.createdAt).getTime()) < WEEK_LENGTH){
+                            return val
+                        }
+                    })
+                }
+
+                if(action.payload.value == 'This month'){
+                    state.filteredreviews = state.reviews.filter(function(val: any){
+                        if((new Date().getTime() - new Date(val?.createdAt).getTime()) < MONTH_LENGTH){
+                            return val
+                        }
+                    })
+                }
+            }
+
+            state.loading = false
+        })
+        builder.addCase(filterStoreReviews.rejected, (state, action) => {
             state.error = action.error.message
         })
     }
@@ -339,6 +418,10 @@ export const permission = (state: RootState) => state.store.permission;
 export const loading = (state: RootState) => state.store.loading;
 
 export const payouts = (state: RootState) => state.store.payouts;
+
+export const reviews = (state: RootState) => state.store.reviews;
+
+export const filteredreviews = (state: RootState) => state.store.filteredreviews;
 
 export const allCategories = (state: RootState) => state.store.allCategories;
 

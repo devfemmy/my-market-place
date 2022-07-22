@@ -110,9 +110,9 @@ const toggleSwitch = async () => {
         },
         {
             id: 4,
-            title: "Reviews and Ratings (4,5)",
+            title: "Reviews and Ratings",
             icon: universityLogo,
-            route: ''
+            route: 'Reviews'
         }
 
     ]
@@ -144,7 +144,7 @@ const toggleSwitch = async () => {
             <View style={[localStyle.mTop, styles.width90]}>
                 {
                     quickActionArray?.map((data: ArrayType) => {
-                        return <ListCard key={data?.id} {...data} />
+                        return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.route)} />
                     })
                 }
             </View>
