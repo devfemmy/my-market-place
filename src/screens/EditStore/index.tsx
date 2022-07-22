@@ -22,7 +22,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import NavHeader from '../../components/resuable/NavHeader';
 import { launchImageLibrary } from 'react-native-image-picker';
-
+import { pictureUpload } from '../../utils/functions';
+import ImagePicker from 'react-native-image-crop-picker';
 import { styles } from '../main/Product/AddProduct/styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
@@ -33,7 +34,7 @@ const EditStore = (): JSX.Element => {
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const [customMsg, setCustomMsg] = useState('')
-  const imageData = useAppSelector(storeImage)
+  const [imageData, setImageData] = useState('')
   const storeIdData = useAppSelector(storebyId)
   const [activeId, setActiveId] = useState<string>('')
   const [editImg, setEditImg] = useState<string>(storeIdData?.imgUrl)
@@ -126,16 +127,19 @@ const EditStore = (): JSX.Element => {
   )?.city;
 
 
-  const pickImage = async () => {
-    let result = await launchImageLibrary({
-      mediaType: 'photo',
-      quality: 1,
+  const pickImage = async (index: number) => {
+    ImagePicker.openPicker({
+        width: 500,
+        height: 600,
+        cropping: true,
+        mediaType: "photo",
+        multiple: false,
+    }).then(async image => {
+        const ImageUrl = await pictureUpload(image)
+        setImageData(ImageUrl)
+        console.log({ImageUrl})
     });
-    if (!result.didCancel) {
-      dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
-    }
-  };
-
+};
 
   const resetImage = () => {
     dispatch(resetStoreImage())
@@ -171,7 +175,7 @@ const EditStore = (): JSX.Element => {
                   </View>
                 </Pressable>
                 :
-                <Pressable onPress={() => pickImage()}>
+                <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
                     <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
                   </View>

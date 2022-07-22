@@ -13,13 +13,13 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp, wp } from '../../utils/helpers';
-
+import { pictureUpload } from '../../utils/functions';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
 import { addStoreImage, createStore, resetStoreImage, storeImage } from "../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../utils/types';
 import CustomModal from '../../components/common/CustomModal';
 import { colors } from '../../utils/themes';
-
+import ImagePicker from 'react-native-image-crop-picker';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { styles } from '../main/Product/AddProduct/styles';
@@ -36,7 +36,7 @@ export const StoreCreation = (): JSX.Element => {
 
 
   const [query, setQuery] = useState('');
-  const imageData = useAppSelector(storeImage)
+  const [imageData, setImageData] = useState('')
 
 
   const onSearch = (text: any) => {
@@ -125,16 +125,19 @@ export const StoreCreation = (): JSX.Element => {
 
 
 
-
-  const pickImage = async () => {
-    let result = await launchImageLibrary({
-      mediaType: 'photo',
-      quality: 1,
+  const pickImage = async (index: number) => {
+    ImagePicker.openPicker({
+        width: 500,
+        height: 600,
+        cropping: true,
+        mediaType: "photo",
+        multiple: false,
+    }).then(async image => {
+        const ImageUrl = await pictureUpload(image)
+        setImageData(ImageUrl)
+        console.log({ImageUrl})
     });
-    if (!result.didCancel) {
-      dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
-    }
-  };
+};
 
   const resetImage = () => {
     dispatch(resetStoreImage())
@@ -171,7 +174,7 @@ export const StoreCreation = (): JSX.Element => {
                   </View>
                 </Pressable>
                 :
-                <Pressable onPress={() => pickImage()}>
+                <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
                     <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
                   </View>

@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp, wp } from '../../utils/helpers';
-
+import ImagePicker from 'react-native-image-crop-picker';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
 import { addStoreImage, createStore, resetStoreImage, storeImage, uploadImage } from "../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../utils/types';
@@ -21,6 +21,8 @@ import { colors } from '../../utils/themes';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { styles } from '../main/Product/AddProduct/styles';
+import { pictureUpload } from '../../utils/functions';
+
 
 
 const AuthStoreCreationScreen = (): JSX.Element => {
@@ -31,10 +33,9 @@ const AuthStoreCreationScreen = (): JSX.Element => {
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const [headerText, setHeaderText] = useState('');
   const [msg, setMsg] = useState('');
-
+  const [imageData, setImageData] = useState('')
 
   const [query, setQuery] = useState('');
-  const imageData = useAppSelector(storeImage)
 
 
   const onSearch = (text: any) => {
@@ -74,7 +75,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
     const resultAction = await dispatch(createStore(payload))
     if (createStore.fulfilled.match(resultAction)) {
       setLoader(false)
-      await dispatch(resetStoreImage())
+      setImageData('')
       return navigation.navigate('AuthStoreSuccessScreen')
     } else {
       if (resultAction.payload) {
@@ -119,34 +120,22 @@ const AuthStoreCreationScreen = (): JSX.Element => {
 
 
 
-
-
-
-  const pickImage = async () => {
-    let result = await launchImageLibrary({
-      mediaType: 'photo',
-      quality: 1,
+  const pickImage = async (index: number) => {
+    ImagePicker.openPicker({
+        width: 500,
+        height: 600,
+        cropping: true,
+        mediaType: "photo",
+        multiple: false,
+    }).then(async image => {
+        const ImageUrl = await pictureUpload(image)
+        setImageData(ImageUrl)
+        console.log({ImageUrl})
     });
-    if (!result.didCancel) {
-    
-      // const data = new FormData()
-      // await data.append('file', {
-      //   name: 'img-upload',
-      //   type: result?.assets[0].type,
-      //   uri: result?.assets[0]?.uri,
-      // });
+};
 
-      // console.log("rrrrrr======", result?.assets[0], data)
-      // const resultAction = await dispatch(uploadImage(data))
-      // if(uploadImage.fulfilled.match(resultAction)) {
-      //   console.log("result",{resultAction})
-      // }
-      // else {
-      //   console.log("Error")
-      // }
-       dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
-    }
-  };
+
+
 
   const resetImage = () => {
     dispatch(resetStoreImage())
@@ -183,7 +172,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
                   </View>
                 </Pressable>
                 :
-                <Pressable onPress={() => pickImage()}>
+                <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
                     <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
                   </View>
