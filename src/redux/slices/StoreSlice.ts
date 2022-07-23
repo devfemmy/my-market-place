@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { StoreState, StoreCreateFormData, PayoutFormData } from "../../utils/types";
+import { StoreState, StoreCreateFormData, PayoutFormData, AssignUserFormData } from "../../utils/types";
 import { sendPost, getRequest } from "../../utils/server"
 
 
@@ -10,6 +10,7 @@ import { sendPost, getRequest } from "../../utils/server"
 const initialState: StoreState = {
     myStore: [],
     storeById: null,
+    staffs: null,
     allStores: [],
     allCategories: [],
     payouts: [],
@@ -33,7 +34,16 @@ export const createStore = createAsyncThunk(
 export const getStorePermission = createAsyncThunk(
     'store/storePermission',
     async (payload: string) => {
-        if(payload == 'Store Owner'){
+        if(payload == 'Super Admin'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else if(payload == 'Admin'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else if(payload == 'Store Vetter'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else if(payload == 'Store Owner'){
             return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
         }
         else if(payload == 'Store Manager'){
@@ -87,6 +97,26 @@ export const addPayout = createAsyncThunk(
     async (payload: PayoutFormData) => {
         const response = await sendPost("/sidehustle/account/payouts", payload, 'v2')
         console.log(response)
+    }
+)
+
+export const getStaff = createAsyncThunk(
+    'staff/getStaff',
+    async (payload: string) => {
+        const response = await getRequest(`/sidehustle/getStoreUsers?storeId=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const assignUser = createAsyncThunk(
+    'store/assignUser',
+    async (payload: AssignUserFormData) => {
+        const response = await sendPost("/sidehustle/addUserToStore", payload, 'v2')
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
     }
 )
 
@@ -194,6 +224,7 @@ export const StoreSlice = createSlice({
             state.error = action.error.message
         }),
 
+
         builder.addCase(addPayout.pending, (state, action) => {
             state.loading = true
         }),
@@ -201,6 +232,17 @@ export const StoreSlice = createSlice({
             state.loading = false
         }),
         builder.addCase(addPayout.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        }),
+
+        builder.addCase(assignUser.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(assignUser.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(assignUser.rejected, (state, action) => {
             state.loading = false,
             state.error = action.payload
         }),

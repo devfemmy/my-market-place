@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { SafeAreaView, Text } from '../../../components/common';
 import { colors } from '../../../utils/themes';
@@ -10,20 +10,25 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../../../assets"
 import ListCard from '../../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { getPersonalStore, myStore } from '../../../redux/slices/StoreSlice';
+import { getPersonalStore, myStore, assignUser } from '../../../redux/slices/StoreSlice';
 import { ArrayType } from '../../../utils/types';
 import { Input } from '../../../components/common/TextInput';
 import { Button } from '../../../components/common/Button';
 import { Select } from '../../../components/common/SelectInput';
 import { useFormik } from 'formik';
-import { StaffFormData } from '../../../utils/types';
+import { StaffFormData, AssignUserFormData } from '../../../utils/types';
 import { StaffFormDataSchema } from '../../../utils/constants';
-import { getStorePermission, permission } from '../../../redux/slices/StoreSlice';
-
+import { getStorePermission, permission} from '../../../redux/slices/StoreSlice';
+import CustomSlideModal from '../../../components/common/CustomSlideModal';
+import { useNavigation } from '@react-navigation/native';
+import { Nav } from '../../../utils/types';
+import { sendPost } from '../../../utils/server';
 export const AddStaffScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
+  const navigation = useNavigation<Nav>();
+  const [complete, setComplete] = useState(false)
   const permissionList = useAppSelector(permission)
-
+  const mystore = useAppSelector(myStore)
 
 //   useEffect(() => {
 //     dispatch(getPersonalStore())
@@ -41,9 +46,36 @@ export const AddStaffScreen = (): JSX.Element => {
       initialValues,
       validationSchema: StaffFormDataSchema,
       onSubmit: (val: StaffFormData) => {
-          console.log(val)
+        assignRole(val)
       },
   });
+
+  const getRoleKey = (item: string) => {
+    if(item = 'Store Owner'){
+      return 'owner'
+    }
+    else if(item == 'Store Manager'){
+      return 'manager'
+    }else{
+      return 'attendant'
+    }
+  }
+
+  const assignRole = async (data: {firstName: string, lastName: string, email: string, role: string}) => {
+    const payload:  AssignUserFormData = {
+      role: getRoleKey(data?.role),
+      userEmail: data?.email,
+      storeId: mystore[0]._id
+    }
+    console.log(payload)
+    try {
+      const response = await sendPost("/sidehustle/addUserToStore", payload, 'v2')
+      console.log(response?.status)
+      setComplete(true)
+    } catch (error) {
+      console.log(error?.data)
+    }
+  }
 
   const permissions = ['View Store Details', 'View Store Analysis', 'Manage Store Locations', 'Manage shipping fee']
 
@@ -113,6 +145,11 @@ export const AddStaffScreen = (): JSX.Element => {
           />
         </View>
       </View>
+      <CustomSlideModal 
+      onButtonPress={() => navigation.popToTop()} 
+      msg={"Necessary instruction has been sent to staff's email you provided!"} 
+      headerText={'Staff Added'} 
+      visibleBoolean={complete}/>
     </SafeAreaView>
   );
 };

@@ -63,8 +63,6 @@ export const AddProduct = (): JSX.Element => {
         dispatch(getAllCategories())
     }, [])
 
-    console.log(EditableSlug?.variants[0]?.spec)
-
     
 
     const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =

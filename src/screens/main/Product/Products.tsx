@@ -171,13 +171,15 @@ const ActivateProduct = async () => {
             />
             <View/>
         </View>
-        <Input
-            label={''}
-            placeholder={"Search for products"}
-            onChangeText={(text) => dispatch(searchProducts(text))}
-            searchInput
-        />
-        
+        <View style={{paddingHorizontal: hp(15)}}>
+          <Input
+              label={''}
+              placeholder={"Search for products"}
+              onChangeText={(text) => dispatch(searchProducts(text))}
+              searchInput
+              containerStyle={{width: '100%'}}
+          />
+        </View>
         <FlatList
             data={data}
             renderItem={renderItem}

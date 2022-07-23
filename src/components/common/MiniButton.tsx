@@ -2,7 +2,7 @@ import React, {memo, ComponentProps} from 'react';
 import {StyleSheet, View, StyleProp, ViewStyle, ActivityIndicator, TouchableOpacity} from 'react-native';
 import {Button as BaseButton, Icon} from '@ui-kitten/components';
 import { colors } from '../../utils/themes';
-import { hp } from '../../utils/helpers';
+import { hp, wp } from '../../utils/helpers';
 import{ MiniButtonProps } from '../../utils/types'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
@@ -33,8 +33,8 @@ export const MiniButton = memo(
 const styles = StyleSheet.create({
   btn: {
     borderRadius: hp(10),
-    height: hp(55),
-    width: hp(55),
+    height: wp(55),
+    width: wp(55),
     backgroundColor: colors.primaryBg,
     borderWidth: 1,
     borderColor: colors.darkGrey,

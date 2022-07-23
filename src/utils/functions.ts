@@ -135,6 +135,7 @@ export const rejectionMsg = (value: string) => {
 }
 
 export const pictureUpload = async (image: any) => {
+    console.log(image.filename)
     let config = {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -146,7 +147,7 @@ export const pictureUpload = async (image: any) => {
         uri: Platform.OS === "android" ? image.path : image.path.replace("file://", ""),
         type: image.mime,
         mime: image.mime,
-        name: image.filename,
+        name: 'picture.jpeg',
     });
     console.log(request)
     try {

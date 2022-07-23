@@ -2,7 +2,7 @@ import React, {memo, ComponentProps} from 'react';
 import {StyleSheet, View, StyleProp, ViewStyle, ActivityIndicator} from 'react-native';
 import {Button as BaseButton} from '@ui-kitten/components';
 import { colors } from '../../utils/themes';
-import { hp } from '../../utils/helpers';
+import { hp, wp } from '../../utils/helpers';
 import{ ButtonProps } from '../../utils/types'
 
 
@@ -33,7 +33,7 @@ export const Button = memo(
 const styles = StyleSheet.create({
   btn: {
     borderRadius: hp(10),
-    height: hp(50),
+    height: wp(50),
     backgroundColor: colors.bazaraTint,
     borderWidth: 0,
   },
