@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {hp} from '../../../../utils/helpers/responsiveDesign';
+import {hp, wp} from '../../../../utils/helpers/responsiveDesign';
 import { colors } from '../../../../utils/themes';
 
 export const styles = StyleSheet.create({
@@ -45,8 +45,8 @@ export const styles = StyleSheet.create({
   },
   imgStyle2: {
     flex: 1,
-    height: hp(105),
-    width: hp(105),
+    height: wp(105),
+    width: wp(105),
     borderRadius: hp(5),
     backgroundColor: colors.black,
     margin: hp(5),

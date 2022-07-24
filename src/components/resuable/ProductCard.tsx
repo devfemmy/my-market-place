@@ -32,7 +32,7 @@ const ProductCard: React.FC<OrderCardProps> = ({ onIconPress, item }) => {
 
 
     return (
-        <View style={[styles.cardContainer, globalStyles.rowStart]}>
+        <View style={[styles.cardContainer, globalStyles.rowBetween]}>
             <View style={[globalStyles.rowStart]}>
 
                 <TouchableOpacity style={globalStyles.rowStartNoOverflow}>
@@ -42,7 +42,7 @@ const ProductCard: React.FC<OrderCardProps> = ({ onIconPress, item }) => {
                     <Text text={item?.name} numberOfLines={1} fontWeight={"600"} fontSize={hp(17)} style={styles.text} />
                     <View style={globalStyles.rowStart}>
                         <Text
-                            text={currencyFormat(item?.variants[0]?.spec[0].price)}
+                            text={currencyFormat(item?.variants[0]?.spec[0]?.price)}
                             numberOfLines={1}
                             fontWeight={"500"}
                             color={colors.darkGrey}
@@ -63,7 +63,7 @@ const ProductCard: React.FC<OrderCardProps> = ({ onIconPress, item }) => {
                 </View>
                 
             </View>
-            <TouchableOpacity onPress={onIconPress} style={globalStyles.Horizontalspacing}>
+            <TouchableOpacity onPress={onIconPress}>
                 <Entypo name={'dots-three-vertical'} size={hp(16)} style={{color: colors.darkGrey}} />
             </TouchableOpacity>
 
@@ -80,14 +80,13 @@ const styles = StyleSheet.create({
         width: hp(50),
         borderRadius: hp(5),
         marginRight: hp(10),
-        marginLeft: hp(15)
     },
     cardContainer: {
         flexDirection: 'column',
         paddingVertical: hp(15),
-        paddingHorizontal: hp(0),
         borderBottomWidth: 1,
-        borderColor: colors.black
+        borderColor: colors.black,
+        paddingHorizontal: hp(15)
     },
     underline: {
         borderBottomWidth: 1, 

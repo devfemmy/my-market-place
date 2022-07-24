@@ -4,7 +4,7 @@ import {StyleProp, StyleSheet, View, ViewStyle, TextStyle} from 'react-native';
 import {Checkbox as BaseCheckbox} from 'react-native-paper';
 import {Text} from './Text';
 import {globalStyles} from '../../styles/globalStyles';
-import {hp} from '../../utils/helpers';
+import {hp, wp} from '../../utils/helpers';
 import {useSecureTextEntry} from '../../hooks';
 import { colors } from "../../utils/themes/themes"
 
@@ -28,7 +28,7 @@ export const CheckBox = memo(
     ...rest
   }: CheckBoxProps) => {
     return (
-      <View style={[containerStyle, styles.containerStyle]}>
+      <View style={[styles.containerStyle, containerStyle]}>
         <BaseCheckbox.Item
           label={label}
           color={colors.bazaraTint}
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     marginBottom: hp(0),
-    width: hp(370),
+    width: wp(370),
     alignSelf: 'center',
   },
   errorHold: {
