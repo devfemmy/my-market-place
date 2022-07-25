@@ -22,7 +22,7 @@ import { getStorePermission, permission} from '../../../redux/slices/StoreSlice'
 import CustomSlideModal from '../../../components/common/CustomSlideModal';
 import { useNavigation } from '@react-navigation/native';
 import { Nav } from '../../../utils/types';
-import { sendPost } from '../../../utils/server';
+import { sendPost, getRequest } from '../../../utils/server';
 export const AddStaffScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation<Nav>();
@@ -50,30 +50,28 @@ export const AddStaffScreen = (): JSX.Element => {
       },
   });
 
-  const getRoleKey = (item: string) => {
-    if(item = 'Store Owner'){
-      return 'owner'
-    }
-    else if(item == 'Store Manager'){
-      return 'manager'
-    }else{
-      return 'attendant'
-    }
-  }
+  // const getRoleKey = (item: string) => {
+  //   if(item = 'Store Owner'){
+  //     return 'owner'
+  //   }
+  //   else if(item == 'Store Manager'){
+  //     return 'manager'
+  //   }else{
+  //     return 'attendant'
+  //   }
+  // }
 
   const assignRole = async (data: {firstName: string, lastName: string, email: string, role: string}) => {
     const payload:  AssignUserFormData = {
-      role: getRoleKey(data?.role),
+      role: data?.role,
       userEmail: data?.email,
       storeId: mystore[0]._id
     }
-    console.log(payload)
     try {
-      const response = await sendPost("/sidehustle/addUserToStore", payload, 'v2')
-      console.log(response?.status)
+      await dispatch(assignUser(payload))
       setComplete(true)
     } catch (error) {
-      console.log(error?.data)
+      console.log(error)
     }
   }
 
@@ -88,7 +86,7 @@ export const AddStaffScreen = (): JSX.Element => {
     )
   }
 
-  const storeRoles = ['Store Owner', 'Store Manager', 'Store Attendant']
+  const storeRoles = ['Super Admin', 'Admin', 'Store Vetter', 'Store Owner', 'Store Manager', 'Store Attendant']
 
   return (
     <SafeAreaView>
