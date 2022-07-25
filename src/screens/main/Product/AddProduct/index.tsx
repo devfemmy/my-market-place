@@ -136,7 +136,7 @@ export const AddProduct = (): JSX.Element => {
         }
         try {
             var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
+            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
                 setSuccessModal(true)
                 await dispatch(getAllProducts(id))
             }else{
@@ -181,7 +181,7 @@ export const AddProduct = (): JSX.Element => {
         }
         try {
             var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
+            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
                 setSuccessModal(true)
                 await dispatch(getAllProducts(id))
             }else{

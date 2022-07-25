@@ -75,6 +75,8 @@ export const getProfileRequest = async (url: String, v?: String) => {
     }else{
         SERVER_URL = "https://api.bazara.co/api/v2/dev";
     }
+
+    SERVER_URL = "https://api.bazara.co/api/v1/staging"
     const token = await AsyncStorage.getItem("token");
 
     var response = await axios.get(SERVER_URL + url, {
@@ -138,7 +140,8 @@ export const sendProfilePost = async ( url: String, payload: any, v?: String) =>
     if(v == "v2"){
         SERVER_URL = "https://api.bazara.co/api/v2/dev";
     }
-    SERVER_URL = "https://api.bazara.co/api/v1/dev";
+    // SERVER_URL = "https://api.bazara.co/api/v1/dev";
+    SERVER_URL = "https://api.bazara.co/api/v1/staging"
     console.log(SERVER_URL)
     const token = await AsyncStorage.getItem("token");
 

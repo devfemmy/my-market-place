@@ -135,7 +135,6 @@ export const rejectionMsg = (value: string) => {
 }
 
 export const pictureUpload = async (image: any) => {
-    console.log(image.filename)
     let config = {
         headers: {
           'Content-Type': 'multipart/form-data',

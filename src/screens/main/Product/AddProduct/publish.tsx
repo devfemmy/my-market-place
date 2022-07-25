@@ -493,8 +493,9 @@ export const PublishProduct = (): JSX.Element => {
         }
         try {
             var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
+            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
                 // Notify('Product Added!', 'Your product was successfully added', 'success')
+                console.log(resultAction)
                 setSuccessModal(true)
                 await dispatch(getAllProducts(id))
                 // Lets check 
@@ -549,7 +550,7 @@ export const PublishProduct = (): JSX.Element => {
 
         try {
             var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
+            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
                 // Notify('Product Added!', 'Your product was successfully added', 'success')
                 setSuccessModal(true)
                 await dispatch(getAllProducts(id));

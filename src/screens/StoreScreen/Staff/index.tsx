@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { StatusBar, View, StyleSheet, ScrollView, Image, ActivityIndicator, FlatList } from 'react-native';
+import { StatusBar, View, StyleSheet, ScrollView, Image, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView, Text } from '../../../components/common';
 import { colors } from '../../../utils/themes';
 import { globalStyles } from "../../../styles/globalStyles"
@@ -15,8 +15,14 @@ import { ArrayType } from '../../../utils/types';
 import { Input } from '../../../components/common/TextInput';
 import { hp } from '../../../utils/helpers';
 import StaffCard from '../../../components/resuable/StaffCard';
+import Entypo from 'react-native-vector-icons/Entypo'
+import { useNavigation } from '@react-navigation/native';
+import { Nav } from '../../../utils/types';
 
 export const StaffScreen = (): JSX.Element => {
+
+  const {navigate} = useNavigation<Nav>()
+
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
   const loader = useAppSelector(loading)
@@ -59,6 +65,11 @@ export const StaffScreen = (): JSX.Element => {
         contentContainerStyle={{paddingBottom: hp(100)}}
         style={{marginBottom: hp(-50)}}
       />
+      
+      <TouchableOpacity onPress={() => navigate('AddStaff')} style={[globalStyles.floating_button, {bottom: hp(20), right: hp(20)}]}>
+            <Entypo name={'plus'} size={hp(35)} style={{color: colors.white}} />
+      </TouchableOpacity>
+
     </View>
   );
 };
@@ -74,5 +85,10 @@ const styles = StyleSheet.create({
   },
   rowMargin: {
     marginVertical: 20
+  },
+  floating: {
+    position: 'absolute',
+    right: hp(20),
+    bottom: hp(20)
   }
 });
