@@ -60,7 +60,8 @@ export type StoreState = {
   error: any,
   loading: boolean,
   storeImage: string,
-  staffs: any
+  staffs: any,
+  filteredStaffs: any
 }
 
 

@@ -37,7 +37,7 @@ const Setting = () => {
             id: 2,
             title: "User / Staff Management",
             icon: usersLogo,
-            route: ''
+            route: 'Staffs'
         },
         {
             id: 3,

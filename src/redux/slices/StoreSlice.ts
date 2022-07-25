@@ -11,6 +11,7 @@ const initialState: StoreState = {
     myStore: [],
     storeById: null,
     staffs: null,
+    filteredStaffs: [],
     allStores: [],
     allCategories: [],
     payouts: [],
@@ -110,15 +111,24 @@ export const getStaff = createAsyncThunk(
     }
 )
 
+export const searchStaffs = createAsyncThunk(
+    'product/searchStaff',
+    (payload: string) => {
+        return payload
+    }
+)
+
 export const assignUser = createAsyncThunk(
     'store/assignUser',
     async (payload: AssignUserFormData) => {
-        const response = await sendPost("/sidehustle/addUserToStore", payload, 'v2')
+        const response = await sendPost("/sidehustle/addUserToStore", payload)
         if (response?.status === 200) {
             return response?.data?.data
         }
+        
     }
 )
+
 
 export const updatePayout = createAsyncThunk(
     'store/updatePayouts',
@@ -236,6 +246,8 @@ export const StoreSlice = createSlice({
             state.error = action.payload
         }),
 
+
+
         builder.addCase(assignUser.pending, (state, action) => {
             state.loading = true
         }),
@@ -246,6 +258,41 @@ export const StoreSlice = createSlice({
             state.loading = false,
             state.error = action.payload
         }),
+
+
+        builder.addCase(getStaff.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getStaff.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.staffs = action.payload
+            state.filteredStaffs = action.payload
+        })
+        builder.addCase(getStaff.rejected, (state, action) => {
+            state.error = action.error.message
+        }),
+
+
+        builder.addCase(searchStaffs.pending, (state) => {
+            state.loading = false
+        })
+        builder.addCase(searchStaffs.fulfilled, (state, action: PayloadAction<any>) => {
+            state.filteredStaffs = state.staffs.filter(function(val: any){
+                const fullName = `${val?.user?.fName} ${val?.user?.lName}`
+                if(
+                    val?.user?.fName.toLowerCase().startsWith(action.payload.toLowerCase()) ||
+                    val?.user?.lName.toLowerCase().startsWith(action.payload.toLowerCase()) ||
+                    val?.user?.email.toLowerCase().startsWith(action.payload.toLowerCase()) ||
+                    fullName.toLowerCase().startsWith(action.payload.toLowerCase())
+                ){
+                    return val
+                }
+            })
+            state.loading = false
+        })
+        builder.addCase(searchStaffs.rejected, (state, action) => {
+            state.error = action.error.message
+        })
 
 
         builder.addCase(updatePayout.pending, (state, action) => {
@@ -420,5 +467,9 @@ export const filteredreviews = (state: RootState) => state.store.filteredreviews
 export const allCategories = (state: RootState) => state.store.allCategories;
 
 export const storebyId = (state: RootState) => state.store.storeById;
+
+export const staffs = (state: RootState) => state.store.staffs;
+
+export const filteredStaffs = (state: RootState) => state.store.filteredStaffs;
 
 export default StoreSlice.reducer;
