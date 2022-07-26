@@ -22,6 +22,7 @@ import { getStorePermission, permission} from '../../../redux/slices/StoreSlice'
 import CustomSlideModal from '../../../components/common/CustomSlideModal';
 import { useNavigation } from '@react-navigation/native';
 import { Nav } from '../../../utils/types';
+import { Notify } from '../../../utils/functions';
 import { sendPost, getRequest } from '../../../utils/server';
 export const AddStaffScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
@@ -68,8 +69,16 @@ export const AddStaffScreen = (): JSX.Element => {
       storeId: mystore[0]._id
     }
     try {
-      await dispatch(assignUser(payload))
-      setComplete(true)
+      var resultAction = await dispatch(assignUser(payload))
+      if(assignUser.fulfilled.match(resultAction) && resultAction?.payload){
+          // Notify('Product Added!', 'Your product was successfully added', 'success')
+          console.log(resultAction)
+          setComplete(true)
+          // Lets check 
+      }else{
+          console.log(resultAction)
+          Notify('Error!', 'Staff not Added!', 'error')
+      }
     } catch (error) {
       console.log(error)
     }
