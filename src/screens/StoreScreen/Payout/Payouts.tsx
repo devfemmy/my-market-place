@@ -41,7 +41,8 @@ export const Payouts = ({data}): JSX.Element => {
   const loader = useAppSelector(loading)
 
   const [fetching, setFetching] = useState(false)
-  const [accNum, setAccNum] = useState('')
+  const [accNum, setAccNum] = useState('');
+  const [disabled, setDisabled] = useState(true);
 
 
   const initialValues: PayoutFormData = {
@@ -86,18 +87,22 @@ export const Payouts = ({data}): JSX.Element => {
         const response = await bankVerification(payload)
         if (response.status === 200) {
           setFetching(false)
-          setFieldValue('name', response?.data?.data?.account_name)
+          setFieldValue('name', response?.data?.data?.account_name);
+          setDisabled(false);
         }else{
           setFetching(false)
-          setFieldValue('name', '')
+          setFieldValue('name', '');
+          setDisabled(true);
         }
       } catch (error) {
         console.log(error)
         setFetching(false)
         setFieldValue('name', '')
+        setDisabled(true);
       }
     }else{
       setFieldValue('name', '')
+      setDisabled(true);
     }
   }
 
@@ -147,7 +152,7 @@ export const Payouts = ({data}): JSX.Element => {
 
           <Ionicons name="checkmark-circle-outline" size={24} color={colorChange("#fff")} />
         </View>
-        <Button isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
+        <Button disabled={disabled} isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
     </>
 );
 
