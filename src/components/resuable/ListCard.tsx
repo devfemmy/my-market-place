@@ -11,30 +11,34 @@ import { Nav } from '../../utils/types'
 
 
 
-const ListCard: React.FC<ListCardProps> = ({ title, icon, route }) => {
+const ListCard: React.FC<ListCardProps> = ({ title, icon, route, isActive }) => {
     const navigation = useNavigation<Nav>()
 
     const handlePress = (data: string) => {
-        return navigation.navigate(data)
+      return navigation.navigate(data)
     }
 
     return (
-        <TouchableOpacity onPress={() => handlePress(route)} activeOpacity={0.8} style={styles.cardContainer}>
-            <View style={[globalStyles.rowBetween]}>
-                <View style={globalStyles.rowStart}>
-                    <Image source={icon} style={styles.image} />
-                    <Text text={title} fontSize={hp(16)} style={styles.text} />
-                </View>
-                <Ionicons
-                    name={"chevron-forward-outline"}
-                    size={20}
-                    color={"grey"}
-                />
-            </View>
+        <>
+            {
+                !isActive && <TouchableOpacity onPress={() => handlePress(route)} activeOpacity={0.8} style={styles.cardContainer}>
+                    <View style={[globalStyles.rowBetween]}>
+                        <View style={globalStyles.rowStart}>
+                            <Image source={icon} style={styles.image} />
+                            <Text text={title} fontSize={hp(16)} style={styles.text} />
+                        </View>
+                        <Ionicons
+                            name={"chevron-forward-outline"}
+                            size={20}
+                            color={"grey"}
+                        />
+                    </View>
 
-            <View style={styles.underline}>
-            </View>
-        </TouchableOpacity>
+                    <View style={styles.underline}>
+                    </View>
+                </TouchableOpacity>
+            }
+        </>
     )
 }
 
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     underline: {
-        borderBottomWidth: 0.4, 
+        borderBottomWidth: 0.4,
         borderBottomColor: colors.gray,
         paddingVertical: 10
     },

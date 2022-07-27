@@ -37,7 +37,6 @@ const AuthStoreCreationScreen = (): JSX.Element => {
 
   const [query, setQuery] = useState('');
 
-
   const onSearch = (text: any) => {
     setQuery(text);
   };
@@ -76,9 +75,11 @@ const AuthStoreCreationScreen = (): JSX.Element => {
     if (createStore.fulfilled.match(resultAction)) {
       setLoader(false)
       setImageData('')
+      console.log({resultAction})
       return navigation.navigate('AuthStoreSuccessScreen')
     } else {
       if (resultAction.payload) {
+        console.log({resultAction})
         setLoader(false)
         setVisibleBoolen(true)
         setHeaderText('Error')
@@ -130,7 +131,6 @@ const AuthStoreCreationScreen = (): JSX.Element => {
     }).then(async image => {
         const ImageUrl = await pictureUpload(image)
         setImageData(ImageUrl)
-        console.log({ImageUrl})
     });
 };
 

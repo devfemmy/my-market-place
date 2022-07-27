@@ -4,6 +4,7 @@ export interface ListCardProps {
     title: string,
     route: string,
     icon?: ImageSourcePropType,
+    isActive?: boolean
 }
 
 export interface OrderCardProps {
@@ -12,7 +13,8 @@ export interface OrderCardProps {
 }
 
 export interface StoreHeaderProps {
-    name: string
+    name: string,
+    slug: string
  }
 
  export interface WalletProps {

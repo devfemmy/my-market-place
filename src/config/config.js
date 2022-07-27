@@ -1,5 +1,5 @@
 
-const SETCONFIG = 'DEV';
+const SETCONFIG = 'STAGING';
 
 const config = {
   DEV: {

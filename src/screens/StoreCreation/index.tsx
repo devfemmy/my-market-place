@@ -135,7 +135,6 @@ export const StoreCreation = (): JSX.Element => {
     }).then(async image => {
         const ImageUrl = await pictureUpload(image)
         setImageData(ImageUrl)
-        console.log({ImageUrl})
     });
 };
 
