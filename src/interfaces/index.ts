@@ -8,6 +8,7 @@ export interface ListCardProps {
 
 export interface OrderCardProps {
     item: any,
+    onIconPress?:(value?: any) => void
 }
 
 export interface StoreHeaderProps {

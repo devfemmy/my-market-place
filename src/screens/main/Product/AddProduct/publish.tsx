@@ -5,7 +5,7 @@ import { Nav } from '../../../../utils/types';
 import { Button } from '../../../../components/common/Button';
 import {View, Image, FlatList, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 import {globalStyles} from '../../../../styles';
-import {hp} from '../../../../utils/helpers';
+import {hp, wp} from '../../../../utils/helpers';
 import { Input } from '../../../../components/common/TextInput';
 import {styles} from './styles';
 import { colors } from '../../../../utils/themes';
@@ -119,7 +119,7 @@ export const PublishProduct = (): JSX.Element => {
                 <Input
                     label={'Quantity'}
                     value={selectedQuantity}
-                    style={{height: hp(52), width: hp(220), marginLeft: hp(-10)}}
+                    style={{height: wp(52), width: wp(220), marginLeft: hp(-10)}}
                     onChangeText={(text) => setSelectedQuantity(text)}
                     keyboardType={"number-pad"}
                 />
@@ -304,7 +304,7 @@ export const PublishProduct = (): JSX.Element => {
                             <Input
                                 label={'Quantity'}
                                 value={selectedQuantity}
-                                style={{height: hp(52), width: hp(220), marginLeft: hp(-10)}}
+                                style={{height: wp(52), width: wp(220), marginLeft: hp(-10)}}
                                 onChangeText={(text) => setSelectedQuantity(text)}
                                 keyboardType={"number-pad"}
                             />
@@ -363,7 +363,7 @@ export const PublishProduct = (): JSX.Element => {
                             <Input
                                 label={'Quantity'}
                                 value={selectedQuantity}
-                                style={{height: hp(52), width: hp(220), marginLeft: hp(-10)}}
+                                style={{height: wp(52), width: wp(220), marginLeft: hp(-10)}}
                                 onChangeText={(text) => setSelectedQuantity(text)}
                                 keyboardType={"number-pad"}
                             />
@@ -493,8 +493,9 @@ export const PublishProduct = (): JSX.Element => {
         }
         try {
             var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
+            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
                 // Notify('Product Added!', 'Your product was successfully added', 'success')
+                console.log(resultAction)
                 setSuccessModal(true)
                 await dispatch(getAllProducts(id))
                 // Lets check 
@@ -549,7 +550,7 @@ export const PublishProduct = (): JSX.Element => {
 
         try {
             var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction)){
+            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
                 // Notify('Product Added!', 'Your product was successfully added', 'success')
                 setSuccessModal(true)
                 await dispatch(getAllProducts(id));

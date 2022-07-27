@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {SafeAreaView, Text} from '../../../../components/common';
 import {useNavigation} from '@react-navigation/native';
-import {View, Image, TouchableOpacity, FlatList} from 'react-native';
+import {View, Image, TouchableOpacity, FlatList, ActivityIndicator} from 'react-native';
 import {globalStyles} from '../../../../styles';
 import {hp,wp} from '../../../../utils/helpers';
 import { colors } from '../../../../utils/themes';
@@ -17,9 +17,11 @@ export const ImageSelect = (): JSX.Element => {
 
     // const [images, setImages] = useState<Array<string>>(["", "", "", "", "", ""])
     const dispatch = useAppDispatch()
+    const [loading, setLoading] = useState(null)
     const imageList = useAppSelector(images)
 
     const pickImage = async (index: number) => {
+        setLoading(index)
         ImagePicker.openPicker({
             width: 500,
             height: 600,
@@ -28,8 +30,10 @@ export const ImageSelect = (): JSX.Element => {
             multiple: false,
         }).then(async image => {
             const ImageUrl = await pictureUpload(image)
-            dispatch(addImage({index: index, uri: ImageUrl}))
+            await dispatch(addImage({index: index, uri: ImageUrl}))
+            setLoading(null)
         });
+        
     };
 
     const _renderItem = ({item, index}) => {
@@ -41,11 +45,13 @@ export const ImageSelect = (): JSX.Element => {
                     </View>
                 </TouchableOpacity>
             )
-        }else{
+        }else {
             return (
                 <TouchableOpacity onPress={() => pickImage(index)} activeOpacity={.8}>
                     <View style={styles.imgStyle2} >
-                        <AntDesign name="plus" size={hp(30)} style={{color: colors.white}} />
+                        { loading == index ? <ActivityIndicator size={'small'} /> :
+                            <AntDesign name="plus" size={hp(30)} style={{color: colors.white}} />
+                        }
                     </View>
                 </TouchableOpacity>
             )

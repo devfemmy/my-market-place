@@ -146,7 +146,7 @@ export const pictureUpload = async (image: any) => {
         uri: Platform.OS === "android" ? image.path : image.path.replace("file://", ""),
         type: image.mime,
         mime: image.mime,
-        name: image.filename,
+        name: `${new Date()}picture.jpeg`,
     });
     console.log(request)
     try {

@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+// Order slices
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";

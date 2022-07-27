@@ -10,15 +10,15 @@ import { Input } from '../../components/common/TextInput';
 import { colors } from '../../utils/themes';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFormik} from 'formik';
+import {InfoCircle} from '../../constants/images'
 import { updateSchema } from '../../utils/constants';
 
 const Profile = () => {
     const { signOut } = useContext(AuthContext)
     const user = useAppSelector(userProfile)[0]
+    const Error = useAppSelector(error)
     const [editing, setEditing] = useState(false);
     const dispatch = useAppDispatch()
-
-    console.log(user, 'user')
     
     const loader = useAppSelector(loading)
 
@@ -43,6 +43,20 @@ const Profile = () => {
             <SafeAreaView>
                 <View style={[globalStyles.rowCenter, {flex: 1}]}>
                     <ActivityIndicator size={'small'}/>
+                </View>
+            </SafeAreaView>
+        )
+    }
+
+    if(Error){
+        return (
+            <SafeAreaView>
+                <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
+                <Image
+                    source={InfoCircle}
+                    style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
+                />
+                <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
                 </View>
             </SafeAreaView>
         )

@@ -30,7 +30,7 @@ export const Input = memo(
   }: InputProps) => {
     const {secureTextEntry, toggleEntry} = useSecureTextEntry(isPassword);
     return (
-      <View style={[containerStyle, styles.containerStyle]}>
+      <View style={[styles.containerStyle, containerStyle]}>
         <BaseInput
           label={label}
           mode="outlined"

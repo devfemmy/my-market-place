@@ -87,6 +87,7 @@ export const UserSlice = createSlice({
             state.userProfile = action.payload
         })
         builder.addCase(getUserDetails.rejected, (state, action) => {
+            state.loading = false
             state.error = action.error.message
         })
 

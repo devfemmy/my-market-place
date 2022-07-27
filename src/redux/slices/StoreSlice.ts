@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { StoreState, StoreCreateFormData, PayoutFormData, StoreUpdateFormData } from "../../utils/types";
+import { StoreState, StoreCreateFormData, PayoutFormData, AssignUserFormData, StoreUpdateFormData } from "../../utils/types";
 import { sendPost, getRequest, uploadImageFunc } from "../../utils/server"
 
 
@@ -10,6 +10,8 @@ import { sendPost, getRequest, uploadImageFunc } from "../../utils/server"
 const initialState: StoreState = {
     myStore: [],
     storeById: null,
+    staffs: null,
+    filteredStaffs: [],
     allStores: [],
     allCategories: [],
     payouts: [],
@@ -63,7 +65,16 @@ export const updateStore = createAsyncThunk(
 export const getStorePermission = createAsyncThunk(
     'store/storePermission',
     async (payload: string) => {
-        if(payload == 'Store Owner'){
+        if(payload == 'Super Admin'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else if(payload == 'Admin'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else if(payload == 'Store Vetter'){
+            return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
+        }
+        else if(payload == 'Store Owner'){
             return [{value: 'View Store Details', bool: true}, {value: 'View Store Analysis', bool: true}, {value: 'Manage Store Locations', bool: true}, {value: 'Manage shipping fee', bool: true}]
         }
         else if(payload == 'Store Manager'){
@@ -119,6 +130,35 @@ export const addPayout = createAsyncThunk(
         console.log(response)
     }
 )
+
+export const getStaff = createAsyncThunk(
+    'staff/getStaff',
+    async (payload: string) => {
+        const response = await getRequest(`/sidehustle/getStoreUsers?storeId=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const searchStaffs = createAsyncThunk(
+    'product/searchStaff',
+    (payload: string) => {
+        return payload
+    }
+)
+
+export const assignUser = createAsyncThunk(
+    'store/assignUser',
+    async (payload: AssignUserFormData) => {
+        const response = await sendPost("/sidehustle/addUserToStore", payload)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+        
+    }
+)
+
 
 export const updatePayout = createAsyncThunk(
     'store/updatePayouts',
@@ -232,6 +272,7 @@ export const StoreSlice = createSlice({
             state.error = action.error.message
         }),
 
+
         builder.addCase(addPayout.pending, (state, action) => {
             state.loading = true
         }),
@@ -242,6 +283,54 @@ export const StoreSlice = createSlice({
             state.loading = false,
             state.error = action.payload
         }),
+
+
+
+        builder.addCase(assignUser.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(assignUser.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(assignUser.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        }),
+
+
+        builder.addCase(getStaff.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getStaff.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.staffs = action.payload
+            state.filteredStaffs = action.payload
+        })
+        builder.addCase(getStaff.rejected, (state, action) => {
+            state.error = action.error.message
+        }),
+
+
+        builder.addCase(searchStaffs.pending, (state) => {
+            state.loading = false
+        })
+        builder.addCase(searchStaffs.fulfilled, (state, action: PayloadAction<any>) => {
+            state.filteredStaffs = state.staffs.filter(function(val: any){
+                const fullName = `${val?.user?.fName} ${val?.user?.lName}`
+                if(
+                    val?.user?.fName.toLowerCase().startsWith(action.payload.toLowerCase()) ||
+                    val?.user?.lName.toLowerCase().startsWith(action.payload.toLowerCase()) ||
+                    val?.user?.email.toLowerCase().startsWith(action.payload.toLowerCase()) ||
+                    fullName.toLowerCase().startsWith(action.payload.toLowerCase())
+                ){
+                    return val
+                }
+            })
+            state.loading = false
+        })
+        builder.addCase(searchStaffs.rejected, (state, action) => {
+            state.error = action.error.message
+        })
 
 
         builder.addCase(updatePayout.pending, (state, action) => {
@@ -426,5 +515,9 @@ export const filteredreviews = (state: RootState) => state.store.filteredreviews
 export const allCategories = (state: RootState) => state.store.allCategories;
 
 export const storebyId = (state: RootState) => state.store.storeById;
+
+export const staffs = (state: RootState) => state.store.staffs;
+
+export const filteredStaffs = (state: RootState) => state.store.filteredStaffs;
 
 export default StoreSlice.reducer;
