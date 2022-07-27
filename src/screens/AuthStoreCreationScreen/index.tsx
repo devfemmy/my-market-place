@@ -11,9 +11,9 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/common/Button';
 import { globalStyles } from "../../styles/globalStyles"
 import { hp, wp } from '../../utils/helpers';
-
+import ImagePicker from 'react-native-image-crop-picker';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
-import { addStoreImage, createStore, resetStoreImage, storeImage } from "../../redux/slices/StoreSlice"
+import { addStoreImage, createStore, resetStoreImage, storeImage, uploadImage } from "../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../utils/types';
 import CustomModal from '../../components/common/CustomModal';
 import { colors } from '../../utils/themes';
@@ -21,6 +21,8 @@ import { colors } from '../../utils/themes';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { styles } from '../main/Product/AddProduct/styles';
+import { pictureUpload } from '../../utils/functions';
+
 
 
 const AuthStoreCreationScreen = (): JSX.Element => {
@@ -31,11 +33,9 @@ const AuthStoreCreationScreen = (): JSX.Element => {
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const [headerText, setHeaderText] = useState('');
   const [msg, setMsg] = useState('');
-
+  const [imageData, setImageData] = useState('')
 
   const [query, setQuery] = useState('');
-  const imageData = useAppSelector(storeImage)
-
 
   const onSearch = (text: any) => {
     setQuery(text);
@@ -58,30 +58,28 @@ const AuthStoreCreationScreen = (): JSX.Element => {
       return
     }
     const payload = {
-      category: "Men's Clothing",
       brandName: data.storeName,
       description: data.description,
       imgUrl: imageData,
       address: data.street + " " + data.city + " " + data.state,
-      shippingFees: {
-        withinLocation: 1000,
-        outsideLocation: 2000
-      },
+      phoneNumber: data.phoneNumber,
       location: {
-        state: data.state,
-        city: data.city,
-        street: data.street,
+          state: data.state,
+          city: data.city,
+          street: data.street,
       },
-    };
+  };
 
     setLoader(true)
     const resultAction = await dispatch(createStore(payload))
     if (createStore.fulfilled.match(resultAction)) {
       setLoader(false)
-      await dispatch(resetStoreImage())
+      setImageData('')
+      console.log({resultAction})
       return navigation.navigate('AuthStoreSuccessScreen')
     } else {
       if (resultAction.payload) {
+        console.log({resultAction})
         setLoader(false)
         setVisibleBoolen(true)
         setHeaderText('Error')
@@ -123,18 +121,21 @@ const AuthStoreCreationScreen = (): JSX.Element => {
 
 
 
-
-
-
-  const pickImage = async () => {
-    let result = await launchImageLibrary({
-      mediaType: 'photo',
-      quality: 1,
+  const pickImage = async (index: number) => {
+    ImagePicker.openPicker({
+        width: 500,
+        height: 600,
+        cropping: true,
+        mediaType: "photo",
+        multiple: false,
+    }).then(async image => {
+        const ImageUrl = await pictureUpload(image)
+        setImageData(ImageUrl)
     });
-    if (!result.didCancel) {
-      dispatch(addStoreImage({ uri: result?.assets[0]?.uri }))
-    }
-  };
+};
+
+
+
 
   const resetImage = () => {
     dispatch(resetStoreImage())
@@ -171,7 +172,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
                   </View>
                 </Pressable>
                 :
-                <Pressable onPress={() => pickImage()}>
+                <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
                     <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
                   </View>
@@ -180,7 +181,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
           </View>
         </View>
 
-        <View style={globalStyles.container}>
+        <View>
           <View style={gbStyle.formContainer}>
             <Input
               label={'Store Name'}
@@ -275,7 +276,7 @@ const gbStyle = StyleSheet.create({
     marginVertical: 15
   },
   imageContainer: {
-    marginHorizontal: 30
+    marginHorizontal: 15
   },
   image: {
     width: 100,

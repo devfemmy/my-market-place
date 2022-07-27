@@ -24,7 +24,6 @@ export const Order = (): JSX.Element => {
     dispatch(getAllOrders())
   }, [])
 
-  console.log(orders.length)
 
   if(loader){
     return (

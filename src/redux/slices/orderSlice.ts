@@ -13,6 +13,7 @@ import {getRequest, sendPost} from "../../utils/server"
 import {Notify} from "../../utils/functions";
 
 const initialState: OrderState = {
+    sellerOrders: [],
     allOrders: [],
     selectedOrders: [],
     selected: '',
@@ -32,6 +33,18 @@ export const getAllOrders = createAsyncThunk(
                 return val.orders
             })
             return [].concat.apply([],orders)
+        }
+    }
+)
+
+
+
+export const getSellerOrders = createAsyncThunk(
+    'orders/getOrders',
+    async (payload: any) => {
+        const response = await getRequest(`/sidehustle/orders/sales/${payload.id}?orderStatus=${payload.status}`)
+        if (response?.status === 200) {
+            return response?.data?.data
         }
     }
 )
