@@ -10,7 +10,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import {Text} from '../../../components/common';
 import {View, FlatList, TouchableOpacity, ImageBackground, SafeAreaView, ActivityIndicator, Image} from 'react-native';
 import {globalStyles} from '../../../styles';
-import {hp} from '../../../utils/helpers';
+import {hp, wp} from '../../../utils/helpers';
 import { colors } from '../../../utils/themes';
 import OrderCard from '../../../components/resuable/OrderCard';
 import { Input } from '../../../components/common/TextInput';
@@ -34,14 +34,34 @@ import { bankVerification } from '../../../utils/server';
 import { string } from 'yup';
 import { getPayoutBackground, productBackground } from '../../../redux/slices/productSlice';
 import { UniversityLogo } from '../../../constants/images';
+import { SearchDropdown } from '../../../components/common/SearchDropdown';
+import { useNavigation } from '@react-navigation/native';
 
 export const Payouts = ({data}): JSX.Element => {
+  const navigation = useNavigation()
   const modalizeRef = useRef(null);
   const dispatch = useAppDispatch()
   const loader = useAppSelector(loading)
 
   const [fetching, setFetching] = useState(false)
   const [accNum, setAccNum] = useState('')
+
+  useEffect(() => {
+    navigation.setOptions({ 
+        headerRight: () => (
+          <TouchableOpacity onPress={() => {setFieldValue('account', ''); modalizeRef.current?.open()}}>
+            <Text
+              fontWeight="400"
+              fontSize={hp(14)}
+              text={'Edit'}
+              color={colors.bazaraTint}
+              style={{marginRight: wp(15)}}
+            />
+          </TouchableOpacity>
+        )
+    })
+
+  },[])
 
 
   const initialValues: PayoutFormData = {
@@ -86,6 +106,7 @@ export const Payouts = ({data}): JSX.Element => {
         const response = await bankVerification(payload)
         if (response.status === 200) {
           setFetching(false)
+          console.log(response?.data)
           setFieldValue('name', response?.data?.data?.account_name)
         }else{
           setFetching(false)
@@ -115,7 +136,7 @@ export const Payouts = ({data}): JSX.Element => {
 
   const renderBody = () => (
     <>
-        <Select
+        <SearchDropdown
             items={bankList}
             defaultValue={values.bankName}
             placeholder={'Bank'}
@@ -170,12 +191,12 @@ export const Payouts = ({data}): JSX.Element => {
             keyExtractor={item => item?._id}
             style={{marginBottom: hp(100)}}
         /> */}
-        <TouchableOpacity activeOpacity={0.8} onPress={() => {setFieldValue('account', ''); modalizeRef.current?.open()}}>
+        <View>
             <ImageBackground source={PayoutBack} resizeMode="cover" style={[globalStyles.payoutCard]}>
                 <Text fontWeight="500" fontSize={hp(17)} text={data[0]?.name} />
                 <Text style={[globalStyles.Verticalspacing]} fontWeight="500" fontSize={hp(14)} text={data[0]?.account + " - " + data[0]?.bankName} />
             </ImageBackground>
-        </TouchableOpacity>
+        </View>
 
 
         <View style={globalStyles.Verticalspacing} />

@@ -3,6 +3,7 @@ import { StyleSheet, View, StatusBar } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDropdown from 'react-native-select-dropdown';
+import SelectDropdownWithSearch from 'react-native-select-dropdown-with-search'
 import { hp } from '../../utils/helpers';
 import { globalStyles } from '../../styles';
 import { Text } from './Text';

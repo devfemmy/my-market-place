@@ -20,6 +20,8 @@ export const ImageSelect = (): JSX.Element => {
     const [loading, setLoading] = useState(null)
     const imageList = useAppSelector(images)
 
+    console.log(imageList)
+
     const pickImage = async (index: number) => {
         setLoading(index)
         ImagePicker.openPicker({
@@ -42,6 +44,10 @@ export const ImageSelect = (): JSX.Element => {
                 <TouchableOpacity  onPress={() => pickImage(index)} activeOpacity={.8} >
                     <View>
                         <Image resizeMode='cover' style={styles.imgStyle2} source={{uri: item}}/>
+                        { loading == index ? <ActivityIndicator size={'small'} 
+                        style={{position: 'absolute', alignSelf: 'center', top: 0, bottom: 0}} /> :
+                            null
+                        }
                     </View>
                 </TouchableOpacity>
             )

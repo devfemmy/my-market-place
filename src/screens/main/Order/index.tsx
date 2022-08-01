@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../utils/types';
 import { AuthContext } from '../../../context/context';
 import { Button } from '../../../components/common/Button';
-import {View, Image, ActivityIndicator} from 'react-native';
+import {View, Image, ActivityIndicator, StyleSheet} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {hp,wp} from '../../../utils/helpers';
 import {NoProducts} from '../../../constants/images';
@@ -12,6 +12,9 @@ import {NoOrder} from './Empty';
 import { Orders } from './Orders';
 import { selectedOrders, loading } from '../../../redux/slices/orderSlice';
 import { getAllOrders } from '../../../redux/slices/orderSlice';
+import { Input } from '../../../components/common/TextInput';
+import { colors } from '../../../utils/themes';
+import { SkeletonView } from '../../../components/resuable/Skeleton';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 
 export const Order = (): JSX.Element => {
@@ -25,14 +28,47 @@ export const Order = (): JSX.Element => {
   }, [])
 
 
+  // if(loader){
+  //   return (
+  //       <SafeAreaView>
+  //           <View style={[globalStyles.rowCenter, {flex: 1}]}>
+  //               <ActivityIndicator size={'small'}/>
+  //           </View>
+  //       </SafeAreaView>
+  //   )
+  // }
+
   if(loader){
     return (
-        <SafeAreaView>
-            <View style={[globalStyles.rowCenter, {flex: 1}]}>
-                <ActivityIndicator size={'small'}/>
-            </View>
-        </SafeAreaView>
+      <SafeAreaView>
+        <View style={[globalStyles.rowBetween, globalStyles.lowerContainer]}>
+            <Text
+                text={'Orders'}
+                numberOfLines={1}
+                fontWeight={"700"}
+                color={colors.white}
+                fontSize={hp(18)}
+            />
+            <View/>
+        </View>
+        <View style={{paddingHorizontal: hp(15)}}>
+          <Input
+              label={''}
+              placeholder={"Search orders by name or id"}
+              searchInput
+              containerStyle={{width: '100%'}}
+              editable={false}
+          />
+        </View>
+        <SkeletonView 
+        number={10} 
+        style={[styles.cardContainer, globalStyles.rowStart]}
+        imgStyle={styles.image}
+        numberDesc={4}
+        />
+      </SafeAreaView>
     )
+    
   }
 
   return (
@@ -41,3 +77,29 @@ export const Order = (): JSX.Element => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  image: {
+      height: hp(105),
+      width: hp(105),
+      borderRadius: hp(5),
+      marginRight: hp(15),
+  },
+  cardContainer: {
+      flexDirection: 'column',
+      paddingVertical: hp(10),
+      paddingHorizontal: hp(15)
+  },
+  underline: {
+      borderBottomWidth: 1, 
+      borderBottomColor: colors.gray,
+      paddingVertical: hp(10)
+  },
+  text: {
+      // marginTop: "-2%"
+  },
+  detContainer: {
+      height: hp(105),
+      justifyContent: 'space-between'
+  }
+})

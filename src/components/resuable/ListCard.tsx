@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
         marginRight: 15,
+        tintColor: colors.bazaraTint
     },
     cardContainer: {
         flexDirection: 'column',

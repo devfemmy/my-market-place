@@ -26,7 +26,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../utils/types';
-import { searchProducts, searching, updateProduct, getAllProducts, UpdateEditableSlug } from '../../../redux/slices/productSlice';
+import { searchProduct, searching, updateProduct, getAllProducts, UpdateEditableSlug } from '../../../redux/slices/productSlice';
 import { Notify } from '../../../utils/functions';
 import { myStore } from '../../../redux/slices/StoreSlice';
 
@@ -175,7 +175,7 @@ const ActivateProduct = async () => {
           <Input
               label={''}
               placeholder={"Search for products"}
-              onChangeText={(text) => dispatch(searchProducts(text))}
+              onChangeText={(text) => dispatch(searchProduct({search: text, id: mystore[0]?._id}))}
               searchInput
               containerStyle={{width: '100%'}}
           />

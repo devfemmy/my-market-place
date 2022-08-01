@@ -216,27 +216,6 @@ const Login = (): JSX.Element => {
 
   return (
     <SafeAreaView>
-      <View style={[globalStyles.rowBetween, styles.width90]}>
-        <AuthButton
-          image={GoogleLogo}
-          title={'Google'}
-          style={styles.btn}
-          onPress={googleSignIn}
-        />
-        {Platform.OS === 'ios' ? 
-            <AuthButton
-            image={AppleLogo}
-            title={'Apple'}
-            style={styles.btn}
-            onPress={AppleSignIn}
-          /> : null    
-      }
-      </View>
-      <Separator />
-      <View style={[globalStyles.rowStart, styles.lowerContainer]}>
-        <Text fontWeight="500" fontSize={hp(16)} text="Sign in with your:" />
-      </View>
-
       <Input
         label={'Email'}
         value={values.email}
@@ -252,7 +231,7 @@ const Login = (): JSX.Element => {
         isPassword
         errorMsg={touched.password ? errors.password : undefined}
       />
-      <View style={[globalStyles.rowStart, styles.width90]}>
+      <View style={[globalStyles.rowEnd, styles.width90]}>
         <Text
           onPress={() => navigation.navigate('ForgotPassword')}
           fontWeight="500"
@@ -260,23 +239,46 @@ const Login = (): JSX.Element => {
           text="Forgot password?"
         />
       </View>
+      <View style={globalStyles.rowCenter}>
+          <Button isLoading={loading} title={'Sign in'} style={styles.btn} onPress={handleSubmit} />
+      </View>
+      <Separator />
+      <View style={[styles.width90]}>
+        <AuthButton
+          image={GoogleLogo}
+          title={'Sign in with Google'}
+          style={styles.btnAuth}
+          onPress={googleSignIn}
+        />
+        {Platform.OS === 'ios' ? 
+            <AuthButton
+            image={AppleLogo}
+            title={'Sign in with Apple'}
+            style={styles.btnAuth}
+            onPress={AppleSignIn}
+          /> : null    
+      }
+      </View>
       <CustomModal 
         msg="You have successfully updated your store information" 
         headerText="Success" 
         visibleBoolean={visibleBoolean} handleVisible={handleVisible} 
         isSuccess={isSuccessful} />
-      <View style={globalStyles.footer}>
-        <View style={globalStyles.rowCenter}>
-          <Button isLoading={loading} title={'Sign in'} style={styles.btn} onPress={handleSubmit} />
-        </View>
+      <View style={[globalStyles.footer, {alignItems: 'center'}]}>
         <View style={[globalStyles.rowCenter, styles.width90, styles.margTop]}>
           <Text
             onPress={() => navigation.navigate('Register')}
-            fontWeight="500"
+            fontWeight="300"
             text="Create an account?"
           />
         </View>
+        <Text
+          fontWeight="300"
+          text="Sell on Bazara"
+          style={{marginTop: hp(30)}}
+        />
       </View>
+      
     </SafeAreaView>
   );
 };

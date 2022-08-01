@@ -95,7 +95,7 @@ export const MainStackNavigator = (): JSX.Element => {
         name="Account"
         component={Account}
         options={() => ({
-          title: 'Payout Account',
+          title: 'Payments',
           headerShown: true,})}
         />
 

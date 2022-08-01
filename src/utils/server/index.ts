@@ -61,6 +61,14 @@ export const uploadImageFunc = async (payload: any) => {
       },
     })
   }
+
+export const bankVerification = (payload: {bankAccount: string, bankCode: string}) => {
+    return axios.get(config?.payStack?.baseUrl + `?account_number=${payload.bankAccount}&bank_code=${payload.bankCode}`, {
+      headers: {
+        authorization: `Bearer ${config?.secretOrKey}`,
+    },
+    })
+}
   
  
 

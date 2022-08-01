@@ -9,7 +9,7 @@ const config = {
     secretOrKey: 'sk_live_8f334a99611a4cf0245c8e4f1bbc3fddb1861d80',
     payStack: {
       testSecretKey: 'pk_test_84d450ead211f32c1d444c98dd6c7fcfd27f897c',
-      baseUrl: "https://api.paystack.co",
+      baseUrl: "https://api.paystack.co/bank/resolve",
     }
   },
   STAGING: {
@@ -19,7 +19,7 @@ const config = {
     secretOrKey: 'sk_live_8f334a99611a4cf0245c8e4f1bbc3fddb1861d80',
     payStack: {
       testSecretKey: 'pk_test_84d450ead211f32c1d444c98dd6c7fcfd27f897c',
-      baseUrl: "https://api.paystack.co",
+      baseUrl: "https://api.paystack.co/bank/resolve",
     }
   },
   PROD: {
@@ -29,7 +29,7 @@ const config = {
     secretOrKey: 'sk_live_8f334a99611a4cf0245c8e4f1bbc3fddb1861d80',
     payStack: {
       testSecretKey: 'pk_live_673d282a2ea6f32939b9b27b162e20f03eff65fd',
-      baseUrl: "https://api.paystack.co",
+      baseUrl: "https://api.paystack.co/bank/resolve",
     }
   },
 };
