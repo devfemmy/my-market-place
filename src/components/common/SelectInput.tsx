@@ -1,81 +1,131 @@
-import React, {ComponentProps} from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import React from 'react';
+import { StyleSheet, View, StatusBar } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDropdown from 'react-native-select-dropdown';
-import {hp} from '../../utils';
-import {useSecureTextEntry} from '../../hooks';
-import {colors} from '../../constants';
+import { hp } from '../../utils/helpers';
+import { globalStyles } from '../../styles';
+import { Text } from './Text';
+import { colors } from '../../utils/themes';
+import { useAppDispatch } from '../../redux/hooks'
+import {getStorePermission} from '../../redux/slices/StoreSlice'
+import { getArchtype } from 'immer/dist/internal';
 
-type SelectProps = ComponentProps<typeof SelectDropdown> & {
-  errorMsg?: any;
-  searchInput?: boolean;
-  placeholder?: string;
-  containerStyle?: StyleProp<ViewStyle>;
-  style?: StyleProp<ViewStyle>;
+
+
+type IProp = {
+  items: Array<string> | undefined,
+  defaultValue: string,
+  placeholder: string,
+  errorMsg?: string,
+  setState: (value: string) => void;
+  roleSelector?: boolean
 };
 
-export const Select = (props: any) => {
-  const {items, setState, placeholder} = props;
+
+export const Select = (props: IProp) => {
+  const dispatch = useAppDispatch()
+  const { items, setState, placeholder, defaultValue, errorMsg, roleSelector } = props;
 
   return (
-    <View style={[{marginBottom: hp(20)}, styles.input]}>
-      <SelectDropdown
-        data={items}
-        onSelect={(selectedItem, index) => {
-          setState(selectedItem);
-        }}
-        disabled={items?.length < 1}
-        defaultButtonText={placeholder}
-        buttonStyle={styles.input}
-        buttonTextStyle={styles.inputText}
-        dropdownStyle={{
-          backgroundColor: 'grey',
-        }}
-        rowStyle={{
-          padding: 10,
-        }}
-        rowTextStyle={{
-          color: 'white',
-          textAlign: 'left',
-        }}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }}
-        renderDropdownIcon={() => {
-          return (
-            <Ionicons name={'chevron-down-outline'} size={20} color={'white'} />
-          );
-        }}
-      />
+    <View style={[styles.containerStyle]}>
+      <StatusBar translucent={false}/>
+      <View style={styles.contain}>
+        <View style={[{}, styles.input]}>
+          <SelectDropdown
+            defaultValue={defaultValue}
+            data={items === undefined ? [] : items}
+            onSelect={(selectedItem: string) => {
+              setState(selectedItem);
+              if(roleSelector){
+                dispatch(getStorePermission(selectedItem))
+              }
+            }}
+            defaultButtonText={placeholder}
+            buttonStyle={styles.input}
+            buttonTextStyle={styles.inputText}
+            dropdownStyle={styles.dropdownStyle}
+            rowStyle={styles.rowStyle}
+            rowTextStyle={styles.rowTextStyle}
+            dropdownOverlayColor={'transparent'}
+            buttonTextAfterSelection={(selectedItem: string) => {
+              return selectedItem;
+            }}
+            rowTextForSelection={(item: string) => {
+              return item;
+            }}
+            renderDropdownIcon={() => {
+              return (
+                <Ionicons name={'chevron-down-outline'} size={20} color={'white'} />
+              );
+            }}
+          />
+        </View>
+      </View>
+
+      {errorMsg !== undefined ? (
+        <View style={[globalStyles.rowStart, styles.errorHold]}>
+          <Text
+            text={errorMsg}
+            category="s1"
+            fontSize={hp(12)}
+            style={styles.error}
+            textAlign="left"
+          />
+        </View>
+      ) : null}
     </View>
+
   );
 };
 
 const styles = StyleSheet.create({
+  contain: {
+    width: "100%",
+  },
   input: {
     flexDirection: 'row-reverse',
     backgroundColor: 'transparent',
-    borderRadius: hp(15),
+    borderRadius: hp(7),
     width: '100%',
-    borderColor: 'grey',
-    borderWidth: 1,
+    borderColor: colors.darkGrey,
+    borderWidth: 0.4,
   },
   inputText: {
     color: 'white',
     textAlign: 'left',
+    fontSize: hp(15),
   },
   textStyle: {
     fontSize: hp(15),
   },
   error: {
-    paddingTop: hp(-8),
+    paddingTop: hp(25),
     color: 'tomato',
   },
+  dropdownStyle: {
+    backgroundColor: colors.darkBlack,
+    height: hp(200),
+    borderBottomLeftRadius: hp(10),
+    borderBottomRightRadius: hp(10),
+    borderWidth: 1,
+    borderColor: colors.gray,
+  },
+  rowStyle: {
+    padding: 10,
+  },
+  rowTextStyle: {
+    color: 'white',
+    textAlign: 'left',
+    fontSize: hp(15),
+  },
+  errorHold: {
+    marginTop: hp(-15),
+    marginBottom: hp(10)
+  },
   containerStyle: {
-    backgroundColor: 'yellow',
+    marginBottom: hp(20),
+    width: '90%',
+    alignSelf: 'center',
   },
 });

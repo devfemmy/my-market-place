@@ -1,16 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Pressable, StyleSheet, Image} from 'react-native';
-import {colors} from '../../constants';
-import {hp, wp} from '../../utils';
+import { colors } from '../../utils/themes';
+import {hp, wp} from '../../utils/helpers';
 import {Text} from '../common';
+import {checkbox} from "../../assets/index"
+import { globalStyles } from "../../styles/globalStyles"
 
-type IProp = {
+interface IProp {
   header: string;
   title: string;
   type: string;
   selected: string;
   handleClick?: () => void;
 };
+
 
 const WelcomeCard: React.FC<IProp> = ({
   header,
@@ -21,13 +24,13 @@ const WelcomeCard: React.FC<IProp> = ({
 }) => {
   return (
     <Pressable onPress={handleClick}>
-      <View style={selected === type ? styles.selected : styles.container}>
-        <View style={styles.cardView}>
-          <Text text={header} fontSize={20} style={styles.header} />
+      <View style={selected === type ? styles.selected : styles. welcomeContainer}>
+        <View style={[styles.cardView, globalStyles.rowBetweenNoCenter]}>
+          <Text text={header} fontSize={20} />
           <View style={selected !== type && styles.checkbox}>
             {selected === type && (
               <Image
-                source={require('../../assets/Checkbox.png')}
+                source={checkbox}
                 style={styles.image}
               />
             )}
@@ -42,7 +45,7 @@ const WelcomeCard: React.FC<IProp> = ({
 export default WelcomeCard;
 
 const styles = StyleSheet.create({
-  container: {
+  welcomeContainer: {
     padding: 10,
     // borderWidth: 1,
     borderColor: colors.gray,
@@ -65,11 +68,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkBlack,
   },
   cardView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: 10,
   },
-  header: {},
   title: {
     color: colors.gray,
     width: wp(284),

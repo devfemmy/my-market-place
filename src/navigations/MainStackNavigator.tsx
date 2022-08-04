@@ -1,11 +1,21 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator as createNativeStackNavigator} from '@react-navigation/stack';
 import {MainStackParamList} from './types';
-import {colors} from '../constants';
-import {hp} from '../utils';
+
+import { colors } from '../utils/themes';
+import {hp} from '../utils/helpers';
 import {RootBottomTabNavigator} from './RootBottomTabNavigator';
-import {StoreCreation} from '../screens';
+import {StoreCreation, AddProduct, PublishProduct, 
+  OrderDetails, AddStaffScreen, StaffScreen, Account, 
+  NotificationScreen, NotificationDetails, Reviews, AllReviews} from '../screens';
 import {WelcomeScreen} from '../screens/WelcomeScreen';
+import StoreSuccessScreen from '../screens/StoreSuccessScreen';
+import AuthStoreSuccessScreen from '../screens/AuthStoreSuccessScreen';
+import EditStore from '../screens/EditStore';
+import DeliveryScreen from '../screens/DeliveryScreen';
+import AddShippingFee from '../screens/AddShippingFee';
+import AuthStoreCreationScreen from '../screens/AuthStoreCreationScreen';
+import Profile from '../screens/Profile';
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -17,11 +27,15 @@ export const MainStackNavigator = (): JSX.Element => {
         headerShadowVisible: false,
         headerTitleStyle: {
           fontWeight: '500',
-          fontSize: hp(12),
+          fontSize: hp(15),
+        },
+        headerStyle: {
+          backgroundColor: colors.primaryBg,
         },
         headerBackTitleVisible: false,
-        headerTitleAlign: 'left',
-        headerTintColor: colors.primaryBg,
+        headerTitleAlign: 'center',
+        headerTintColor: colors.darkGrey,
+        
       })}>
       <MainStack.Screen
         name="HomeTab"
@@ -31,17 +45,126 @@ export const MainStackNavigator = (): JSX.Element => {
         })}
       />
       <MainStack.Screen
-        name="StoreCreationScreen"
-        component={StoreCreation}
+        name="Profile"
+        component={Profile}
+        options={() => ({
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={() => ({
+          title: 'Product Details',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="PublishProduct"
+        component={PublishProduct}
+        options={() => ({
+          title: 'Product Details',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="OrderDetails"
+        component={OrderDetails}
+        options={() => ({
+          title: 'Order Details',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="Staffs"
+        component={StaffScreen}
+        options={() => ({
+          title: 'All Staff',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="AddStaff"
+        component={AddStaffScreen}
+        options={() => ({
+          title: 'Add New Staff',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="Account"
+        component={Account}
+        options={() => ({
+          title: 'Payout Account',
+          headerShown: true,})}
+        />
+
+      <MainStack.Screen
+        name="Reviews"
+        component={Reviews}
+        options={() => ({
+          title: 'Ratings and Reviews',
+          headerShown: true,})}
+        />
+
+      <MainStack.Screen
+        name="AllReviews"
+        component={AllReviews}
+        options={() => ({
+          title: 'Ratings and Reviews',
+          headerShown: true})}
+        />
+
+        <MainStack.Screen
+        name="AuthStoreCreationScreen"
+        component={AuthStoreCreationScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+
+       <MainStack.Screen
+        name="AuthStoreSuccessScreen"
+        component={AuthStoreSuccessScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+       <MainStack.Screen
+        name="EditStore"
+        component={EditStore}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+       <MainStack.Screen
+        name="DeliveryScreen"
+        component={DeliveryScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+       <MainStack.Screen
+        name="AddShippingFee"
+        component={AddShippingFee}
         options={() => ({
           headerShown: false,
         })}
       />
       <MainStack.Screen
-        name="WelcomeScreen"
-        component={WelcomeScreen}
+        name="NotificationScreen"
+        component={NotificationScreen}
         options={() => ({
-          headerShown: false,
+          title: 'Notifications',
+          headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="NotificationDetails"
+        component={NotificationDetails}
+        options={() => ({
+          title: '',
+          headerShown: true,
         })}
       />
     </MainStack.Navigator>

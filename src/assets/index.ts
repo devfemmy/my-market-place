@@ -1,0 +1,17 @@
+import {ImageSourcePropType} from 'react-native';
+
+export const checkbox: ImageSourcePropType = require('../assets/Checkbox.png');
+export const storeImage: ImageSourcePropType = require('../assets/store.png');
+export const colorCart: ImageSourcePropType = require('../assets/color-cart.png');
+export const productLogo: ImageSourcePropType = require('../assets/package.png');
+export const usersLogo: ImageSourcePropType = require('../assets/users.png');
+export const truckLogo: ImageSourcePropType = require('../assets/truck.png');
+export const universityLogo: ImageSourcePropType = require('../assets/university.png');
+export const correctLogo: ImageSourcePropType = require('../assets/correct.png');
+export const plus: ImageSourcePropType = require('../assets/plus.png');
+export const storeActive: ImageSourcePropType = require('../assets/store-active.png');
+export const blueUni: ImageSourcePropType = require('../assets/blue-uni.png');
+export const blueUser: ImageSourcePropType = require('../assets/blue-user.png');
+export const uTruck: ImageSourcePropType = require('../assets/big-truck.png');
+export const plusActive: ImageSourcePropType = require('../assets/PlusC.png');
+export const deleteIcon : ImageSourcePropType = require('../assets/dell.png');

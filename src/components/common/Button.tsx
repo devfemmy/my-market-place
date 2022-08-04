@@ -1,71 +1,44 @@
-import React, {ComponentProps, memo, useMemo} from 'react';
-import {Pressable, StyleProp, TextStyle} from 'react-native';
+import React, {memo, ComponentProps} from 'react';
+import {StyleSheet, View, StyleProp, ViewStyle, ActivityIndicator} from 'react-native';
+import {Button as BaseButton} from '@ui-kitten/components';
+import { colors } from '../../utils/themes';
+import { hp, wp } from '../../utils/helpers';
+import{ ButtonProps } from '../../utils/types'
 
-import {Text as BaseText} from '@ui-kitten/components';
-import {hp} from '../../utils';
-import {colors} from '../../constants';
-
-type ButtonProps = ComponentProps<typeof BaseText> & {
-  text: string;
-  fontSize?: number;
-  backgroundColor?: string;
-  textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify';
-  color?: string;
-  padding?: number;
-  lineHeight?: number;
-  borderRadius?: number;
-  fontWeight?:
-    | 'normal'
-    | 'bold'
-    | '100'
-    | '200'
-    | '300'
-    | '400'
-    | '500'
-    | '600'
-    | '700'
-    | '800'
-    | '900';
-  style?: StyleProp<TextStyle>;
-};
 
 export const Button = memo(
   ({
-    text,
-    backgroundColor = colors.bazaraTint,
-    fontSize = hp(15),
-    lineHeight,
-    onPress,
-    textAlign = 'center',
-    borderRadius = 10,
-    color = colors.white,
-    padding = 15,
-    fontWeight = '400',
+    title,
+    isLoading = false,
+    outlined,
     style,
+    containerStyle,
     ...rest
   }: ButtonProps) => {
-    const propsStyle = useMemo(
-      () => ({
-        color,
-        fontSize,
-        textAlign,
-        lineHeight,
-        fontWeight,
-        backgroundColor,
-        padding,
-        borderRadius,
-      }),
-      [color, textAlign, fontWeight, lineHeight, fontSize],
-    );
-
     return (
-      <BaseText
-        onPress={onPress}
-        category="p1"
-        style={[propsStyle, style]}
-        {...rest}>
-        {text}
-      </BaseText>
+      <View style={[containerStyle, styles.container]}>
+        <BaseButton
+          disabled={isLoading}
+          status={outlined ? 'control' : 'primary'}
+          size="medium"
+          style={[styles.btn, style]}
+          {...rest}>
+          {isLoading ? <ActivityIndicator color={"white"} size={"small"}/> : title}
+        </BaseButton>
+      </View>
     );
   },
 );
+
+const styles = StyleSheet.create({
+  btn: {
+    borderRadius: hp(10),
+    height: wp(50),
+    backgroundColor: colors.bazaraTint,
+    borderWidth: 0,
+  },
+  container: {
+    width: '90%',
+    alignSelf: 'center',
+  },
+});

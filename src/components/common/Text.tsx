@@ -2,8 +2,8 @@ import React, {ComponentProps, memo, useMemo} from 'react';
 import {StyleProp, TextStyle} from 'react-native';
 
 import {Text as BaseText} from '@ui-kitten/components';
-import {hp} from '../../utils';
-import {colors} from '../../constants';
+import {hp} from '../../utils/helpers';
+import { colors } from "../../utils/themes/themes"
 
 type TextProps = ComponentProps<typeof BaseText> & {
   text: string;
