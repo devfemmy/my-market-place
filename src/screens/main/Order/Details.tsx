@@ -182,7 +182,10 @@ export const OrderDetails = ({order}: any): JSX.Element => {
                 <View style={[globalStyles.infoCard]}>
                     <View style={[globalStyles.rowBetween, globalStyles.cardSeparator]}>
                         <Text text={'Item Total'} color={colors.gray} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text} />
-                        <Text text={currencyFormat(item?.orderInfo?.price)} numberOfLines={1} fontWeight={"400"} fontSize={hp(13)} style={styles.text} />
+                        <Text 
+                        // text={currencyFormat(item?.orderInfo?.price)} 
+                        text={item?.orderInfo?.price} 
+                        numberOfLines={1} fontWeight={"400"} fontSize={hp(13)} style={styles.text} />
                     </View>
                     <View style={[globalStyles.rowBetween, globalStyles.cardSeparator]}>
                         <Text text={'Quality'} color={colors.gray} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text} />
@@ -190,7 +193,10 @@ export const OrderDetails = ({order}: any): JSX.Element => {
                     </View>
                     <View style={[globalStyles.rowBetween, globalStyles.cardSeparator, globalStyles.noSeparator]}>
                         <Text text={'Delivery Fee'} color={colors.gray} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text} />
-                        <Text text={currencyFormat(item?.orderInfo?.price - item?.orderInfo?.calculatedAmount)} numberOfLines={1} fontWeight={"400"} fontSize={hp(13)} style={styles.text} />
+                        <Text 
+                        // text={currencyFormat(item?.orderInfo?.price - item?.orderInfo?.calculatedAmount)} 
+                        text={item?.orderInfo?.price - item?.orderInfo?.calculatedAmount} 
+                        numberOfLines={1} fontWeight={"400"} fontSize={hp(13)} style={styles.text} />
                     </View>
                 </View>
 

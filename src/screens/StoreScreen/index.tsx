@@ -11,56 +11,70 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../../assets"
 import ListCard from '../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
-import { getPersonalStore, myStore } from '../../redux/slices/StoreSlice';
+import { filteredStaffs, getPayouts, getPersonalStore, getStaff, myStore, payouts } from '../../redux/slices/StoreSlice';
 import { ArrayType } from '../../utils/types';
 import { hp } from '../../utils/helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAllOrders, selectedOrders } from '../../redux/slices/orderSlice';
+import { getAllProducts, myProducts } from '../../redux/slices/productSlice';
 
 
 export const StoreScreen = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
-
+  const orders = useAppSelector(selectedOrders)
+  const payoutData = useAppSelector(payouts)
+  const AllStaffs = useAppSelector(filteredStaffs)
+  const myproducts = useAppSelector(myProducts)
   AsyncStorage.setItem('activeId', myStoreList[0]?.id)
 
   useEffect(() => {
     dispatch(getPersonalStore())
+    dispatch(getAllOrders())
+    dispatch(getPayouts())
+    dispatch(getStaff(myStoreList[0]?._id))
+    dispatch(getAllProducts(myStoreList[0]?._id))
 }, [])
 
   const quickActionArray = [
      {
       id: 1,
       title: "Add your first product",
-      navigation: 'Product',
-      icon: productLogo
+      route: 'AddProduct',
+      icon: productLogo,
+      isActive: myProducts?.length > 0 ? true : false
      },
      {
       id: 2,
       title: "Add users / staff to your store",
-      navigation: 'AddStaff',
-      icon: usersLogo
+      route: 'AddStaff',
+      icon: usersLogo,
+      isActive: AllStaffs?.length > 0 ? true : false
      },
      {
       id: 3,
       title: "Set delivery or shipping fee",
-      navigation: 'DeliveryScreen',
-      icon: truckLogo
+      route: 'DeliveryScreen',
+      icon: truckLogo,
+      isActive: false
      },
      {
       id: 4,
       title: "Add payout bank account",
-      navigation: 'Account',
-      icon: universityLogo
+      route: 'Account',
+      icon: universityLogo,
+      isActive: payoutData?.length > 0 ? true : false
      }
 
   ]
+
 
   return (
     <SafeAreaView>
       <StatusBar translucent={true} backgroundColor={'white'} />
       <ScrollView>
-        <StoreHeader name={myStoreList[0]?.brandName} />
+        <StoreHeader name={myStoreList[0]?.brandName} slug={myStoreList[0]?.slug} />
         <View style={[globalStyles.container]}>
           <ScrollCard escrow={myStoreList[0]?.wallet?.escrow} balance={myStoreList[0]?.wallet?.balance} />
           <View style={[globalStyles.rowBetweenNoCenter, styles.rowMargin]}>
@@ -69,7 +83,7 @@ export const StoreScreen = (): JSX.Element => {
               <Text text="Order" />
             </View>
             <View style={globalStyles.rowStart}>
-              <Text text="100" style={styles.greyColor} />
+              <Text text={`${orders?.length}`} style={styles.greyColor} />
               <Ionicons
                 name={"chevron-forward-outline"}
                 size={15}
@@ -83,7 +97,7 @@ export const StoreScreen = (): JSX.Element => {
           <View>
           {
             quickActionArray?.map((data: ArrayType) => {
-              return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.navigation)} />
+              return <ListCard key={data?.id} {...data} />
             })
           }
           </View>

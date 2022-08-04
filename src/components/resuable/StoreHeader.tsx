@@ -9,11 +9,13 @@ import { colors } from '../../utils/themes'
 import { StoreHeaderProps } from '../../interfaces'
 import { hp } from '../../utils/helpers'
 import { Nav } from '../../utils/types'
+import { copyToClipboard } from '../../utils/functions'
 
 
-const StoreHeader:React.FC<StoreHeaderProps> = ({name}) => {
+const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
     const  { navigate } = useNavigation<Nav>();
 
+    const link = `https://bazara.co/store/${slug}`
     return (
             <View style={[globalStyles.container, globalStyles.rowBetween, styles.comp]}>
                 <View style={styles.container}>
@@ -23,11 +25,13 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name}) => {
                     <View style={styles.textCard}>
                         <Text text={name} fontSize={hp(18)} />
                         <View style={styles.copyCard}>
+                        <TouchableOpacity onPress={() => copyToClipboard(link)}>
                             <Ionicons
                                 name={"copy-outline"}
                                 size={hp(15)}
                                 color={'white'}
                             />
+                             </TouchableOpacity>
                             <Text text="Copy store link" fontSize={hp(12)} fontWeight='600' style={styles.div} />
                         </View>
                     </View>
@@ -75,6 +79,7 @@ const styles = StyleSheet.create({
         padding: 5,
         marginTop: 3,
         borderRadius: 5,
+        width: 110,
     },
     iconCard: {
         height: '100%',

@@ -24,6 +24,10 @@ export const Home = (): JSX.Element => {
         text="Go to Store creation"
         onPress={() => navigate('AuthStoreCreationScreen')}
       /> 
+      <Text
+          text='Add a Product'
+          onPress={() => navigate('AddProduct')}
+      />
       {/* <Text
         text="Go to Welcome screen"
         onPress={() => navigate('WelcomeScreen')}
