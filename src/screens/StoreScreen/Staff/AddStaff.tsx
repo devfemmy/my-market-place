@@ -27,7 +27,8 @@ import { sendPost, getRequest } from '../../../utils/server';
 export const AddStaffScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation<Nav>();
-  const [complete, setComplete] = useState(false)
+  const [complete, setComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
   const permissionList = useAppSelector(permission)
   const mystore = useAppSelector(myStore)
 
@@ -69,17 +70,21 @@ export const AddStaffScreen = (): JSX.Element => {
       storeId: mystore[0]._id
     }
     try {
+      setLoading(true);
       var resultAction = await dispatch(assignUser(payload))
       if(assignUser.fulfilled.match(resultAction) && resultAction?.payload){
           // Notify('Product Added!', 'Your product was successfully added', 'success')
           console.log(resultAction)
-          setComplete(true)
+          setComplete(true);
+          setLoading(false);
           // Lets check 
       }else{
           console.log(resultAction)
-          Notify('Error!', 'Staff not Added!', 'error')
+          setLoading(false);
+          Notify('Error!', 'Staff cannot be Added!', 'error')
       }
     } catch (error) {
+      setLoading(false);
       console.log(error)
     }
   }
@@ -147,6 +152,7 @@ export const AddStaffScreen = (): JSX.Element => {
       <View style={globalStyles.footer}>
         <View style={globalStyles.rowCenter}>
           <Button
+            isLoading={loading}
             title={'Add Staff'}
             onPress={handleSubmit}
           />
