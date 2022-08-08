@@ -16,6 +16,7 @@ type InputProps = ComponentProps<typeof BaseInput> & {
   placeholder?: string;
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
+  iconMarginTop?: number
 };
 
 export const Input = memo(
@@ -26,6 +27,7 @@ export const Input = memo(
     containerStyle,
     placeholder,
     label,
+    iconMarginTop,
     ...rest
   }: InputProps) => {
     const {secureTextEntry, toggleEntry} = useSecureTextEntry(isPassword);
@@ -65,6 +67,7 @@ export const Input = memo(
                 onPress={toggleEntry}
                 name={'magnify'}
                 size={hp(25)}
+                style={{marginTop: iconMarginTop}}
               />
             ) : null
           }

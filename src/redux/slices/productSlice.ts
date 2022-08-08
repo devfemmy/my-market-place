@@ -19,7 +19,7 @@ const initialState: ProductState = {
     newSizes: [],
     newColours: [],
     newSizeColours: [],
-    images: ["", "", "", "", "", ""],
+    images: [""],
     categories: [],
     loading: false,
     error: null
@@ -39,6 +39,19 @@ export const searchProducts = createAsyncThunk(
     'product/searchingProduct',
     (payload: string) => {
         return payload
+    }
+)
+
+export const searchProduct = createAsyncThunk(
+    'product/searchProduct',
+    async (payload: { search: string, id: string }) => {
+        const response = await getRequest(`/sidehustle/seller/product/search?searchString=${payload.search}&sidehustleId=${payload.id}`)
+        if(payload.search == ''){
+            return ''
+        }
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
     }
 )
 
@@ -172,7 +185,7 @@ export const deleteSizeColour = createAsyncThunk(
 export const resetImage = createAsyncThunk(
     'product/resetimages',
     () => {
-        return ["", "", "", "", "", ""]
+        return [""]
     }
 )
 
@@ -188,6 +201,10 @@ export const ProductSlice = createSlice({
         })
         builder.addCase(addImage.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false
+            if(state.images.length - 1 == action.payload.index){
+                const newArr = [...state.images, ""]
+                state.images = newArr
+            }
             state.images[action.payload.index] = action.payload.uri
         })
         builder.addCase(addImage.rejected, (state, action) => {
@@ -368,6 +385,26 @@ export const ProductSlice = createSlice({
         })
 
 
+        builder.addCase(searchProduct.pending, (state, action) => {
+            state.searching = true
+        }),
+        builder.addCase(searchProduct.fulfilled, (state, action: PayloadAction<any>) => {
+            if(action.payload == ''){
+                state.selectedProducts = state.myProducts
+                state.searching = false
+            }else{
+                state.selectedProducts = action.payload
+                state.searching = false
+            }
+            
+            
+        })
+        builder.addCase(searchProduct.rejected, (state, action) => {
+            state.selectedProducts = []
+            state.error = action.error.message
+        }),
+
+
         builder.addCase(getProductBySlug.pending, (state, action) => {
             state.loading = true,
             state.productBySlug = null
@@ -393,7 +430,7 @@ export const ProductSlice = createSlice({
             state.newSizes = []
             state.newColours = []
             state.newSizeColours = []
-            state.images = ["", "", "", "", "", ""]
+            state.images = [""]
         })
         builder.addCase(createProduct.rejected, (state, action) => {
             state.loading = false,
@@ -408,7 +445,7 @@ export const ProductSlice = createSlice({
             state.newSizes = []
             state.newColours = []
             state.newSizeColours = []
-            state.images = ["", "", "", "", "", ""]
+            state.images = [""]
         })
         builder.addCase(updateProduct.rejected, (state, action) => {
             state.loading = false,

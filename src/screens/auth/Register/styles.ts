@@ -11,6 +11,9 @@ export const styles = StyleSheet.create({
     marginTop: hp(30),
     marginBottom: hp(10),
   },
+  btnAuth: {
+    marginBottom: hp(20),
+  },
   forgotPassword: {
     marginTop: hp(-1),
     fontStyle: 'italic',

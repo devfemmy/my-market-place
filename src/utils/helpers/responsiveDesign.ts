@@ -22,3 +22,5 @@ export const numberFormat = (value: number) => {
   const str = num?.replace(new RegExp(re, 'g'), '$&' + ',');
   return str;
 }
+
+

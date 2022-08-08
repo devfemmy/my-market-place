@@ -256,6 +256,12 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.black
-  }
+  },
+  labelPlaceholder: {
+    height: hp(25),
+    width: 130,
+    borderRadius: 5,
+    marginTop: hp(10)
+  },
 
 });

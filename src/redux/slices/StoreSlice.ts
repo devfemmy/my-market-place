@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { StoreState, StoreCreateFormData, PayoutFormData, AssignUserFormData } from "../../utils/types";
-import { sendPost, getRequest } from "../../utils/server"
+import { StoreState, StoreCreateFormData, PayoutFormData, AssignUserFormData, StoreUpdateFormData } from "../../utils/types";
+import { sendPost, getRequest, uploadImageFunc } from "../../utils/server"
 
 
 
@@ -29,6 +29,36 @@ export const createStore = createAsyncThunk(
     'store/createStore',
     async (payload: StoreCreateFormData) => {
         const response = await sendPost("/sidehustle/account/create", payload)
+    }
+)
+
+
+export const uploadImage = createAsyncThunk(
+    'store/upload',
+    async (payload: any) => {
+        const response = await uploadImageFunc(payload)
+        console.log("image upload======", response)
+        if (response?.status === 200) {
+            return response?.data?.data?.url
+        }
+    }
+)
+
+
+export const updateStore = createAsyncThunk(
+    'store/updateStore',
+    async (payload: StoreUpdateFormData) => {
+        const payloadData = {
+            brandName: payload.brandName,
+            description: payload.description,
+            imgUrl: payload.imgUrl,
+            address: payload.address,
+            phoneNumber: payload.phoneNumber,
+            location: payload.location,
+            status: payload.status
+        }
+
+        const response = await  sendPost(`/sidehustle/account/${payload.id}/update`, payloadData)
     }
 )
 
@@ -208,8 +238,16 @@ export const StoreSlice = createSlice({
             state.loading = false,
             state.error = action.payload
         }),
-
-
+        builder.addCase(updateStore.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(updateStore.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(updateStore.rejected, (state, action) => {
+            state.loading = false,
+                state.error = action.payload
+        }),
 
         builder.addCase(getStorePermission.pending, (state, action) => {
             state.loading = true
@@ -382,6 +420,16 @@ export const StoreSlice = createSlice({
             state.storeById = action.payload
         })
         builder.addCase(getStoreById.rejected, (state, action) => {
+            state.error = action.error.message
+        }),
+
+        builder.addCase(uploadImage.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(uploadImage.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(uploadImage.rejected, (state, action) => {
             state.error = action.error.message
         })
 

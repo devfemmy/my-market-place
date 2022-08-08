@@ -26,7 +26,7 @@ export const AuthButton = memo(
         <BaseButton
           disabled={isLoading}
           status={outlined ? 'control' : 'primary'}
-          size="large"
+          size="medium"
           accessoryLeft={() => <Avatar size="small" source={image} />}
           style={[styles.btn, style]}
           {...rest}>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   container: {
-    width: '45%',
+    width: '100%',
     alignSelf: 'center',
   },
 });

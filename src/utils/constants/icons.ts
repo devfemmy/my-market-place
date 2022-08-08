@@ -6,6 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Octicons from 'react-native-vector-icons/Octicons';
 
 export default {
   AntDesign,
@@ -16,4 +17,5 @@ export default {
   Fontisto,
   Feather,
   FontAwesome,
+  Octicons
 };
