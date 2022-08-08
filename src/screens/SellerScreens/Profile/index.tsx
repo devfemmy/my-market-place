@@ -12,9 +12,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useFormik} from 'formik';
 import {InfoCircle} from '../../../constants/images'
 import { updateSchema } from '../../../utils/constants';
+import { styles } from './styles';
 
 const Profile = () => {
-    const { authContext: { signOut }} = useContext(AuthContext)
+    const { signOut } = useContext(AuthContext)
     const user = useAppSelector(userProfile)[0]
     const Error = useAppSelector(error)
     const [editing, setEditing] = useState(false);
@@ -77,29 +78,48 @@ const Profile = () => {
                     }
                 </View>
             </View>
-            <Input
-                label={'Surname'}
-                value={values?.lName}
-                defaultValue={user?.lName }
-                editable={editing}
-                onBlur={handleBlur('lName')}
-                onChangeText={handleChange('lName')}
-                errorMsg={touched.lName ? errors.lName : undefined}
-            />
-            <Input
-                label={'First Name'}
-                value={values?.fName}
-                defaultValue={user?.fName}
-                editable={editing}
-                onBlur={handleBlur('fName')}
-                onChangeText={handleChange('fName')}
-                errorMsg={touched.fName ? errors.fName : undefined}
-            />
-            <Input
-                label={'Email'}
-                value={user?.email}
-                editable={false}
-            />
+            {editing ? (
+                <View>
+                    <Input
+                        label={'Surname'}
+                        value={values?.lName}
+                        defaultValue={user?.lName }
+                        editable={editing}
+                        onBlur={handleBlur('lName')}
+                        onChangeText={handleChange('lName')}
+                        errorMsg={touched.lName ? errors.lName : undefined}
+                    />
+                    <Input
+                        label={'First Name'}
+                        value={values?.fName}
+                        defaultValue={user?.fName}
+                        editable={editing}
+                        onBlur={handleBlur('fName')}
+                        onChangeText={handleChange('fName')}
+                        errorMsg={touched.fName ? errors.fName : undefined}
+                    />
+                    <Input
+                        label={'Email'}
+                        value={user?.email}
+                        editable={false}
+                    />
+                </View>
+            ) : 
+            <View style={styles.marginB}>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label} fontSize={hp(14)} text={'Surname'} />
+                    <Text fontSize={hp(14)} text={user?.fName} />
+                </View>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label} fontSize={hp(14)} text={'First Name'} />
+                    <Text fontSize={hp(14)} text={user?.lName} />
+                </View>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label} fontSize={hp(14)} text={'Email'} />
+                    <Text fontSize={hp(14)} text={user?.email} />
+                </View>
+            </View>
+            }
             <View style={globalStyles.list_header}>
                 <View style={[globalStyles.rowBetween, globalStyles.Verticalspacing, globalStyles.lowerContainer, globalStyles.list_header_content]}>
                     <Text fontWeight="500" fontSize={hp(14)} text={'Security'} />
@@ -144,6 +164,5 @@ const Profile = () => {
 }
 
 export default Profile
-
 
 

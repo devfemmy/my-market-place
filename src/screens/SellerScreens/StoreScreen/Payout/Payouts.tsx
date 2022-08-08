@@ -70,7 +70,7 @@ export const Payouts = ({data}): JSX.Element => {
     bankName: data.bankName,
   };
 
-  const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue, isValid } =
   useFormik({
     initialValues,
     validationSchema: PayoutFormDataSchema,
@@ -168,7 +168,7 @@ export const Payouts = ({data}): JSX.Element => {
 
           <Ionicons name="checkmark-circle-outline" size={24} color={colorChange("#fff")} />
         </View>
-        <Button isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
+        <Button style={{backgroundColor: !isValid ? colors.darkBlack : colors.bazaraTint}} disabled={!isValid} isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
     </>
 );
 

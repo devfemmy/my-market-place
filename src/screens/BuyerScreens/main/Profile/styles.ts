@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { hp } from "../../../utils/helpers";
+import { hp } from "../../../../utils/helpers";
 
 export const styles = StyleSheet.create({
     inputContainer: {
