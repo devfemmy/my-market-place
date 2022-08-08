@@ -1,3 +1,5 @@
+
+
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -44,8 +46,7 @@ export const Payouts = ({data}): JSX.Element => {
   const loader = useAppSelector(loading)
 
   const [fetching, setFetching] = useState(false)
-  const [accNum, setAccNum] = useState('');
-  const [disabled, setDisabled] = useState(true);
+  const [accNum, setAccNum] = useState('')
 
   useEffect(() => {
     navigation.setOptions({ 
@@ -107,27 +108,19 @@ export const Payouts = ({data}): JSX.Element => {
         const response = await bankVerification(payload)
         if (response.status === 200) {
           setFetching(false)
-<<<<<<< HEAD:src/screens/StoreScreen/Payout/Payouts.tsx
-          setFieldValue('name', response?.data?.data?.account_name);
-          setDisabled(false);
-=======
           console.log(response?.data)
           setFieldValue('name', response?.data?.data?.account_name)
->>>>>>> 3c643dacb326ce8d7d5705cef5b2084a167c67dd:src/screens/SellerScreens/StoreScreen/Payout/Payouts.tsx
         }else{
           setFetching(false)
-          setFieldValue('name', '');
-          setDisabled(true);
+          setFieldValue('name', '')
         }
       } catch (error) {
         console.log(error)
         setFetching(false)
         setFieldValue('name', '')
-        setDisabled(true);
       }
     }else{
       setFieldValue('name', '')
-      setDisabled(true);
     }
   }
 
@@ -177,7 +170,7 @@ export const Payouts = ({data}): JSX.Element => {
 
           <Ionicons name="checkmark-circle-outline" size={24} color={colorChange("#fff")} />
         </View>
-        <Button disabled={disabled} isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
+        <Button isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
     </>
 );
 

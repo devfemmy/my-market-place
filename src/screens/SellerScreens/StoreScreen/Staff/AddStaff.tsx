@@ -21,19 +21,12 @@ import { StaffFormDataSchema } from '../../../../utils/constants';
 import { getStorePermission, permission} from '../../../../redux/slices/StoreSlice';
 import CustomSlideModal from '../../../../components/common/CustomSlideModal';
 import { useNavigation } from '@react-navigation/native';
-<<<<<<< HEAD:src/screens/StoreScreen/Staff/AddStaff.tsx
-import { Nav } from '../../../utils/types';
-import { Notify } from '../../../utils/functions';
-import { sendPost, getRequest } from '../../../utils/server';
-=======
 import { Nav } from '../../../../utils/types';
 import { sendPost, getRequest } from '../../../../utils/server';
->>>>>>> 3c643dacb326ce8d7d5705cef5b2084a167c67dd:src/screens/SellerScreens/StoreScreen/Staff/AddStaff.tsx
 export const AddStaffScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation<Nav>();
-  const [complete, setComplete] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [complete, setComplete] = useState(false)
   const permissionList = useAppSelector(permission)
   const mystore = useAppSelector(myStore)
 
@@ -75,21 +68,9 @@ export const AddStaffScreen = (): JSX.Element => {
       storeId: mystore[0]._id
     }
     try {
-      setLoading(true);
-      var resultAction = await dispatch(assignUser(payload))
-      if(assignUser.fulfilled.match(resultAction) && resultAction?.payload){
-          // Notify('Product Added!', 'Your product was successfully added', 'success')
-          console.log(resultAction)
-          setComplete(true);
-          setLoading(false);
-          // Lets check 
-      }else{
-          console.log(resultAction)
-          setLoading(false);
-          Notify('Error!', 'Staff cannot be Added!', 'error')
-      }
+      await dispatch(assignUser(payload))
+      setComplete(true)
     } catch (error) {
-      setLoading(false);
       console.log(error)
     }
   }
@@ -157,7 +138,6 @@ export const AddStaffScreen = (): JSX.Element => {
       <View style={globalStyles.footer}>
         <View style={globalStyles.rowCenter}>
           <Button
-            isLoading={loading}
             title={'Add Staff'}
             onPress={handleSubmit}
           />
