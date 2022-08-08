@@ -23,7 +23,7 @@ export const Button = memo(
           size="medium"
           style={[styles.btn, style]}
           {...rest}>
-          {isLoading ? <ActivityIndicator size={"small"}/> : title}
+          {isLoading ? <ActivityIndicator color={"white"} size={"small"}/> : title}
         </BaseButton>
       </View>
     );
