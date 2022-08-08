@@ -1,14 +1,14 @@
 import React from 'react';
 import {createStackNavigator as createNativeStackNavigator} from '@react-navigation/stack';
 
-import {AuthStackParamList} from './types';
+import {AuthStackParamList} from './Seller/types';
 import Login from '../screens/auth/Login';
 import Register from '../screens/auth/Register';
 import ForgotPassword from '../screens/auth/ForgotPassword';
 import LinkSent from '../screens/auth/LinkSent';
-import { StoreScreen } from '../screens/StoreScreen';
-import { StoreCreation } from '../screens';
-import StoreSuccessScreen from '../screens/StoreSuccessScreen';
+import { StoreScreen } from '../screens/SellerScreens/StoreScreen';
+import { StoreCreation } from '../screens/SellerScreens';
+import StoreSuccessScreen from '../screens/SellerScreens/StoreSuccessScreen';
 import { colors } from '../utils/themes';
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();

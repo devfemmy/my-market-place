@@ -77,6 +77,13 @@ export type OrderState = {
   searching: boolean
 }
 
+export type SideHustleState = {
+  allCategories: Array<any>,
+  error: any,
+  loading: boolean,
+}
+
+
 export type UserState = {
   userProfile: Array<any>,
   notifications: Array<any>,

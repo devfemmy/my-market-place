@@ -8,7 +8,7 @@ import {View, Alert, Platform} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
-import {LoginScreenNavigationProp} from '../../../navigations/types';
+import {LoginScreenNavigationProp} from '../../../navigations/Seller/types';
 import {appleAuth} from '@invertase/react-native-apple-authentication';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import { LoginFormData } from '../../../utils/types';
@@ -36,7 +36,7 @@ const Login = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
-  const {signIn} = useContext(AuthContext)
+  const {authContext: { signIn }} = useContext(AuthContext)
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const initialValues: LoginFormData = {
     email: '',

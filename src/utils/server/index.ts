@@ -21,7 +21,6 @@ export const getRequest = async (url: String, v?: String) => {
           authorization: `Bearer ${token}`,
         },
       })
-
     return response
 }
 export const getProfileRequest = async (url: String, v?: String) => {

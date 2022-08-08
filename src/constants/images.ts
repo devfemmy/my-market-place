@@ -13,6 +13,7 @@ const Union = require("../assets/Union.png") as number
 const Cash = require("../assets/icon_cash.png") as number
 const TickSquare = require("../assets/Tick_Square.png") as number
 const Chat = require("../assets/Chat.png") as number
+const Banner = require("../assets/images/banner.png") as number
 
 const LockClosed = require("../assets/Vector.png") as number
 const LockOpened = require("../assets/Vector-2.png") as number
@@ -22,5 +23,5 @@ const Sale = require("../assets/sale2.png") as number
 export { LinkLogo, GoogleLogo, AppleLogo, SuccesssLogo, 
     FailedLogo, NoProducts, NoOrders, UniversityLogo, PayoutBack,
     InfoCircle, Danger, Union, Cash, TickSquare, Chat, LockClosed, LockOpened,
-    Sale, Profile
+    Sale, Profile, Banner
  }

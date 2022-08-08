@@ -10,7 +10,7 @@ import {View, ScrollView, Alert, Platform} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
-import {RegisterScreenNavigationProp} from '../../../navigations/types';
+import {RegisterScreenNavigationProp} from '../../../navigations/Seller/types';
 import { RegisterFormData } from '../../../utils/types';
 import { RegisterSchema } from '../../../utils/constants';
 import { colors } from '../../../utils/themes';
@@ -27,7 +27,7 @@ import {Notifier, NotifierComponents} from 'react-native-notifier';
 
 const Register = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
-  const {signIn} = useContext(AuthContext)
+  const {authContext: { signIn }} = useContext(AuthContext)
   const navigation = useNavigation<RegisterScreenNavigationProp>();
   const initialValues: RegisterFormData = {
     fName: '',

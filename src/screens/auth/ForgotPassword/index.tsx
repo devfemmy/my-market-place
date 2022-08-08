@@ -7,7 +7,7 @@ import {styles} from './styles';
 import {Input} from '../../../components/common/TextInput';
 import {Button} from '../../../components/common/Button';
 import {globalStyles} from '../../../styles';
-import {ForgotPasswordScreenNavigationProp} from '../../../navigations/types';
+import {ForgotPasswordScreenNavigationProp} from '../../../navigations/Seller/types';
 import { ForgotPasswordFormData } from '../../../utils/types';
 import { ForgotPasswordSchema } from '../../../utils/constants';
 import { hp } from '../../../utils/helpers';
