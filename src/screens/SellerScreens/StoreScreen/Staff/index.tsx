@@ -10,7 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../../../../assets"
 import ListCard from '../../../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks"
-import { getPersonalStore, myStore, getStaff, staffs, loading, filteredStaffs, searchStaffs } from '../../../../redux/slices/StoreSlice';
+import { getPersonalStore, myStore, getStaff, staffs, loading, filteredStaffs, searchStaffs, error } from '../../../../redux/slices/StoreSlice';
 import { ArrayType } from '../../../../utils/types';
 import { Input } from '../../../../components/common/TextInput';
 import { hp } from '../../../../utils/helpers';
@@ -18,6 +18,7 @@ import StaffCard from '../../../../components/resuable/StaffCard';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useNavigation } from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
+import { InfoCircle } from '../../../../constants/images';
 
 export const StaffScreen = (): JSX.Element => {
 
@@ -26,6 +27,7 @@ export const StaffScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
   const loader = useAppSelector(loading)
+  const Error = useAppSelector(error)
   const AllStaffs = useAppSelector(filteredStaffs)
 
 
@@ -42,6 +44,20 @@ export const StaffScreen = (): JSX.Element => {
         <SafeAreaView>
             <View style={[globalStyles.rowCenter, {flex: 1}]}>
                 <ActivityIndicator size={'small'}/>
+            </View>
+        </SafeAreaView>
+    )
+  }
+
+  if(Error){
+    return (
+        <SafeAreaView>
+            <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
+            <Image
+                source={InfoCircle}
+                style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
+            />
+            <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
             </View>
         </SafeAreaView>
     )

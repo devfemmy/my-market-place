@@ -67,8 +67,8 @@ export const HomeOnboard = (): JSX.Element => {
       <ScrollView>
         <StoreHeader name={myStoreList[0]?.brandName} slug={myStoreList[0]?.slug} />
         <View style={[globalStyles.container]}>
-          <ScrollCard escrow={myStoreList[0]?.wallet?.escrow} balance={myStoreList[0]?.wallet?.balance} />
-          <View style={[globalStyles.rowBetweenNoCenter, styles.rowMargin]}>
+          {/* <ScrollCard escrow={myStoreList[0]?.wallet?.escrow} balance={myStoreList[0]?.wallet?.balance} /> */}
+          {/* <View style={[globalStyles.rowBetweenNoCenter, styles.rowMargin]}>
             <View style={globalStyles.rowStart}>
               <Image source={colorCart} style={styles.cart} />
               <Text text="Order" />
@@ -81,7 +81,7 @@ export const HomeOnboard = (): JSX.Element => {
                 color={'grey'}
               />
             </View>
-          </View>
+          </View> */}
 
           <Text text="Quick Actions" fontSize={hp(18)} style={styles.rowMargin} />
 

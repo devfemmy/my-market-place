@@ -307,6 +307,7 @@ export const StoreSlice = createSlice({
             state.filteredStaffs = action.payload
         })
         builder.addCase(getStaff.rejected, (state, action) => {
+            state.loading = false
             state.error = action.error.message
         }),
 
@@ -505,6 +506,8 @@ export const allStores = (state: RootState) => state.store.allStores;
 export const permission = (state: RootState) => state.store.permission;
 
 export const loading = (state: RootState) => state.store.loading;
+
+export const error = (state: RootState) => state.store.error;
 
 export const payouts = (state: RootState) => state.store.payouts;
 

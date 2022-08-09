@@ -87,7 +87,7 @@ export const Reviews = (): JSX.Element => {
             <ProgressBar 
             style={{width: hp(200), marginHorizontal: hp(15), height: hp(10), borderRadius: hp(20)}} 
             progress={getStat(number) || 0} 
-            color={colors.gold} 
+            color={colors.bazaraTint} 
             />
             <Text
                 text={getNum(number)}
@@ -113,7 +113,7 @@ export const Reviews = (): JSX.Element => {
             maxStars={5}
             starSize={35}
             rating={reviewData[0]?.currentRate || 0}
-            fullStarColor={colors.gold}
+            fullStarColor={colors.bazaraTint}
             />
         </View>
         <View style={globalStyles.ratingsSubtitle}>
@@ -167,7 +167,7 @@ export const Reviews = (): JSX.Element => {
             maxStars={5}
             starSize={10}
             rating={item?.rating || 0}
-            fullStarColor={colors.gold}
+            fullStarColor={colors.bazaraTint}
             containerStyle={{width: hp(70)}}
             />
             <Text

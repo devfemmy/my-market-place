@@ -46,6 +46,8 @@ const getInfo = async () => {
     setLoading(false)
 }
 
+console.log(AllStaffs)
+
   if(loading){
     return (
         <SafeAreaView>
