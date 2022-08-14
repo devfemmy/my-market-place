@@ -8,7 +8,7 @@ import {Avatar} from '@ui-kitten/components';
 import { hp } from '../../utils/helpers';
 import { colors } from '../../utils/themes';
 import { AuthButtonProps } from '../../utils/types';
-
+import FastImage from 'react-native-fast-image'
 
 
 export const AuthButton = memo(
@@ -27,7 +27,7 @@ export const AuthButton = memo(
           disabled={isLoading}
           status={outlined ? 'control' : 'primary'}
           size="medium"
-          accessoryLeft={() => <Avatar size="small" source={image} />}
+          accessoryLeft={() => <FastImage style={{ width: hp(30), height: hp(30) }} source={image} resizeMode={FastImage.resizeMode.contain} />}
           style={[styles.btn, style]}
           {...rest}>
           {title}

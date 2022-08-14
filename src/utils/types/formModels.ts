@@ -47,6 +47,18 @@ export type StoreFormData = {
   state: string;
 };
 
+export type CartFormData = {
+  cart: Array<any>;
+  loading: boolean;
+  error: any
+};
+
+export type NotificationFormData = {
+  notifications: Array<any>;
+  loading: boolean;
+  error: any
+};
+
 
 export type StoreState = {
   myStore: Array<any>,
@@ -226,6 +238,12 @@ export type PayoutFormData = {
 export type DeliveryFormData = {
   state: string;
   price: string
+}
+
+export type DeliveryAddressFormData = {
+  address: string;
+  state: string;
+  city: string
 }
 
 export type LandmarkFormData = {

@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks'
 import SubHeader from './subHeader'
 import { firstLetterUppercase } from '../../../../../utils/functions'
 import { getAllCategories, allCategories, loading } from '../../../../../redux/slices/sideHustleSlice'
-import { CATEGORIES_DATA, PRODUCTS_DATA } from '../DummyData'
+import { CATEGORIES_DATA, PRODUCTS_DATA } from '../../../DummyData'
 
 const AllCategories = () => {
     const  navigation = useNavigation<Nav>();

@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks'
 import SubHeader from './subHeader'
 import { firstLetterUppercase } from '../../../../../utils/functions'
 import { getAllCategories, allCategories, loading } from '../../../../../redux/slices/sideHustleSlice'
-import { PRODUCTS_DATA } from '../DummyData'
+import { PRODUCTS_DATA } from '../../../DummyData'
 import BuyerProductCard from '../../../../../components/resuable/BuyerProductCard'
 
 const TopProducts = () => {

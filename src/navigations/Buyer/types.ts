@@ -24,4 +24,6 @@ export type ExploreStackParamList = {
 
 export type MainStackParamList = {
     MainScreen: NavigatorScreenParams<RootBottomTabParamList>;
+    Notifications: undefined;
+    Cart: undefined
 };

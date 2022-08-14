@@ -204,7 +204,7 @@ const Register = (): JSX.Element => {
   };
 
   return (
-    <SafeAreaView>
+    <View style={globalStyles.wrapper}>
       <ScrollView>
         <Input
           label={'First Name'}
@@ -295,7 +295,7 @@ const Register = (): JSX.Element => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

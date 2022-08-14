@@ -27,6 +27,8 @@ export const Profile = (): JSX.Element => {
   const [editing, setEditing] = useState(false);
   const loader = useAppSelector(loading)
 
+  console.log(Error)
+
   useEffect(() => {
     dispatch(getUserDetails())
   }, [])

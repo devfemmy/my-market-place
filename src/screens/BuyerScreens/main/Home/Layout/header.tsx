@@ -13,7 +13,7 @@ import { copyToClipboard } from '../../../../../utils/functions'
 
 
 const UserHeader = ({name, image}) => {
-    const  { navigate } = useNavigation<Nav>();
+    const  navigation = useNavigation<Nav>();
 
     return (
         <View style={[styles.comp]}>
@@ -30,11 +30,11 @@ const UserHeader = ({name, image}) => {
                 </View>
             </View>
             <View style={globalStyles.rowAround}>
-                <TouchableOpacity style={styles.iconCard}>
+                <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.iconCard}>
                     <icons.Octicons name="bell-fill" size={hp(25)} color="white" />
                 </TouchableOpacity>
                 <View style={{marginLeft: hp(30)}} />
-                <TouchableOpacity style={styles.iconCard}>
+                <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.iconCard}>
                     <icons.Ionicons name="ios-cart" size={hp(31)} color="white" />
                 </TouchableOpacity>
             </View>

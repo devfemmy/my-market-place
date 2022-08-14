@@ -28,6 +28,10 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  colCenter: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',

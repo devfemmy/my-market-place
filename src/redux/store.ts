@@ -4,6 +4,8 @@ import ProductReducer from "./slices/productSlice"
 import OrderReducer from "./slices/orderSlice"
 import UserReducer from './slices/userSilce'
 import sideHustleSlice from './slices/sideHustleSlice'
+import cartSlice from './slices/cartSlice'
+import notificationSlice from './slices/notificationSlice'
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +13,9 @@ export const store = configureStore({
     product: ProductReducer,
     order: OrderReducer,
     user: UserReducer,
-    sidehustle: sideHustleSlice
+    sidehustle: sideHustleSlice,
+    cart: cartSlice,
+    notification: notificationSlice
   },
 })
 

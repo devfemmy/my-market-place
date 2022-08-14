@@ -18,14 +18,14 @@ const SubHeader = ({name, onPress}) => {
         <View style={[styles.comp]}>
             <Text 
             text={`${name}`} 
-            fontSize={hp(18)}
+            fontSize={hp(17)}
             color={colors.white}
             />
             { onPress ?
                 <TouchableOpacity onPress={onPress} style={{flexDirection: 'row'}}>
                     <Text 
                     text={`See all `} 
-                    fontSize={hp(17)}
+                    fontSize={hp(16)}
                     color={colors.bazaraTint}
                     />
                     <icons.AntDesign name="arrowright" size={20} color={colors.bazaraTint} />

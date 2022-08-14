@@ -215,7 +215,7 @@ const Login = (): JSX.Element => {
   }, [visibleBoolean]);
 
   return (
-    <SafeAreaView>
+    <View style={globalStyles.wrapper}>
       <Input
         label={'Email'}
         value={values.email}
@@ -279,7 +279,7 @@ const Login = (): JSX.Element => {
         />
       </View>
       
-    </SafeAreaView>
+    </View>
   );
 };
 

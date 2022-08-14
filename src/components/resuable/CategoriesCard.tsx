@@ -8,7 +8,7 @@ import { hp, wp } from '../../utils/helpers'
 import { Nav } from '../../utils/types'
 import { firstLetterUppercase } from '../../utils/functions'
 import { numberFormat } from '../../utils/helpers'
-import { PRODUCTS_DATA } from '../../screens/BuyerScreens/main/Home/DummyData'
+import { PRODUCTS_DATA } from '../../screens/BuyerScreens/DummyData'
 
 const CategoryCard = ({item}) => {
     const navigation = useNavigation<Nav>();

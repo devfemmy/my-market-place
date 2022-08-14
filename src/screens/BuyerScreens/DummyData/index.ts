@@ -243,3 +243,142 @@ export const PRODUCTS_DATA = [
         "__v": 0
     },
 ]
+
+export const CART_DATA = [
+  {
+    "quantity": 1,
+    "_id": "615a53e488b2bc07e126a5a1",
+    "profileId": "615a2c9797706964ba1899b2",
+    "color": "red",
+    "size": "XL",
+    "__v": 0,
+    "id": "615a53e488b2bc07e126a5a6",
+    "productDetail": {
+      "size": [
+        "XL",
+        "MD"
+      ],
+      "color": [
+        "red",
+        "Blue"
+      ],
+      "imgUrls": [
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg",
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg"
+      ],
+      "ratings": "0",
+      "_id": "615a3db81bcbfa055c64a630",
+      "profileId": "615a2c9797706964ba1899b2",
+      "sidehustleId": "615a2fdb836e003127190e19",
+      "description": "Good shoe product",
+      "price": 2000,
+      "quantity": "10",
+      "deliverySchedule": "within 7 days",
+      "createdAt": "2021-10-03T23:33:12.790Z",
+      "__v": 0
+    }
+  },
+  {
+    "quantity": 1,
+    "_id": "615a53e488b2bc07e126a5a2",
+    "profileId": "615a2c9797706964ba1899b2",
+    "color": "red",
+    "size": "XL",
+    "__v": 0,
+    "id": "615a53e488b2bc07e126a5a6",
+    "productDetail": {
+      "size": [
+        "XL",
+        "MD"
+      ],
+      "color": [
+        "red",
+        "Blue"
+      ],
+      "imgUrls": [
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg",
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg"
+      ],
+      "ratings": "0",
+      "_id": "615a3db81bcbfa055c64a630",
+      "profileId": "615a2c9797706964ba1899b2",
+      "sidehustleId": "615a2fdb836e003127190e19",
+      "description": "Good shoe product",
+      "price": 2000,
+      "quantity": "10",
+      "deliverySchedule": "within 7 days",
+      "createdAt": "2021-10-03T23:33:12.790Z",
+      "__v": 0
+    }
+  },
+  {
+    "quantity": 1,
+    "_id": "615a53e488b2bc07e126a5a3",
+    "profileId": "615a2c9797706964ba1899b2",
+    "color": "red",
+    "size": "XL",
+    "__v": 0,
+    "id": "615a53e488b2bc07e126a5a6",
+    "productDetail": {
+      "size": [
+        "XL",
+        "MD"
+      ],
+      "color": [
+        "red",
+        "Blue"
+      ],
+      "imgUrls": [
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg",
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg"
+      ],
+      "ratings": "0",
+      "_id": "615a3db81bcbfa055c64a630",
+      "profileId": "615a2c9797706964ba1899b2",
+      "sidehustleId": "615a2fdb836e003127190e19",
+      "description": "Good shoe product",
+      "price": 2000,
+      "quantity": "10",
+      "deliverySchedule": "within 7 days",
+      "createdAt": "2021-10-03T23:33:12.790Z",
+      "__v": 0
+    }
+  },
+  {
+    "quantity": 1,
+    "_id": "615a53e488b2bc07e126a5a4",
+    "profileId": "615a2c9797706964ba1899b2",
+    "color": "red",
+    "size": "XL",
+    "__v": 0,
+    "id": "615a53e488b2bc07e126a5a6",
+    "productDetail": {
+      "size": [
+        "XL",
+        "MD"
+      ],
+      "color": [
+        "red",
+        "Blue"
+      ],
+      "imgUrls": [
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg",
+        "https://profile-picture-uploads.s3.amazonaws.com/5f9b13ed419af844e56c359b.jpeg"
+      ],
+      "ratings": "0",
+      "_id": "615a3db81bcbfa055c64a630",
+      "profileId": "615a2c9797706964ba1899b2",
+      "sidehustleId": "615a2fdb836e003127190e19",
+      "description": "Good shoe product",
+      "price": 2000,
+      "quantity": "10",
+      "deliverySchedule": "within 7 days",
+      "createdAt": "2021-10-03T23:33:12.790Z",
+      "__v": 0
+    }
+  }
+
+
+
+
+]
