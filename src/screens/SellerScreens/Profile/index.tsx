@@ -11,8 +11,9 @@ import { colors } from '../../../utils/themes';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFormik} from 'formik';
 import {InfoCircle} from '../../../constants/images'
-import { updateSchema } from '../../../utils/constants';
+import { updateSchema, icons } from '../../../utils/constants';
 import { styles } from './styles';
+
 
 const Profile = () => {
     const { signOut } = useContext(AuthContext)
@@ -58,6 +59,9 @@ const Profile = () => {
                     style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
                 />
                 <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
+                <TouchableOpacity onPress={() => dispatch(getUserDetails())}>
+                    <icons.Ionicons style={{marginTop: hp(20)}} name="refresh-circle" size={40} color={colors.bazaraTint} />
+                </TouchableOpacity>
                 </View>
             </SafeAreaView>
         )

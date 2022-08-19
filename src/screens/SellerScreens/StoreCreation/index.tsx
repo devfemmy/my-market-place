@@ -23,6 +23,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { styles } from '../main/Product/AddProduct/styles';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 export const StoreCreation = (): JSX.Element => {
@@ -144,9 +145,9 @@ export const StoreCreation = (): JSX.Element => {
 
 
   return (
-    <SafeAreaView>
+    <View>
       <StatusBar translucent={true} backgroundColor={'white'} />
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <View style={[globalStyles.container, globalStyles.rowBetween, gbStyle.StoreCard]}>
           <Ionicons
             name={'chevron-back-outline'}
@@ -248,13 +249,14 @@ export const StoreCreation = (): JSX.Element => {
             <Button isLoading={loader} title={'Create Store'} onPress={handleSubmit} />
           </View>
         </View>
-      </ScrollView>
+        
+      </KeyboardAwareScrollView>
       <CustomModal
         msg={msg}
         headerText={headerText}
         visibleBoolean={visibleBoolean} handleVisible={handleVisible}
         isSuccess={isSuccessful} />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -271,7 +273,7 @@ const gbStyle = StyleSheet.create({
   },
   btn: {
     marginTop: 20,
-    marginBottom: 10
+    marginBottom: 100
   },
   locationText: {
     marginVertical: 15

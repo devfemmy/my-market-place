@@ -9,11 +9,13 @@ import {globalStyles} from '../../../../styles';
 import {hp,wp} from '../../../../utils/helpers';
 import {NoProducts} from '../../../../constants/images';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { reviews, getStoreReviews, loading } from '../../../../redux/slices/StoreSlice';
+import { reviews, getStoreReviews, loading, error } from '../../../../redux/slices/StoreSlice';
 import StarRating from 'react-native-star-rating';
 import { colors } from '../../../../utils/themes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ProgressBar} from 'react-native-paper';
+import { InfoCircle } from '../../../../constants/images';
+import { icons } from '../../../../utils/constants';
 
 export const Reviews = (): JSX.Element => {
 
@@ -22,6 +24,7 @@ export const Reviews = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const reviewData = useAppSelector(reviews)
   const loader = useAppSelector(loading)
+  const Error = useAppSelector(error)
 
 //   useEffect(() => {
 //     dispatch(getStoreReviews())
@@ -50,6 +53,20 @@ export const Reviews = (): JSX.Element => {
         <SafeAreaView>
             <View style={[globalStyles.rowCenter, {flex: 1}]}>
                 <ActivityIndicator size={'small'}/>
+            </View>
+        </SafeAreaView>
+    )
+  }
+
+  if(reviewData?.length < 1 && Error){
+    return (
+        <SafeAreaView>
+            <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
+            <Image
+                source={InfoCircle}
+                style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
+            />
+            <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
             </View>
         </SafeAreaView>
     )

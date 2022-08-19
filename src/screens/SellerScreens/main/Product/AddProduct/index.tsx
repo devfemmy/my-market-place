@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../../utils/types';
 import { AuthContext } from '../../../../../context/context';
 import { Button } from '../../../../../components/common/Button';
-import {View, Image, FlatList, TouchableOpacity, StatusBar} from 'react-native';
+import {View, Image, FlatList, TouchableOpacity, StatusBar, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {globalStyles} from '../../../../../styles';
 import {hp,wp} from '../../../../../utils/helpers';
 import {NoProducts} from '../../../../../constants/images';
@@ -34,6 +34,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { currencyFormat } from '../../../../../utils/functions';
+
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import CustomSlideModal from '../../../../../components/common/CustomSlideModal';
 
@@ -459,8 +461,9 @@ export const AddProduct = (): JSX.Element => {
 
     return (
         <SafeAreaView>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={{flex: 1}}>
             <Text style={[globalStyles.rowStart, styles.lowerContainer]} fontWeight="400" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text="Kindly provide product information" />
-
             <Input
                 label={'Product Name *'}
                 value={values.name}
@@ -492,6 +495,8 @@ export const AddProduct = (): JSX.Element => {
             msg={'You have successfully updated your product!'} 
             headerText={'Success'} 
             visibleBoolean={successModal}/>
+            </View>
+            </TouchableWithoutFeedback>
         </SafeAreaView>
     );
 };

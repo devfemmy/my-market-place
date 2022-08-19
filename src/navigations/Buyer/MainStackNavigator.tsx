@@ -4,7 +4,7 @@ import {MainStackParamList} from './types';
 import { BuyerRootBottomTabNavigator } from './RootBottomTabNavigator';
 import { colors } from '../../utils/themes';
 import {hp} from '../../utils/helpers';
-import { Cart, Notifications } from '../../screens/BuyerScreens';
+import { Cart, Notifications, ProductDetails } from '../../screens/BuyerScreens';
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -46,6 +46,14 @@ export const BuyerMainStackNavigator = (): JSX.Element => {
         component={Notifications}
         options={() => ({
           headerShown: true,
+        })}
+      />
+      <MainStack.Screen
+        name="ProductDetails"
+        component={ProductDetails}
+        options={() => ({
+          headerShown: true,
+          headerTitle: 'Product detail page'
         })}
       />
     </MainStack.Navigator>

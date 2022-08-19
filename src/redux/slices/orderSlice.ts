@@ -172,6 +172,7 @@ export const selected = (state: RootState) => state.order.selected;
 export const availableStatus = (state: RootState) => state.order.availableStatus;
 
 export const loading = (state: RootState) => state.order.loading;
+export const error = (state: RootState) => state.order.error;
 export const searching = (state: RootState) => state.order.searching;
 
 export default OrderSlice.reducer;

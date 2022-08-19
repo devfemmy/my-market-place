@@ -236,7 +236,7 @@ export const StoreSlice = createSlice({
         }),
         builder.addCase(createStore.rejected, (state, action) => {
             state.loading = false,
-            state.error = action.payload
+            state.error = action.error.message
         }),
         builder.addCase(updateStore.pending, (state, action) => {
             state.loading = true

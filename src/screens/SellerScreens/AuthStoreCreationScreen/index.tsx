@@ -13,7 +13,7 @@ import { globalStyles } from "../../../styles/globalStyles"
 import { hp, wp } from '../../../utils/helpers';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { addStoreImage, createStore, resetStoreImage, storeImage, uploadImage } from "../../../redux/slices/StoreSlice"
+import { addStoreImage, createStore, resetStoreImage, storeImage, uploadImage, error } from "../../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../../utils/types';
 import CustomModal from '../../../components/common/CustomModal';
 import { colors } from '../../../utils/themes';
@@ -22,7 +22,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { styles } from '../main/Product/AddProduct/styles';
 import { pictureUpload } from '../../../utils/functions';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 const AuthStoreCreationScreen = (): JSX.Element => {
@@ -34,6 +34,8 @@ const AuthStoreCreationScreen = (): JSX.Element => {
   const [headerText, setHeaderText] = useState('');
   const [msg, setMsg] = useState('');
   const [imageData, setImageData] = useState('')
+
+  const Error = useAppSelector(error)
 
   const [query, setQuery] = useState('');
 
@@ -72,6 +74,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
 
     setLoader(true)
     const resultAction = await dispatch(createStore(payload))
+    console.log(Error)
     if (createStore.fulfilled.match(resultAction)) {
       setLoader(false)
       setImageData('')
@@ -145,7 +148,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
   return (
     <SafeAreaView>
       <StatusBar translucent={true} backgroundColor={'white'} />
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <View style={[globalStyles.container, globalStyles.rowBetween, gbStyle.StoreCard]}>
           <Ionicons
             name={'chevron-back-outline'}
@@ -247,7 +250,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
             <Button isLoading={loader} title={'Create Store'} onPress={handleSubmit} />
           </View>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <CustomModal
         msg={msg}
         headerText={headerText}

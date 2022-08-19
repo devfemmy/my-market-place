@@ -26,6 +26,8 @@ import { pictureUpload } from '../../../utils/functions';
 import ImagePicker from 'react-native-image-crop-picker';
 import { styles } from '../main/Product/AddProduct/styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 const EditStore = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
@@ -153,7 +155,7 @@ const EditStore = (): JSX.Element => {
   return (
     <SafeAreaView>
       <StatusBar translucent={true} backgroundColor={'white'} />
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <NavHeader
           icon='chevron-back-outline'
           handlePress={() => navigation.goBack()}
@@ -251,7 +253,7 @@ const EditStore = (): JSX.Element => {
             <Button isLoading={loader} title={'Update Store'} onPress={handleSubmit} />
           </View>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <CustomModal
         msg=""
         headerText={customMsg}

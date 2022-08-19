@@ -4,39 +4,31 @@ import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
 import { AuthContext } from '../../../../context/context';
 import { Button } from '../../../../components/common/Button';
-import {View, Image, ActivityIndicator, StyleSheet} from 'react-native';
+import {View, Image, ActivityIndicator, StyleSheet, TouchableOpacity} from 'react-native';
 import {globalStyles} from '../../../../styles';
 import {hp,wp} from '../../../../utils/helpers';
 import {NoProducts} from '../../../../constants/images';
 import {NoOrder} from './Empty';
 import { Orders } from './Orders';
-import { selectedOrders, loading } from '../../../../redux/slices/orderSlice';
+import { selectedOrders, loading, error } from '../../../../redux/slices/orderSlice';
 import { getAllOrders } from '../../../../redux/slices/orderSlice';
 import { Input } from '../../../../components/common/TextInput';
 import { colors } from '../../../../utils/themes';
 import { SkeletonView } from '../../../../components/resuable/Skeleton';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { InfoCircle } from '../../../../constants/images';
+import { icons } from '../../../../utils/constants';
 
 export const Order = (): JSX.Element => {
   const {authContext: { signIn }} = useContext(AuthContext)
   const dispatch = useAppDispatch()
   const orders = useAppSelector(selectedOrders)
   const loader = useAppSelector(loading)
+  const Error = useAppSelector(error)
 
   useEffect(() => {
     dispatch(getAllOrders())
   }, [])
-
-
-  // if(loader){
-  //   return (
-  //       <SafeAreaView>
-  //           <View style={[globalStyles.rowCenter, {flex: 1}]}>
-  //               <ActivityIndicator size={'small'}/>
-  //           </View>
-  //       </SafeAreaView>
-  //   )
-  // }
 
   if(loader){
     return (
@@ -69,6 +61,23 @@ export const Order = (): JSX.Element => {
       </SafeAreaView>
     )
     
+  }
+
+  if(Error){
+    return (
+        <SafeAreaView>
+            <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
+            <Image
+                source={InfoCircle}
+                style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
+            />
+            <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
+            <TouchableOpacity onPress={() => dispatch(getAllOrders())}>
+              <icons.Ionicons style={{marginTop: hp(20)}} name="refresh-circle" size={40} color={colors.bazaraTint} />
+            </TouchableOpacity>
+            </View>
+        </SafeAreaView>
+    )
   }
 
   return (

@@ -21,7 +21,7 @@ export const RegisterSchema = yup.object().shape({
   email: yup.string().email().required('Email is required'),
   password: yup
     .string()
-    .min(11, ({min}) => `Password must be at least ${min} characters`)
+    .min(6, ({min}) => `Password must be at least ${min} characters`)
     .required('password is required'),
   // confirmPassword: yup
   //   .string()

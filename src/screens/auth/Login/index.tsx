@@ -269,7 +269,7 @@ const Login = (): JSX.Element => {
           <Text
             onPress={() => navigation.navigate('Register')}
             fontWeight="300"
-            text="Create an account?"
+            text="Create an account"
           />
         </View>
         <Text
