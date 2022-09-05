@@ -18,21 +18,36 @@ import { Select } from '../../../../components/common/SelectInput';
 import { useFormik } from 'formik';
 import { StaffFormData, AssignUserFormData } from '../../../../utils/types';
 import { StaffFormDataSchema } from '../../../../utils/constants';
-import { getStorePermission, permission} from '../../../../redux/slices/StoreSlice';
+import { getStorePermission, permission, storeRoles, getRoles} from '../../../../redux/slices/StoreSlice';
 import CustomSlideModal from '../../../../components/common/CustomSlideModal';
 import { useNavigation } from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
 import { sendPost, getRequest } from '../../../../utils/server';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const AddStaffScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const navigation = useNavigation<Nav>();
   const [complete, setComplete] = useState(false)
+  const [rolesArr, setRollsArr] = useState([])
   const permissionList = useAppSelector(permission)
+  const allRoles = useAppSelector(storeRoles)
   const mystore = useAppSelector(myStore)
 
-//   useEffect(() => {
-//     dispatch(getPersonalStore())
-// }, [])
+  useEffect(() => {
+    getStoreRole()
+  }, [])
+
+  const getStoreRole = async () => {
+    await dispatch(getRoles())
+
+    const arr = await allRoles.map((val) => {
+      return val?.role
+    })
+
+    await setRollsArr(arr)
+    
+  }
 
   const initialValues: StaffFormData = {
     firstName: '',
@@ -50,22 +65,17 @@ export const AddStaffScreen = (): JSX.Element => {
       },
   });
 
-  // const getRoleKey = (item: string) => {
-  //   if(item = 'Store Owner'){
-  //     return 'owner'
-  //   }
-  //   else if(item == 'Store Manager'){
-  //     return 'manager'
-  //   }else{
-  //     return 'attendant'
-  //   }
-  // }
-
   const assignRole = async (data: {firstName: string, lastName: string, email: string, role: string}) => {
+    const id: string = await AsyncStorage.getItem('activeId')
+    const selectedRole = allRoles.filter((val) => {
+      if(data?.role == val?.role){
+        return val
+      }
+    })
     const payload:  AssignUserFormData = {
-      role: data?.role,
-      userEmail: data?.email,
-      storeId: mystore[0]._id
+      roleId: selectedRole[0]?.id,
+      email: data?.email,
+      storeId: id
     }
     try {
       await dispatch(assignUser(payload))
@@ -86,7 +96,7 @@ export const AddStaffScreen = (): JSX.Element => {
     )
   }
 
-  const storeRoles = ['Super Admin', 'Admin', 'Store Vetter', 'Store Owner', 'Store Manager', 'Store Attendant']
+  // const storeRoles = ['Super Admin', 'Admin', 'Store Vetter', 'Store Owner', 'Store Manager', 'Store Attendant']
 
   return (
     <SafeAreaView>
@@ -117,7 +127,7 @@ export const AddStaffScreen = (): JSX.Element => {
       />
 
       <Select
-          items={storeRoles}
+          items={rolesArr}
           defaultValue={values.role}
           placeholder={'Store role'}
           setState={handleChange('role')}
@@ -125,15 +135,15 @@ export const AddStaffScreen = (): JSX.Element => {
           roleSelector
       />
 
-      <View style={[globalStyles.rowStart, globalStyles.lowerContainer]}>
+      {/* <View style={[globalStyles.rowStart, globalStyles.lowerContainer]}>
         <Text color={colors.bazaraTint} fontWeight="500" fontSize={hp(18)} text="View role permissions" />
-      </View>
+      </View> */}
 
-      {
+      {/* {
         permissionList?.map((item: {}) => {
           return rolepermissions(item)
         })
-      }
+      } */}
       </ScrollView>
       <View style={globalStyles.footer}>
         <View style={globalStyles.rowCenter}>

@@ -11,7 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { LockClosed, LockOpened, Sale, Profile, Union } from '../../../constants/images';
 import ListCard from '../../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { filteredStaffs, getPayouts, getPersonalStore, getStaff, myStore, payouts } from '../../../redux/slices/StoreSlice';
+import { filteredStaffs, getPayouts, getPersonalStore, getStaff, myStore, payouts, wallet } from '../../../redux/slices/StoreSlice';
 import { ArrayType } from '../../../utils/types';
 import { hp, wp } from '../../../utils/helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -32,6 +32,7 @@ export const Home = (): JSX.Element => {
   const payoutData = useAppSelector(payouts)
   const AllStaffs = useAppSelector(filteredStaffs)
   const myproducts = useAppSelector(myProducts)
+  const walletBalance = useAppSelector(wallet)
   AsyncStorage.setItem('activeId', myStoreList[0]?.id)
 
   const data={
@@ -81,13 +82,13 @@ export const Home = (): JSX.Element => {
      {
       id: 1,
       title: "Expected Earning",
-      value: myStoreList[0]?.wallet?.escrow,
+      value: walletBalance?.escrow_balance,
       icon: LockClosed,
      },
      {
       id: 2,
       title: "Store Balance",
-      value: myStoreList[0]?.wallet?.balance,
+      value: walletBalance?.available_balance,
       icon: LockOpened,
      }
 

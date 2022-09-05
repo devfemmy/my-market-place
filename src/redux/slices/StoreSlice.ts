@@ -20,7 +20,9 @@ const initialState: StoreState = {
     permission: [{value: 'View Store Details', bool: false}, {value: 'View Store Analysis', bool: false}, {value: 'Manage Store Locations', bool: false}, {value: 'Manage shipping fee', bool: false}],
     storeImage: '',
     loading: false,
-    error: null
+    error: null,
+    wallet: null,
+    storeRoles: null,
 }
 
 
@@ -41,6 +43,20 @@ export const createStore = createAsyncThunk(
     }
 )
 
+export const storeWallet = createAsyncThunk(
+    'store/wallet',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await getRequest(`/wallet?store_id=${payload}`)
+            if (response?.status === 200) {
+                return response.data?.data
+            }
+        }
+        catch (e) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
 
 export const uploadImage = createAsyncThunk(
     'store/upload',
@@ -52,7 +68,6 @@ export const uploadImage = createAsyncThunk(
         }
     }
 )
-
 
 export const updateStore = createAsyncThunk(
     'store/updateStore',
@@ -111,7 +126,15 @@ export const resetStoreImage = createAsyncThunk(
     }
 )
 
-
+export const getRoles = createAsyncThunk(
+    'staff/getRoles',
+    async () => {
+        const response = await getRequest(`/role`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
 
 export const getPersonalStore = createAsyncThunk(
     'store/myStore',
@@ -148,7 +171,8 @@ export const addPayout = createAsyncThunk(
 export const getStaff = createAsyncThunk(
     'staff/getStaff',
     async (payload: string) => {
-        const response = await getRequest(`/sidehustle/getStoreUsers?storeId=${payload}`)
+        // const response = await getRequest(`/sidehustle/getStoreUsers?storeId=${payload}`)
+        const response = await getRequest(`/storeRole/?store_id=${payload}`)
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -165,11 +189,15 @@ export const searchStaffs = createAsyncThunk(
 export const assignUser = createAsyncThunk(
     'store/assignUser',
     async (payload: AssignUserFormData) => {
-        const response = await sendPost("/sidehustle/addUserToStore", payload)
+        const data = {
+            "store_id": payload?.storeId,
+            "role_id": payload?.roleId,
+            "email": payload?.email
+        }
+        const response = await sendPost("/storeRole/create", data)
         if (response?.status === 200) {
             return response?.data?.data
         }
-        
     }
 )
 
@@ -182,7 +210,6 @@ export const updatePayout = createAsyncThunk(
         const response = await sendPost(`/payment/payout_account/update?payout_account_id=${id}`, payload, 'v2')
     }
 )
-
 
 export const getAllStore = createAsyncThunk(
     'store/allStore',
@@ -361,6 +388,18 @@ export const StoreSlice = createSlice({
         }),
 
 
+        builder.addCase(getRoles.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getRoles.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.storeRoles= action.payload
+        })
+        builder.addCase(getRoles.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.error.message
+        }),
+
 
         builder.addCase(addStoreImage.pending, (state, action) => {
             state.loading = true
@@ -425,6 +464,19 @@ export const StoreSlice = createSlice({
         builder.addCase(getAllStore.rejected, (state, action) => {
             state.error = action.error.message
         }),
+
+
+        builder.addCase(storeWallet.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(storeWallet.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.wallet = action.payload
+
+        })
+        builder.addCase(storeWallet.rejected, (state, action) => {
+            state.error = action.error.message
+        })
 
 
 
@@ -537,5 +589,9 @@ export const storebyId = (state: RootState) => state.store.storeById;
 export const staffs = (state: RootState) => state.store.staffs;
 
 export const filteredStaffs = (state: RootState) => state.store.filteredStaffs;
+
+export const wallet = (state: RootState) => state.store.wallet;
+
+export const storeRoles = (state: RootState) => state.store.storeRoles;
 
 export default StoreSlice.reducer;

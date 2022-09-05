@@ -20,14 +20,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StoreSuccessScreen = () => {
     const { navigate } = useNavigation<Nav>()
-    const { signIn } = useContext(AuthContext)
+    const {authContext: { signIn }} = useContext(AuthContext)
     const [loader, setLoader] = useState(false)
 
     const handleClick = async () => {
         setLoader(true)
         const token = await AsyncStorage.getItem('token')
         setLoader(false)
-        signIn(token)
+        // signIn(token)
+        navigate("Login")
     }
     
     return (

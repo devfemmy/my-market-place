@@ -21,13 +21,13 @@ const StaffCard: React.FC<OrderCardProps> = ({ item }) => {
     }
 
     const statusBackColor = () => {
-        if(item?.role?.toLowerCase() == 'store owner'){
+        if(item?.role?.role?.toLowerCase() == 'owner'){
             return '#11222E'
         }
-        else if(item?.role?.toLowerCase() == 'store manager'){
+        else if(item?.role?.role?.toLowerCase() == 'manager'){
             return '#27251E'
         }
-        else if(item?.role?.toLowerCase() == 'admin'){
+        else if(item?.role?.role?.toLowerCase() == 'admin'){
             return '#29001A'
         }
         else {
@@ -36,13 +36,13 @@ const StaffCard: React.FC<OrderCardProps> = ({ item }) => {
     }
 
     const statusTextColor = () => {
-        if(item?.role?.toLowerCase() == 'store owner'){
+        if(item?.role?.role?.toLowerCase() == 'owner'){
             return '#5CBEFF'
         }
-        else if(item?.role?.toLowerCase() == 'store manager'){
+        else if(item?.role?.role?.toLowerCase() == 'manager'){
             return '#FEE6AA'
         }
-        else if(item?.role?.toLowerCase() == 'admin'){
+        else if(item?.role?.role?.toLowerCase() == 'admin'){
             return '#F20083'
         }
         else {
@@ -54,11 +54,11 @@ const StaffCard: React.FC<OrderCardProps> = ({ item }) => {
         <View style={[styles.cardContainer, globalStyles.rowBetween]}>
             <View style={styles.detContainer}>
                 <Text 
-                    text={`${firstLetterUppercase(item?.user?.fName)} ${firstLetterUppercase(item?.user?.lName)}`} 
+                    text={`${firstLetterUppercase(item?.user?.first_name)} ${firstLetterUppercase(item?.user?.last_name)}`} 
                     numberOfLines={1} 
                     fontWeight={"400"} 
                     fontSize={hp(17)} 
-                    style={styles.text} 
+                    style={styles.text}
                 />
                 <Text
                     text={item?.user?.email}
@@ -71,7 +71,7 @@ const StaffCard: React.FC<OrderCardProps> = ({ item }) => {
             </View>
             <View style={[styles.status, {backgroundColor: statusBackColor()}]}>
                 <Text
-                    text={item?.role}
+                    text={item?.role?.role}
                     numberOfLines={1}
                     fontWeight={"500"}
                     color={statusTextColor()}

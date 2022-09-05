@@ -85,7 +85,7 @@ export const StoreCreation = (): JSX.Element => {
         setLoader(false)
         setVisibleBoolen(true)
         setHeaderText('Error')
-        setMsg('Problem creating store')
+        setMsg(`Error: ${resultAction?.payload}`)
         console.log('error1', `Update failed: ${resultAction?.payload}`)
       } else {
         setLoader(false)

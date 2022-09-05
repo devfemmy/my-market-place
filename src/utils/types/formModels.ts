@@ -33,8 +33,8 @@ export type ForgotPasswordFormData = {
 };
 
 export type AssignUserFormData = {
-  role: string;
-  userEmail: string;
+  roleId: string;
+  email: string;
   storeId: string;
 };
 
@@ -74,7 +74,9 @@ export type StoreState = {
   loading: boolean,
   storeImage: string,
   staffs: any,
-  filteredStaffs: any
+  filteredStaffs: any,
+  wallet: any,
+  storeRoles: any
 }
 
 

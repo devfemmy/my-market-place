@@ -11,7 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../../../assets"
 import ListCard from '../../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { filteredStaffs, getPayouts, getPersonalStore, getStaff, myStore, payouts } from '../../../redux/slices/StoreSlice';
+import { filteredStaffs, getPayouts, getPersonalStore, getStaff, myStore, payouts, storeWallet } from '../../../redux/slices/StoreSlice';
 import { ArrayType } from '../../../utils/types';
 import { hp } from '../../../utils/helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -43,6 +43,7 @@ const getInfo = async () => {
     await dispatch(getStaff(id))
     await dispatch(getAllOrders())
     await dispatch(getPayouts(id))
+    await dispatch(storeWallet(id))
     setLoading(false)
 }
 
@@ -60,10 +61,11 @@ const getInfo = async () => {
 
   return (
     <>
-    {
+    {/* {
       myProducts?.length > 0 && AllStaffs?.length > 0 && payoutData?.length > 0 ?
       <Home/> : <HomeOnboard/>
-    }
+    } */}
+    <Home/>
     </>
   );
 };

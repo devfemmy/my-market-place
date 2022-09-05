@@ -19,6 +19,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { useNavigation } from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
 import { InfoCircle } from '../../../../constants/images';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const StaffScreen = (): JSX.Element => {
 
@@ -32,8 +33,13 @@ export const StaffScreen = (): JSX.Element => {
 
 
   useEffect(() => {
-    dispatch(getStaff(myStoreList[0]?._id))
+    geAllStaffs()
   }, [])
+
+  const geAllStaffs = async () => {
+    const id: string = await AsyncStorage.getItem('activeId')
+    await dispatch(getStaff(id))
+  }
 
   const renderItem = ({item}: any) => (
     <StaffCard item={item}/>
@@ -49,7 +55,11 @@ export const StaffScreen = (): JSX.Element => {
     )
   }
 
-  if(Error){
+  console.log(Error)
+
+  // console.log(AllStaffs)
+
+  if(Error && AllStaffs?.length < 1){
     return (
         <SafeAreaView>
             <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
