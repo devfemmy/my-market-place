@@ -1,10 +1,10 @@
-import React, {useContext, useRef} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import {Text} from '../../../../components/common';
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
 import { AuthContext } from '../../../../context/context';
 import { Button } from '../../../../components/common/Button';
-import {View, Image, SafeAreaView} from 'react-native';
+import {View, Image, SafeAreaView, ActivityIndicator} from 'react-native';
 import {globalStyles} from '../../../../styles';
 import {hp,wp} from '../../../../utils/helpers';
 import {UniversityLogo} from '../../../../constants/images';
@@ -19,29 +19,39 @@ import { PayoutFormData } from '../../../../utils/types';
 import { PayoutFormDataSchema } from '../../../../utils/constants';
 import { addPayout, getPayouts, loading } from '../../../../redux/slices/StoreSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { SearchDropdown } from '../../../../components/common/SearchDropdown';
+import { bankVerification } from '../../../../utils/server';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PayoutForm } from './PayoutForm';
+
+
 export const NoAccount = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const loader = useAppSelector(loading)
+  const [fetching, setFetching] = useState(false)
   const modalizeRef = useRef(null);
 
   const initialValues: PayoutFormData = {
-    name: '',
-    account: '',
-    bankName: '',
+    account_name: '',
+    bank_account_number: '',
+    bank_name: '',
   };
   
 
-  const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue, isValid } =
   useFormik({
     initialValues,
     validationSchema: PayoutFormDataSchema,
     onSubmit: async (val: PayoutFormData) => {
+      const id: string = await AsyncStorage.getItem('activeId')
       let form = val
-      const bankCode = banks.find((bank) => val.bankName == bank.label)
-      form.bankCode = bankCode.code
+      const bankCode = banks.find((bank) => val.bank_name == bank.label)
+      // form.bankCode = bankCode.code
+      form.store_id = id
       await dispatch(addPayout(form))
       modalizeRef.current?.close()
-      await dispatch(getPayouts())
+      await dispatch(getPayouts(id))
     },
   });
   
@@ -51,35 +61,7 @@ export const NoAccount = (): JSX.Element => {
         <View style={styles.modal__header}>
             <Text style={[globalStyles.rowStart, globalStyles.lowerContainer, globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Payout Account" />
         </View>
-    );
-
-
-  const renderBody = () => (
-        <>
-            <Select
-                items={bankList}
-                defaultValue={values.bankName}
-                placeholder={'Bank'}
-                setState={handleChange('bankName')}
-                errorMsg={touched.bankName ? errors.bankName : undefined}
-            />
-            <Input
-                label={'Account Number'}
-                value={values.account}
-                onBlur={handleBlur('account')}
-                onChangeText={handleChange('account')}
-                errorMsg={touched.account ? errors.account : undefined}
-            />
-            <Input
-                label={'Account Name'}
-                value={values.name}
-                onBlur={handleBlur('name')}
-                onChangeText={handleChange('name')}
-                errorMsg={touched.name ? errors.name : undefined}
-            />
-            <Button isLoading={loader} onPress={handleSubmit} title={'Add Payout Account'}/>
-        </>
-    );
+  );
 
   return (
     <>
@@ -105,8 +87,19 @@ export const NoAccount = (): JSX.Element => {
       HeaderComponent={renderHeader}
       FooterComponent={<SafeAreaView/>}
       >
-          {renderBody()}
-          
+          <PayoutForm
+          bankName={values.bank_name}
+          accountName={values.account_name}
+          accountNumber={values.bank_account_number}
+          setField={setFieldValue}
+          handleBlur={handleBlur}
+          touched={touched}
+          errors={errors}
+          isValid={isValid}
+          loader={loader}
+          handleSubmit={handleSubmit}
+          btnTitle={'Add Account'}
+          />
       </Modalize>
     </>
   );

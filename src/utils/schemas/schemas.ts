@@ -14,9 +14,9 @@ export const updateSchema = yup.object().shape({
 });
 
 export const RegisterSchema = yup.object().shape({
-  fName: yup.string().required('First name is required'),
-  lName: yup.string().required('Last name is required'),
-  phoneNumber: yup.string().min(7, ({min}) => `Phone must be at least ${min} characters`)
+  first_name: yup.string().required('First name is required'),
+  last_name: yup.string().required('Last name is required'),
+  phone_number: yup.string().min(7, ({min}) => `Phone must be at least ${min} characters`)
   .required('Phone is required'),
   email: yup.string().email().required('Email is required'),
   password: yup
@@ -40,6 +40,7 @@ export const StoreFormSchema = yup.object().shape({
   street: yup.string().required('Street name is required'),
   city: yup.string().required('City is required'),
   state: yup.string().required('State is required'),
+  estimatedDelivery: yup.string().required('Estimated delivery duration is required'),
 });
 
 export const ProductFormData1Schema = yup.object().shape({
@@ -58,9 +59,9 @@ export const StaffFormDataSchema = yup.object().shape({
 });
 
 export const PayoutFormDataSchema = yup.object().shape({
-  name: yup.string().required('Account name is required'),
-  account: yup.string().required('Account number is required'),
-  bankName: yup.string().required('Bank is required'),
+  account_name: yup.string().required('Account name is required'),
+  bank_account_number: yup.string().required('Account number is required'),
+  bank_name: yup.string().required('Bank is required'),
 });
 
 

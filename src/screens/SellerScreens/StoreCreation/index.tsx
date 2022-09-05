@@ -51,6 +51,7 @@ export const StoreCreation = (): JSX.Element => {
     street: '',
     city: '',
     state: '',
+    estimatedDelivery: ''
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
@@ -61,22 +62,20 @@ export const StoreCreation = (): JSX.Element => {
       return
     }
     const payload = {
-      brandName: data.storeName,
+      brand_name: data.storeName,
       description: data.description,
-      imgUrl: imageData,
-     // imgUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSDRgNnZRcoHEk0dh5izm9EgaLtor9pC88nnrbbzBcSA&s',
-      address: data.street + " " + data.city + " " + data.state,
-      phoneNumber: data.phoneNumber,
-      location: {
-          state: data.state,
-          city: data.city,
-          street: data.street,
-      },
-  };
+      img_url: imageData,
+      city: data.city,
+      street: data.street,
+      state: data.state,
+      phone_number: data.phoneNumber,
+      estimated_delivery_duration: data.estimatedDelivery
+    };
 
 
     setLoader(true)
     const resultAction = await dispatch(createStore(payload))
+    console.log(resultAction)
     if (createStore.fulfilled.match(resultAction)) {
       setLoader(false)
       await dispatch(resetStoreImage())
@@ -145,10 +144,9 @@ export const StoreCreation = (): JSX.Element => {
 
 
   return (
-    <View>
+    <SafeAreaView style={globalStyles.wrapper}>
       <StatusBar translucent={true} backgroundColor={'white'} />
-      <KeyboardAwareScrollView>
-        <View style={[globalStyles.container, globalStyles.rowBetween, gbStyle.StoreCard]}>
+      <View style={[globalStyles.container, globalStyles.rowBetween, gbStyle.StoreCard]}>
           <Ionicons
             name={'chevron-back-outline'}
             size={30}
@@ -157,7 +155,9 @@ export const StoreCreation = (): JSX.Element => {
           />
           <Text text="Store Information" fontSize={hp(18)} />
           <View />
-        </View>
+      </View>
+      <KeyboardAwareScrollView>
+        
 
         <View style={gbStyle.imageContainer}>
           <Text text="Store Cover Image" fontSize={hp(16)} />
@@ -243,6 +243,14 @@ export const StoreCreation = (): JSX.Element => {
               onChangeText={handleChange('street')}
               errorMsg={touched.street ? errors.street : undefined}
             />
+
+            <Input
+              label={'Estimated delivery duration'}
+              value={values.estimatedDelivery}
+              onBlur={handleBlur('estimatedDelivery')}
+              onChangeText={handleChange('estimatedDelivery')}
+              errorMsg={touched.estimatedDelivery ? errors.estimatedDelivery : undefined}
+            />
           </View>
 
           <View style={gbStyle.btn}>
@@ -256,7 +264,7 @@ export const StoreCreation = (): JSX.Element => {
         headerText={headerText}
         visibleBoolean={visibleBoolean} handleVisible={handleVisible}
         isSuccess={isSuccessful} />
-    </View>
+    </SafeAreaView>
   );
 };
 

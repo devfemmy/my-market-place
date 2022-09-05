@@ -50,6 +50,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
     street: '',
     city: '',
     state: '',
+    estimatedDelivery: ''
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
@@ -60,17 +61,15 @@ const AuthStoreCreationScreen = (): JSX.Element => {
       return
     }
     const payload = {
-      brandName: data.storeName,
+      brand_name: data.storeName,
       description: data.description,
-      imgUrl: imageData,
-      address: data.street + " " + data.city + " " + data.state,
-      phoneNumber: data.phoneNumber,
-      location: {
-          state: data.state,
-          city: data.city,
-          street: data.street,
-      },
-  };
+      img_url: imageData,
+      city: data.city,
+      street: data.street,
+      state: data.state,
+      phone_number: data.phoneNumber,
+      estimated_delivery_duration: data.estimatedDelivery
+    };
 
     setLoader(true)
     const resultAction = await dispatch(createStore(payload))
@@ -243,6 +242,14 @@ const AuthStoreCreationScreen = (): JSX.Element => {
               onBlur={handleBlur('street')}
               onChangeText={handleChange('street')}
               errorMsg={touched.street ? errors.street : undefined}
+            />
+
+            <Input
+              label={'Estimated delivery duration'}
+              value={values.estimatedDelivery}
+              onBlur={handleBlur('estimatedDelivery')}
+              onChangeText={handleChange('estimatedDelivery')}
+              errorMsg={touched.estimatedDelivery ? errors.estimatedDelivery : undefined}
             />
           </View>
 

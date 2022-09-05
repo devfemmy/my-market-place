@@ -175,10 +175,10 @@ const Login = (): JSX.Element => {
     setLoading(true)
     try{
       const response = await doPost(data, `/auth/login`)
-      if(response.data.success === true){
+      if(response.data.data.accessToken){
         try{
-          await AsyncStorage.setItem("token", response.data.token);
-          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          await AsyncStorage.setItem("token", response.data.data.accessToken);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
           Notifier.showNotification({
             title: 'Login Successful!',
             // description: "tghdddfdfd",
@@ -188,9 +188,9 @@ const Login = (): JSX.Element => {
               alertType: 'success',
             },
           });
-          console.log(response.data.token)
-          signIn(response.data.token)
-          console.log(response.data.user)
+          console.log(response.data.data.accessToken)
+          signIn(response.data.data.accessToken)
+          console.log(response.data.data)
         } catch (error){
           console.log(error)
         }

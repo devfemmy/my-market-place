@@ -42,11 +42,11 @@ const getInfo = async () => {
     await dispatch(getAllProducts(id))
     await dispatch(getStaff(id))
     await dispatch(getAllOrders())
-    await dispatch(getPayouts())
+    await dispatch(getPayouts(id))
     setLoading(false)
 }
 
-console.log(AllStaffs)
+
 
   if(loading){
     return (

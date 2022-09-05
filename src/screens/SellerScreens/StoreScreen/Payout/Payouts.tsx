@@ -38,6 +38,8 @@ import { getPayoutBackground, productBackground } from '../../../../redux/slices
 import { UniversityLogo } from '../../../../constants/images';
 import { SearchDropdown } from '../../../../components/common/SearchDropdown';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PayoutForm } from './PayoutForm';
 
 export const Payouts = ({data}): JSX.Element => {
   const navigation = useNavigation()
@@ -67,9 +69,9 @@ export const Payouts = ({data}): JSX.Element => {
 
 
   const initialValues: PayoutFormData = {
-    name: data.name,
-    account: data.account,
-    bankName: data.bankName,
+    account_name: '',
+    bank_account_number: '',
+    bank_name: '',
   };
 
   const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue, isValid } =
@@ -77,17 +79,17 @@ export const Payouts = ({data}): JSX.Element => {
     initialValues,
     validationSchema: PayoutFormDataSchema,
     onSubmit: async (val: PayoutFormData) => {
+      const id: string = await AsyncStorage.getItem('activeId')
       let form = val
-      const bankCode = banks.find((bank) => val.bankName == bank.label)
-      form.bankCode = bankCode.code
-      form._id = data[0]._id
+      // const bankCode = banks.find((bank) => val.bank_name == bank.label)
+      // form.bankCode = bankCode.code
+      form._id = data.id
+      delete form?.account
       await dispatch(updatePayout(form))
+      await dispatch(getPayouts(id))
       modalizeRef.current?.close()
-      await dispatch(getPayouts())
     },
   });
-  
-  const bankList = banks.map((val) => {return val.label})
 
   const renderHeader = () => (
     <View style={styles.modal__header}>
@@ -95,108 +97,14 @@ export const Payouts = ({data}): JSX.Element => {
     </View>
   );
 
-  const validateAccount = async (accountNumber: string, bankName: string) => {
-    if(accountNumber.length == 10 && bankName){
-      setFetching(true)
-      const bankDetails = banks.find((bank) => bankName == bank.label)
-      const bankCode = bankDetails?.code
-      const payload = {
-        bankAccount: accountNumber,
-        bankCode: bankCode
-      }
-      try {
-        const response = await bankVerification(payload)
-        if (response.status === 200) {
-          setFetching(false)
-          console.log(response?.data)
-          setFieldValue('name', response?.data?.data?.account_name)
-        }else{
-          setFetching(false)
-          setFieldValue('name', '')
-        }
-      } catch (error) {
-        console.log(error)
-        setFetching(false)
-        setFieldValue('name', '')
-      }
-    }else{
-      setFieldValue('name', '')
-    }
-  }
-
-  const colorChange = (color: string) => {
-    if(values?.account?.length < 10){
-      return 'transparent'
-    }
-    if(values?.name == ''){
-      return colors.cancelled
-    }
-    else{
-      return color
-    }
-  }
-
-  const renderBody = () => (
-    <>
-        <SearchDropdown
-            items={bankList}
-            defaultValue={values.bankName}
-            placeholder={'Bank'}
-            setState={(value) => {setFieldValue('bankName', value); setFieldValue('name', ''); setFieldValue('account', '')}}
-            errorMsg={touched.bankName ? errors.bankName : undefined}
-        />
-        <Input
-            label={'Account Number'}
-            value={values.account}
-            onBlur={handleBlur('account')}
-            onChangeText={(text) => {setFieldValue('account', text), validateAccount(text, values.bankName)}}
-            errorMsg={touched.account ? errors.account : undefined}
-        />
-        {/* <Input
-            label={'Account Name'}
-            value={values.name}
-            onBlur={handleBlur('name')}
-            onChangeText={handleChange('name')}
-            errorMsg={touched.name ? errors.name : undefined}
-        /> */}
-        <View style={[styles.namePreview, globalStyles.rowBetween, {backgroundColor: colorChange(colors.completed)}]}>
-          {fetching ? <ActivityIndicator size={'small'}/> 
-          : 
-          <Text 
-          color={values?.account?.length < 10 ? 'transparent' : colors.white} 
-          fontWeight="400" fontSize={hp(13)} 
-          text={values.name == '' ? 'Invalid Account' : values.name} />
-          }
-
-          <Ionicons name="checkmark-circle-outline" size={24} color={colorChange("#fff")} />
-        </View>
-        <Button style={{backgroundColor: !isValid ? colors.darkBlack : colors.bazaraTint}} disabled={!isValid} isLoading={loader} onPress={handleSubmit} title={'Update Account'}/>
-    </>
-);
-
-  const renderItem = ({item}: any) => (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => {setFieldValue('account', ''); modalizeRef.current?.open()}}>
-        <ImageBackground source={PayoutBack} resizeMode="cover" style={[globalStyles.payoutCard]}>
-            <Text fontWeight="500" fontSize={hp(17)} text={item.name} />
-            <Text style={[globalStyles.Verticalspacing]} fontWeight="500" fontSize={hp(14)} text={item.account + " - " + item.bankName} />
-        </ImageBackground>
-    </TouchableOpacity>
-  );
-
 
   return (
     <>
       <View>
-        {/* <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={item => item?._id}
-            style={{marginBottom: hp(100)}}
-        /> */}
         <View>
             <ImageBackground source={PayoutBack} resizeMode="cover" style={[globalStyles.payoutCard]}>
-                <Text fontWeight="500" fontSize={hp(17)} text={data[0]?.name} />
-                <Text style={[globalStyles.Verticalspacing]} fontWeight="500" fontSize={hp(14)} text={data[0]?.account + " - " + data[0]?.bankName} />
+                <Text fontWeight="500" fontSize={hp(17)} text={data?.account_name} />
+                <Text style={[globalStyles.Verticalspacing]} fontWeight="500" fontSize={hp(14)} text={data?.bank_account_number + " - " + data?.bank_name} />
             </ImageBackground>
         </View>
 
@@ -235,8 +143,19 @@ export const Payouts = ({data}): JSX.Element => {
       HeaderComponent={renderHeader}
       FooterComponent={<SafeAreaView/>}
       >
-          {renderBody()}
-          
+        <PayoutForm
+          bankName={values.bank_name}
+          accountName={values.account_name}
+          accountNumber={values.bank_account_number}
+          setField={setFieldValue}
+          handleBlur={handleBlur}
+          touched={touched}
+          errors={errors}
+          isValid={isValid}
+          loader={loader}
+          handleSubmit={handleSubmit}
+          btnTitle={'Update Account'}
+        />
       </Modalize>
       </>
   );

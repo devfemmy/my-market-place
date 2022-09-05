@@ -12,7 +12,7 @@ import {NoProduct} from './Empty';
 import { getUserDetails } from '../../../../redux/slices/userSilce';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { myStore } from '../../../../redux/slices/StoreSlice';
-import { getAllProducts, myProducts, loading, selectedProducts, searching } from '../../../../redux/slices/productSlice';
+import { getAllProducts, myProducts, loading, selectedProducts, searching, getCategories, categories } from '../../../../redux/slices/productSlice';
 import { SkeletonView } from '../../../../components/resuable/Skeleton';
 import { Products } from './Products';
 import { Input } from '../../../../components/common/TextInput';
@@ -23,23 +23,17 @@ export const Product = (): JSX.Element => {
   const mystore = useAppSelector(myStore)
   const myproducts = useAppSelector(myProducts)
   const products = useAppSelector(selectedProducts)
+  const availableCategories = useAppSelector(categories)
   const loader = useAppSelector(loading)
   
 
   useEffect(() => {
     dispatch(getUserDetails())
+    dispatch(getCategories())
     dispatch(getAllProducts(mystore[0]?._id))
   }, [])
 
-  // if(loader){
-  //   return (
-  //       <SafeAreaView>
-  //           <View style={[globalStyles.rowCenter, {flex: 1}]}>
-  //               <ActivityIndicator size={'small'}/>
-  //           </View>
-  //       </SafeAreaView>
-  //   )
-  // }
+  console.log(availableCategories)
 
   if(loader){
     return (

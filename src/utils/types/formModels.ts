@@ -14,12 +14,12 @@ export type LoginFormData = {
 };
 
 export type RegisterFormData = {
-  fName: string;
-  lName: string;
-  phoneNumber: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  // confirmPassword: string;
 };
 
 export type Nav = {
@@ -45,6 +45,7 @@ export type StoreFormData = {
   street: string;
   city: string;
   state: string;
+  estimatedDelivery: string;
 };
 
 export type CartFormData = {
@@ -121,32 +122,26 @@ export type ProductState = {
 }
 
 export type StoreCreateFormData = {
-  brandName: string,
+  brand_name: string,
   description: string,
-  imgUrl: string,
-  address: string,
-  phoneNumber: string,
-  status?: string,
-  location: {
-      state: string,
-      city: string,
-      street: string,
-  },
+  img_url: string,
+  city: string,
+  phone_number: string,
+  state?: string,
+  street: string,
+  estimated_delivery_duration: string
 }
 
 export type StoreUpdateFormData = {
   id: string,
-  brandName: string,
+  brand_name: string,
   description: string,
-  imgUrl: string,
-  address: string,
-  phoneNumber: string,
-  status?: string,
-  location: {
-      state: string,
-      city: string,
-      street: string,
-  },
+  img_url: string,
+  city: string,
+  street: string,
+  state: string,
+  phone_number: string,
+  estimated_delivery_duration: string,
 }
 
 
@@ -228,11 +223,13 @@ export type StaffFormData = {
 };
 
 export type PayoutFormData = {
-  name: string;
+  account?: string;
+  account_name: string;
   _id?: string;
-  account: string;
-  bankName: string;
+  bank_account_number: string;
+  bank_name: string;
   bankCode?: string;
+  store_id?: string;
 };
 
 export type DeliveryFormData = {

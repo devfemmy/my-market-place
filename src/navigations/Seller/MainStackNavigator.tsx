@@ -17,6 +17,7 @@ import AddShippingFee from '../../screens/SellerScreens/AddShippingFee';
 import AuthStoreCreationScreen from '../../screens/SellerScreens/AuthStoreCreationScreen';
 import Profile from '../../screens/SellerScreens/Profile';
 
+
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
 export const SellerMainStackNavigator = (): JSX.Element => {
@@ -118,6 +119,14 @@ export const SellerMainStackNavigator = (): JSX.Element => {
         <MainStack.Screen
         name="AuthStoreCreationScreen"
         component={AuthStoreCreationScreen}
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+
+      <MainStack.Screen
+        name="StoreCreationScreen"
+        component={StoreCreation}
         options={() => ({
           headerShown: false,
         })}

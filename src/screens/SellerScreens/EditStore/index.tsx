@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import { StatusBar, View, StyleSheet, ScrollView, Image, Pressable, Platform } from 'react-native';
+import { StatusBar, View, StyleSheet, ScrollView, Image, Pressable, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView, Text } from '../../../components/common';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Input } from '../../../components/common/TextInput';
@@ -13,7 +13,7 @@ import { globalStyles } from "../../../styles/globalStyles"
 import { hp, wp } from '../../../utils/helpers';
 ;
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { addStoreImage, createStore, getStoreById, resetStoreImage, storebyId, storeImage, updateStore } from "../../../redux/slices/StoreSlice"
+import { addStoreImage, createStore, getStoreById, resetStoreImage, storebyId, storeImage, updateStore, myStore, getPersonalStore } from "../../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../../utils/types';
 import CustomModal from '../../../components/common/CustomModal';
 import { colors } from '../../../utils/themes';
@@ -33,54 +33,76 @@ const EditStore = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
   const [loader, setLoader] = useState(false)
   const dispatch = useAppDispatch()
+  const myStoreList = useAppSelector(myStore)
+  const [loading, setLoading] = useState(false)
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const [customMsg, setCustomMsg] = useState('')
   const [imageData, setImageData] = useState('')
   const storeIdData = useAppSelector(storebyId)
   const [activeId, setActiveId] = useState<string>('')
-  const [editImg, setEditImg] = useState<string>(storeIdData?.imgUrl)
+  const [editImg, setEditImg] = useState<string>('')
 
 
   useEffect(() => {
-    const loadActiveId = async () => {
-      const id = await AsyncStorage.getItem('activeId')
-       setActiveId(id)
-      dispatch(getStoreById(id))
-    }
-
     loadActiveId()
   }, [activeId])
+
+
 
   useEffect(() => {
       setEditImg(storeIdData?.imgUrl)
   }, [storeIdData])
 
+  const loadActiveId = async () => {
+    const id = await AsyncStorage.getItem('activeId')
+    console.log(id)
+    if(!id){
+      navigation.navigate('AuthStoreCreationScreen')
+    }
+    setLoading(true)
+    await dispatch(getPersonalStore())
+    setActiveId(id)
+    // dispatch(getStoreById(id))
+    const selectedStore = myStoreList?.filter((val) => {
+      if(val?.id == id){
+        setEditImg(val?.img_url)
+        setFieldValue('state', val?.state)
+        setFieldValue('storeName', val?.brand_name)
+        setFieldValue('description', val?.description)
+        setFieldValue('phoneNumber', val?.phone_number)
+        setFieldValue('street', val?.street)
+        setFieldValue('estimatedDelivery', val?.estimated_delivery_duration)
+        setFieldValue('city', val?.city)
+      }
+    })
+    setLoading(false)
+  }
+
 
 
   const initialValues: StoreFormData = {
-    storeName: storeIdData?.brandName,
-    description: storeIdData?.description,
+    storeName: '',
+    description: '',
     phoneNumber: '',
-    street: storeIdData?.location.street,
-    city: storeIdData?.location?.city,
-    state: storeIdData?.location?.state,
+    street: '',
+    city: '',
+    state: '',
+    estimatedDelivery: ''
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
+
     const payload = {
-      id: activeId,
-      brandName: data.storeName,
+      brand_name: data.storeName,
       description: data.description,
-      imgUrl: imageData?.length > 1 ? imageData : editImg,
-      address: data.street + " " + data.city + " " + data.state,
-      phoneNumber: data?.phoneNumber,
-      location: {
-        state: data.state,
-        city: data.city,
-        street: data.street,
-      },
-      status: 'active'
+      img_url: imageData?.length > 1 ? imageData : editImg,
+      city: data.city,
+      street: data.street,
+      state: data.state,
+      phone_number: data.phoneNumber,
+      estimated_delivery_duration: data.estimatedDelivery,
+      id: activeId
     };
 
     setLoader(true)
@@ -113,13 +135,13 @@ const EditStore = (): JSX.Element => {
 
 
 
-  const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
     useFormik({
       initialValues,
       validationSchema: StoreFormSchema,
       onSubmit: (val: StoreFormData) => handleStoreSubmission(val),
       enableReinitialize: true
-    });
+  });
 
 
   const locationState = locationData?.map((data: locationProp) => data?.state);
@@ -149,6 +171,17 @@ const EditStore = (): JSX.Element => {
 
   const removeImage = () => {
     setEditImg('')
+  }
+
+
+  if(loading){
+    return (
+        <SafeAreaView>
+            <View style={[globalStyles.rowCenter, {flex: 1}]}>
+                <ActivityIndicator size={'small'}/>
+            </View>
+        </SafeAreaView>
+    )
   }
 
 
@@ -246,6 +279,14 @@ const EditStore = (): JSX.Element => {
               onBlur={handleBlur('street')}
               onChangeText={handleChange('street')}
               errorMsg={touched.street ? errors.street : undefined}
+            />
+
+            <Input
+              label={'Estimated delivery duration'}
+              value={values.estimatedDelivery}
+              onBlur={handleBlur('estimatedDelivery')}
+              onChangeText={handleChange('estimatedDelivery')}
+              errorMsg={touched.estimatedDelivery ? errors.estimatedDelivery : undefined}
             />
           </View>
 

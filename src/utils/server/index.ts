@@ -23,6 +23,8 @@ export const getRequest = async (url: String, v?: String) => {
       })
     return response
 }
+
+
 export const getProfileRequest = async (url: String, v?: String) => {
 
     const token = await AsyncStorage.getItem("token");

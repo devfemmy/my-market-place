@@ -30,12 +30,11 @@ const Register = (): JSX.Element => {
   const {authContext: { signIn }} = useContext(AuthContext)
   const navigation = useNavigation<RegisterScreenNavigationProp>();
   const initialValues: RegisterFormData = {
-    fName: '',
-    lName: '',
-    phoneNumber: '',
+    first_name: '',
+    last_name: '',
+    phone_number: '',
     email: '',
     password: '',
-    confirmPassword: '',
   };
   const {values, errors, touched, handleChange, handleSubmit, handleBlur} =
     useFormik({
@@ -47,10 +46,15 @@ const Register = (): JSX.Element => {
   const handleCredentialSubmit = async(data : RegisterFormData) => {
       setLoading(true)
       try{
-        const response = await doPost(data, `/auth/regUser`)
-        if(response.data.success === true){
-          await AsyncStorage.setItem("token", response.data.token);
-          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        
+        // delete data.confirmPassword
+        // delete data.phoneNumber
+        console.log(data)
+
+        const response = await doPost(data, `/auth`)
+        if(response.data.data.accessToken){
+          await AsyncStorage.setItem("token", response.data.data.accessToken);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
           Notifier.showNotification({
             title: 'Registration Successful!',
             // description: "tghdddfdfd",
@@ -62,14 +66,14 @@ const Register = (): JSX.Element => {
           });
           navigation.navigate('StoreCreationScreen')
         //   setTimeout(function(){
-        //     signIn(response.data.token) 
+        //     signIn(response.data.data.accessToken) 
         //  }, 2000);
         }
         setLoading(false)
       }catch (e){
         Notifier.showNotification({
           title: 'Registration failed!',
-          description: e.message,
+          description: e?.message,
           Component: NotifierComponents.Alert,
           hideOnPress: false,
           componentProps: {
@@ -97,10 +101,10 @@ const Register = (): JSX.Element => {
         }
       }
       const response = await doPost(payload, '/auth/login/oAuthGo')
-      if(response.data.success === true){
+      if(response.data.data.accessToken){
         try{
-          await AsyncStorage.setItem("token", response.data.token);
-          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          await AsyncStorage.setItem("token", response.data.data.accessToken);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
           Notifier.showNotification({
             title: 'Registration Successful!',
             // description: "tghdddfdfd",
@@ -112,9 +116,9 @@ const Register = (): JSX.Element => {
           });
           navigation.navigate('StoreCreationScreen')
         //   setTimeout(function(){
-        //     signIn(response.data.token) 
+        //     signIn(response.data.data.accessToken) 
         //  }, 2000);
-          console.log(response.data.user)
+          console.log(response.data.data)
         } catch (error){
           console.log(error)
         }
@@ -155,10 +159,10 @@ const Register = (): JSX.Element => {
           //"authType":"Apple",
         }
         const response = await doPost(payload, '/auth/login/oAuthApple')
-        if(response.data.success === true){
+        if(response.data.data.accessToken){
           try{
-            await AsyncStorage.setItem("token", response.data.token);
-            await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+            await AsyncStorage.setItem("token", response.data.data.accessToken);
+            await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
             Notifier.showNotification({
               title: 'Registration Successful!',
               // description: "tghdddfdfd",
@@ -170,9 +174,9 @@ const Register = (): JSX.Element => {
             });
             navigation.navigate('StoreCreationScreen')
             // setTimeout(function(){
-            //     signIn(response.data.token) 
+            //     signIn(response.data.data.accessToken) 
             // }, 2000);
-            console.log(response.data.user)
+            console.log(response.data.data)
           } catch (error){
             console.log(error)
           }
@@ -208,17 +212,17 @@ const Register = (): JSX.Element => {
       <ScrollView>
         <Input
           label={'First Name'}
-          value={values.fName}
-          onBlur={handleBlur('fName')}
-          onChangeText={handleChange('fName')}
-          errorMsg={touched.fName ? errors.fName : undefined}
+          value={values.first_name}
+          onBlur={handleBlur('first_name')}
+          onChangeText={handleChange('first_name')}
+          errorMsg={touched.first_name ? errors.first_name : undefined}
         />
         <Input
           label={'Last Name'}
-          value={values.lName}
-          onBlur={handleBlur('lName')}
-          onChangeText={handleChange('lName')}
-          errorMsg={touched.lName ? errors.lName : undefined}
+          value={values.last_name}
+          onBlur={handleBlur('last_name')}
+          onChangeText={handleChange('last_name')}
+          errorMsg={touched.last_name ? errors.last_name : undefined}
         />
         <Input
           label={'Email Address'}
@@ -229,10 +233,10 @@ const Register = (): JSX.Element => {
         />
         <Input
           label={'Phone Number'}
-          value={values.phoneNumber}
-          onBlur={handleBlur('phoneNumber')}
-          onChangeText={handleChange('phoneNumber')}
-          errorMsg={touched.phoneNumber ? errors.phoneNumber : undefined}
+          value={values.phone_number}
+          onBlur={handleBlur('phone_number')}
+          onChangeText={handleChange('phone_number')}
+          errorMsg={touched.phone_number ? errors.phone_number : undefined}
         />
         <Input
           label={'Password'}

@@ -1,10 +1,10 @@
 
-const SETCONFIG = 'STAGING';
+const SETCONFIG = 'DEV';
 
 const config = {
   DEV: {
-    databaseUrl: 'https://api.bazara.co/api/v1/dev',
-    databaseUrl2: 'https://api.bazara.co/api/v2/dev',
+    databaseUrl: 'https://api.bazara.co/api/v2',
+    databaseUrl2: 'https://api.bazara.co/api/v2',
     databaseUpload: 'https://prod.bazara.co/upload-microservice/v1/upload/img',
     secretOrKey: 'sk_live_8f334a99611a4cf0245c8e4f1bbc3fddb1861d80',
     payStack: {

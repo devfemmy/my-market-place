@@ -27,6 +27,7 @@ export type MainStackParamList = {
   Home: undefined;
   Profile: undefined;
   AuthStoreCreationScreen: undefined;
+  StoreCreationScreen: undefined;
   AuthStoreSuccessScreen: undefined;
   EditStore: undefined;
   DeliveryScreen: undefined;

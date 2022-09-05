@@ -10,18 +10,26 @@ import {hp,wp} from '../../../../utils/helpers';
 import {NoProducts} from '../../../../constants/images';
 import {NoAccount} from './Empty';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { getPayouts, payouts, loading } from '../../../../redux/slices/StoreSlice';
+import { getPayouts, payouts, loading, error } from '../../../../redux/slices/StoreSlice';
 import { Payouts } from './Payouts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Account = (): JSX.Element => {
 
   const dispatch = useAppDispatch()
   const payoutData = useAppSelector(payouts)
   const loader = useAppSelector(loading)
+  const payoutError = useAppSelector(error)
 
   useEffect(() => {
-    dispatch(getPayouts())
+    getPayout()
   }, [])
+
+  const getPayout = async () => {
+    const id: string = await AsyncStorage.getItem('activeId')
+    await dispatch(getPayouts(id))
+  }
+
 
   if(loader){
     return (
@@ -32,6 +40,7 @@ export const Account = (): JSX.Element => {
         </SafeAreaView>
     )
   }
+  console.log(payoutError)
 
   console.log(payoutData)
 

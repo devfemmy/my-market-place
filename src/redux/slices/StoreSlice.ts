@@ -27,8 +27,17 @@ const initialState: StoreState = {
 
 export const createStore = createAsyncThunk(
     'store/createStore',
-    async (payload: StoreCreateFormData) => {
-        const response = await sendPost("/sidehustle/account/create", payload)
+    async (payload: StoreCreateFormData, {rejectWithValue}) => {
+        try {
+            const response = await sendPost("/store/create", payload)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        } catch (e: any) {
+            console.log(e)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+        
     }
 )
 
@@ -49,16 +58,17 @@ export const updateStore = createAsyncThunk(
     'store/updateStore',
     async (payload: StoreUpdateFormData) => {
         const payloadData = {
-            brandName: payload.brandName,
+            brand_name: payload.brand_name,
             description: payload.description,
-            imgUrl: payload.imgUrl,
-            address: payload.address,
-            phoneNumber: payload.phoneNumber,
-            location: payload.location,
-            status: payload.status
+            img_url: payload.img_url,
+            city: payload.city,
+            street: payload.street,
+            state: payload.state,
+            phone_number: payload.phone_number,
+            estimated_delivery_duration: payload.estimated_delivery_duration,
         }
 
-        const response = await  sendPost(`/sidehustle/account/${payload.id}/update`, payloadData)
+        const response = await  sendPost(`/store/update/?store_id=${payload.id}`, payloadData)
     }
 )
 
@@ -106,7 +116,7 @@ export const resetStoreImage = createAsyncThunk(
 export const getPersonalStore = createAsyncThunk(
     'store/myStore',
     async () => {
-        const response = await getRequest("/sidehustle/account")
+        const response = await getRequest("/store/seller")
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -115,10 +125,10 @@ export const getPersonalStore = createAsyncThunk(
 
 export const getPayouts = createAsyncThunk(
     'store/myPayouts',
-    async () => {
-        const response = await getRequest("/sidehustle/account/payouts")
+    async (payload: string) => {
+        const response = await getRequest(`/payment/payout_account?store_id=${payload}`)
         if (response?.status === 200) {
-            return response?.data?.data?.payouts
+            return response?.data?.data
         }
     }
 )
@@ -126,8 +136,12 @@ export const getPayouts = createAsyncThunk(
 export const addPayout = createAsyncThunk(
     'store/addPayouts',
     async (payload: PayoutFormData) => {
-        const response = await sendPost("/sidehustle/account/payouts", payload, 'v2')
-        console.log(response)
+        const data = {
+            account_name: payload?.account_name,
+            bank_name: payload?.bank_name,
+            bank_account_number: payload?.bank_account_number
+        }
+        const response = await sendPost(`/payment/payout_account/create?store_id=${payload?.store_id}`, data, 'v2')
     }
 )
 
@@ -165,7 +179,7 @@ export const updatePayout = createAsyncThunk(
     async (payload: PayoutFormData) => {
         const id = payload._id
         delete payload._id
-        const response = await sendPost('/sidehustle/account/payouts/'+id+'/update', payload)
+        const response = await sendPost(`/payment/payout_account/update?payout_account_id=${id}`, payload, 'v2')
     }
 )
 
@@ -173,7 +187,7 @@ export const updatePayout = createAsyncThunk(
 export const getAllStore = createAsyncThunk(
     'store/allStore',
     async () => {
-        const response = await getRequest("/sidehustle/category")
+        const response = await getRequest("/store/seller")
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -184,7 +198,7 @@ export const getAllStore = createAsyncThunk(
 export const getAllCategories = createAsyncThunk(
     'store/allCategories',
     async () => {
-        const response = await getRequest("/sidehustle/category")
+        const response = await getRequest("/category")
         if (response?.status === 200) {
             const arr = response?.data?.data
             const categories = arr.map(function(val: any){
@@ -269,6 +283,7 @@ export const StoreSlice = createSlice({
             state.payouts = action.payload
         }),
         builder.addCase(getPayouts.rejected, (state, action) => {
+            state.loading = false
             state.error = action.error.message
         }),
 

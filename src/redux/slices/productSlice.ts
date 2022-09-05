@@ -25,10 +25,20 @@ const initialState: ProductState = {
     error: null
 }
 
+export const getCategories = createAsyncThunk(
+    'product/allCategories',
+    async () => {
+        const response = await getRequest("/category")
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
 export const getAllProducts = createAsyncThunk(
     'product/allProducts',
     async (payload: string) => {
-        const response = await getRequest("/sidehustle/" + payload + "/products")
+        const response = await getRequest("/product")
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -77,35 +87,49 @@ export const getPayoutBackground = createAsyncThunk(
 
 export const createProduct = createAsyncThunk(
     'product/createProduct',
-    async (payload: ProductCreateFormData) => {
+    async (payload: ProductCreateFormData, {rejectWithValue}) => {
+        // const payloadData = {
+        //     name: payload?.name,
+        //     description: payload?.description,
+        //     categories: payload?.categories,
+        //     variants: payload?.variants,
+        //     isDraft: payload?.isDraft,
+        //     status: payload?.status
+        // }
         const payloadData = {
             name: payload?.name,
             description: payload?.description,
-            categories: payload?.categories,
-            variants: payload?.variants,
-            isDraft: payload?.isDraft,
-            status: payload?.status
+            category_id: payload?.categories,
+            store_id: payload.id,
         }
-        const response = await sendPost(`/sidehustle/${payload.id}/products/add`, payloadData)
-        console.log(response?.data)
-        return response?.data
+
+        console.log(payloadData)
+
+        try {
+            const response = await sendPost(`/product/create`, payloadData)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        } catch (e: any) {
+            console.log(e?.response?.data?.message)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+        
     }
 )
 
 export const updateProduct = createAsyncThunk(
     'product/updateProduct',
-    async (payload: ProductCreateFormData) => {
+    async (payload: ProductCreateFormData, {rejectWithValue}) => {
         // const response = await sendPost(`/sidehustle/product/${payload.id}/update`, payload, 'v2')
         // console.log(response?.data)
         try {
-            const response = await sendPost(`/sidehustle/product/${payload.id}/update`, payload)
+            const response = await sendPost(`product/update/?product_id=${payload.id}`, payload)
             console.log(response?.data)
             return response?.data
-        } catch (error) {
-            console.log(error)
-            console.log(error?.message)
-            console.log(error?.status)
-            console.log(error?.data)
+        } catch (e: any) {
+            console.log(e?.response?.data?.message)
+            return rejectWithValue(e?.response?.data?.message)
         }
         
     }
@@ -341,6 +365,19 @@ export const ProductSlice = createSlice({
         })
 
 
+        // GET CATEGORIES
+        builder.addCase(getCategories.pending, (state) => {
+            state.loading = true
+        })
+        builder.addCase(getCategories.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.categories = action.payload
+        })
+        builder.addCase(getCategories.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+
         // GET PRODUCTS
         builder.addCase(getAllProducts.pending, (state) => {
             state.loading = true
@@ -457,6 +494,7 @@ export const ProductSlice = createSlice({
 export const images = (state: RootState) => state.product.images;
 export const editableSlug = (state: RootState) => state.product.editableSlug;
 export const myProducts = (state: RootState) => state.product.myProducts;
+export const categories = (state: RootState) => state.product.categories;
 export const productBackground = (state: RootState) => state.product.productBackground;
 export const selectedProducts = (state: RootState) => state.product.selectedProducts;
 export const loading = (state: RootState) => state.product.loading;
