@@ -57,17 +57,18 @@ export const AddProduct = (): JSX.Element => {
     const initialValues: ProductFormData1 = {
         name: EditableSlug != null ? EditableSlug.name : '',
         description: EditableSlug != null ? EditableSlug.description : '',
-        category: EditableSlug != null ? EditableSlug.categories : '',
+        category: EditableSlug != null ? EditableSlug?.category_id : '',
         sizes: false,
         colours: false,
     };
 
     useEffect(() => {
         dispatch(getAllCategories())
+        if(EditableSlug != null){
+            getCategoryName(EditableSlug?.category_id)
+        }
     }, [])
-
     
-
     const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
     useFormik({
         initialValues,
@@ -82,6 +83,16 @@ export const AddProduct = (): JSX.Element => {
             // navigation.navigate('PublishProduct', {data: val})
         },
     });
+
+    const getCategoryName = async (categoryId: string) => {
+        const selectedCategory = await availableCategories?.filter((val: any) => {
+            if(val?.id == categoryId){
+                return val
+            }
+        }) 
+        setFieldValue('category', selectedCategory[0]?.category)
+        return selectedCategory[0]?.category
+    }
 
     const DraftProduct = async (data: {name: string, description: string, category: string, sizes: boolean, colours: boolean}) => {
 
@@ -103,11 +114,12 @@ export const AddProduct = (): JSX.Element => {
         try {
             var resultAction = await dispatch(createProduct(payload))
             if(createProduct.fulfilled.match(resultAction)){
-                console.log(resultAction?.payload)
+                const id: any = await AsyncStorage.getItem('activeId')
+                await dispatch(getAllProducts(id))
                 Notify('Product Drafted!', 'Your product was successfully added to draft', 'success')
                 await AsyncStorage.setItem('slug', resultAction?.payload?.slug)
                 navigation.navigate('PublishProduct', {data: data})
-            }else{
+            } else{
                 Notify('Product not Added!', 'Your product was not added to draft', 'error')
             }
         } catch (error) {
@@ -117,91 +129,34 @@ export const AddProduct = (): JSX.Element => {
     }
 
     const UpdateSlugProduct = async (data: {name: string, description: string, category: string, sizes: boolean, colours: boolean}) => {
-        console.log(EditableSlug?.slug)
-        await AsyncStorage.setItem('slug', EditableSlug?.slug)
-        navigation.navigate('PublishProduct', {data: data})
-    }
-
-    const handleColorAloneSubmit = async (
-        draft: boolean,
-        colors: Array<any>,
-        id: string,
-        data: {name: string, description: string, category: string}
-        ) => {
-
-        const colorVariants = colors.map((val: {colour: string, price: number, quantity: number, images: Array<string>}) => {
-            return {
-                spec: [{colour: val.colour, price: val.price, quantity: val.quantity}],
-                variantImg: val.images
-            }
-        })
-    
-        const payload: ProductCreateFormData = {
-            id: product_slug._id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: colorVariants,
-            isDraft: draft,
-            status: 'active'
-        }
-        try {
-            var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
-                setSuccessModal(true)
-                await dispatch(getAllProducts(id))
-            }else{
-                Notify('Product not Added!', 'Your product was not added', 'error')
-            }
-        } catch (error) {
-            Notify('Product not Added!', 'Your product was not added', 'error')
-            console.log(error)
-        }
-    }
-
-    const handleColorSizeSubmit = async (
-        draft: boolean,
-        colors: Array<any>,
-        id: string,
-        data: {name: string, description: string, category: string}
-        ) => {
-        
-        const Variants = colors.map((val: {colour: string, size: Array<any>, images: Array<string>}) => {
-            const variant = val.size.map((vak: {price: Number, quantity: Number, size: string}) => {
-                return {
-                    price: vak.price,
-                    quantity: vak.quantity,
-                    size: vak.size,
-                    colour: val.colour
-                }
-            })
-            return {
-                spec: variant,
-                variantImg: val.images
+        const selectedCategory = await availableCategories?.filter((val: any) => {
+            if(val?.category == data?.category){
+                return val
             }
         })
 
-        const payload: ProductCreateFormData = {
-            id: product_slug._id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: Variants,
-            isDraft: draft,
-            status: 'active'
+        const payload = {
+            id: EditableSlug?.id,
+            name: values?.name,
+            description: values?.description,
+            category_id: selectedCategory[0]?.id
         }
+
         try {
             var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
-                setSuccessModal(true)
+            if(updateProduct.fulfilled.match(resultAction)){
+                const id: any = await AsyncStorage.getItem('activeId')
                 await dispatch(getAllProducts(id))
-            }else{
-                Notify('Product not Added!', 'Your product was not added', 'error')
+                await AsyncStorage.setItem('slug', EditableSlug?.slug)
+                navigation.navigate('PublishProduct', {data: data})
+            } else {
+                Notify('Product not Updated!', 'Your product was not updated', 'error')
             }
         } catch (error) {
-            Notify('Product not Added!', 'Your product was not added', 'error')
+            Notify('Product not Updated!', 'Your product was not updated', 'error')
             console.log(error)
         }
+
     }
 
     const renderFooter = () => {
@@ -228,82 +183,6 @@ export const AddProduct = (): JSX.Element => {
         )
     }
 
-    const renderColorList = ({index, item}) => {
-        return(
-                <View style={[globalStyles.rowBetween, globalStyles.minicardSeparator, {paddingHorizontal: hp(15), paddingVertical: hp(15)}]}>
-                    <View style={[globalStyles.rowStart]}>
-                        <View style={[globalStyles.rowStartNoOverflow]}>
-                            <Image source={{uri: item?.images[0]}} style={styles.image} />
-                        </View>
-                        <View style={styles.detContainer}>
-                            <Text text={firstLetterUppercase(item?.colour)} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text} />
-                            <View style={globalStyles.rowStart}>
-                                <Text
-                                text={"Price: "}
-                                fontWeight={"300"}
-                                fontSize={hp(12)}
-                                style={styles.text} />
-                                <Text
-                                // text={currencyFormat(item?.price)}
-                                text={item?.price}
-                                fontWeight={"300"}
-                                fontSize={hp(12)}
-                                color={colors.bazaraTint}
-                                style={styles.text} />
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={[globalStyles.rowStart]}>
-                        {/* <TouchableOpacity onPress={() => editPrevColor(index, item)} style={globalStyles.mini_button}>
-                            <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
-                        </TouchableOpacity> */}
-                        <TouchableOpacity onPress={() => dispatch(deleteColour(index))} style={globalStyles.mini_button}>
-                            <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-        )
-    }
-
-    const renderSizeColorList = ({index, item}) => {
-        return(
-                <View style={[globalStyles.rowBetween, globalStyles.minicardSeparator, {paddingHorizontal: hp(15), paddingVertical: hp(15)}]}>
-                    <View style={[globalStyles.rowStart]}>
-                        <View style={[globalStyles.rowStartNoOverflow]}>
-                            <Image source={{uri: item?.images[0]}} style={styles.image} />
-                        </View>
-                        <View style={styles.detContainer}>
-                            <Text text={firstLetterUppercase(item?.colour)} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text} />
-                            <View style={globalStyles.rowStart}>
-                                <Text
-                                text={"Price: "}
-                                fontWeight={"300"}
-                                fontSize={hp(12)}
-                                style={styles.text} />
-                                <Text
-                                // text={currencyFormat(item?.price)}
-                                text={item?.size[0]?.price}
-                                fontWeight={"300"}
-                                fontSize={hp(12)}
-                                color={colors.bazaraTint}
-                                style={styles.text} />
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={[globalStyles.rowStart]}>
-                        {/* <TouchableOpacity onPress={() => editPrevColor(index, item)} style={globalStyles.mini_button}>
-                            <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
-                        </TouchableOpacity> */}
-                        <TouchableOpacity onPress={() => dispatch(deleteSizeColour(index))} style={globalStyles.mini_button}>
-                            <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-        )
-    }
-
     const processArray = () => {
         const colorVariants = items_by_colors.map((val: {colour: string, price: number, quantity: number, images: Array<string>}) => {
             return {
@@ -313,129 +192,6 @@ export const AddProduct = (): JSX.Element => {
         })
 
         console.log(colorVariants)
-    }
-
-    const renderColourFooter = () => {
-        return (
-            <>
-                <View style={globalStyles.list_header}>
-                    <View style={[globalStyles.rowBetween, globalStyles.lowerContainer, globalStyles.list_header_content]}>
-                        <Text fontWeight="500" fontSize={hp(14)} text={'Product Colours'} />
-                    </View>
-                </View>
-                <FlatList
-                    data={items_by_colors}
-                    renderItem={renderColorList}
-                    scrollEnabled={true}
-                    ListFooterComponent={ () =>
-                        (
-                            <View style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]}>
-                                <MiniButton 
-                                iconSize={hp(15)}
-                                onPress={() => navigation.navigate('PublishProduct', {data: values})}
-                                iconColor={colors.primaryBg} style={globalStyles.littleButton} 
-                                icon={'plus'}/>
-                                
-                                <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Horizontalspacing]} fontWeight="400"
-                                color={colors.white}
-                                textAlign='left'
-                                fontSize={hp(16)}
-                                text={"Add Another Colour"} />
-                            </View>
-                        )
-                    }
-                />
-                <View style={[globalStyles.rowCenter, {marginBottom: hp(10)}]}>
-                    <Button 
-                    isLoading={loader} 
-                    title={'Publish'} 
-                    onPress={() => handleColorAloneSubmit(false, items_by_colors, mystore[0]._id, values)} 
-                    style={styles.btn}/>
-                </View>
-            </>
-        )
-    }
-
-    const renderSizeColourFooter = () => {
-        return (
-            <>
-                <View style={globalStyles.list_header}>
-                    <View style={[globalStyles.rowBetween, globalStyles.lowerContainer, globalStyles.list_header_content]}>
-                        <Text fontWeight="500" fontSize={hp(14)} text={'Product Colours'} />
-                    </View>
-                </View>
-                <FlatList
-                    data={items_by_size_colors}
-                    renderItem={renderSizeColorList}
-                    scrollEnabled={true}
-                    ListFooterComponent={ () =>
-                        (
-                            <View style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]}>
-                                <MiniButton 
-                                iconSize={hp(15)}
-                                onPress={() => navigation.navigate('PublishProduct', {data: values})}
-                                iconColor={colors.primaryBg} style={globalStyles.littleButton} 
-                                icon={'plus'}/>
-                                
-                                <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Horizontalspacing]} fontWeight="400"
-                                color={colors.white}
-                                textAlign='left'
-                                fontSize={hp(16)}
-                                text={"Add Another Colour"} />
-                            </View>
-                        )
-                    }
-                />
-                <View style={[globalStyles.rowCenter, {marginBottom: hp(10)}]}>
-                    <Button 
-                    isLoading={loader} 
-                    title={'Publish'} 
-                    onPress={() => handleColorSizeSubmit(false, items_by_size_colors, mystore[0]._id, values)} 
-                    style={styles.btn}/>
-                </View>
-            </>
-        )
-    }
-
-    const renderSpecList = ({index, item}) => {
-        return (
-            <View style={[globalStyles.rowStart, {marginVertical: hp(3)}]}>
-                <Text
-                text={(item?.size || 'Colour') + ' - ' + currencyFormat(item?.price) + ' - x' + item?.quantity}
-                fontWeight={"300"}
-                fontSize={hp(12)}
-                style={styles.text} />
-            </View>
-        )
-    }
-
-    const renderEditableSlugVariant = ({index, item}) => {
-        return (
-            <View style={[globalStyles.rowBetween, globalStyles.minicardSeparator, {paddingHorizontal: hp(15), paddingVertical: hp(15)}]}>
-                <View style={[globalStyles.rowStart]}>
-                    <View style={[globalStyles.rowStartNoOverflow]}>
-                        <Image source={{uri: item?.variantImg[0]}} style={styles.image} />
-                    </View>
-                    <View style={styles.detContainer}>
-                        <FlatList
-                            data={item?.spec}
-                            renderItem={renderSpecList}
-                            keyExtractor={item => item?._id}
-                        />
-                    </View>
-                </View>
-
-                <View style={[globalStyles.rowStart]}>
-                    {/* <TouchableOpacity onPress={() => {dispatch(resetImage()); navigation.navigate('PublishProduct', {editData: item, data: values})}} style={globalStyles.mini_button}>
-                        <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
-                    </TouchableOpacity> */}
-                    {/* <TouchableOpacity style={globalStyles.mini_button}>
-                        <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
-                    </TouchableOpacity> */}
-                </View>
-                
-            </View>
-        )
     }
  
     const renderEditableSlug = () => {

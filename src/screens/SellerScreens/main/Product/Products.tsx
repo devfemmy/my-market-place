@@ -26,9 +26,10 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
-import { searchProduct, searching, updateProduct, getAllProducts, UpdateEditableSlug } from '../../../../redux/slices/productSlice';
+import { searchProduct, searching, updateProduct, getAllProducts, UpdateEditableSlug, activateProduct, deactivateProduct } from '../../../../redux/slices/productSlice';
 import { Notify } from '../../../../utils/functions';
 import { myStore } from '../../../../redux/slices/StoreSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Products = ({data, store}): JSX.Element => {
   const modalizeRef = useRef(null)
@@ -121,15 +122,12 @@ const routeToAdd = () => {
 }
 
 const DeactivateProduct = async () => {
-    const payload = {
-        id: selectedItem?.id,
-        status: 'inactive'
-    }
     try {
-        var resultAction = await dispatch(updateProduct(payload))
-        if(updateProduct.fulfilled.match(resultAction)){
+        var resultAction = await dispatch(deactivateProduct(selectedItem?.id))
+        if(deactivateProduct.fulfilled.match(resultAction)){
             Notify('Product Deactivated!', 'Your product was successfully deactivated', 'success')
-            await dispatch(getAllProducts(mystore[0]._id))
+            const id: string = await AsyncStorage.getItem('activeId')
+            await dispatch(getAllProducts(id))
         }else{
             Notify('Product not Deactivated!', 'Your product was not deactivated', 'error')
         }
@@ -140,15 +138,12 @@ const DeactivateProduct = async () => {
 }
 
 const ActivateProduct = async () => {
-    const payload = {
-        id: selectedItem?.id,
-        status: 'active'
-    }
     try {
-        var resultAction = await dispatch(updateProduct(payload))
-        if(updateProduct.fulfilled.match(resultAction)){
+        var resultAction = await dispatch(activateProduct(selectedItem?.id))
+        if(activateProduct.fulfilled.match(resultAction)){
             Notify('Product Activated!', 'Your product was successfully activated', 'success')
-            await dispatch(getAllProducts(mystore[0]._id))
+            const id: string = await AsyncStorage.getItem('activeId')
+            await dispatch(getAllProducts(id))
         }else{
             Notify('Product not Activated!', 'Your product was not activated', 'error')
         }

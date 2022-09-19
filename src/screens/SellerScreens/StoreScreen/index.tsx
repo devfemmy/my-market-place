@@ -39,11 +39,11 @@ const getInfo = async () => {
     setLoading(true)
     const id: string = await AsyncStorage.getItem('activeId')
     await dispatch(getPersonalStore())
+    await dispatch(storeWallet(id))
     await dispatch(getAllProducts(id))
     await dispatch(getStaff(id))
     await dispatch(getAllOrders())
     await dispatch(getPayouts(id))
-    await dispatch(storeWallet(id))
     setLoading(false)
 }
 

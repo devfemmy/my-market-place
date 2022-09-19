@@ -201,7 +201,6 @@ export const assignUser = createAsyncThunk(
     }
 )
 
-
 export const updatePayout = createAsyncThunk(
     'store/updatePayouts',
     async (payload: PayoutFormData) => {
@@ -262,7 +261,6 @@ export const filterStoreReviews = createAsyncThunk(
         return payload
     }
 )
-
 
 export const StoreSlice = createSlice({
     name: 'store',
