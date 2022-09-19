@@ -20,8 +20,20 @@ const LockOpened = require("../assets/Vector-2.png") as number
 const Profile = require("../assets/ProfileC.png") as number
 const Sale = require("../assets/sale2.png") as number
 
+const onboard1 = require("../assets/onboard/first-img.png") as number
+const onboard2 = require("../assets/onboard/fragrance.png") as number
+const onboard3 = require("../assets/onboard/jewelries.png") as number
+const onboard4 = require("../assets/onboard/makeup.png") as number
+const onboard5 = require("../assets/onboard/men-clothings.png") as number
+const onboard6 = require("../assets/onboard/shoes.png") as number
+const onboard7 = require("../assets/onboard/spotLight.png") as number
+const onboard8 = require("../assets/onboard/third-img.png") as number
+const onboard9 = require("../assets/onboard/womenClothings.png") as number
+const onboarBackground = require("../assets/onboard/rectangle.png") as number
+
 export { LinkLogo, GoogleLogo, AppleLogo, SuccesssLogo, 
     FailedLogo, NoProducts, NoOrders, UniversityLogo, PayoutBack,
     InfoCircle, Danger, Union, Cash, TickSquare, Chat, LockClosed, LockOpened,
-    Sale, Profile, Banner
+    Sale, Profile, Banner, onboard1, onboard2, onboard3, onboard4, onboard5,
+    onboard6, onboard7, onboard8, onboard9, onboarBackground
  }

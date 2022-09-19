@@ -5,12 +5,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { ProductState, ProductCreateFormData } from "../../utils/types";
-import {getRequest, sendPost} from "../../utils/server"
+import { ProductState, ProductCreateFormData, ProductVariant } from "../../utils/types";
+import {getRequest, sendPost, sendDelete} from "../../utils/server"
 import { boolean } from "yup";
 
 const initialState: ProductState = {
     myProducts: [],
+    productVariants: [],
+    productSpec: [],
     selectedProducts: [],
     productBackground: [],
     searching: false,
@@ -38,7 +40,7 @@ export const getCategories = createAsyncThunk(
 export const getAllProducts = createAsyncThunk(
     'product/allProducts',
     async (payload: string) => {
-        const response = await getRequest("/product")
+        const response = await getRequest(`/product/seller?store_id=${payload}`)
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -68,7 +70,17 @@ export const searchProduct = createAsyncThunk(
 export const getProductBySlug = createAsyncThunk(
     'product/allProduct',
     async (payload: string) => {
-        const response = await getRequest(`/sidehustle/product/?slug=${payload}`)
+        const response = await getRequest(`/product/seller?slug=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const getProductBySlugBuyer = createAsyncThunk(
+    'product/getProductBySlugBuyer',
+    async (payload: string) => {
+        const response = await getRequest(`/product?slug=${payload}`)
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -88,14 +100,6 @@ export const getPayoutBackground = createAsyncThunk(
 export const createProduct = createAsyncThunk(
     'product/createProduct',
     async (payload: ProductCreateFormData, {rejectWithValue}) => {
-        // const payloadData = {
-        //     name: payload?.name,
-        //     description: payload?.description,
-        //     categories: payload?.categories,
-        //     variants: payload?.variants,
-        //     isDraft: payload?.isDraft,
-        //     status: payload?.status
-        // }
         const payloadData = {
             name: payload?.name,
             description: payload?.description,
@@ -103,10 +107,91 @@ export const createProduct = createAsyncThunk(
             store_id: payload.id,
         }
 
-        console.log(payloadData)
-
         try {
             const response = await sendPost(`/product/create`, payloadData)
+            return response?.data?.data
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+        
+    }
+)
+
+export const updateProduct = createAsyncThunk(
+    'product/updateProduct',
+    async (payload: ProductCreateFormData, {rejectWithValue}) => {
+        try {
+            const id = payload?.id
+            delete payload?.id
+            const response = await sendPost(`/product/update/?product_id=${id}`, payload)
+        } catch (e: any) {
+            console.log(e?.response?.data)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+        
+    }
+)
+
+
+export const activateProduct = createAsyncThunk(
+    'product/activateProduct',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await sendPost(`/product/activate/?product_id=${payload}`, payload)
+            console.log(Object.keys(response.data))
+            return response.data
+        }
+        catch (e: any) {
+            console.log(e?.response?.data)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+
+export const deactivateProduct = createAsyncThunk(
+    'product/deactivateProduct',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await sendPost(`/product/deactivate/?product_id=${payload}`, payload)
+            console.log(Object.keys(response.data))
+            return response.data
+        }
+        catch (e: any) {
+            console.log(e?.response?.data)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+
+
+export const createProductVariant = createAsyncThunk(
+    'product/createProductVariant',
+    async (payload: ProductVariant, {rejectWithValue}) => {
+
+        try {
+            const response = await sendPost(`/product/variant/create`, payload)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        } catch (e: any) {
+            console.log(e?.response?.data)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+        
+    }
+)
+
+export const updateProductVariant = createAsyncThunk(
+    'product/updateProductVariant',
+    async (payload: any, {rejectWithValue}) => {
+
+        try {
+            const id = payload?.product_variant_id
+            delete payload?.product_variant_id
+            const response = await sendPost(`/product/variant/update?product_variant_id=${id}`, payload)
             if (response?.status === 200) {
                 return response?.data?.data
             }
@@ -118,20 +203,103 @@ export const createProduct = createAsyncThunk(
     }
 )
 
-export const updateProduct = createAsyncThunk(
-    'product/updateProduct',
-    async (payload: ProductCreateFormData, {rejectWithValue}) => {
-        // const response = await sendPost(`/sidehustle/product/${payload.id}/update`, payload, 'v2')
-        // console.log(response?.data)
+export const deleteProductVariant = createAsyncThunk(
+    'product/deleteProductVariant',
+    async (payload: string, {rejectWithValue}) => {
+
         try {
-            const response = await sendPost(`product/update/?product_id=${payload.id}`, payload)
-            console.log(response?.data)
-            return response?.data
+            const response = await sendDelete(`/product/variant/delete?product_variant_id=${payload}`)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
         } catch (e: any) {
             console.log(e?.response?.data?.message)
             return rejectWithValue(e?.response?.data?.message)
         }
         
+    }
+)
+
+export const activateProductVariant = createAsyncThunk(
+    'product/activateProductVariant',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await sendPost(`/product/variant/activate/?product_variant_id=${payload}`, payload)
+        }
+        catch (e: any) {
+            console.log(e?.response?.data)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+
+export const deactivateProductVariant = createAsyncThunk(
+    'product/deactivateProductVariant',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await sendPost(`/product/variant/deactivate/?product_variant_id=${payload}`, payload)
+        }
+        catch (e: any) {
+            console.log(e?.response?.data)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+
+export const createProductVariantSpec = createAsyncThunk(
+    'product/createProductVariantSpec',
+    async (payload: any, {rejectWithValue}) => {
+
+        try {
+            const response = await sendPost(`/product/variant/spec/create`, payload)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        } catch (e: any) {
+            console.log(e?.response?.data)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+        
+    }
+)
+
+
+export const deleteProductVariantSpec = createAsyncThunk(
+    'product/deleteProductVariantSpec',
+    async (payload: string, {rejectWithValue}) => {
+
+        try {
+            const response = await sendDelete(`/product/variant/spec/delete?product_variant_spec_id=${payload}`)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        } catch (e: any) {
+            console.log(e?.response?.data?.message)
+            return rejectWithValue(e?.response?.data?.message)
+        }
+        
+    }
+)
+
+export const getProductVariants = createAsyncThunk(
+    'product/getProductVariants',
+    async (payload: string) => {
+        const response = await getRequest(`/product/variant/?product_id=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const getProductVariantSpec = createAsyncThunk(
+    'product/getProductVariantSpec',
+    async (payload: string) => {
+        const response = await getRequest(`/product/variant/spec?product_variant_id=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
     }
 )
 
@@ -463,16 +631,181 @@ export const ProductSlice = createSlice({
         })
         builder.addCase(createProduct.fulfilled, (state, action) => {
             state.loading = false
-            state.productBySlug = action.payload?.message
+            state.productBySlug = action.payload
             state.newSizes = []
             state.newColours = []
             state.newSizeColours = []
-            state.images = [""]
+            state.productVariants = []
         })
         builder.addCase(createProduct.rejected, (state, action) => {
             state.loading = false,
             state.error = action.payload
         })
+
+
+        //CREATE PRODUCT VARIANT
+
+        builder.addCase(createProductVariant.pending, (state, action) => {
+            state.loading = true
+        })
+        builder.addCase(createProductVariant.fulfilled, (state, action) => {
+            state.loading = false
+            // state.productVariants = state.productVariants.concat([action.payload])
+        })
+        builder.addCase(createProductVariant.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+
+
+        //UPDATE PRODUCT VARIANT
+
+        builder.addCase(updateProductVariant.pending, (state, action) => {
+            state.loading = true
+        })
+        builder.addCase(updateProductVariant.fulfilled, (state, action) => {
+            state.loading = false
+            const updatedArr = state.productVariants?.filter((item) => {
+                if(item?.id == action.payload?.product_variant_id){
+                    var arr = item
+                    arr.size = action.payload.size
+                    arr.quantity = action.payload.quantity
+                    arr.amount = action.payload.amount
+                    return arr
+                }else{
+                    return item
+                }
+            })
+            state.productVariants = updatedArr
+        })
+        builder.addCase(updateProductVariant.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+        
+
+        //DELETE PRODUCT VARIANT
+
+        builder.addCase(deleteProductVariant.pending, (state, action) => {
+            state.loading = true
+        })
+        builder.addCase(deleteProductVariant.fulfilled, (state, action) => {
+            state.loading = false
+            // state.productVariants = state.productVariants.concat([action.payload])
+        })
+        builder.addCase(deleteProductVariant.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+
+        // ACTIVATE PRODUCT
+        builder.addCase(activateProduct.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(activateProduct.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(activateProduct.rejected, (state, action) => {
+            state.loading = false,
+                state.error = action.payload
+        }),
+
+        // DEACTIVATE PRODUCT
+        builder.addCase(deactivateProduct.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(deactivateProduct.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(deactivateProduct.rejected, (state, action) => {
+            state.loading = false,
+                state.error = action.payload
+        }),
+
+
+        // ACTIVATE PRODUCT VARIANT
+        builder.addCase(activateProductVariant.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(activateProductVariant.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(activateProductVariant.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        }),
+        
+
+        // DEACTIVATE PRODUCT VARIANT
+        builder.addCase(deactivateProductVariant.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(deactivateProductVariant.fulfilled, (state, action) => {
+            state.loading = false
+        }),
+        builder.addCase(deactivateProductVariant.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        }),
+
+        //CREATE PRODUCT VARIANT SPEC
+
+        builder.addCase(createProductVariantSpec.pending, (state, action) => {
+            state.loading = true
+        })
+        builder.addCase(createProductVariantSpec.fulfilled, (state, action) => {
+            state.loading = false
+            // const updatedArr = state.productVariants?.filter((item) => {
+            //     if(item?.id == action.payload?.id){
+            //         return action.payload
+            //     }else{
+            //         return item
+            //     }
+            // })
+            // state.productVariants = updatedArr
+        })
+        builder.addCase(createProductVariantSpec.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+
+
+        //DELETE PRODUCT VARIANT SPEC
+
+        builder.addCase(deleteProductVariantSpec.pending, (state, action) => {
+            state.loading = true
+        })
+        builder.addCase(deleteProductVariantSpec.fulfilled, (state, action) => {
+            state.loading = false
+        })
+        builder.addCase(deleteProductVariantSpec.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+
+
+        builder.addCase(getProductVariants.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getProductVariants.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.productVariants = action.payload
+        })
+        builder.addCase(getProductVariants.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.error.message
+        })
+        builder.addCase(getProductVariantSpec.pending, (state, action) => {
+
+        }),
+        builder.addCase(getProductVariantSpec.fulfilled, (state, action: PayloadAction<any>) => {
+            state.productSpec = action.payload
+        })
+        builder.addCase(getProductVariantSpec.rejected, (state, action) => {
+
+        })
+
+
 
         builder.addCase(updateProduct.pending, (state, action) => {
             state.loading = true
@@ -483,6 +816,7 @@ export const ProductSlice = createSlice({
             state.newColours = []
             state.newSizeColours = []
             state.images = [""]
+            state.productVariants = []
         })
         builder.addCase(updateProduct.rejected, (state, action) => {
             state.loading = false,
@@ -494,6 +828,7 @@ export const ProductSlice = createSlice({
 export const images = (state: RootState) => state.product.images;
 export const editableSlug = (state: RootState) => state.product.editableSlug;
 export const myProducts = (state: RootState) => state.product.myProducts;
+export const productVariants = (state: RootState) => state.product.productVariants;
 export const categories = (state: RootState) => state.product.categories;
 export const productBackground = (state: RootState) => state.product.productBackground;
 export const selectedProducts = (state: RootState) => state.product.selectedProducts;

@@ -109,6 +109,8 @@ export type UserState = {
 
 export type ProductState = {
   myProducts: Array<any>,
+  productVariants: Array<any>,
+  productSpec: Array<any>,
   selectedProducts: Array<any>,
   productBackground: Array<any>,
   searching: boolean,
@@ -121,6 +123,16 @@ export type ProductState = {
   categories: Array<string>,
   error: any,
   loading: boolean
+}
+
+export type ProductVariant = {
+  size: any,
+  quantity: any,
+  color: string,
+  amount: any,
+  img_urls: Array<string>,
+  product_id?: string,
+  product_variant_id?: string
 }
 
 export type StoreCreateFormData = {
@@ -148,13 +160,13 @@ export type StoreUpdateFormData = {
 
 
 export type ProductCreateFormData = {
-  id: string,
-  name: string,
-  description: string,
-  categories: string,
-  variants: Array<any>,
-  isDraft: boolean,
-  status: string
+  id?: string,
+  name?: string,
+  description?: string,
+  categories?: string,
+  variants?: Array<any>,
+  isDraft?: boolean,
+  status?: string
 }
 
 export type locationProp = {

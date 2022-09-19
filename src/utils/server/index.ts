@@ -53,6 +53,20 @@ export const sendPost = async ( url: String, payload: any, v?: String) => {
         
 };
 
+export const sendDelete = async ( url: String, v?: String) => {
+    
+  const token = await AsyncStorage.getItem("token");
+
+  var response = await axios.delete(config?.databaseUrl2 + url, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+  });
+
+  return response
+      
+};
+
 
 export const uploadImageFunc = async (payload: any) => {
     const token = await AsyncStorage.getItem("token");

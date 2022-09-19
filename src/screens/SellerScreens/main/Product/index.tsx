@@ -17,6 +17,7 @@ import { SkeletonView } from '../../../../components/resuable/Skeleton';
 import { Products } from './Products';
 import { Input } from '../../../../components/common/TextInput';
 import { colors } from '../../../../utils/themes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Product = (): JSX.Element => {
   const dispatch = useAppDispatch()
@@ -28,12 +29,16 @@ export const Product = (): JSX.Element => {
   
 
   useEffect(() => {
-    dispatch(getUserDetails())
-    dispatch(getCategories())
-    dispatch(getAllProducts(mystore[0]?._id))
+    renderProductPage()
   }, [])
 
-  console.log(availableCategories)
+  const renderProductPage = async () => {
+    const id: string = await AsyncStorage.getItem('activeId')
+    dispatch(getUserDetails())
+    dispatch(getCategories())
+    dispatch(getAllProducts(id))
+    // dispatch(getAllProducts(mystore[0]?._id))
+  }
 
   if(loader){
     return (

@@ -2,6 +2,7 @@ import {NavigatorScreenParams} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 export type AuthStackParamList = {
+  OnboardScreen: undefined;
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;

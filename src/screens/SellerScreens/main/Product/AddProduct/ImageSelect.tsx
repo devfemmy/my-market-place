@@ -20,8 +20,6 @@ export const ImageSelect = (): JSX.Element => {
     const [loading, setLoading] = useState(null)
     const imageList = useAppSelector(images)
 
-    console.log(imageList)
-
     const pickImage = async (index: number) => {
         setLoading(index)
         ImagePicker.openPicker({
@@ -38,7 +36,7 @@ export const ImageSelect = (): JSX.Element => {
         
     };
 
-    const _renderItem = ({item, index}) => {
+    const ImageRender = ({item, index}: {item: string, index: number}) => {
         if(item !== ""){
             return (
                 <TouchableOpacity  onPress={() => pickImage(index)} activeOpacity={.8} >
@@ -66,12 +64,24 @@ export const ImageSelect = (): JSX.Element => {
 
   return (
     <View style={[styles.width90, globalStyles.Verticalspacing]}>
-        <FlatList
+        {/* <FlatList
         data={imageList}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={_renderItem}
+        renderItem={ImageRender}
         numColumns={3}
-        />
+        /> */}
+        <View style={styles.flexWrapContainer}>
+            {
+                imageList?.map((image, index) => {
+                    return (
+                        <ImageRender 
+                        item={image}
+                        index={index}
+                        />
+                    )
+                })
+            }
+        </View>
     </View>
   );
 };

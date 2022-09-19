@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../utils/types';
-import { StatusBar, View, StyleSheet, ScrollView, Image, FlatList } from 'react-native';
+import { StatusBar, View, StyleSheet, ScrollView, Image, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView, Text } from '../../../components/common';
 import { colors } from '../../../utils/themes';
 import { globalStyles } from "../../../styles/globalStyles"
@@ -11,7 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { LockClosed, LockOpened, Sale, Profile, Union } from '../../../constants/images';
 import ListCard from '../../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { filteredStaffs, getPayouts, getPersonalStore, getStaff, myStore, payouts, wallet } from '../../../redux/slices/StoreSlice';
+import { filteredStaffs, getPayouts, getPersonalStore, getStaff, myStore, payouts, wallet, storeWallet } from '../../../redux/slices/StoreSlice';
 import { ArrayType } from '../../../utils/types';
 import { hp, wp } from '../../../utils/helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -26,14 +26,35 @@ import {
 
 export const Home = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
+
+  const [loading, setLoading] = useState(false)
+
   const dispatch = useAppDispatch()
+  const walletBalance = useAppSelector(wallet)
   const myStoreList = useAppSelector(myStore)
   const orders = useAppSelector(selectedOrders)
   const payoutData = useAppSelector(payouts)
   const AllStaffs = useAppSelector(filteredStaffs)
   const myproducts = useAppSelector(myProducts)
-  const walletBalance = useAppSelector(wallet)
   AsyncStorage.setItem('activeId', myStoreList[0]?.id)
+
+  useEffect(() => {
+    getInfo()
+  }, [])
+
+  const getInfo = async () => {
+    setLoading(true)
+    const id: string = await AsyncStorage.getItem('activeId')
+    await dispatch(getPersonalStore())
+    await dispatch(storeWallet(id))
+    await dispatch(getAllProducts(id))
+    await dispatch(getStaff(id))
+    await dispatch(getAllOrders())
+    await dispatch(getPayouts(id))
+    setLoading(false)
+}
+
+
 
   const data={
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -127,6 +148,16 @@ export const Home = (): JSX.Element => {
         <Text text={item.value} fontWeight='bold' fontSize={hp(30)}/>
     </View>
   )
+
+  if(loading){
+    return (
+        <SafeAreaView>
+            <View style={[globalStyles.rowCenter, {flex: 1}]}>
+                <ActivityIndicator size={'small'}/>
+            </View>
+        </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView>

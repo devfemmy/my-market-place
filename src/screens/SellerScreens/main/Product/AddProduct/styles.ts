@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
   },
   forms: {},
   btn: {
-    marginTop: hp(30),
+    marginTop: hp(10),
     marginBottom: hp(10),
   },
   forgotPassword: {
@@ -87,5 +87,11 @@ export const styles = StyleSheet.create({
       marginRight: hp(15),
       alignItems: 'center',
       justifyContent: 'center'
-  }
+  },
+  flexWrapContainer: {
+    marginHorizontal: hp(12),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
 });

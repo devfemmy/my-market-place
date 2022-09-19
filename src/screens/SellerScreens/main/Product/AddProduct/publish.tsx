@@ -17,20 +17,24 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks';
 import { addSize, newSizes, deleteSize, editSize, addColour, 
     newColours, editColour, deleteColour, images, resetImage, 
     addImage, createProduct, updateProduct, productBySlug, 
-    getAllProducts, getProductBySlug, loading, addSizeColour,
-    UpdateEditableSlug, editableSlug
+    getAllProducts, getProductBySlug, loading, addSizeColour, updateProductVariant,
+    UpdateEditableSlug, editableSlug, createProductVariant, productVariants, createProductVariantSpec,
+    getProductVariants, deleteProductVariantSpec, deleteProductVariant, activateProductVariant, deactivateProductVariant,
+    activateProduct, deactivateProduct
  } from '../../../../../redux/slices/productSlice';
 import { currencyFormat, Notify, firstLetterUppercase } from '../../../../../utils/functions';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { useRoute } from '@react-navigation/native';
 import { userProfile } from '../../../../../redux/slices/userSilce';
-import { ProductCreateFormData } from '../../../../../utils/types';
+import { ProductCreateFormData, ProductVariant } from '../../../../../utils/types';
 
 import { myStore } from '../../../../../redux/slices/StoreSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SuccesssLogo } from '../../../../../constants/images';
 import CustomSlideModal from '../../../../../components/common/CustomSlideModal';
+import {useFormik} from 'formik';
+import { VariantSpecRender } from './SpecRender';
 
 export const PublishProduct = (): JSX.Element => {
     const navigation = useNavigation<Nav>();
@@ -49,6 +53,8 @@ export const PublishProduct = (): JSX.Element => {
 
     const loader = useAppSelector(loading)
 
+    const variants = useAppSelector(productVariants)
+
     const product_slug = useAppSelector(productBySlug)
 
     const user = useAppSelector(userProfile)[0]
@@ -60,6 +66,8 @@ export const PublishProduct = (): JSX.Element => {
 
     const [editData, setEditData] = useState(route?.params?.editData)
 
+    const [adding, setAdding] = useState(false)
+
     const [selectedSize, setSelectedSize] = useState('')
     const [colorDescription, setColorDescription] = useState('')
     const [selectedPrice, setSelectedPrice] = useState('0')
@@ -67,32 +75,67 @@ export const PublishProduct = (): JSX.Element => {
 
     const [successModal, setSuccessModal] = useState(false)
 
+    const initialValues: ProductVariant = {
+        size: "0",
+        quantity: "0",
+        color: "",
+        amount: "0",
+        img_urls: item_images,
+        product_id: "",
+        product_variant_id: ""
+    };
+
+    const { values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue } =
+    useFormik({
+        initialValues,
+        onSubmit: async (val: ProductVariant) => {
+            const processedImages = item_images.filter((val: string) => {
+                if(val != null && val != ''){
+                    return val
+                }
+            })
+            if(processedImages.length < 1){
+                Notify('Error!', 'Please add an image', 'error')
+                return
+            }
+            val.product_id = product_slug?.id
+            val.img_urls = processedImages
+            val.amount = Number(val.amount)
+            val.size = Number(val.size)
+            val.quantity = Number(val.quantity)
+
+            const payload = {
+                img_urls: processedImages,
+                product_id: product_slug?.id,
+                color: val.color,
+                size: val.size,
+                quantity: Number(val.quantity),
+                amount: Number(val.amount)
+            }
+
+            if(!data?.colours && !data.sizes){
+                await NColorNSize(payload)
+            }
+            else if(data?.colours && !data.sizes){
+                await ColorNSize(payload)
+            }
+            else if(!data?.colours && data.sizes) {
+                await NColorSize(payload)
+            }else{
+                await ColorSize(payload)
+            }
+            // await dispatch(createProductVariant(payload))
+            await dispatch(getProductVariants(product_slug?.id))
+            setFieldValue('color', "")
+        },
+    });
+
+    // console.log(variants[0]?.product_variant_specs)
+    // console.log(product_slug)
 
     useEffect(() => {
-        const loadData = async () => {
-            const data = await AsyncStorage.getItem('slug')
-            setSlug(data)
-            dispatch(getProductBySlug(data))
-        }
-        if(editData == null){
-            loadData()
-        }else{
-            editData.variantImg.map((val: string, index: number) => {
-                dispatch(addImage({index: index, uri: val}))
-            })
-        }
+        loadData()
     }, [slug])
-
-    const updateQuantity = (val: string) => {
-        if(val == 'minus' && Number(selectedQuantity) < 1){
-            return
-        }
-        if(val == 'plus'){
-            setSelectedQuantity((Number(selectedQuantity) + 1).toString())
-        }else{
-            setSelectedQuantity((Number(selectedQuantity) - 1).toString())
-        }
-    }
 
     const renderHeader = () => (
         <View style={styles.modal__header}>
@@ -104,587 +147,397 @@ export const PublishProduct = (): JSX.Element => {
         <>
         <Select
             items={sizeList}
-            setState={item => setSelectedSize(item)}
-            defaultValue={selectedSize}
+            setState={item => setFieldValue('size', item)}
+            defaultValue={values.size}
             placeholder={'Size'}
         />
+        {/* <Input
+            label={'Size *'}
+            value={values.size}
+            onChangeText={handleChange('size')}
+            keyboardType={"number-pad"}
+        /> */}
         <Input
             label={'Price *'}
-            value={selectedPrice}
-            onChangeText={(text) => setSelectedPrice(text)}
+            value={values.amount}
+            onChangeText={handleChange('amount')}
             keyboardType={"number-pad"}
         />
         <View style={{alignSelf: 'center', justifyContent: "flex-start", flexDirection: "row", alignItems: "flex-start"}}>
             <View>
                 <Input
                     label={'Quantity'}
-                    value={selectedQuantity}
+                    value={values.quantity}
                     style={{height: wp(52), width: wp(220), marginLeft: hp(-10)}}
-                    onChangeText={(text) => setSelectedQuantity(text)}
+                    onChangeText={handleChange('quantity')}
                     keyboardType={"number-pad"}
                 />
             </View>
             <MiniButton onPress={() => updateQuantity('minus')} style={{marginLeft: hp(15)}} icon={'minus'}/>
             <MiniButton onPress={() => updateQuantity('plus')} icon={'plus'}/>
         </View>
-        <Button onPress={() => addNewSize()} title={'Save and add new'}/>
+        <Button isLoading={adding} disabled={adding} onPress={() => CreateVariantSpec(false)} title={'Save and add new'}/>
         <View style={[globalStyles.rowCenter, globalStyles.cardSeparator, globalStyles.noSeparator, globalStyles.Verticalspacing]}>
-            <TouchableOpacity onPress={() => addNewSize('close')}>
+            <TouchableOpacity disabled={adding} onPress={() => CreateVariantSpec(true)}>
                 <Text text={"Save and close"} color={colors.white} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)}/>
             </TouchableOpacity>
         </View>
         </>
     );
 
-    const renderSizesList = ({index, item}) => {
-        return(
-            <View style={globalStyles.minicardSeparator}>
-                <View style={[globalStyles.rowStart, globalStyles.lowerContainerMini]} >
-                    <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Size: "} />
-                    <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={item.size} />
-                </View>
-                <View style={[globalStyles.rowStart, globalStyles.lowerContainerMini]} >
-                    <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Price: "} />
-                    <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={currencyFormat(item.price)} />
-                </View>
-
-                <View style={[globalStyles.rowBetween, globalStyles.lowerContainerMini]} >
-                    <View style={[globalStyles.rowStart]} >
-                        <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Quantity: "} />
-                        <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={item.quantity} />
-                    </View>
-                    <View style={[globalStyles.rowBetween]}>
-                        <TouchableOpacity onPress={() => editPrevSize(index, item)} style={globalStyles.mini_button}>
-                            <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => dispatch(deleteSize(index))} style={globalStyles.mini_button}>
-                            <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        )
-    }
-
-    const renderColorList = ({index, item}) => {
-        return(
-                <View style={[globalStyles.rowBetween, globalStyles.minicardSeparator, {paddingHorizontal: hp(15), paddingVertical: hp(15)}]}>
+    const renderVariantList = ({index, item}: {item: any, index: number}) => {
+        return (
+            <View>
+                <View style={[globalStyles.rowBetween, {paddingHorizontal: hp(15), paddingVertical: hp(15)}]}>
                     <View style={[globalStyles.rowStart]}>
                         <View style={[globalStyles.rowStartNoOverflow]}>
-                            <Image source={{uri: item?.images[0]}} style={styles.image} />
+                            <Image source={{uri: item?.img_urls[0]}} style={styles.image} />
                         </View>
                         <View style={styles.detContainer}>
-                            <Text text={firstLetterUppercase(item?.colour)} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text} />
-                            <View style={globalStyles.rowStart}>
-                                <Text
-                                text={"Price: "}
-                                fontWeight={"300"}
-                                fontSize={hp(12)}
-                                style={styles.text} />
-                                <Text
-                                // text={currencyFormat(item?.price)}
-                                text={item?.price}
-                                fontWeight={"300"}
-                                fontSize={hp(12)}
-                                color={colors.bazaraTint}
-                                style={styles.text} />
-                            </View>
+                            <Text text={firstLetterUppercase(item?.color)} numberOfLines={1} fontWeight={"400"} fontSize={hp(15)} style={styles.text} />
                         </View>
                     </View>
 
                     <View style={[globalStyles.rowStart]}>
-                        <TouchableOpacity onPress={() => editPrevColor(index, item)} style={globalStyles.mini_button}>
-                            <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
+                        { data?.sizes ?
+                            <TouchableOpacity onPress={() => HandleVariantEdit(item)} style={globalStyles.mini_button}>
+                                <MaterialIcons name={'add'} size={hp(15)} style={{color: colors.white}} />
+                            </TouchableOpacity>
+                            :
+                            null
+                        }
+                        <TouchableOpacity onPress={() => UpdateVariantStatus(item?.id, item?.status)} style={globalStyles.mini_button}>
+                            <MaterialIcons 
+                            name={item?.status?.toLowerCase() === 'active' ? 'check-circle' : 'radio-button-unchecked'} 
+                            size={hp(15)} 
+                            style={{color: colors.white}} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => dispatch(deleteColour(index))} style={globalStyles.mini_button}>
+                        <TouchableOpacity onPress={() => deleteVariant(item?.id)} style={globalStyles.mini_button}>
                             <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
                         </TouchableOpacity>
                     </View>
                 </View>
-        )
-    }
-
-    const editPrevSize = (index: number, item: {size: string, quantity: string, price: string}) => {
-        setSelectedSize(item.size.toString())
-        setSelectedPrice(item.price.toString())
-        setSelectedQuantity(item.quantity.toString())
-        setEditable(index)
-        setEdit(true)
-        setTimeout(() => {modalizeRef.current?.open()}, 200)
-    }
-
-    const editPrevColor = (index: number, item: {colour: string, price: number, quantity: number, images: Array<any>}) => {
-        dispatch(resetImage())
-        item.images.map((val: string, index: number) => {
-            dispatch(addImage({index: index, uri: val}))
-        })
-        setColorDescription(item.colour)
-        setSelectedPrice(item.price.toString())
-        setSelectedQuantity(item.quantity.toString())
-        setEditable(index)
-        setEdit(true)
-    }
-
-    const addNewSize = (val?: string) => {
-        if(selectedSize == '' || Number(selectedPrice) < 1 || Number(selectedQuantity) < 1){
-            return
-        }
-        if(edit){
-            dispatch(editSize({index: editable, item: {size: selectedSize, quantity: Number(selectedQuantity), price: Number(selectedPrice)}}))
-            setEdit(false)
-        }else{
-            dispatch(addSize({size: selectedSize, price: Number(selectedPrice), quantity: Number(selectedQuantity)}))
-        }
-        setSelectedSize('')
-        setSelectedPrice('0')
-        setSelectedQuantity('1')
-
-        if(val == 'close'){
-            modalizeRef.current?.close()
-        }
-    }
-
-    const addNewColour = async () => {
-        const processedImages = item_images.filter((val: string) => {
-            if(val != null && val != ''){
-                return val
-            }
-        })
-        if(processedImages.length < 1 || Number(selectedPrice) < 1 || Number(selectedQuantity) < 1 || colorDescription == ''){
-            Notify('Error!', 'Please check your form', 'error')
-            return
-        }
-
-        if(edit){
-            await dispatch(editColour({index: editable, item: {colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}}))
-            setEdit(false)
-        }else{
-            await dispatch(addColour({colour: colorDescription, price: Number(selectedPrice), quantity: Number(selectedQuantity), images: processedImages}))
-            navigation.goBack()
-        }
-        dispatch(resetImage())
-    }
-
-    const addNewSizeColour = async () => {
-        const processedImages = item_images.filter((val: string) => {
-            if(val != null && val != ''){
-                return val
-            }
-        })
-        if(processedImages.length < 1 || colorDescription == ''){
-            Notify('Error!', 'Please check your form', 'error')
-            return
-        }
-        if(sizes?.length < 1){
-            Notify('Failed!', 'Minimum of 1 size option is required', 'error')
-            return
-        }
-        if(colorDescription == ''){
-            Notify('Failed!', 'Check your color descrption.', 'error')
-            return
-        }
-        await dispatch(addSizeColour({colour: colorDescription, size: sizes, images: processedImages}))
-        navigation.goBack()
-
-        dispatch(resetImage())
-    }
-
-    const renderPage = () => {
-        return (
-            <>
-                <View>
-                    <Input
-                        label={'Price *'}
-                        value={selectedPrice}
-                        onChangeText={(text) => setSelectedPrice(text)}
-                        keyboardType={"number-pad"}
-                    />
-                    <View style={{alignSelf: 'center', justifyContent: "flex-start", flexDirection: "row", alignItems: "flex-start"}}>
-                        <View>
-                            <Input
-                                label={'Quantity'}
-                                value={selectedQuantity}
-                                style={{height: wp(52), width: wp(220), marginLeft: hp(-10)}}
-                                onChangeText={(text) => setSelectedQuantity(text)}
-                                keyboardType={"number-pad"}
-                            />
-                        </View>
-                        <MiniButton onPress={() => updateQuantity('minus')} style={{marginLeft: hp(15)}} icon={'minus'}/>
-                        <MiniButton onPress={() => updateQuantity('plus')} icon={'plus'}/>
-                    </View>
-                </View>
-            </>
-        )
-    }
-
-    const renderSizePage = () => {
-        return (
-            <>
-                <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Size Options" />
-                <FlatList
-                    data={sizes}
-                    renderItem={renderSizesList}
-                    scrollEnabled={false}
-                />
-                <View style={[globalStyles.rowStart, styles.lowerContainer]}>
-                    <MiniButton 
-                    iconSize={hp(15)}
-                    onPress={() => modalizeRef.current?.open()}
-                    iconColor={colors.primaryBg} style={globalStyles.littleButton} 
-                    icon={'plus'}/>
-
-                    <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Horizontalspacing]} fontWeight="400"
-                    color={colors.white}
-                    textAlign='left'
-                    fontSize={hp(16)}
-                    text="Add Sizes" />
-                </View>
-            </>
-        )
-    }
-
-    const renderColourPage = () => {
-        return (
-            <>
-                <View style={globalStyles.minicardSeparator}>
-                    <Input
-                        label={'Colour Description'}
-                        value={colorDescription}
-                        onChangeText={(text) => setColorDescription(text)}
-                    />
-                    <Input
-                        label={'Price *'}
-                        value={selectedPrice}
-                        onChangeText={(text) => setSelectedPrice(text)}
-                        keyboardType={"number-pad"}
-                    />
-                    <View style={{alignSelf: 'center', justifyContent: "flex-start", flexDirection: "row", alignItems: "flex-start"}}>
-                        <View>
-                            <Input
-                                label={'Quantity'}
-                                value={selectedQuantity}
-                                style={{height: wp(52), width: wp(220), marginLeft: hp(-10)}}
-                                onChangeText={(text) => setSelectedQuantity(text)}
-                                keyboardType={"number-pad"}
-                            />
-                        </View>
-                        <MiniButton onPress={() => updateQuantity('minus')} style={{marginLeft: hp(15)}} icon={'minus'}/>
-                        <MiniButton onPress={() => updateQuantity('plus')} icon={'plus'}/>
-                    </View>
-                </View>
-                {/* <FlatList
-                    data={items_by_colors}
-                    renderItem={renderColorList}
-                    scrollEnabled={false}
-                />
-                <View style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]}>
-                    <MiniButton 
-                    iconSize={hp(15)}
-                    onPress={() => addNewColour()}
-                    iconColor={colors.primaryBg} style={globalStyles.littleButton} 
-                    icon={'plus'}/>
-                    
-                    <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Horizontalspacing]} fontWeight="400"
-                    color={colors.white}
-                    textAlign='left'
-                    fontSize={hp(16)}
-                    text={edit ? "Update" : "Add Another Colour"} />
-                </View> */}
-            </>
+                <VariantSpecRender slugId={product_slug?.id} variantId={item?.id} loading={loader} />
+            </View>
         )
     }
 
     const renderColourAndSizePage = () => {
         return (
             <>
-                <View>
-                    <Input
-                        label={'Colour Description'}
-                        value={colorDescription}
-                        onChangeText={(text) => setColorDescription(text)}
-                    />
+                <View style={[globalStyles.rowAround, {marginHorizontal: hp(10)}]}>
+                    <View>
+                        <Input
+                            label={'Color *'}
+                            value={values.color}
+                            onChangeText={handleChange('color')}
+                            style={{width: wp(335)}}
+                            containerStyle={{width: wp(335)}}
+                        />
+                    </View>
                 </View>
-                <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Colour sizes *" />
+                <Button isLoading={loader} title={"Add Variant"} onPress={handleSubmit} style={styles.btn}/>
                 <FlatList
-                    data={sizes}
-                    renderItem={renderSizesList}
+                    data={variants}
+                    renderItem={renderVariantList}
                     scrollEnabled={false}
                 />
-                <View style={[globalStyles.rowStart, styles.lowerContainer]}>
-                    <MiniButton 
-                    iconSize={hp(15)}
-                    onPress={() => modalizeRef.current?.open()}
-                    iconColor={colors.primaryBg} style={globalStyles.littleButton} 
-                    icon={'plus'}/>
-
-                    <Text style={[globalStyles.rowStart, styles.lowerContainer, globalStyles.Horizontalspacing]} fontWeight="400"
-                    color={colors.white}
-                    textAlign='left'
-                    fontSize={hp(16)}
-                    text="Add Sizes" />
-                </View>
             </>
         )
     }
 
-    const SubmitForm = async () => {
-        if(!data.sizes && !data.colours){
-            handleBasic(false, selectedPrice, selectedQuantity, mystore[0]._id, item_images, data)
+    const renderNoColourAndNoSizePage = () => {
+        return (
+            <>
+                <View style={[globalStyles.rowAround, {marginHorizontal: hp(0)}]}>
+                    <View>
+                    <Input
+                        label={'Price *'}
+                        value={values.amount}
+                        onChangeText={handleChange('amount')}
+                        style={{width: wp(335)}}
+                        containerStyle={{width: wp(335)}}
+                    />
+                    <View style={{alignSelf: 'center', justifyContent: "flex-start", flexDirection: "row", alignItems: "flex-start"}}>
+                        <View>
+                            <Input
+                                label={'Quantity'}
+                                value={values.quantity}
+                                style={{height: wp(52), width: wp(215), marginLeft: hp(-10)}}
+                                onChangeText={handleChange('quantity')}
+                                keyboardType={"number-pad"}
+                            />
+                        </View>
+                        <MiniButton onPress={() => updateQuantity('minus')} style={{marginLeft: hp(15)}} icon={'minus'}/>
+                        <MiniButton onPress={() => updateQuantity('plus')} icon={'plus'}/>
+                    </View>
+                    </View>
+                </View>
+                <Button isLoading={loader} title={"Add Variant"} onPress={handleSubmit} style={styles.btn}/>
+                <FlatList
+                    data={variants}
+                    renderItem={renderVariantList}
+                    scrollEnabled={false}
+                />
+            </>
+        )
+    }
+
+    const renderColourAndNoSizePage = () => {
+        return (
+            <>
+                <View style={[globalStyles.rowAround, {marginHorizontal: hp(0)}]}>
+                    <View>
+                    <Input
+                        label={'Color *'}
+                        value={values.color}
+                        onChangeText={handleChange('color')}
+                        style={{width: wp(335)}}
+                        containerStyle={{width: wp(335)}}
+                    />
+                    <Input
+                        label={'Price *'}
+                        value={values.amount}
+                        onChangeText={handleChange('amount')}
+                        style={{width: wp(335)}}
+                        containerStyle={{width: wp(335)}}
+                    />
+                    <View style={{alignSelf: 'center', justifyContent: "flex-start", flexDirection: "row", alignItems: "flex-start"}}>
+                        <View>
+                            <Input
+                                label={'Quantity'}
+                                value={values.quantity}
+                                style={{height: wp(52), width: wp(215), marginLeft: hp(-10)}}
+                                onChangeText={handleChange('quantity')}
+                                keyboardType={"number-pad"}
+                            />
+                        </View>
+                        <MiniButton onPress={() => updateQuantity('minus')} style={{marginLeft: hp(15)}} icon={'minus'}/>
+                        <MiniButton onPress={() => updateQuantity('plus')} icon={'plus'}/>
+                    </View>
+                    </View>
+                </View>
+                <Button isLoading={loader} title={"Add Variant"} onPress={handleSubmit} style={styles.btn}/>
+                <FlatList
+                    data={variants}
+                    renderItem={renderVariantList}
+                    scrollEnabled={false}
+                />
+            </>
+        )
+    }
+
+    const renderNoColourAndSizePage = () => {
+        return (
+            <>
+                <Button isLoading={loader} title={"Add Variant"} onPress={handleSubmit} style={styles.btn}/>
+                <FlatList
+                    data={variants}
+                    renderItem={renderVariantList}
+                    scrollEnabled={false}
+                />
+            </>
+        )
+    }
+
+
+    // SUBBMISSIONS
+
+    const NColorNSize = async (payload: any) => {
+        if(payload?.amount < 500){
+            Notify('Error!', 'Price cannot be less than 500', 'error')
+            return
         }
-        else if(data.sizes && !data.colours){
-            handleSizeAlone(false, sizes, mystore[0]._id, item_images, data)
+        if(payload?.quantity < 1){
+            Notify('Error!', 'Quantity cannot be less than 1', 'error')
+            return
         }
-        else if(!data.sizes && data.colours){
-            addNewColour()
+        const createVariantData: any = {
+            img_urls: payload?.img_urls,
+            product_id: payload?.product_id
         }
-        else if(data.sizes && data.colours){
-            addNewSizeColour()
+        
+        await dispatch(createProductVariant(createVariantData)).then(async (val) => {
+            const createSpecData: any = {
+                amount: payload?.amount,
+                quantity: payload?.quantity,
+                product_variant_id: val?.payload?.id
+            }
+            await dispatch(resetImage())
+            await dispatch(createProductVariantSpec(createSpecData))
+        })
+    }
+
+    const ColorNSize = async (payload: any) => {
+        if(payload?.amount < 500){
+            Notify('Error!', 'Price cannot be less than 500', 'error')
+            return
+        }
+        if(payload?.quantity < 1){
+            Notify('Error!', 'Quantity cannot be less than 1', 'error')
+            return
+        }
+        if(payload?.color == "" || payload?.color == null){
+            Notify('Error!', 'Enter valid value for color', 'error')
+            return
+        }
+
+        const createVariantData: any = {
+            img_urls: payload?.img_urls,
+            product_id: payload?.product_id,
+            color: payload?.color
+        }
+        
+        await dispatch(createProductVariant(createVariantData)).then(async (val) => {
+            const createSpecData: any = {
+                amount: payload?.amount,
+                quantity: payload?.quantity,
+                product_variant_id: val?.payload?.id
+            }
+            await dispatch(resetImage())
+            await dispatch(createProductVariantSpec(createSpecData))
+        })
+    }
+
+    const NColorSize = async (payload: any) => {
+        const createVariantData: any = {
+            img_urls: payload?.img_urls,
+            product_id: payload?.product_id
+        }
+        
+        await dispatch(createProductVariant(createVariantData)).then(async (val) => {
+            await dispatch(resetImage())
+            HandleVariantEdit(val?.payload)
+        })
+    }
+
+    const ColorSize = async (payload: any) => {
+        const createVariantData: any = {
+            img_urls: payload?.img_urls,
+            product_id: payload?.product_id,
+            color: payload?.color
+        }
+        await dispatch(createProductVariant(createVariantData)).then(async (val) => {
+            await dispatch(resetImage())
+            HandleVariantEdit(val?.payload)
+        })
+    }
+
+
+
+    // FUNCTIONS
+
+    const updateQuantity = (val: string) => {
+        if(val == 'minus' && Number(selectedQuantity) < 1) {
+            return
+        }
+
+        if(val == 'minus' && values.quantity < 1){
+            return
+        }
+
+        if(val == 'plus'){
+            setFieldValue('quantity', (Number(values.quantity) + 1).toString())
+            setSelectedQuantity((Number(selectedQuantity) + 1).toString())
         }else{
-            return
+            setFieldValue('quantity', (Number(values.quantity) - 1).toString())
+            setSelectedQuantity((Number(selectedQuantity) - 1).toString())
         }
     }
 
-    const handleBasic = async (
-        draft: boolean, 
-        price: string,
-        quantity: string,
-        id: string,
-        item_images: Array<string>,
-        data: {name: string, description: string, category: string}
-        ) => {
-        const processedImages = item_images.filter((val: string) => {
-            if(val != null && val != ''){
-                return val
-            }
+    const loadData = async () => {
+        const dataslug: any = await AsyncStorage.getItem('slug')
+        setSlug(dataslug)
+        await dispatch(getProductBySlug(dataslug)).then(async (resp) => {
+            await dispatch(getProductVariants(resp?.payload?.id))
         })
-        if(processedImages.length < 1){
-            Notify('Failed!', 'Minimum of 1 image upload is required', 'error')
-            return
-        }
-
-        if(Number(price) < 500){
-            Notify('Failed!', 'Minimum price of N500', 'error')
-            return
-        }
-
-        if(Number(quantity) < 1){
-            Notify('Failed!', 'Invalid quantity', 'error')
-            return
-        }
-    
-        const payload: ProductCreateFormData = {
-            id: product_slug._id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: [
-                {
-                    spec: [
-                        {
-                            price: price,
-                            quantity: quantity
-                        }
-                    ],
-                    variantImg: processedImages
-                }
-            ],
-            isDraft: draft,
-            status: 'active'
-        }
-        try {
-            var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
-                // Notify('Product Added!', 'Your product was successfully added', 'success')
-                console.log(resultAction)
-                setSuccessModal(true)
-                await dispatch(getAllProducts(id))
-                // Lets check 
-            }else{
-                Notify('Product not Added!', 'Your product was not added', 'error')
-            }
-        } catch (error) {
-            Notify('Product not Added!', 'Your product was not added', 'error')
-            console.log(error)
-        }
-    }
-
-    const handleSizeAlone = async (
-        draft: boolean, 
-        sizes: Array<any>,
-        id: string,
-        item_images: Array<string>,
-        data: {name: string, description: string, category: string}
-        ) => {
-        if(product_slug?._id == null){
-            navigation.goBack()
-            return
-        }
-        const processedImages = item_images.filter((val: string) => {
-            if(val != null && val != ''){
-                return val
-            }
-        })
-        if(sizes?.length < 1){
-            Notify('Failed!', 'Minimum of 1 size option is required', 'error')
-            return
-        }
-        if(processedImages.length < 1){
-            Notify('Failed!', 'Minimum of 1 image upload is required', 'error')
-            return
-        }
-
-        const payload: ProductCreateFormData = {
-            id: product_slug._id,
-            name: data?.name,
-            description: data?.description,
-            categories: data?.category,
-            variants: [
-                {
-                    spec: sizes,
-                    variantImg: processedImages
-                }
-            ],
-            isDraft: draft,
-            status: 'active'
-        }
-
-        try {
-            var resultAction = await dispatch(updateProduct(payload))
-            if(updateProduct.fulfilled.match(resultAction) && resultAction?.payload){
-                // Notify('Product Added!', 'Your product was successfully added', 'success')
-                setSuccessModal(true)
-                await dispatch(getAllProducts(id));
-                // Lets check
-            }else{
-                Notify('Product not Added!', 'Your product was not added', 'error')
-            }
-        } catch (error) {
-            Notify('Product not Added!', 'Your product was not added', 'error')
-            console.log(error)
-        }
     }
 
     const BtnTitle = () => {
-        if(!data.sizes && data.colours){
-            return 'Add this colour'
-        }
-        else if(data.sizes && data.colours){
-            return 'Add this colour'
-        }
-        else if(editData != null && edit){
-            return 'Update'
-        }
-        else if(editData != null && !edit){
-            return 'Done'
+        if(product_slug?.status?.toLowerCase() == 'inactive'){
+            return 'Activate Product'
         }
         else{
-            return 'Publish'
+            return 'Deactivate Product'
         }
 
     }
 
-    const renderEditableList = ({index, item}) => {
-        
-        return (
-        <View style={globalStyles.minicardSeparator}>
-            <View style={[globalStyles.rowStart, globalStyles.lowerContainerMini]} >
-                <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Size: "} />
-                <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={item?.size} />
-            </View>
-            <View style={[globalStyles.rowStart, globalStyles.lowerContainerMini]} >
-                <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Price: "} />
-                <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={currencyFormat(item?.price)} />
-            </View>
-
-            <View style={[globalStyles.rowBetween, globalStyles.lowerContainerMini]} >
-                <View style={[globalStyles.rowStart]} >
-                    <Text fontWeight="500" color={colors.darkGrey} textAlign='left' fontSize={hp(15)} text={"Quantity: "} />
-                    <Text fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(15)} text={item?.quantity} />
-                </View>
-                <View style={[globalStyles.rowBetween]}>
-                    <TouchableOpacity onPress={() => onEdit(item, index)} style={globalStyles.mini_button}>
-                        <MaterialIcons name={'edit'} size={hp(15)} style={{color: colors.white}} />
-                    </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={() => dispatch(deleteSize(index))} style={globalStyles.mini_button}>
-                        <FontAwesome name={'trash-o'} size={hp(16)} style={{color: colors.white}} />
-                    </TouchableOpacity> */}
-                </View>
-            </View>
-        </View>
-        )
+    const HandleVariantEdit = async (item: any) => {
+        console.log(item)
+        setFieldValue('color', item?.color)
+        setFieldValue('img_urls', item?.img_urls)
+        setFieldValue('product_variant_id', item?.id)
+        setTimeout(() => {modalizeRef.current?.open()}, 200)
     }
 
-    const onEdit = (item: any, index: number) => {
-        setEdit(true)
-        setEditable(index)
-        setSelectedPrice(item.price.toString())
-        setSelectedQuantity(item.quantity.toString())
+    const CreateVariantSpec = async (close: boolean) => {
+        setAdding(true)
+        const payload = {
+            size: values.size,
+            quantity: Number(values.quantity),
+            amount: Number(values.amount),
+            product_variant_id: values.product_variant_id
+        }
+        await dispatch(createProductVariantSpec(payload))
+        await dispatch(getProductVariants(product_slug?.id))
+
+        setFieldValue('size', "")
+        setFieldValue('amount', "")
+        setFieldValue('quantity', "")
+
+        if(close){
+            modalizeRef.current?.close()
+        }
+        setAdding(false)
     }
 
-    const onEditUpdate = () => {
-        let newEditData = editData.spec[editable]
-        newEditData.quantity = selectedQuantity
-        // setEditData(newEditData)
+    const deleteVariant = async (id: string) => {
+        await dispatch(deleteProductVariant(id))
+        await dispatch(getProductVariants(product_slug?.id))
     }
 
-    const RenderHandleEdit = () => {
-        return (
-            <FlatList
-                data={editData.spec}
-                renderItem={renderEditableList}
-                scrollEnabled={false}
-            />
-        )
+    const deleteVariantSpec = async (id: string) => {
+        await dispatch(deleteProductVariantSpec(id))
+        await dispatch(getProductVariants(product_slug?.id))
     }
 
-    const statusBody = () => {
-        <>
-            <View style={globalStyles.modal__body}>
-                <Image source={SuccesssLogo} style={[globalStyles.selfCenterImage, globalStyles.Verticalspacing]} resizeMode="contain" />
-                <Text style={[globalStyles.Verticalspacing]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(17)} text="Order Rejected" />
-                <Text style={[globalStyles.Verticalspacing]} numberOfLines={2} fontWeight="400" color={colors.darkGrey} textAlign='center' fontSize={hp(15)} text={modalDesc} />
-            </View>
-            <View style={{marginVertical: hp(20)}}>
-                <Button title={modalBtn}/>
-            </View>
-            <TouchableOpacity onPress={() => modalizeRef.current?.close()}>
-                <Text style={[globalStyles.Verticalspacing, {alignSelf: 'center'}]} fontWeight="400" color={colors.white} textAlign='center' fontSize={hp(15)} text="I'll do this later" />
-            </TouchableOpacity>
-        </>
-    } 
+    const UpdateVariantStatus = async (id: string, status: string) => {
+        console.log(status?.toLowerCase())
+        if(status?.toLowerCase() === 'inactive'){
+            await dispatch(activateProductVariant(id))
+        }else{
+            await dispatch(deactivateProductVariant(id))
+        }
+        await dispatch(getProductVariants(product_slug?.id))
+    }
+
+    const UpdateProductStatus = async () => {
+        if(product_slug?.status?.toLowerCase() === 'inactive'){
+            console.log(product_slug?.id)
+            await dispatch(activateProduct(product_slug?.id))
+        }else{
+            await dispatch(deactivateProduct(product_slug?.id))
+        }
+
+        const data = await AsyncStorage.getItem('slug')
+        dispatch(getProductBySlug(data))
+    }
 
     return (
         <>
         <ScrollView style={[globalStyles.wrapper, {paddingTop: hp(20)}]}>
-            <Text style={[styles.lowerContainer]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(16)} text="Upload colour images" />
+            <Text style={[styles.lowerContainer]} fontWeight="500" color={colors.white} textAlign='left' fontSize={hp(16)} text="Upload images" />
             <ImageSelect/>
-            {/* { editData == null ?
-                <>
-                    {data?.sizes && data?.colours ? renderColourAndSizePage():null}
-                    {!data?.sizes && !data?.colours ? renderPage():null}
-                    {data?.sizes && !data?.colours ? renderSizePage():null}
-                    {!data?.sizes && data?.colours ? renderColourPage():null}
-                    <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-                        <Button isLoading={loader} title={BtnTitle()} onPress={SubmitForm} style={styles.btn}/>
-                    </View>
-                </>
-                :
-                <>
-                    {renderPage()}
-                    {RenderHandleEdit()}
-                    <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-                        <Button isLoading={loader} title={BtnTitle()} onPress={() => onEditUpdate()} style={styles.btn}/>
-                    </View>
-                </>
-            } */}
-            {data?.sizes && data?.colours ? renderColourAndSizePage():null}
-            {!data?.sizes && !data?.colours ? renderPage():null}
-            {data?.sizes && !data?.colours ? renderSizePage():null}
-            {!data?.sizes && data?.colours ? renderColourPage():null}
-            <View style={[globalStyles.rowCenter, {marginBottom: hp(50)}]}>
-                <Button isLoading={loader} title={BtnTitle()} onPress={SubmitForm} style={styles.btn}/>
-            </View>
+            { !data?.colours && !data.sizes ? renderNoColourAndNoSizePage() : null}
+            { data?.colours && !data.sizes ? renderColourAndNoSizePage() : null }
+            { !data?.colours && data.sizes ? renderNoColourAndSizePage() : null }
+            { data?.colours && data.sizes ? renderColourAndSizePage() : null}
+            <View style={{marginBottom: hp(200)}}/>
         </ScrollView>
+        {/* <View style={{position: 'absolute', bottom: hp(30), width: '100%'}}>
+            <Button isLoading={loader} title={BtnTitle()} onPress={() => UpdateProductStatus()} style={styles.btn}/>
+        </View> */}
         <Modalize
         modalStyle={{backgroundColor: colors.primaryBg}}
         keyboardAvoidingOffset={100}
@@ -698,20 +551,6 @@ export const PublishProduct = (): JSX.Element => {
         >
             {renderSizeBody()}
         </Modalize>
-        {/* STATUS */}
-        {/* <Modalize
-        modalStyle={{backgroundColor: colors.primaryBg}}
-        keyboardAvoidingOffset={100}
-        adjustToContentHeight
-        scrollViewProps={{ keyboardShouldPersistTaps: 'handled' }}
-        ref={statusRef}
-        overlayStyle={{backgroundColor: 'rgba(0, 0, 0, 0.7)'}}
-        handlePosition={'inside'}
-        handleStyle={{backgroundColor: colors.darkGrey}}
-        HeaderComponent={renderHeader}
-        >
-            {statusBody}
-        </Modalize> */}
         <CustomSlideModal 
         onButtonPress={() => navigation.popToTop()} 
         msg={'You have successfully updated your product!'} 
