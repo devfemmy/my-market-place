@@ -107,10 +107,18 @@ export type UserState = {
   loading: boolean,
 }
 
+export type CartState = {
+  carts: Array<any>,
+  error: any,
+  loading: boolean,
+}
+
 export type ProductState = {
   myProducts: Array<any>,
   productVariants: Array<any>,
   productSpec: Array<any>,
+  buyerProducts: Array<any>,
+  buyerProduct: Array<any>,
   selectedProducts: Array<any>,
   productBackground: Array<any>,
   searching: boolean,
@@ -204,6 +212,7 @@ export type AuthButtonProps = ComponentProps<typeof BaseButton> & {
 export type ButtonProps = ComponentProps<typeof BaseButton> & {
   title: string;
   isLoading?: boolean;
+  small?: boolean;
   loaderColor?: string;
   outlined?: boolean;
   style?: StyleProp<ViewStyle>;

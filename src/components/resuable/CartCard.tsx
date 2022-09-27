@@ -1,5 +1,5 @@
 import { View, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import React, { useEffect} from 'react'
+import React, { useEffect, useState} from 'react'
 import { SafeAreaView, Text } from '../../components/common'
 import { globalStyles } from '../../styles'
 import { useNavigation } from '@react-navigation/native'
@@ -10,29 +10,64 @@ import { firstLetterUppercase } from '../../utils/functions'
 import { numberFormat } from '../../utils/helpers'
 import QtyBtn from './QtyBtn'
 import { icons } from '../../utils/constants'
+import { updateCart, deleteCart, getCarts } from '../../redux/slices/cartSlice'
+import { useAppDispatch } from '../../redux/hooks'
 
-const CartCard = ({item}) => {
+
+const CartCard = ({item, onDelete, onAdd, onSubt}) => {
     // const  { navigate } = useNavigation<Nav>();
+    // const dispatch = useAppDispatch()
+    // const [quant, setQuanty] = useState(0)
+
+    const updateQuantity = async (quantity) => {
+
+    }
+
+    const deleteItem = async () => {
+        const dispatch = useAppDispatch()
+        console.log("hhhhhh")
+        // await dispatch(deleteCart(item?.id))
+        // await dispatch(getCarts())
+    }
 
     return (
         <View style={styles.comp}>
             <View style={[globalStyles.rowStart]}>
                 <View style={styles.imageCard}>
-                    <Image source={{uri: item?.productDetail?.imgUrls[0]}} resizeMode='cover' style={styles.imageContainer} />
+                    <Image source={{uri: item?.variant_img_url}} resizeMode='cover' style={styles.imageContainer} />
                 </View>
                 <View style={[globalStyles.rowBetween, {width: wp(280)}]}>
                     <View style={styles.detailsContainer}>
-                        <Text 
-                        text={firstLetterUppercase(item?.productDetail?.description)} 
+                        {/* <Text
+                        text={`Color: ${firstLetterUppercase(item?.color)}, Size: ${item?.size || "N/A"}`} 
                         fontSize={hp(16)}
                         color={colors.white}
                         fontWeight={'400'}
                         textAlign={'center'}
                         numberOfLines={1}
                         style={{marginTop: hp(5)}}
+                        /> */}
+                        <Text
+                        text={`Color: ${firstLetterUppercase(item?.color || "N/A")}`} 
+                        fontSize={hp(13)}
+                        color={colors.white}
+                        fontWeight={'400'}
+                        textAlign={'center'}
+                        numberOfLines={1}
+                        style={{marginTop: hp(5)}}
                         />
+                        <Text
+                        text={`Size: ${item?.size || "N/A"}`} 
+                        fontSize={hp(13)}
+                        color={colors.white}
+                        fontWeight={'400'}
+                        textAlign={'center'}
+                        numberOfLines={1}
+                        style={{marginTop: hp(5)}}
+                        />
+
                         <Text 
-                        text={`₦${numberFormat(Number(item?.productDetail?.price))}`} 
+                        text={`₦${numberFormat(Number(item?.amount))}`} 
                         fontSize={hp(18)}
                         color={colors.dispatched}
                         textAlign={'center'}
@@ -41,10 +76,10 @@ const CartCard = ({item}) => {
                         style={{marginTop: hp(5)}}
                         />
                     </View>
-                    <QtyBtn value={item?.productDetail?.quantity} size={hp(15)}/>
+                    <QtyBtn onAdd={onAdd} onMinus={onSubt} value={item?.quantity} size={hp(10)}/>
                 </View>
             </View>
-            <View style={[globalStyles.rowStart, {marginTop: hp(10)}]}>
+            <TouchableOpacity onPress={onDelete} style={[globalStyles.rowStart, {marginTop: hp(10)}]}>
                 <icons.FontAwesome5 name="trash" size={14} color={colors.bazaraTint} />
                 <Text
                 text={' Remove item'} 
@@ -54,7 +89,7 @@ const CartCard = ({item}) => {
                 textAlign={'center'}
                 numberOfLines={1}
                 />
-            </View>
+            </TouchableOpacity>
             
         </View>
     )

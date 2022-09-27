@@ -13,10 +13,11 @@ export const Button = memo(
     outlined,
     style,
     containerStyle,
+    small,
     ...rest
   }: ButtonProps) => {
     return (
-      <View style={[containerStyle, styles.container]}>
+      <View style={[small ? styles.container2 : styles.container, containerStyle]}>
         <BaseButton
           disabled={isLoading}
           status={outlined ? 'control' : 'primary'}
@@ -39,6 +40,9 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '90%',
+    alignSelf: 'center',
+  },
+  container2: {
     alignSelf: 'center',
   },
 });

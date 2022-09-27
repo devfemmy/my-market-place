@@ -29,6 +29,9 @@ export const getProfileRequest = async (url: String, v?: String) => {
 
     const token = await AsyncStorage.getItem("token");
 
+    console.log(token)
+    console.log(config?.databaseUrl2 + url)
+
     var response = await axios.get(config?.databaseUrl2 + url, {
         headers: {
           authorization: `Bearer ${token}`,
@@ -47,8 +50,6 @@ export const sendPost = async ( url: String, payload: any, v?: String) => {
           authorization: `Bearer ${token}`,
         },
       });
-
-
     return response
         
 };

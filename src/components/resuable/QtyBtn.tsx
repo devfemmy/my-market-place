@@ -14,13 +14,13 @@ const QtyBtn = ({value, size, onAdd, onMinus}) => {
     // const  { navigate } = useNavigation<Nav>();
 
     return (
-        <View style={[globalStyles.rowStart, styles.comp]}>
-            <TouchableOpacity onPress={onMinus}>
-                <icons.Entypo name="minus" size={size * 1.2} color={colors.gray} />
+        <View style={[globalStyles.rowBetween, styles.comp, {padding: size}]}>
+            <TouchableOpacity disabled={value < 1} onPress={onMinus}>
+                <icons.Entypo name="minus" size={hp(20)} color={colors.gray} />
             </TouchableOpacity>
             <Text 
                 text={value || 0} 
-                fontSize={size}
+                fontSize={hp(15)}
                 color={colors.gray}
                 fontWeight={'400'}
                 textAlign={'center'}
@@ -28,7 +28,7 @@ const QtyBtn = ({value, size, onAdd, onMinus}) => {
                 style={{marginHorizontal: hp(10)}}
             /> 
             <TouchableOpacity onPress={onAdd}>
-                <icons.Entypo name="plus" size={size * 1.2} color={colors.gray} />
+                <icons.Entypo name="plus" size={hp(20)} color={colors.gray} />
             </TouchableOpacity>
         </View>
     )

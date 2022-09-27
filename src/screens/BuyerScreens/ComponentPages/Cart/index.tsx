@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {SafeAreaView, Text} from '../../../../components/common';
-import { View, ActivityIndicator, StatusBar, StyleSheet, Image, ScrollView, FlatList } from 'react-native';
+import { View, ActivityIndicator, StatusBar, StyleSheet, Image, ScrollView, FlatList, Alert } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
 import { AuthContext } from '../../../../context/context';
@@ -11,7 +11,7 @@ import { colors } from '../../../../utils/themes';
 import { hp } from '../../../../utils/helpers';
 import CartCard from '../../../../components/resuable/CartCard';
 import { CART_DATA } from '../../DummyData';
-import { getCart, cart, loading, error } from '../../../../redux/slices/cartSlice';
+import { getCarts, CartData, loading, error, deleteCart, updateCart } from '../../../../redux/slices/cartSlice';
 import { numberFormat } from '../../../../utils/helpers';
 import { Modalize } from 'react-native-modalize';
 import { Input } from '../../../../components/common/TextInput';
@@ -23,14 +23,14 @@ import { DeliveryAddressFormData } from '../../../../utils/types';
 export const Cart = (): JSX.Element => {
   const navigation = useNavigation<Nav>();
   const dispatch = useAppDispatch()
-  const cartData = useAppSelector(cart)
-
+  const cartData = useAppSelector(CartData)
+  const loader = useAppSelector(loading)
   const [cities, setCities] = useState([])
 
   const modalizeRef = useRef(null);
 
-  const getCities = (state) => {
-    const arr = locationData?.filter((val) => {
+  const getCities = (state: any) => {
+    const arr: Array<any> = locationData?.filter((val) => {
         if(state == val?.state){
             return val
         }
@@ -51,10 +51,10 @@ export const Cart = (): JSX.Element => {
     });
 
   useEffect(() => {
-    dispatch(getCart())
+    dispatch(getCarts())
   }, [])
 
-  const Bill = ({title, value, size, total}) => (
+  const Bill = ({title, value, size, total}:{title: string, value: any, size: any, total: any}) => (
     <View style={[globalStyles.rowBetween, {marginTop: hp(10)}]}>
         <Text
         text={title} 
@@ -79,19 +79,91 @@ export const Cart = (): JSX.Element => {
     return data?.state
   });
 
+  const getSubTotal = (data: any) => {
+    if(!data || data?.length < 1){
+      return 0
+    }
+    const amounts = data?.map((val) => {
+      if(val?.amount){
+        return val?.amount * val?.quantity
+      }
+    })
+    const sum = amounts.reduce(add, 0)
+    return sum
+  }
+
+  const add = (accumulator: any, a: any) => {
+    return accumulator + a;
+  }
+
+  const confirmDelete = async (id) => {
+    await dispatch(deleteCart(id))
+    await dispatch(getCarts())
+  }
+
+  const deleteItem = (id: any) => {
+    Alert.alert(
+      'Remove Item',
+      'Are you sure you want to remove this item?',
+      [
+        {text: 'yes', onPress: () => confirmDelete(id)},
+        {text: 'no', onPress: () => console.log('Nothing!')},
+      ]
+    );
+  }
+
+  const updateItem = async (id: string, qty: number, action: any) => {
+    let newQuant = qty
+    if(action == "minus"){
+      newQuant = newQuant - 1
+    }else{
+      newQuant = newQuant + 1
+    }
+    const payload = {
+      id: id,
+      quantity: newQuant
+    }
+    if(newQuant < 1){
+      deleteItem(id)
+      return
+    }
+    await dispatch(updateCart(payload))
+    await dispatch(getCarts())
+  }
+
+  if(loader){
+    return (
+        <SafeAreaView>
+            <View style={[globalStyles.rowCenter, {flex: 1}]}>
+                <ActivityIndicator size={'small'}/>
+            </View>
+        </SafeAreaView>
+    )
+  }
+
   return (
     <View style={[globalStyles.wrapper, {paddingHorizontal: hp(15)}]}>
         <FlatList
-            data={CART_DATA}
-            renderItem={CartCard}
+            data={cartData}
+            renderItem={
+              ({item}) => 
+              <CartCard 
+              item={item} 
+              onDelete={() => deleteItem(item?.id)}
+              onAdd={() => updateItem(item?.id, item?.quantity, "plus")}
+              onSubt={() => updateItem(item?.id, item?.quantity, "minus")}
+              />
+            }
             keyExtractor={(item) => item?._id}
+            showsVerticalScrollIndicator={false}
         />
         <View style={[globalStyles.rcolCenter]}>
-            <Bill title={'Sub total'} value={`₦${numberFormat(8000)}`} size={hp(15)} total={false} />
+            <Bill title={'Sub total'} value={`₦${numberFormat(getSubTotal(cartData))}`} size={hp(15)} total={false} />
             <Bill title={'Delivery fee'} value={`₦${numberFormat(1000)}`} size={hp(15)} total={false} />
-            <Bill title={'Total Payment'} value={`₦${numberFormat(9000)}`} size={hp(18)} total={true} />
+            <Bill title={'Total Payment'} value={`₦${numberFormat(getSubTotal(cartData) + 1000)}`} size={hp(18)} total={true} />
             <Button isLoading={false} title={'Proceed'} style={styles.btn} onPress={() => modalizeRef.current?.open()} />
         </View>
+
         <Modalize
         modalStyle={{backgroundColor: colors.primaryBg}}
         keyboardAvoidingOffset={100}

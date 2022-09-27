@@ -12,19 +12,28 @@ import { firstLetterUppercase } from '../../../../../utils/functions'
 import { getAllCategories, allCategories, loading } from '../../../../../redux/slices/sideHustleSlice'
 import { PRODUCTS_DATA } from '../../../DummyData'
 import BuyerProductCard from '../../../../../components/resuable/BuyerProductCard'
+import { buyerProducts, getProductBuyer } from '../../../../../redux/slices/productSlice'
 
 const TopProducts = () => {
     const navigation = useNavigation<Nav>();
+
+    const dispatch = useAppDispatch()
+    const products = useAppSelector(buyerProducts)
+
+    useEffect(() => {
+        dispatch(getProductBuyer())
+    }, [])
 
     const renderItem = ({ item }) => (
         <BuyerProductCard item={item} />
     );
 
+
     return (
         <View style={[styles.comp]}>
-            <SubHeader name={'Top Selling Products'} onPress={() => navigation.navigate('Products', {title: 'Top Selling Products', data: PRODUCTS_DATA})} />
+            <SubHeader name={'Top Selling Products'} onPress={() => navigation.navigate('Products', {title: 'Top Selling Products', data: products})} />
             <FlatList
-                data={PRODUCTS_DATA}
+                data={products}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
                 horizontal
