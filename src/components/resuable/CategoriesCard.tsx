@@ -18,11 +18,11 @@ const CategoryCard = ({item}) => {
         onPress={() => navigation.navigate('Products', {title: firstLetterUppercase(item?.categoryName), data: PRODUCTS_DATA})}
         style={[styles.comp]}>
             <View style={styles.imageCard}>
-                <Image source={{uri: item?.imgUrl}} resizeMode='cover' style={styles.imageContainer} />
+                <Image source={{uri: item?.img_url}} resizeMode='cover' style={styles.imageContainer} />
             </View>
             <View style={{width: wp(160), alignItems: 'flex-start', marginTop: hp(5)}}>
                 <Text 
-                text={firstLetterUppercase(item?.categoryName)} 
+                text={firstLetterUppercase(item?.category)} 
                 fontSize={hp(14)}
                 color={colors.white}
                 textAlign={'center'}

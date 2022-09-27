@@ -15,6 +15,8 @@ const initialState: ProductState = {
     productSpec: [],
     selectedProducts: [],
     productBackground: [],
+    buyerProducts: [],
+    buyerProduct: [],
     searching: false,
     productBySlug: null,
     editableSlug: null,
@@ -41,6 +43,16 @@ export const getAllProducts = createAsyncThunk(
     'product/allProducts',
     async (payload: string) => {
         const response = await getRequest(`/product/seller?store_id=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const getProductBuyer = createAsyncThunk(
+    'product/getProductBuyer',
+    async () => {
+        const response = await getRequest(`/product`)
         if (response?.status === 200) {
             return response?.data?.data
         }
@@ -559,6 +571,18 @@ export const ProductSlice = createSlice({
             state.error = action.error.message
         })
 
+        builder.addCase(getProductBuyer.pending, (state, action) => {
+            state.loading = true
+        }),
+        builder.addCase(getProductBuyer.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.buyerProducts = action.payload
+        })
+        builder.addCase(getProductBuyer.rejected, (state, action) => {
+            state.buyerProducts = []
+            state.error = action.error.message
+        }),
+
 
 
         builder.addCase(getPayoutBackground.pending, (state) => {
@@ -621,6 +645,19 @@ export const ProductSlice = createSlice({
         builder.addCase(getProductBySlug.rejected, (state, action) => {
             state.error = action.error.message,
             state.productBySlug = null
+        })
+
+        builder.addCase(getProductBySlugBuyer.pending, (state, action) => {
+            state.loading = true,
+            state.productBySlug = null
+        }),
+        builder.addCase(getProductBySlugBuyer.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false,
+            state.buyerProduct = action.payload
+        })
+        builder.addCase(getProductBySlugBuyer.rejected, (state, action) => {
+            state.error = action.error.message,
+            state.productBySlug = []
         })
 
 
@@ -838,5 +875,7 @@ export const productBySlug = (state: RootState) => state.product.productBySlug;
 export const newSizes = (state: RootState) => state.product.newSizes;
 export const newColours = (state: RootState) => state.product.newColours;
 export const newSizeColours = (state: RootState) => state.product.newSizeColours;
+export const buyerProducts = (state: RootState) => state.product.buyerProducts;
+export const buyerProduct = (state: RootState) => state.product.buyerProduct;
 
 export default ProductSlice.reducer;

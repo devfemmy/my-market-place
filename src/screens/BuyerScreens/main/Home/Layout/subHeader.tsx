@@ -11,7 +11,7 @@ import { hp } from '../../../../../utils/helpers'
 import { Nav } from '../../../../../utils/types'
 
 
-const SubHeader = ({name, onPress}) => {
+const SubHeader = ({name, onPress} : {name: string, onPress?: any}) => {
     const  { navigate } = useNavigation<Nav>();
 
     return (
@@ -20,6 +20,7 @@ const SubHeader = ({name, onPress}) => {
             text={`${name}`} 
             fontSize={hp(17)}
             color={colors.white}
+            fontWeight={"500"}
             />
             { onPress ?
                 <TouchableOpacity onPress={onPress} style={{flexDirection: 'row'}}>

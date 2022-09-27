@@ -11,15 +11,16 @@ import SubHeader from './subHeader'
 import { firstLetterUppercase } from '../../../../../utils/functions'
 import { getAllCategories, allCategories, loading } from '../../../../../redux/slices/sideHustleSlice'
 import { CATEGORIES_DATA, PRODUCTS_DATA } from '../../../DummyData'
+import { getCategories, categories } from '../../../../../redux/slices/productSlice'
 
 const AllCategories = () => {
     const  navigation = useNavigation<Nav>();
 
     const dispatch = useAppDispatch()
-    const categories = useAppSelector(allCategories)
+    const all_categories = useAppSelector(categories)
 
     useEffect(() => {
-        dispatch(getAllCategories())
+        dispatch(getCategories())
     }, [])
 
     const renderItem = ({ item }) => (
@@ -27,11 +28,11 @@ const AllCategories = () => {
         onPress={() => navigation.navigate('Products', {title: firstLetterUppercase(item?.categoryName), data: PRODUCTS_DATA})}
         style={styles.itemContainer}>
             <View style={styles.imageCard}>
-                <Image source={{uri: item?.imgUrl}} resizeMode='cover' style={styles.imageContainer} />
+                <Image source={{uri: item?.img_url}} resizeMode='cover' style={styles.imageContainer} />
             </View>
             <View style={{width: wp(70), alignItems: 'center', marginTop: hp(5)}}>
                 <Text 
-                text={firstLetterUppercase(item?.categoryName)} 
+                text={firstLetterUppercase(item?.category)} 
                 fontSize={hp(13)}
                 color={colors.white}
                 textAlign={'center'}
@@ -43,9 +44,9 @@ const AllCategories = () => {
 
     return (
         <View style={[styles.comp]}>
-            <SubHeader name={'Categories'} onPress={() => navigation.navigate('Categories', {title: 'Bazara Categories', data: CATEGORIES_DATA})} />
+            <SubHeader name={'Categories'} onPress={() => navigation.navigate('Categories', {title: 'Bazara Categories', data: all_categories})} />
             <FlatList
-                data={CATEGORIES_DATA}
+                data={all_categories}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
                 horizontal

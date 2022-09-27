@@ -14,12 +14,12 @@ const BuyerProductCard = ({item}) => {
 
     return (
         <View style={[styles.comp]}>
-            <View style={styles.imageCard}>
-                <Image source={{uri: item?.img[0]}} resizeMode='cover' style={styles.imageContainer} />
-            </View>
+            <TouchableOpacity onPress={() => navigate("ProductDetails", {data: item})} style={styles.imageCard}>
+                <Image source={{uri: item?.img_url}} resizeMode='cover' style={styles.imageContainer} />
+            </TouchableOpacity>
             <View style={{width: wp(160), alignItems: 'flex-start', marginTop: hp(5)}}>
                 <Text 
-                text={firstLetterUppercase(item?.displayName)} 
+                text={firstLetterUppercase(item?.name)} 
                 fontSize={hp(14)}
                 color={colors.white}
                 textAlign={'center'}
@@ -27,7 +27,7 @@ const BuyerProductCard = ({item}) => {
                 style={{marginTop: hp(5)}}
                 />
                 <Text 
-                text={`₦${numberFormat(Number(item?.pricing))}`} 
+                text={`₦${numberFormat(Number(item?.pricing) || 0)}`} 
                 fontSize={hp(12)}
                 color={colors.dispatched}
                 textAlign={'center'}
