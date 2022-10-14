@@ -20,6 +20,22 @@ export const currencyFormat = (value: string | number | any) =>{
     }}
 }
 
+export const Initials = (name: string) => {
+    var names = name.split(" ");
+    for(var i = 0; i < names.length; i++){
+      if(names[i] == "" || names[i] == " "){
+        names.splice(i, 1)
+      }
+    }
+    if(names.length > 1){
+      return names[0][0].toUpperCase() + names[1][0].toUpperCase()
+    }
+    else{
+      return names[0][0].toUpperCase()
+    }
+    
+}
+
 export const statusColor = (value: string) =>{
     
     if(value == "pending"){
