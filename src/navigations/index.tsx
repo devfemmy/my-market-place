@@ -20,7 +20,7 @@ export const NavigationContainerComponent = (): JSX.Element => {
       AsyncStorage.getItem("token")
       .then(async value => {
         if(value){
-          setUserToken(value)
+        //  setUserToken(value)
         }
         setLoading(false)
       })
@@ -33,7 +33,7 @@ export const NavigationContainerComponent = (): JSX.Element => {
   const authContext = useMemo(
     () => ({
       signIn: (token: string) => {
-        setUserToken(token);
+      //  setUserToken(token);
       },
       signOut: () => {
         setUserToken(null);
@@ -55,22 +55,26 @@ export const NavigationContainerComponent = (): JSX.Element => {
   );
 
   return (
-    <AuthContext.Provider value={{authContext, journeyContext}}>
-      {loading ?
-      <View style={[globalStyles.wrapper, {alignItems: 'center', justifyContent: 'center'}]}>
-        <ActivityIndicator size={'small'}/>
-      </View>
-      :
-      ( journey == 'seller' ?
-        <NavigationContainer>
-          {userToken === null ? <AuthStackNavigator /> : <SellerMainStackNavigator />}
-        </NavigationContainer>
-        :
-        <NavigationContainer>
-          {userToken === null ? <AuthStackNavigator /> : <BuyerMainStackNavigator />}
-        </NavigationContainer>
-      )
-      }
-    </AuthContext.Provider>
+    // <AuthContext.Provider value={{authContext, journeyContext}}>
+    //   {loading ?
+    //   <View style={[globalStyles.wrapper, {alignItems: 'center', justifyContent: 'center'}]}>
+    //     <ActivityIndicator size={'small'}/>
+    //   </View>
+    //   :
+    //   ( journey == 'seller' ?
+    //     <NavigationContainer>
+    //       {userToken === null ? <AuthStackNavigator /> : <SellerMainStackNavigator />}
+    //     </NavigationContainer>
+    //     :
+    //     <NavigationContainer>
+    //       {userToken === null ? <AuthStackNavigator /> : <BuyerMainStackNavigator />}
+    //     </NavigationContainer>
+    //   )
+    //   }
+    // </AuthContext.Provider>
+    <NavigationContainer>
+       <BuyerMainStackNavigator />
+    </NavigationContainer>
+   
   );
 };

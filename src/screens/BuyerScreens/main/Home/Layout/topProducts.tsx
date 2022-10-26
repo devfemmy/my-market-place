@@ -13,33 +13,54 @@ import { getAllCategories, allCategories, loading } from '../../../../../redux/s
 import { PRODUCTS_DATA } from '../../../DummyData'
 import BuyerProductCard from '../../../../../components/resuable/BuyerProductCard'
 import { buyerProducts, getProductBuyer } from '../../../../../redux/slices/productSlice'
+import { categoryData } from '../../../../../redux/slices/CategorySlice'
 
 const TopProducts = () => {
     const navigation = useNavigation<Nav>();
 
     const dispatch = useAppDispatch()
-    const products = useAppSelector(buyerProducts)
+    const categoryItems = useAppSelector(categoryData)
+    const buyerProoductList = useAppSelector(buyerProducts)
 
     useEffect(() => {
+        dispatch(getAllCategories())
         dispatch(getProductBuyer())
     }, [])
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({item}: any) => (
         <BuyerProductCard item={item} />
+        
     );
 
+    const filterCategory = categoryItems?.map(bb => {
+        var list = buyerProoductList?.filter((aa, i) => aa.category === bb?.category)
+        if (list?.length > 0) {
+            return {
+                category: bb?.category,
+                id: bb?.id,
+                products: list
+            }
+        }
+
+    })
 
     return (
-        <View style={[styles.comp]}>
-            <SubHeader name={'Top Selling Products'} onPress={() => navigation.navigate('Products', {title: 'Top Selling Products', data: products})} />
-            <FlatList
-                data={products}
-                renderItem={renderItem}
-                keyExtractor={item => item._id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-            />
-        </View>
+       <View>
+        {
+            filterCategory?.map((data: any,i: number) => {
+                return data?.category && (<View style={[styles.comp]}>
+                <SubHeader name={`Top Selling Products (${data?.category})`}/>
+                <FlatList
+                    data={data?.products}
+                    renderItem={renderItem}
+                    keyExtractor={(item: any) => item}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                />
+            </View>)
+            })
+        }
+       </View>
     )
 }
 

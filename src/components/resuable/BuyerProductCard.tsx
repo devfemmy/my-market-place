@@ -9,12 +9,12 @@ import { Nav } from '../../utils/types'
 import { firstLetterUppercase } from '../../utils/functions'
 import { numberFormat } from '../../utils/helpers'
 
-const BuyerProductCard = ({item}) => {
+const BuyerProductCard = ({item}: any) => {
     const  { navigate } = useNavigation<Nav>();
 
     return (
         <View style={[styles.comp]}>
-            <TouchableOpacity onPress={() => navigate("ProductDetails", {data: item})} style={styles.imageCard}>
+            <TouchableOpacity style={styles.imageCard}>
                 <Image source={{uri: item?.img_url}} resizeMode='cover' style={styles.imageContainer} />
             </TouchableOpacity>
             <View style={{width: wp(160), alignItems: 'flex-start', marginTop: hp(5)}}>
@@ -27,7 +27,7 @@ const BuyerProductCard = ({item}) => {
                 style={{marginTop: hp(5)}}
                 />
                 <Text 
-                text={`₦${numberFormat(Number(item?.pricing) || 0)}`} 
+                text={`₦${numberFormat(Number(item?.amount) || 0)}`} 
                 fontSize={hp(12)}
                 color={colors.dispatched}
                 textAlign={'center'}
