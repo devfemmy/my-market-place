@@ -12,6 +12,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 
 export type Nav = {
+    replace(arg0: string): unknown;
     goBack(): void;
     navigate: (value: string) => void;
   }

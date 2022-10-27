@@ -11,25 +11,27 @@ import { StoreCreation } from '../screens/SellerScreens';
 import { OnboardScreen } from '../screens/Onboarding';
 import StoreSuccessScreen from '../screens/SellerScreens/StoreSuccessScreen';
 import { colors } from '../utils/themes';
+import { Home } from '../screens/BuyerScreens';
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 
 export const AuthStackNavigator = (): JSX.Element => {
   return (
     <AuthStack.Navigator
-      initialRouteName="OnboardScreen"
+      initialRouteName="Login"
       screenOptions={() => ({
         headerShown: false,
         headerTintColor: colors.white,
         headerShadowVisible: false,
         headerStyle: {backgroundColor: colors.primaryBg}
       })}>
-      <AuthStack.Screen name="OnboardScreen" component={OnboardScreen} />
+      {/* <AuthStack.Screen name="OnboardScreen" component={OnboardScreen} /> */}
       <AuthStack.Screen options={{title: 'Sign in', headerShown: true}} name="Login" component={Login} />
       <AuthStack.Screen options={{title: 'Create an Account', headerShown: true, headerBackTitleVisible: false}} name="Register" component={Register} />
       <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />
       <AuthStack.Screen name="LinkSent" component={LinkSent} />
       <AuthStack.Screen name="Store" component={StoreScreen} />
+      <AuthStack.Screen name="Home" component={Home} />
       <AuthStack.Screen name="StoreCreationScreen" component={StoreCreation} />
       <AuthStack.Screen name="StoreSuccessScreen" component={StoreSuccessScreen} />
     </AuthStack.Navigator>

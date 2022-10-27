@@ -8,6 +8,10 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primaryBg,
   },
+  containerWrapper: {
+    backgroundColor: 'black',
+    height: '100%'
+  },
   container: {
     paddingHorizontal: wp(15),
     flexGrow: 1,

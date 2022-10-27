@@ -13,5 +13,6 @@ export const colors = {
   processing: 'rgba(83, 130, 251,0.8)',
   dispatched: 'rgba(112, 80, 251, 0.8)',
   completed: 'rgba(37, 152, 18,0.8)',
-  cancelled: 'rgba(195, 0, 20,0.8)'
+  cancelled: 'rgba(195, 0, 20,0.8)',
+  accent: '#B5AFFF'
 };

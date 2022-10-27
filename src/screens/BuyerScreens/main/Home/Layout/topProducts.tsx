@@ -48,12 +48,12 @@ const TopProducts = () => {
        <View>
         {
             filterCategory?.map((data: any,i: number) => {
-                return data?.category && (<View style={[styles.comp]}>
+                return data?.category && (<View key={i}  style={[styles.comp]}>
                 <SubHeader name={`Top Selling Products (${data?.category})`}/>
                 <FlatList
                     data={data?.products}
                     renderItem={renderItem}
-                    keyExtractor={(item: any) => item}
+                    keyExtractor={(item: any) => item?.id}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                 />

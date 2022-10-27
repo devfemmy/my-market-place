@@ -15,3 +15,4 @@ export const blueUser: ImageSourcePropType = require('../assets/blue-user.png');
 export const uTruck: ImageSourcePropType = require('../assets/big-truck.png');
 export const plusActive: ImageSourcePropType = require('../assets/PlusC.png');
 export const deleteIcon : ImageSourcePropType = require('../assets/dell.png');
+export const bazaraLogo : ImageSourcePropType = require('../assets/images/bazara.png');

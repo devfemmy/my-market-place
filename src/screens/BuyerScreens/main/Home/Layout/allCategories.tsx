@@ -15,9 +15,8 @@ import { getProfile, profileInfo } from '../../../../../redux/slices/ProfileSlic
 import { buyerProducts, getProductBuyer } from '../../../../../redux/slices/productSlice'
 import { truncate } from '../../../../../utils/server'
 
-const AllCategories = () => {
-    const navigation = useNavigation<Nav>();
-
+const AllCategories = ({navigation}: any) => {
+   const nav = useNavigation();
     const dispatch = useAppDispatch()
     const categoryItems = useAppSelector(categoryData)
 
@@ -28,9 +27,12 @@ const AllCategories = () => {
 
 
 
-    const renderItem = ({ item }: any) => (
+    const renderItem = ({ item, index }: any) => (
         <TouchableOpacity
-            // onPress={() => navigation.navigate('Products', {title: firstLetterUppercase(item?.item?.categoryName), data: PRODUCTS_DATA})}
+            key={index}
+           onPress={() => nav.navigate("ProductByCategory", {
+            params: { id: item?.id },
+          })}
             style={styles.itemContainer}>
             <View style={styles.CategoryDiv}>
                 <View style={styles.CatDiv}>
@@ -47,7 +49,7 @@ const AllCategories = () => {
             <FlatList
                 data={categoryItems}
                 renderItem={renderItem}
-                keyExtractor={item => item._id}
+                keyExtractor={item => item.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}
             />
@@ -62,15 +64,6 @@ const styles = StyleSheet.create({
     comp: {
         padding: 15,
         alignItems: 'center',
-    },
-    imageCard: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 100,
-        width: wp(70),
-        height: wp(70),
-        backgroundColor: colors.dimBlack,
-        overflow: 'hidden'
     },
     imageContainer: {
         width: wp(60),

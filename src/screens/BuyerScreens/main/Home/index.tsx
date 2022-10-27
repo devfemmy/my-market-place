@@ -38,7 +38,7 @@ export const Home = (): JSX.Element => {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: 'red'}}>
       <StatusBar translucent={true} backgroundColor={'white'} />
       <UserHeader name={`${user?.first_name}`} image={user?.img_url} />
       <ScrollView>
@@ -52,6 +52,7 @@ export const Home = (): JSX.Element => {
         
       </ScrollView>
     </SafeAreaView>
+
   );
 };
 

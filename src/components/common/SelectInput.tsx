@@ -9,7 +9,7 @@ import { globalStyles } from '../../styles';
 import { Text } from './Text';
 import { colors } from '../../utils/themes';
 import { useAppDispatch } from '../../redux/hooks'
-import {getStorePermission} from '../../redux/slices/StoreSlice'
+//import {getStorePermission} from '../../redux/slices/StoreSlice'
 import { getArchtype } from 'immer/dist/internal';
 
 
@@ -39,7 +39,7 @@ export const Select = (props: IProp) => {
             onSelect={(selectedItem: string) => {
               setState(selectedItem);
               if(roleSelector){
-                dispatch(getStorePermission(selectedItem))
+               // dispatch(getStorePermission(selectedItem))
               }
             }}
             defaultButtonText={placeholder}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     marginBottom: hp(20),
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
   },
 });
