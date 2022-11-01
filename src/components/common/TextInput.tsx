@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     marginBottom: hp(20),
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
   },
   errorHold: {

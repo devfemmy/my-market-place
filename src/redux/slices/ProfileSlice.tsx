@@ -25,7 +25,7 @@ export const getProfile = createAsyncThunk(
         // if (response?.status === 200) {
         //     return response?.data?.data[0]
         // }
-        var profile = await  AsyncStorage.getItem('userInfo')
+        var profile = await  AsyncStorage.getItem('userInfo').then((req: any) => JSON.parse(req))
 
         return profile
     }

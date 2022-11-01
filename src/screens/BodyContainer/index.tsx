@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Text, TouchableOpacity, View } from 'react-native'
 import { AuthStackNavigator } from '../../navigations/AuthStackNavigator'
 import StackNavigation from '../../navigations/StackNavigation'
+import TokenStackNavigation from '../../navigations/TokenStackNavigation'
 import { useAppSelector } from '../../redux/hooks'
 import { userState } from '../../redux/slices/AuthSlice'
 import { Home } from '../BuyerScreens'
@@ -13,6 +14,7 @@ const BodyContaner = () => {
     const [loading, setLoading] = useState(true);
     const auth = useAppSelector(userState)
     const [token, setToken] = useState<string>()
+
 
     useEffect(() => {
         setLoading(true)
@@ -36,36 +38,12 @@ const BodyContaner = () => {
     }, [token])
 
 
-    const onPressLearnMore = async () => {
-        console.log("hello world")
-        await AsyncStorage.removeItem('token')
-
-    }
-
-    const onPressLearnMore2 = async () => {
-        console.log("hello world 222")
-        await AsyncStorage.removeItem('token')
-    }
-
 
     return (
-        // <View>
-        //     <Button
-        //         onPress={onPressLearnMore}
-        //         title="Learn Mores"
-        //         color="#841584"
-        //         accessibilityLabel="Learn more about this purple button"
-        //     />
-        //     <TouchableOpacity onPress={onPressLearnMore2}>
-        //         <View>
-        //             <Text>Hello world</Text>
-        //         </View>
-        //     </TouchableOpacity>
-
-        // </View>
-
         <NavigationContainer>
-            <StackNavigation />
+            {
+                auth || token ? <TokenStackNavigation /> : <StackNavigation />
+            }
         </NavigationContainer>
     )
 }

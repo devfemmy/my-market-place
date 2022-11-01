@@ -23,6 +23,9 @@ export const getAllCategories = createAsyncThunk(
         if (response?.status === 200) {
             return response?.data?.data
         }
+        else {
+            console.log({response})
+        }
     }
 )
 

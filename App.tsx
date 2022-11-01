@@ -32,7 +32,9 @@ const App = (): JSX.Element => {
         <Provider store={store}>
           <SafeAreaProvider style={{ backgroundColor: 'black' }}>
             <StatusBar barStyle="dark-content" />
-            <BodyContaner />
+            <NotifierWrapper>
+              <BodyContaner />
+            </NotifierWrapper>
           </SafeAreaProvider>
         </Provider>
       </UIKittenProvider>

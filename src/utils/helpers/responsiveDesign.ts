@@ -16,6 +16,16 @@ export const hp = (value: number): number => {
 };
 
 
+export const getCurrentDate = (data: any)=>{
+ 
+  var date = new Date(data).getDate();
+  var month = new Date(data).getMonth() + 1;
+  var year = new Date(data).getFullYear();
+
+  return date + '-' + month + '-' + year;//format: d-m-y;
+}
+
+
 export const numberFormat = (value: number) => {
   const re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')';
   const num = value?.toFixed(Math.max(0, ~~2));

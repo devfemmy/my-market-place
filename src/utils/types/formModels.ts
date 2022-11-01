@@ -33,7 +33,18 @@ export type SignupType = {
 export type OauthAction = {
     token: string;
 }
-
+export type RegisterFormData = {
+    firstName: string,
+    lastName: string,
+    // phoneNumber: string,
+    email: string,
+    password: string
+}
+export type DeliveryAddressFormData = {
+    address: string,
+    state: string,
+    city: string
+}
 
 export type LoginState = {
     userData: [];

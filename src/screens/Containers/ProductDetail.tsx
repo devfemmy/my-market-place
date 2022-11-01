@@ -1,5 +1,5 @@
-import { View, StyleSheet, ScrollView, FlatList, Image, useWindowDimensions } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { View, StyleSheet, ScrollView, FlatList, Image, useWindowDimensions, Pressable } from 'react-native'
+import React, { Component, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { addToCart, CartData, getCarts } from '../../redux/slices/cartSlice'
 import { getStoreRating, storeRatings } from '../../redux/slices/StoreSlice'
@@ -22,7 +22,13 @@ import { Text } from '../../components/common'
 import { colors } from '../../utils/themes'
 import RenderHtml from 'react-native-render-html';
 import ViewMoreText from 'react-native-view-more-text';
+import Slick from 'react-native-slick';
+
+import { icons } from '../../utils/constants'
 import { Select } from '../../components/common/SelectInput'
+import { Button } from '../../components/common/Button'
+
+import { Notifier, NotifierComponents } from 'react-native-notifier'
 
 const ProductDetail = (props: any) => {
     const dispatch = useAppDispatch()
@@ -54,10 +60,13 @@ const ProductDetail = (props: any) => {
     const [productRating, setProductRating] = useState<any>(null)
 
 
+
+
     const initialValues = {
         state: '',
         city: ''
     }
+
 
     const handleLandMark = (data: any) => {
 
@@ -120,7 +129,7 @@ const ProductDetail = (props: any) => {
                 const act = d?.payload?.product_variants?.filter((dd: any) => dd.status === 'ACTIVE')
 
                 setActiveVariant({
-                    image: act && act[0]?.img_urls,
+                    image: act ? act[0]?.img_urls : ['https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png', 'https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png'],
                     price: act && act[0]?.product_variant_specs[0]?.amount,
                     size: act && act[0]?.product_variant_specs[0]?.size,
                     quantity: act && act[0]?.product_variant_specs[0]?.quantity,
@@ -204,32 +213,66 @@ const ProductDetail = (props: any) => {
             var res = await dispatch(addToCart(data))
             if (addToCart.fulfilled.match(res)) {
                 setLoader(false)
+                console.log({ res })
                 // return toast.success("Product Added to Cart Successfully")
+                return Notifier.showNotification({
+                    title: 'Product Added to Cart Successfully',
+                    // description: "tghdddfdfd",
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'success',
+                    },
+                });
+
             }
             else {
                 setLoader(false)
                 const errMsg = res.payload as string
+
+                Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
                 // toast.error(errMsg)
             }
 
         }
         else {
-            //   var getExisting = await AsyncStorage.getItem("cart");
-            //   if (getExisting == null) getExisting = null;
 
-            //   var checkArr = getExisting.some((cart) => cart.id == productDetail?.id);
-            //   //var checkArr = getExisting.some((cart) => cart.variantId === activeVariant?.variantId && cart.specId === activeVariant?.specId);
+            var getExisting = await AsyncStorage.getItem('cart').then((req: any) => JSON.parse(req))
+                .then(json => json)
+                .catch(error => console.log('error!')) || [];
+            const updatedData = [...getExisting, offlineData];
+            await AsyncStorage.setItem(
+                'cart',
+                JSON.stringify(updatedData)
+            ).then(() => {
+                setLoader(false)
+                return Notifier.showNotification({
+                    title: 'Product Added to Cart Successfully',
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
+            })
 
-            //   if (checkArr) return;
 
-            //   // Save allEntries back to local storage
-            //   getExisting.push(offlineData);
-            //   localStorage.setItem("cart", JSON.stringify(getExisting));
-            //   setLoader(false)
-            //   return toast.success("Product Added to Cart Successfully")
+
         }
 
+
     }
+
+
 
     const buyNow = async () => {
         const data = {
@@ -256,8 +299,16 @@ const ProductDetail = (props: any) => {
             var res = await dispatch(addToCart(data))
             if (addToCart.fulfilled.match(res)) {
                 setLoader2(false)
-                // router.push('/cart')
-                // return toast.success("Product Added to Cart Successfully")
+                props.navigation.navigate('CartScreen')
+                return Notifier.showNotification({
+                    title: 'Product Added to Cart Successfully',
+                    // description: "tghdddfdfd",
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'success',
+                    },
+                });
             }
             else {
                 setLoader(false)
@@ -267,21 +318,29 @@ const ProductDetail = (props: any) => {
 
         }
         else {
-            //   var getExisting = JSON.parse(localStorage.getItem("cart"));
-            //   if (getExisting == null) getExisting = [];
-
-            //   var checkArr = getExisting.some((cart) => cart.id == productDetail?.id);
-            //   //var checkArr = getExisting.some((cart) => cart.variantId === activeVariant?.variantId && cart.specId === activeVariant?.specId);
-
-            //   if (checkArr) return;
-            //  await AsyncStorage.setItem("newEntry", JSON.stringify(offlineData));
-            //   // Save allEntries back to local storage
-            //   getExisting.push(offlineData);
-            //   await AsyncStorage.setItem("cart", JSON.stringify(getExisting));
-            //   setLoader2(false)
+            var getExisting = await AsyncStorage.getItem('cart').then((req: any) => JSON.parse(req))
+                .then(json => json)
+                .catch(error => console.log('error!')) || [];
+            const updatedData = [...getExisting, offlineData];
+            await AsyncStorage.setItem(
+                'cart',
+                JSON.stringify(updatedData)
+            ).then(() => {
+                setLoader2(false)
+                props.navigation.navigate('CartScreen')
+                return Notifier.showNotification({
+                    title: 'Product Added to Cart Successfully',
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
+            })
         }
 
-        // return router.push('/cart')
+    
     }
 
     const locationState = locationData?.map((data: locationProp) => data?.state);
@@ -299,18 +358,22 @@ const ProductDetail = (props: any) => {
     const terrible = productRating?.filter((data: any) => data?.rating === 1)
 
     const renderVarList = ({ item, i }: any) => {
-        return <View style={styles.cat} key={i}>
-            <Image style={styles.img} source={{ uri: item?.img_urls[0] }} />
-        </View>
+        return <Pressable onPress={() => handleImageChange(item)}>
+            <View style={styles.cat} key={i}>
+                <Image style={styles.img} source={{ uri: item?.img_urls[0] }} />
+            </View>
+        </Pressable>
     }
 
     const renderSizeList = ({ item, i }: any) => {
-        return <View key={i} style={[{ backgroundColor: item?.size === activeVariant?.size ? colors.bazaraTint : colors.black }, styles.sizeView]}>
-            <Text text={item?.size} textAlign='center' fontSize={hp(16)} />
-        </View>
+        return <Pressable onPress={() => handleSizeChange(item)}>
+            <View key={i} style={[{ backgroundColor: item?.size === activeVariant?.size ? colors.bazaraTint : colors.black }, styles.sizeView]}>
+                <Text text={item?.size} textAlign='center' fontSize={hp(16)} />
+            </View>
+        </Pressable>
     }
     const sizeVarList = variantList?.filter((a: any) => a['color'] !== null)
-    console.log({ variantList })
+
 
     const source = {
         html: `${productDetail?.description}`,
@@ -335,11 +398,20 @@ const ProductDetail = (props: any) => {
         )
     }
 
+
     return (
         <SafeAreaView style={globalStyles.containerWrapper}>
             <MobileHeader categoryName={'Product detail page'} props={props} />
             <View style={styles.imageContainer}>
-
+                <Slick style={styles.wrapper} showsButtons={false}>
+                    {
+                        activeVariant?.image?.map((data: any) => {
+                            return <View>
+                                <Image style={styles.imgSlick} source={{ uri: data?.length > 0 ? data : "https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png" }} />
+                            </View>
+                        })
+                    }
+                </Slick>
             </View>
             <ScrollView>
                 <View style={[globalStyles.rowBetween, styles.pd]}>
@@ -365,8 +437,6 @@ const ProductDetail = (props: any) => {
                         style={{ marginTop: hp(5) }}
                     />
                 </View>
-
-
                 {variantList?.some((vd: any) => vd['color'] !== null) &&
                     <View style={styles.contView}>
                         <Text style={styles.sizeText} text='Available Colors' fontSize={hp(18)} />
@@ -396,13 +466,17 @@ const ProductDetail = (props: any) => {
                     <Text text='*' color='red' fontSize={hp(18)} />
                 </View>
                 <View style={[styles.rowDiv]}>
-                    <View style={styles.box}>
-                        <Text text='-' fontWeight='bold' fontSize={hp(18)} />
-                    </View>
-                    <Text text='0' fontSize={hp(18)} />
-                    <View style={styles.box}>
-                        <Text text='+' fontSize={hp(18)} />
-                    </View>
+                    <Pressable onPress={() => decrement()}>
+                        <View style={styles.box}>
+                            <Text text='-' fontWeight='bold' fontSize={hp(18)} />
+                        </View>
+                    </Pressable>
+                    <Text text={quantity.toString()} fontSize={hp(18)} />
+                    <Pressable onPress={() => increment()}>
+                        <View style={styles.box}>
+                            <Text text='+' fontSize={hp(18)} />
+                        </View>
+                    </Pressable>
                 </View>
 
                 <View style={styles.contView}>
@@ -442,7 +516,7 @@ const ProductDetail = (props: any) => {
                         <Select
                             items={locationState}
                             defaultValue={values.state}
-                            placeholder={'state'}
+                            placeholder={'Choose State'}
                             setState={handleChange('state')}
                             errorMsg={touched.state ? errors.state : undefined}
                         />
@@ -451,27 +525,26 @@ const ProductDetail = (props: any) => {
                         <Select
                             items={locationCity}
                             defaultValue={values.city}
-                            placeholder={'city'}
+                            placeholder={'Choose City'}
                             setState={handleChange('city')}
                             errorMsg={touched.city ? errors.city : undefined}
                         />
                     </View>
 
                 </View>
-
                 <View >
                     <Text text='Customers Feedback' fontSize={hp(18)} />
-                    <Text text={`${productRating?.length} review`} />
+                    <Text text={`${productRating ? productRating?.length : 0} review`} />
                 </View>
                 <View style={globalStyles.rowBetween}>
                     <View style={styles.textDiv}>
                         <Text text='Excellent' fontSize={hp(16)} />
                     </View>
                     <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={excellent?.length / 1000} width={200} />
+                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={excellent ? (excellent?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={excellent?.length} fontSize={hp(16)} />
+                        <Text text={excellent ? excellent?.length : 0} fontSize={hp(16)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
@@ -479,10 +552,10 @@ const ProductDetail = (props: any) => {
                         <Text text='Very good' fontSize={hp(16)} />
                     </View>
                     <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={good?.length / 1000} width={200} />
+                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={good ? (good?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={good?.length} fontSize={hp(16)} />
+                        <Text text={good ? good?.length : 0} fontSize={hp(16)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
@@ -490,10 +563,10 @@ const ProductDetail = (props: any) => {
                         <Text text='Average' fontSize={hp(16)} />
                     </View>
                     <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={average?.length / 1000} width={200} />
+                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={average ? (average?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={average?.length} fontSize={hp(16)} />
+                        <Text text={average ? average?.length : 0} fontSize={hp(16)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
@@ -501,10 +574,10 @@ const ProductDetail = (props: any) => {
                         <Text text='Poor' fontSize={hp(16)} />
                     </View>
                     <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={poor?.length / 1000} width={200} />
+                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={poor ? (poor?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={poor?.length} fontSize={hp(16)} />
+                        <Text text={poor ? poor?.length : 0} fontSize={hp(16)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
@@ -512,14 +585,13 @@ const ProductDetail = (props: any) => {
                         <Text text='Terrible' fontSize={hp(16)} />
                     </View>
                     <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={terrible?.length / 1000} width={200} />
+                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={terrible ? (terrible?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={terrible?.length} fontSize={hp(16)} />
+                        <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
                     </View>
                 </View>
-
-                {/* {
+                {
                     productRating?.map((data: any) => {
                         return <CommentCard
                             image={data?.user?.img_url}
@@ -533,8 +605,13 @@ const ProductDetail = (props: any) => {
                             productOwner={productDetail?.user_id}
                         />
                     })
-                } */}
+                }
+                <View style={styles.br}></View>
             </ScrollView>
+            <View style={styles.btn}>
+                <Button style={styles.add} containerStyle={{ width: '48%' }} isLoading={loader} title='Add to Cart' onPress={addItemToCart} />
+                <Button style={styles.buy} containerStyle={{ width: '48%' }} isLoading={loader2} title='Buy Now' onPress={buyNow} />
+            </View>
         </SafeAreaView>
     )
 }
@@ -543,7 +620,7 @@ export default ProductDetail
 
 const styles = StyleSheet.create({
     imageContainer: {
-        backgroundColor: 'red',
+        backgroundColor: 'black',
         width: '100%',
         height: hp(350)
     },
@@ -560,6 +637,10 @@ const styles = StyleSheet.create({
     img: {
         width: wp(40),
         height: hp(40)
+    },
+    imgSlick: {
+        width: '100%',
+        height: '100%'
     },
     sizeText: {
         marginVertical: hp(5)
@@ -607,5 +688,21 @@ const styles = StyleSheet.create({
     },
     textDiv: {
         width: '20%'
+    },
+    btn: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    br: {
+        marginBottom: hp(10)
+    },
+    add: {
+        backgroundColor: colors.darkBlack,
+    },
+    buy: {
+        backgroundColor: colors.bazaraTint,
+    },
+    wrapper: {
     }
 })

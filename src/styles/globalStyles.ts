@@ -13,7 +13,7 @@ export const globalStyles = StyleSheet.create({
     height: '100%'
   },
   container: {
-    paddingHorizontal: wp(15),
+    paddingHorizontal: wp(10),
     flexGrow: 1,
   },
   itemContainer: {

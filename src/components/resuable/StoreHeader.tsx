@@ -23,7 +23,7 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
                         <Image source={storeImage} style={styles.imageContainer} />
                     </View>
                     <View style={styles.textCard}>
-                        <Text text={name} fontSize={hp(18)} />
+                        <Text text={name} fontSize={hp(14)} style={{textTransform: 'capitalize'}} />
                         <View style={styles.copyCard}>
                         <TouchableOpacity onPress={() => copyToClipboard(link)}>
                             <Ionicons
@@ -52,7 +52,7 @@ export default StoreHeader
 
 const styles = StyleSheet.create({
     comp: {
-        paddingTop: 15,
+        paddingTop: hp(15),
     },
     container: {
         flexDirection: 'row'
@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
     imageCard: {
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 100,
+        borderRadius: 50,
         width: 50,
         height: 50,
-        backgroundColor: colors.dimBlack
+        backgroundColor: colors.black
 
     },
     imageContainer: {

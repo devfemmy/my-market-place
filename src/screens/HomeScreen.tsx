@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '../components/common'
@@ -14,12 +14,12 @@ import TopProducts from './BuyerScreens/main/Home/Layout/topProducts'
 
 const HomeScreen = (navigation: any) => {
   const dispatch = useAppDispatch()
-  const user = useAppSelector(userProfile)
+  const [user, setUser] = useState<any>(null)
 
-  
+
 
   useEffect(() => {
-    dispatch(getProfile())
+    dispatch(getProfile()).then(bb => setUser(bb?.payload))
   }, [])
 
 
@@ -30,7 +30,7 @@ const HomeScreen = (navigation: any) => {
         <View style={styles.imageCard}>
           <Image source={Banner} resizeMode='contain' style={styles.imageContainer} />
         </View>
-
+       
         <AllCategories navigation={navigation} />
 
         <TopProducts />

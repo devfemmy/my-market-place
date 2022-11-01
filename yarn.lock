@@ -6717,6 +6717,11 @@ react-native-dotenv@^3.3.1:
   dependencies:
     dotenv "^10.0.0"
 
+react-native-dropdown-select-list@^1.0.23:
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/react-native-dropdown-select-list/-/react-native-dropdown-select-list-1.0.23.tgz#63dbaf0a9808514b9151c14a6f3df12ae509ca7d"
+  integrity sha512-P4/GsqVv2EEUUJXyJyMwdDYKAT7qcsD6aXu0BjkM/5VmQGRLhRiLs7wfPW12Tva+AyX6URfw7pTsupJM3/oh/g==
+
 react-native-element-dropdown@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-native-element-dropdown/-/react-native-element-dropdown-2.0.0.tgz#d0c0fbd61b742f9fa47e76b08cf47017378580a2"
@@ -6913,6 +6918,13 @@ react-native-skeleton-placeholder@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-native-skeleton-placeholder/-/react-native-skeleton-placeholder-5.0.0.tgz#899fca447c2f0b81f98566e350e792157a3c9df9"
   integrity sha512-7sdG+Y2ENEVcxFC9XlpCgHy59XKkxaUyVqDwuAb66hvl7lwFr25uA5kHJ+JuDJ84ptVil5UEowW/2avwhsfoYg==
+
+react-native-slick@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-slick/-/react-native-slick-1.6.0.tgz#f0f95e154ea2e1a4c9a0d2646b1b830d39bb9348"
+  integrity sha512-+bnEoJkHYPVKbNi44cwe1/r3RzqK6tKK1tnblCTzr4LMHPY5JctWqtWl8ENN4RUP3fPdF8s/xSKqwLiZ/4gmxg==
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-smooth-pincode-input@^1.0.9:
   version "1.0.9"

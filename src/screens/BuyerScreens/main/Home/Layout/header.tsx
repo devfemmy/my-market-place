@@ -5,24 +5,32 @@ import { globalStyles } from '../../../../../styles'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { icons } from '../../../../../utils/constants'
 import { useNavigation } from '@react-navigation/native'
-import { storeImage, checkbox, bazaraLogo } from '../../../../../assets'
+import { storeImage, checkbox, bazaraLogo, profile } from '../../../../../assets'
 import { colors } from '../../../../../utils/themes'
-import { hp } from '../../../../../utils/helpers'
+import { hp, wp } from '../../../../../utils/helpers'
 import { Nav } from '../../../../../utils/types'
 import { copyToClipboard } from '../../../../../utils/functions'
 import { useAppSelector } from '../../../../../redux/hooks'
 import { userState } from '../../../../../redux/slices/AuthSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Badge } from 'react-native-paper';
 
 
 const UserHeader = ({ name, image }: any) => {
     const auth = useAppSelector(userState)
     const [token, setToken] = useState<string>()
+    const [cartItem, setCartItem] = useState<any>()
+
 
     useEffect(() => {
         const getToken = async () => {
             try {
                 var localToken = await AsyncStorage.getItem('token') as string
+                var carts = await AsyncStorage.getItem('cart').then((req: any) => JSON.parse(req))
+                    .then(json => json)
+                    .catch(error => console.log('error!')) || [];
+
+                setCartItem(carts)
                 if (localToken) {
                     setToken(localToken)
                 }
@@ -56,25 +64,42 @@ const UserHeader = ({ name, image }: any) => {
                     <Image source={bazaraLogo} />
                 </View>
             }
-   
+
             {
                 auth || token ? <View style={globalStyles.rowAround}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.iconCard}>
-                        <icons.Octicons name="bell-fill" size={hp(25)} color="white" />
-                    </TouchableOpacity>
+                    <View>
+                        <Badge style={styles.bg2}>
+                            3
+                        </Badge>
+                        <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.iconCard}>
+                            <icons.Octicons name="bell-fill" size={hp(25)} color="white" />
+                        </TouchableOpacity>
+                    </View>
                     <View style={{ marginLeft: hp(30) }} />
-                    <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.iconCard}>
-                        <icons.Ionicons name="ios-cart" size={hp(31)} color="white" />
-                    </TouchableOpacity>
-                </View>
-                    :
-                    <View style={globalStyles.rowAround}>
+                    <View>
+                        <Badge style={styles.bg2}>
+                            3
+                        </Badge>
                         <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.iconCard}>
                             <icons.Ionicons name="ios-cart" size={hp(31)} color="white" />
                         </TouchableOpacity>
+                    </View>
+
+                </View>
+                    :
+                    <View style={globalStyles.rowAround}>
+                        <View style={styles.bg}>
+                            <Badge style={styles.bg2}>
+                                {cartItem?.length}
+                            </Badge>
+                            <TouchableOpacity onPress={() => navigation.navigate('CartScreen')} style={styles.iconCard}>
+                                <icons.Ionicons name="ios-cart" size={hp(31)} color="white" />
+                            </TouchableOpacity>
+                        </View>
                         <View style={{ marginLeft: hp(30) }} />
-                        <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.iconCard}>
-                            <icons.Octicons name="bell-fill" size={hp(25)} color="white" />
+                        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')} style={styles.iconCard}>
+                            {/* <icons.Octicons name="bell-fill" size={hp(25)} color="white" /> */}
+                            <Image source={profile} resizeMode='contain' style={styles.logoImage} />
                         </TouchableOpacity>
                     </View>
             }
@@ -125,5 +150,19 @@ const styles = StyleSheet.create({
     },
     div: {
         marginLeft: 5
+    },
+    logoImage: {
+        width: wp(30),
+        height: hp(30),
+
+    },
+    bg: {
+
+    },
+    bg2: {
+        position: 'absolute',
+        left: 20,
+        top: 0,
+        zIndex: 10
     }
 })

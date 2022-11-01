@@ -37,11 +37,13 @@ const AllCategories = ({navigation}: any) => {
             <View style={styles.CategoryDiv}>
                 <View style={styles.CatDiv}>
                     <Image source={{ uri: item?.img_url }} resizeMode='cover' style={styles.imageContainer} />
-                    <Text text={truncate(item?.category, 17)} lineHeight={14} fontSize={hp(13)} textAlign='center' />
+                    <Text text={truncate(item?.category, 17)} lineHeight={14} fontSize={hp(10)} textAlign='center' />
                 </View>
             </View>
         </TouchableOpacity>
     );
+
+
 
     return (
         <View style={[styles.comp]}>

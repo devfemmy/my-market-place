@@ -83,6 +83,7 @@ export const oauthLogin = createAsyncThunk(
   async (payload: OauthAction, { rejectWithValue }) => {
     try {
       var response = await postAuthRequest('/auth/oAuth/google', payload)
+      console.log({response})
       if (response?.status === 200) {
        await AsyncStorage.setItem("token", response?.data?.data?.accessToken)
         return response?.data
@@ -131,6 +132,18 @@ export const signInUser = createAsyncThunk(
   }
 )
 
+export const signOutUser = createAsyncThunk(
+  'auth/signout',
+  async () => {
+    try {
+      return null
+    }
+    catch (e: any) {
+      return console.log(e)
+    }
+
+  }
+)
 
 export const AuthSlice = createSlice({
   name: 'auth',
@@ -183,6 +196,16 @@ export const AuthSlice = createSlice({
         state.loading = false
       })
     builder.addCase(oauthSignup.rejected, (state, action) => {
+      // state.error = action.error.message
+    })
+    builder.addCase(signOutUser.pending, (state, action) => {
+      state.loading = true
+    }),
+      builder.addCase(signOutUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false,
+        state.userInfo = null
+      })
+    builder.addCase(signOutUser.rejected, (state, action) => {
       // state.error = action.error.message
     })
   }

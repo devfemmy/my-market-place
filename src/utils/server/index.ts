@@ -41,7 +41,12 @@ export const getRequest = async (url: String, v?: String) => {
 }
 
 export const getRequestNoToken = (url: string) => {
-  return axios.get(config.databaseUrl2 + url)
+  try {
+    return axios.get(config.databaseUrl2 + url)
+  }
+  catch(e){
+    console.log("err",{e})
+  }
 }
 
 

@@ -14,10 +14,8 @@ export const updateSchema = yup.object().shape({
 });
 
 export const RegisterSchema = yup.object().shape({
-  first_name: yup.string().required('First name is required'),
-  last_name: yup.string().required('Last name is required'),
-  phone_number: yup.string().min(7, ({min}) => `Phone must be at least ${min} characters`)
-  .required('Phone is required'),
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
   email: yup.string().email().required('Email is required'),
   password: yup
     .string()
@@ -40,8 +38,14 @@ export const StoreFormSchema = yup.object().shape({
   street: yup.string().required('Street name is required'),
   city: yup.string().required('City is required'),
   state: yup.string().required('State is required'),
-  estimatedDelivery: yup.string().required('Estimated delivery duration is required'),
+  estimatedDeliveryDuration: yup.string().required('Estimated delivery duration is required'),
 });
+
+export const ProductSchema = yup.object().shape({  
+  productName: yup.string().required('Product name is required'),
+  productDescription: yup.string().required('Product description is required'),
+  category: yup.string().required('Category is required')
+ });
 
 export const ProductFormData1Schema = yup.object().shape({
   name: yup.string().required('Product name is required'),
