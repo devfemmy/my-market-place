@@ -27,6 +27,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { styles } from '../main/Product/AddProduct/styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Notifier, NotifierComponents } from 'react-native-notifier';
 
 
 const EditStore = (): JSX.Element => {
@@ -35,6 +36,7 @@ const EditStore = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
   const [loading, setLoading] = useState(false)
+  const [imgLoader, setImgLoader] = useState(false)
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const [customMsg, setCustomMsg] = useState('')
@@ -45,6 +47,7 @@ const EditStore = (): JSX.Element => {
 
 
   useEffect(() => {
+    setLoader(true)
     loadActiveId()
   }, [activeId])
 
@@ -55,16 +58,15 @@ const EditStore = (): JSX.Element => {
   }, [storeIdData])
 
   const loadActiveId = async () => {
-    const id = await AsyncStorage.getItem('activeId')
-    console.log(id)
+    const id = await AsyncStorage.getItem('activeId') as string
+
     if(!id){
       navigation.navigate('AuthStoreCreationScreen')
     }
-    setLoading(true)
     await dispatch(getPersonalStore())
     setActiveId(id)
     // dispatch(getStoreById(id))
-    const selectedStore = myStoreList?.filter((val) => {
+    const selectedStore = await myStoreList?.filter((val) => {
       if(val?.id == id){
         setEditImg(val?.img_url)
         setFieldValue('state', val?.state)
@@ -72,11 +74,11 @@ const EditStore = (): JSX.Element => {
         setFieldValue('description', val?.description)
         setFieldValue('phoneNumber', val?.phone_number)
         setFieldValue('street', val?.street)
-        setFieldValue('estimatedDelivery', val?.estimated_delivery_duration)
+        setFieldValue('estimatedDeliveryDuration', val?.estimated_delivery_duration)
         setFieldValue('city', val?.city)
-      }
+      } 
     })
-    setLoading(false)
+   setLoader(false)
   }
 
 
@@ -88,44 +90,50 @@ const EditStore = (): JSX.Element => {
     street: '',
     city: '',
     state: '',
-    estimatedDelivery: ''
+    estimatedDeliveryDuration: ''
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
-
     const payload = {
-      brand_name: data.storeName,
+      id: activeId,
+      brandName: data.storeName,
       description: data.description,
-      img_url: imageData?.length > 1 ? imageData : editImg,
-      city: data.city,
-      street: data.street,
-      state: data.state,
-      phone_number: data.phoneNumber,
-      estimated_delivery_duration: data.estimatedDelivery,
-      id: activeId
-    };
+      coverImg:  imageData?.length > 1 ? imageData : editImg,
+      address: data.street + " " + data.city + " " + data.state,
+      phoneNumber: data.phoneNumber.toString(),
+      estimated_delivery_duration: data?.estimatedDeliveryDuration,
+      location: {
+          state: data.state,
+          city: data.city,
+          street: data.street,
+      },
+  };
 
     setLoader(true)
     const resultAction = await dispatch(updateStore(payload))
     if (updateStore.fulfilled.match(resultAction)) {
       setLoader(false)
-      setVisibleBoolen(true)
-      setIsSuccessful(true)
-      setCustomMsg('Success')
+      Notifier.showNotification({
+        title: 'Success',
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+            alertType: 'success',
+        },
+    });
     } else {
-      if (resultAction.payload) {
-        setLoader(false)
-        setVisibleBoolen(true)
-        setIsSuccessful(false)
-        setCustomMsg('Error')
-        console.log('error1', `Update failed: ${resultAction?.payload}`)
-      } else {
-        setLoader(false)
-        setVisibleBoolen(true)
-        setIsSuccessful(false)
-        setCustomMsg('Error')
-        console.log('error', `Updated failed: ${resultAction?.payload}`)
-      }
+      var errMsg = resultAction?.payload as string
+      setLoader(false)
+      Notifier.showNotification({
+        title: errMsg,
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+            alertType: 'error',
+        },
+    });
     }
   }
 
@@ -159,9 +167,10 @@ const EditStore = (): JSX.Element => {
         mediaType: "photo",
         multiple: false,
     }).then(async image => {
+      setImgLoader(true)
         const ImageUrl = await pictureUpload(image)
         setImageData(ImageUrl)
-        console.log({ImageUrl})
+        setImgLoader(false)
     });
 };
 
@@ -174,7 +183,7 @@ const EditStore = (): JSX.Element => {
   }
 
 
-  if(loading){
+  if(loader){
     return (
         <SafeAreaView>
             <View style={[globalStyles.rowCenter, {flex: 1}]}>
@@ -212,7 +221,10 @@ const EditStore = (): JSX.Element => {
                 :
                 <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
-                    <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                    {
+                      imgLoader ? <AntDesign name='loading1' /> :  <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                    }
+                   
                   </View>
                 </Pressable>
             }
@@ -283,10 +295,10 @@ const EditStore = (): JSX.Element => {
 
             <Input
               label={'Estimated delivery duration'}
-              value={values.estimatedDelivery}
-              onBlur={handleBlur('estimatedDelivery')}
-              onChangeText={handleChange('estimatedDelivery')}
-              errorMsg={touched.estimatedDelivery ? errors.estimatedDelivery : undefined}
+              value={values.estimatedDeliveryDuration}
+              onBlur={handleBlur('estimatedDeliveryDuration')}
+              onChangeText={handleChange('estimatedDeliveryDuration')}
+              errorMsg={touched.estimatedDeliveryDuration ? errors.estimatedDeliveryDuration : undefined}
             />
           </View>
 
@@ -334,7 +346,7 @@ const gbStyles = StyleSheet.create({
     paddingLeft: 5
   },
   imageBox: {
-    backgroundColor: colors.dimBlack,
+    backgroundColor: colors.black,
     height: hp(120),
     width: wp(120),
     borderRadius: 10,
@@ -343,7 +355,7 @@ const gbStyles = StyleSheet.create({
     alignItems: 'center'
   },
   round: {
-    backgroundColor: colors.cancelled,
+    backgroundColor: colors.red,
     width: hp(15),
     height: hp(15),
     justifySelf: 'flex-end',

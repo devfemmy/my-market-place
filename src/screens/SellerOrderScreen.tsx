@@ -122,7 +122,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        padding: hp(10)
+        padding: hp(10),
+        paddingTop: hp(20)
     },
     txt: {
 

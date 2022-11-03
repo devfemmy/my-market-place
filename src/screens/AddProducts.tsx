@@ -16,8 +16,9 @@ import ProductVariantCard from './Containers/ProductVariantCard'
 import { Select } from '../components/common/SelectInput'
 import { globalStyles } from '../styles'
 import { colors } from '../utils/themes'
-import { checkbox, plus } from '../assets'
+import { checkbox, plus, plusBig } from '../assets'
 import { Button } from '../components/common/Button'
+import { sizes } from '../utils/constants/sizes'
 
 const AddProducts = ({ navigation }: any) => {
     const [loader, setLoader] = useState(false)
@@ -39,6 +40,7 @@ const AddProducts = ({ navigation }: any) => {
     const categoryList = useAppSelector(categoryData)
     const [colorAloneVar, setColorAloneVar] = useState([])
     const [prodId, setProdId] = useState<any>()
+ 
     const listCate = categoryList?.map(data => {
         return {
             key: data?.id,
@@ -49,7 +51,8 @@ const AddProducts = ({ navigation }: any) => {
     const initialValues: ProductFormData = {
         productName: productSlug ? productSlug?.name : "",
         productDescription: productSlug ? productSlug?.description : "",
-        category: productSlug ? productSlug?.category : ""
+        category: productSlug ? productSlug?.category : "",
+
     }
 
     useEffect(() => {
@@ -69,12 +72,12 @@ const AddProducts = ({ navigation }: any) => {
             setColorSizeVariants(colorSizeVariant)
         }
         loadAsyn()
-    }, [])
+    }, [productSlug, prodId])
 
     useEffect(() => {
         dispatch(getAllCategories())
         dispatch(getProductVariants(prodId)).then(dd => {
-
+            console.log({dd}, dd?.payload)
             var dList = dd?.payload?.map((data: any) => {
                 return {
                     img_urls: data?.img_urls[0],
@@ -87,7 +90,7 @@ const AddProducts = ({ navigation }: any) => {
             setColorAloneVar(dList)
 
         })
-    }, [])
+    }, [productSlug])
 
 
     useEffect(() => {
@@ -148,7 +151,7 @@ const AddProducts = ({ navigation }: any) => {
     }
 
 
-   
+
     const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
         useFormik({
             initialValues,
@@ -209,6 +212,7 @@ const AddProducts = ({ navigation }: any) => {
 
     }
 
+
     const handleRessponseModalClose = () => {
         setResponseModal(false)
         if (type === 'Error') {
@@ -222,9 +226,15 @@ const AddProducts = ({ navigation }: any) => {
 
     const handleBothColorAndSize = async () => {
         if (colorAloneVar?.length < 1 || colorAloneVar === undefined) {
-            setResponseModal(true)
-            setTitle('Minimum of 1 color spec is required')
-            setType('Error')
+            Notifier.showNotification({
+                title: 'Minimum of 1 color spec is required',
+                description: '',
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'error',
+                },
+            });
             return
         }
         try {
@@ -342,11 +352,11 @@ const AddProducts = ({ navigation }: any) => {
 
                         {renderColorVariety()}
                         <Pressable onPress={() => addAnotherColor()}>
-                            <View>
+                            <View style={globalStyles.rowStart}>
                                 <Image
-                                    source={plus}
+                                    source={plusBig}
                                 />
-                                <Text text='Add Another Colour' fontSize={hp(14)} fontWeight='400' />
+                                <Text text='Add Another Colour' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' />
                             </View>
                         </Pressable>
                     </> : null
@@ -370,6 +380,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'black',
         flex: 1,
+        paddingTop: hp(30)
     },
     viewContainer: {
         flex: 6,

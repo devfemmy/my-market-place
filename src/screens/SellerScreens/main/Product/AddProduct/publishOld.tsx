@@ -248,7 +248,7 @@ export const PublishProduct = (): JSX.Element => {
     const editPrevSize = (index: number, item: {size: string, quantity: string, price: string}) => {
         setSelectedSize(item.size.toString())
         setSelectedPrice(item.price.toString())
-        setSelectedQuantity(item.quantity.toString())
+        setSelectedQuantity(item.quantity?.toString())
         setEditable(index)
         setEdit(true)
         setTimeout(() => {modalizeRef.current?.open()}, 200)
@@ -261,7 +261,7 @@ export const PublishProduct = (): JSX.Element => {
         })
         setColorDescription(item.colour)
         setSelectedPrice(item.price.toString())
-        setSelectedQuantity(item.quantity.toString())
+        setSelectedQuantity(item.quantity?.toString())
         setEditable(index)
         setEdit(true)
     }
@@ -659,7 +659,7 @@ export const PublishProduct = (): JSX.Element => {
         setEdit(true)
         setEditable(index)
         setSelectedPrice(item.price.toString())
-        setSelectedQuantity(item.quantity.toString())
+        setSelectedQuantity(item.quantity?.toString())
     }
 
     const onEditUpdate = () => {

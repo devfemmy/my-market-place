@@ -28,8 +28,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',
-        top: hp(390),
+        top: hp(490),
         right: 0,
+        zIndex: 3,
+        elevation: 3
     },
     img: {
         width: wp(30),

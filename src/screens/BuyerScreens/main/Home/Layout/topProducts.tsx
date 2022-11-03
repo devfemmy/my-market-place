@@ -38,7 +38,7 @@ const TopProducts = () => {
             return {
                 category: bb?.category,
                 id: bb?.id,
-                products: list
+                products: list.concat([""])
             }
         }
 
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         width: wp(70),
         height: wp(70),
-        backgroundColor: colors.dimBlack,
+        backgroundColor: colors.black,
         overflow: 'hidden'
     },
     imageContainer: {

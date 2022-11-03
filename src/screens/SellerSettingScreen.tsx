@@ -1,0 +1,343 @@
+
+import React, { useContext, useState, useEffect } from 'react'
+import { Pressable, StyleSheet, Switch, View } from 'react-native'
+import { globalStyles } from '../styles'
+import { SafeAreaView, Text, Separator } from '../components/common';
+import { styles } from '../screens/auth/Register/styles';
+import { Button } from '../components/common/Button';
+
+import { AuthContext } from '../context/context';
+import { hp } from '../utils/helpers';
+import { colors } from '../utils/themes';
+import { blueUni, blueUser, storeActive, truckLogo, universityLogo, usersLogo } from '../assets';
+import ListCard from '../components/resuable/ListCard';
+import { useNavigation } from '@react-navigation/native'
+import { Nav } from '../utils/types'
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { activateStore, deactivateStore, getPersonalStore, getStoreById, storebyId, updateStore } from '../redux/slices/StoreSlice';
+import CustomModal from '../components/common/CustomModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getStoreBySlug, storeBySlug } from '../redux/slices/CategorySlice';
+import { Notifier, NotifierComponents } from 'react-native-notifier';
+
+const SellerSettingScreen = ({ navigation }: any) => {
+
+  const dispatch = useAppDispatch()
+  const [title, setTitle] = useState('')
+  const [type, setType] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const storeIdData = useAppSelector(storebyId)
+  const [activeId, setActiveId] = useState('')
+  const [isEnabled, setIsEnabled] = useState(storeIdData?.status === 'active' ? true : false);
+  const storeInfo = useAppSelector(storeBySlug)
+  const [activeSlug, setActiveSlug] = useState<any>()
+  const [mode, setMode] = useState<any>()
+
+  const [checked, setChecked] = useState<string>(storeInfo?.status)
+
+
+
+  const handleVisible = () => {
+    setVisible(false)
+  }
+
+
+  useEffect(() => {
+    const loadActiveId = async () => {
+      const id = await AsyncStorage.getItem('activeId') as string
+      var activeSlug = await AsyncStorage.getItem('activeSlug') as string
+      var modes = await AsyncStorage.getItem('mode') as string
+      setMode(modes)
+      dispatch(getStoreBySlug(activeSlug)).then(dd => {
+        setChecked(dd?.payload?.status)
+      })
+
+      dispatch(getPersonalStore())
+      dispatch(getStoreById(id))
+      setActiveId(id)
+    }
+    loadActiveId()
+  }, [activeId])
+
+  useEffect(() => {
+    const loadStatus = async () => {
+      const isEnab = storeIdData?.status === 'active' ? true : false
+
+      setIsEnabled(isEnab)
+    }
+    loadStatus()
+  }, [storeIdData])
+
+
+  const onChange = async (check: boolean) => {
+    if (!check) {
+      const resultAction = await dispatch(deactivateStore(activeId))
+      if (deactivateStore.fulfilled.match(resultAction)) {
+        Notifier.showNotification({
+          title: 'Store deactivated successfully',
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+              alertType: 'success',
+          },
+      });
+        dispatch(getStoreBySlug(activeSlug)).then(dd => {
+          setChecked(dd?.payload?.status)
+        })
+      }
+      else {
+        Notifier.showNotification({
+          title: 'Unable to update store',
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+              alertType: 'error',
+          },
+      });
+      }
+    }
+    else {
+      const resultAction = await dispatch(activateStore(activeId))
+      if (activateStore.fulfilled.match(resultAction)) {
+        Notifier.showNotification({
+          title: 'Store deactivated successfully',
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+              alertType: 'success',
+          },
+      });
+        setVisible(true)
+        dispatch(getStoreBySlug(activeSlug)).then(dd => {
+          setChecked(dd?.payload?.status)
+        })
+      }
+      else {
+        Notifier.showNotification({
+          title: 'Unable to update store',
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+              alertType: 'error',
+          },
+      });
+        setVisible(true)
+      }
+    }
+  };
+
+  const changeMode = async (item: any) => {
+    await AsyncStorage.setItem('mode', item)
+    if (item === "Buyer") {
+      return navigation.navigate('BuyerScreen')
+    }
+    else {
+      return navigation.navigate('SellerScreen')
+    }
+  }
+
+
+
+  const toggleSwitch = async () => {
+    setIsEnabled(previousState => !previousState)
+    const payload = {
+      id: activeId,
+      brandName: storeIdData.brandName,
+      description: storeIdData.description,
+      imgUrl: storeIdData?.imgUrl,
+      address: storeIdData?.location?.street + " " + storeIdData?.location?.city + " " + storeIdData?.location?.state,
+      phoneNumber: storeIdData.phoneNumber,
+      status: isEnabled ? 'inactive' : 'active',
+      location: {
+        state: storeIdData?.location?.state,
+        city: storeIdData?.location?.city,
+        street: storeIdData?.location?.street,
+      },
+    }
+
+    const resultAction = await dispatch(updateStore(payload))
+    if (updateStore.fulfilled.match(resultAction)) {
+      setType(true)
+      setTitle('Store updated successfully')
+      setVisible(true)
+    }
+    else {
+      setType(false)
+      setTitle('Unable to update store')
+      setVisible(true)
+    }
+  }
+
+  const LogOut = async () => {
+    AsyncStorage.clear()
+  }
+
+  const SwitchToBuyer = async () => {
+    // buyerJourney()
+  }
+
+  const quickActionArray = [
+    {
+      id: 1,
+      title: "Store Information",
+      icon: storeActive,
+      route: 'EditStore'
+    },
+    {
+      id: 2,
+      title: "User / Staff Management",
+      icon: usersLogo,
+      route: 'Staffs'
+    },
+    {
+      id: 4,
+      title: "Reviews and Ratings",
+      icon: universityLogo,
+      route: 'Reviews'
+    }
+
+  ]
+
+  const quickActionPersonal = [
+    {
+      id: 1,
+      title: "Profile",
+      icon: blueUser,
+      route: 'Profile'
+    },
+    {
+      id: 2,
+      title: "Payout Bank Account",
+      icon: blueUni,
+      route: 'Account'
+    }
+
+  ]
+
+  return (
+    <SafeAreaView>
+      <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+        <Text text='Store Information' fontSize={hp(22)} fontWeight="600" lineHeight={28} />
+        <Pressable onPress={LogOut}>
+          <Text text='Log out' fontSize={hp(16)} fontWeight="600" color={colors.bazaraTint} />
+        </Pressable>
+      </View>
+      <View style={[localStyle.mTop, styles.width90]}>
+        {
+          quickActionArray?.map((data: any) => {
+            return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.route)} props={navigation} />
+          })
+        }
+      </View>
+      <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+        <Text text='Personal Information' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
+      </View>
+      <View style={[localStyle.mTop, styles.width90]}>
+        {
+          quickActionPersonal?.map((data: any) => {
+            return <ListCard key={data?.id} {...data} props={navigation} />
+          })
+        }
+      </View>
+
+
+      {
+        storeInfo?.status !== "IN-REVIEW" && <>
+          <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+            <Text text='Activate / Deactivate Store' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+            <Switch
+              trackColor={{ false: colors.black, true: colors.bazaraTint }}
+              thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+              ios_backgroundColor={colors.black}
+              onValueChange={onChange}
+              value={isEnabled}
+            />
+          </View>
+        </>
+
+      }
+      {
+        mode === "Buyer" ? <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+        <Text text='Switch to Seller' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+        <Switch
+          trackColor={{ false: colors.black, true: colors.bazaraTint }}
+          thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+          ios_backgroundColor={colors.black}
+          onValueChange={() => changeMode('Seller')}
+          // value={isEnabled}
+        />
+      </View>
+          :
+          <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+          <Text text='Switch to Buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+          <Switch
+            trackColor={{ false: colors.black, true: colors.bazaraTint }}
+            thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+            ios_backgroundColor={colors.black}
+            onValueChange={() => changeMode('Buyer')}
+            // value={isEnabled}
+          />
+        </View>
+      }
+
+      {/* {
+        mode === "Buyer" ? <RowBetween>
+          <Paragraph text='Switch to Seller' fontSize={GlobalStyle.size.size14} fontWeight='400' />
+          <Switch onChange={() => changeMode("Seller")} className='switched' />
+        </RowBetween>
+          :
+          <RowBetween>
+            <Paragraph text='Switch to Buyer' fontSize={GlobalStyle.size.size14} fontWeight='400' />
+            <Switch onChange={() => changeMode("Buyer")} className='switched' />
+          </RowBetween>
+      }
+
+      <RowStart onClick={() => handleDeleteOpen()}>
+        <Paragraph text='Delete Store' fontSize={GlobalStyle.size.size14} color={GlobalStyle.color.bazaraTint} margin='10px 0px ' />
+      </RowStart> */}
+
+
+
+
+
+
+
+
+
+
+
+
+      {/* <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+        <Text text='Switch to buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+        <Switch
+          trackColor={{ false: colors.black, true: colors.bazaraTint }}
+          thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+          ios_backgroundColor={colors.black}
+          onValueChange={SwitchToBuyer}
+          value={false}
+        />
+      </View> */}
+      <CustomModal
+        handleVisible={handleVisible}
+        visibleBoolean={visible}
+        isSuccess={type}
+        headerText={title}
+      />
+    </SafeAreaView>
+  )
+}
+
+export default SellerSettingScreen
+
+
+const localStyle = StyleSheet.create({
+  mTop: {
+    marginVertical: 10
+  }
+})
+
+

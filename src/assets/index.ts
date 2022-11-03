@@ -26,4 +26,6 @@ export const pin : ImageSourcePropType = require('../assets/images/pin.png');
 export const calendar : ImageSourcePropType = require('../assets/images/calendar.png');
 export const edits : ImageSourcePropType = require('../assets/images/edit.png');
 export const del : ImageSourcePropType = require('../assets/images/del.png');
-//export const plus : ImageSourcePropType = require('../assets/images/Plus.png');
+export const remove : ImageSourcePropType = require('../assets/images/remove.png');
+export const upload : ImageSourcePropType = require('../assets/images/upload.png');
+export const plusBig: ImageSourcePropType = require('../assets/images/Plusa.png');

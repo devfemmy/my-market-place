@@ -1,55 +1,73 @@
-import { View, StyleSheet, Image, Pressable,ScrollView } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { createProductVariant, createProductVariantSpec, deleteProductVariant, deleteProductVariantSpec, getProductBySlug, productBySlug, updateProductVariant, updateProductVariantSpec } from '../redux/slices/productSlice'
-import { sizes } from '../utils/constants/sizes'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { ProductColorAloneData, ProductColorData, ProductNoColorData, ProductSizeData } from '../utils/types'
-import ImagePicker from 'react-native-image-crop-picker';
-import { pictureUpload } from '../utils/functions'
-import { Notifier, NotifierComponents } from 'react-native-notifier'
-import { globalStyles } from '../styles'
-import { Text } from '../components/common'
+import { View, StyleSheet, Pressable, Image, ScrollView } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import { hp, numberFormat, wp } from '../utils/helpers'
 import { colors } from '../utils/themes'
-import { cancel, del, deleteIcon, edits, plus, plusBig, remove } from '../assets'
-import ProductVariantCard from './Containers/ProductVariantCard'
-import { useFormik } from 'formik'
-import { ProductColorAloneSchema, ProductColorSchema, ProductNoColorSchema, ProductSizeSchema } from '../utils/schemas'
-import MobileHeader from './Containers/MobileHeader'
-import ImageUploadComponent from './Containers/ImageUploadComponent'
-import { FlatGrid } from 'react-native-super-grid';
-import { Input } from '../components/common/TextInput'
+import RBSheet from 'react-native-raw-bottom-sheet'
 import { Button } from '../components/common/Button'
-import RBSheet from "react-native-raw-bottom-sheet";
+import { Text } from '../components/common'
+import { Input } from '../components/common/TextInput'
+import { globalStyles } from '../styles'
 import { Select } from '../components/common/SelectInput'
+import { cancel, del, edits, plus, plusBig, remove } from '../assets'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import ImageUploadComponent from './Containers/ImageUploadComponent'
+import MobileHeader from './Containers/MobileHeader'
+import { useFormik } from 'formik'
+import { ProductColorAloneData, ProductColorData, ProductNoColorData, ProductSizeData } from '../utils/types'
+import { ProductColorAloneSchema, ProductColorSchema, ProductNoColorSchema, ProductSizeSchema } from '../utils/constants'
+import { useAppDispatch,useAppSelector } from '../redux/hooks'
+import { createProductVariant, createProductVariantSpec, deleteProductVariant, deleteProductVariantSpec, getProductBySlug, productBySlug, updateProductVariant, updateProductVariantSpec } from '../redux/slices/productSlice'
+import { sizes } from '../utils/constants/sizes'
+import { Notifier, NotifierComponents } from 'react-native-notifier'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import ProductVariantCard from './Containers/ProductVariantCard'
+import ImagePicker from 'react-native-image-crop-picker';
+import { pictureUpload } from '../utils/functions'
 
 
-const AddProductVariant = ({ navigation }: any) => {
+
+
+
+
+const ProductDetailEditVariant = (props: any) => {
+    const getSlug = props?.route.params.params.slug
+    const productInDraft =  props?.route.params.params.productEditInDraft
+    const prodId = props?.route.params.params.productEditId
+    const activeId = props?.route.params.params.activeId
+    const [multipleUpload, setMultipleUpload] = useState<any>([])
+
     const [loader, setLoader] = useState(false)
-    const refRBSheet = useRef();
     const dispatch = useAppDispatch()
     const productSlug = useAppSelector(productBySlug)
+
+    const [openCrop, setOpenCrop] = useState(false)
+    const [photoUrl, setPhotoUrl] = useState<any>()
+    const [file, setFile] = useState(null)
+    const [imageUrl, setImageUrl] = useState([])
+    const [multiple, setMultiple] = useState(true)
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const refRBSheet = useRef();
     const [imageLoader, setImageLoader] = useState(false)
 
-
     const [size, setSize] = useState(sizes)
-    const [responseModal, setResponseModal] = useState(false)
-    const [title, setTitle] = useState('')
-    const [type, setType] = useState('')
 
-    const [productInDraft, setProductInDraft] = useState<any>()
-    const [activeId, setActiveId] = useState<any>()
-    const [prodId, setProdId] = useState<any>()
-    const [editableItem, setEditableItem] = useState<any>()
+    const newSize = size?.map(data => {
+        return {
+            key: data?.type,
+            value: data?.type
+        }
+    })
+
+
+
     const [sizeList, setSizeList] = useState([])
-    const [sizeLists, setSizeLists] = useState<any>()
-    const [multipleUpload, setMultipleUpload] = useState<any>([])
-    const [quantity, setQuantity] = useState(1)
+    const [sizeLists, setSizeLists] = useState([])
+    const [quantity, setQuantity] = useState<any>(1)
     const [price, setPrice] = useState()
     const [dummyUploadImage, setDummyUploadImage] = useState([""])
-    const [getSlug, setGetSlug] = useState<any>()
+
     const [editSizeData, setEditSizeData] = useState<{ amount: number, size: string }>()
     const [modalQuantity, setModalQuantity] = useState(1)
     const [editDataId, setEditDataId] = useState('')
@@ -58,12 +76,8 @@ const AddProductVariant = ({ navigation }: any) => {
     const [colorAloneVar, setColorAloneVar] = useState<any>([])
     // const [color, setColor] = useState<string>('')
 
-    const newSize = size?.map(data => {
-        return {
-            key: data?.type,
-            value: data?.type
-        }
-    })
+  
+
 
     const initialValues: ProductNoColorData = {
         price: 0
@@ -84,30 +98,17 @@ const AddProductVariant = ({ navigation }: any) => {
         size: editSizeData ? editSizeData?.size : "Select new Size",
     };
 
-
     useEffect(() => {
         const loadAsyn = async () => {
-            var productInDrafts = await AsyncStorage.getItem('productDraft').then((req: any) => JSON.parse(req))
-            var id = await AsyncStorage.getItem('activeId') as string
-            var editId = await AsyncStorage.getItem('editableId') as string
-            var prodId = await AsyncStorage.getItem('prodId') as string
-            var slug = await AsyncStorage.getItem('slug') as string
             var variant = await AsyncStorage.getItem('prodVarId').then((req: any) => JSON.parse(req))
-
-            setProductInDraft(productInDrafts)
-            setActiveId(id)
-            setProdId(prodId)
-            setEditableItem(editId)
-            setGetSlug(slug)
             setProdVarId(variant)
 
         }
         loadAsyn()
-    }, [activeId])
+    }, [getSlug])
 
     useEffect(() => {
-
-        const loadDispatch = async () => {
+        async () => {
             if (prodVarId && productInDraft?.isColor && productInDraft?.isSize) {
                 dispatch(getProductBySlug(getSlug)).then(dd => {
                     var filterData = dd?.payload?.product_variants?.find((data: any) => data?.id === prodVarId)
@@ -120,63 +121,132 @@ const AddProductVariant = ({ navigation }: any) => {
                     setSizeLists(filterData?.product_variant_specs)
                 })
             }
-
-
+    
+    
             if (prodVarId && productInDraft?.isColor && !productInDraft?.isSize) {
                 dispatch(getProductBySlug(getSlug)).then(dd => {
                     setColorAloneVar(dd?.payload)
                 })
                 return;
             }
-
+    
             else {
-                var vard = await AsyncStorage.getItem('prodVarId')
-                dispatch(getProductBySlug(getSlug))
-                setProdVarId(vard)
+                var id = await AsyncStorage.getItem('prodVarId').then((req: any) => JSON.parse(req))
+                setProdVarId(id)
             }
+    
         }
-
-        loadDispatch()
-
     }, [getSlug, prodVarId, prodId])
 
-
-    const pickImage = async (index: number) => {
-        ImagePicker.openPicker({
-            width: 500,
-            height: 600,
-            cropping: true,
-            mediaType: "photo",
-            multiple: false,
-        }).then(async image => {
-            setImageLoader(true)
-            const ImageUrl = await pictureUpload(image)
-            setMultipleUpload([...multipleUpload, ImageUrl])
-            setDummyUploadImage([...dummyUploadImage, ""])
-            setImageLoader(false)
-        });
-    };
+   
 
     const removeImage = (index: any) => {
-        const update = multipleUpload?.filter((data: any, i: number) => i !== index)
+        const update = multipleUpload?.filter((data, i) => i !== index)
         setMultipleUpload(update)
         const popData = dummyUploadImage.slice(0, -1);
         setDummyUploadImage(popData)
     }
 
 
-
     const handleFormSubmit = async (data: any) => {
 
     }
 
+    const editSize = (data: any, index: any) => {
+        setModalQuantity(data?.quantity)
+        setEditSizeData({ size: data?.size, amount: data?.amount })
+        setEditDataId(data?.id)
+        showModal2()
+    }
+
+    const editSize1 = (data: any, index: any) => {
+        setModalQuantity(data?.quantity)
+        setEditSizeData({ size: data?.size, amount: data?.amount })
+        setEditDataId(data?.id)
+        showModal()
+    }
+
+    const deleteSize = async (info: any) => {
+      console.log({info})
+        try {
+            var result = await dispatch(deleteProductVariantSpec(info))
+            if (deleteProductVariantSpec.fulfilled.match(result)) {
+                dispatch(getProductBySlug(getSlug)).then(dd => {
+                    setMultipleUpload(dd?.payload?.product_variants[0]?.img_urls)
+                    setDummyUploadImage([...dd?.payload?.product_variants[0]?.img_urls, ""])
+                    setSizeLists(dd?.payload?.product_variants[0]?.product_variant_specs)
+                })
+            }
+            else {
+                var errMsg = result?.payload as string
+                Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
+
+            }
+        }
+        catch (e) {
+            console.log({ e })
+        }
+    }
+
+    const renderSizeList = () => {
+        return sizeLists?.map((data: any, i: number) => {
+            return (
+                <View style={styles.minidiv} key={i}>
+                    <View style={globalStyles.rowStart}>
+                        <Text text='Size: ' fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10), marginRight: hp(10) }} color={colors.gray} />
+                        <Text text={data?.size} fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10) }} />
+                    </View>
+                    <View style={globalStyles.rowStart}>
+                        <Text text='Price: ' fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10), marginRight: hp(10) }} color={colors.gray} />
+                        <Text
+                            text={`₦${numberFormat(Number(data?.amount) || 0)}`}
+                            fontSize={hp(14)}
+                            numberOfLines={1}
+                            fontWeight={'600'}
+                        />
+                    </View>
+                    <View style={globalStyles.rowBetween}>
+                        <View style={styles.contDiv}>
+                            <View style={globalStyles.rowStart}>
+                                <Text text='Quantity: ' fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10), marginRight: hp(10) }} color={colors.gray} />
+                                <Text text={`${data.quantity} item(s)`} fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10) }} />
+                            </View>
+                        </View>
+                        <View style={globalStyles.rowStart}>
+                            <Pressable onPress={() => editSize1(data, i)}>
+                                <Image source={edits} />
+                            </Pressable>
+                            <Text text='' style={{ marginHorizontal: hp(5) }} />
+                            <Pressable onPress={() => deleteSize(data?.id)}>
+                                <Image source={del} />
+                            </Pressable>
+                        </View>
+                    </View>
+                </View>
+            )
+        })
+    }
+
+    const handleCancel = () => {
+        refRBSheet.current.close()
+        setEditDataId('')
+        setEditSizeData(null)
+    };
 
 
     const showModal = async () => {
         if (multipleUpload?.length < 1 || multipleUpload === undefined) {
             Notifier.showNotification({
                 title: 'Minimum of 1 image upload is required',
-                // description: "tghdddfdfd",
+                description: '',
                 Component: NotifierComponents.Alert,
                 hideOnPress: false,
                 componentProps: {
@@ -199,7 +269,7 @@ const AddProductVariant = ({ navigation }: any) => {
             try {
                 var result = await dispatch(createProductVariant(payload))
                 if (createProductVariant.fulfilled.match(result)) {
-                    await AsyncStorage.setItem('prodVarId', result?.payload?.data?.id)
+                    await AsyncStorage.setItem('prodEditVarId', result?.payload?.data?.id)
                     setProdVarId(result?.payload?.data?.id)
                     // setIsModalVisible(true);
                     refRBSheet.current.open()
@@ -209,7 +279,7 @@ const AddProductVariant = ({ navigation }: any) => {
                     var errMsg = result?.payload as string
                     Notifier.showNotification({
                         title: errMsg,
-                        // description: "tghdddfdfd",
+                        description: '',
                         Component: NotifierComponents.Alert,
                         hideOnPress: false,
                         componentProps: {
@@ -266,9 +336,8 @@ const AddProductVariant = ({ navigation }: any) => {
             try {
                 var result = await dispatch(createProductVariant(payload))
                 if (createProductVariant.fulfilled.match(result)) {
-                    await AsyncStorage.setItem('prodVarId', result?.payload?.data?.id)
+                    await AsyncStorage.setItem('prodEditVarId', result?.payload?.data?.id)
                     setProdVarId(result?.payload?.data?.id)
-                    // setIsModalVisible(true);
                     refRBSheet.current.open()
                     setLoader(false)
                 }
@@ -293,115 +362,6 @@ const AddProductVariant = ({ navigation }: any) => {
     };
 
 
-    const editSize = (data: any, index: any) => {
-
-        setModalQuantity(data?.quantity)
-        setEditSizeData({ size: data?.size, amount: data?.amount })
-        setEditDataId(data?.id)
-        showModal2()
-    }
-
-    const editSize1 = (data: any, index: any) => {
-        setModalQuantity(data?.quantity)
-        setEditSizeData({ size: data?.size, amount: data?.amount })
-        setEditDataId(data?.id)
-        showModal()
-    }
-
-    const deleteSize = async (info: any) => {
-        try {
-            var result = await dispatch(deleteProductVariantSpec(info))
-            if (deleteProductVariantSpec.fulfilled.match(result)) {
-                dispatch(getProductBySlug(getSlug)).then(dd => {
-                    setMultipleUpload(dd?.payload?.product_variants[0]?.img_urls)
-                    setDummyUploadImage([...dd?.payload?.product_variants[0]?.img_urls, ""])
-                    setSizeLists(dd?.payload?.product_variants[0]?.product_variant_specs)
-                })
-            }
-            else {
-                var errMsg = result?.payload as string
-                Notifier.showNotification({
-                    title: errMsg,
-                    description: '',
-                    Component: NotifierComponents.Alert,
-                    hideOnPress: false,
-                    componentProps: {
-                        alertType: 'error',
-                    },
-                });
-
-
-            }
-        }
-        catch (e) {
-            console.log({ e })
-        }
-    }
-
-
-    const renderSizeList = () => {
-        return sizeLists?.map((data: any, i: number) => {
-            return (
-                <View style={styles.minidiv} key={i}>
-                    <View style={globalStyles.rowStart}>
-                        <Text text='Size: ' fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10), marginRight: hp(10) }} color={colors.gray} />
-                        <Text text={data?.size} fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10) }} />
-                    </View>
-                    <View style={globalStyles.rowStart}>
-                        <Text text='Price: ' fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10), marginRight: hp(10) }} color={colors.gray} />
-                        <Text
-                            text={`₦${numberFormat(Number(data?.amount) || 0)}`}
-                            fontSize={hp(14)}
-                            numberOfLines={1}
-                            fontWeight={'600'}
-                        />
-                    </View>
-                    <View style={globalStyles.rowBetween}>
-                        <View style={styles.contDiv}>
-                            <View style={globalStyles.rowStart}>
-                                <Text text='Quantity: ' fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10), marginRight: hp(10) }} color={colors.gray} />
-                                <Text text={`${data.quantity} item(s)`} fontSize={hp(14)} fontWeight='400' style={{ marginTop: hp(10) }} />
-                            </View>
-                        </View>
-                        <View style={globalStyles.rowStart}>
-                            <Pressable onPress={() => editSize1(data, i)}>
-                                <Image source={edits} />
-                            </Pressable>
-                            <Text text='' style={{ marginHorizontal: hp(5) }} />
-                            <Pressable onPress={() => deleteSize(data?.id)}>
-                                <Image source={del} />
-                            </Pressable>
-                        </View>
-                    </View>
-                </View>
-            )
-        })
-    }
-
-    const handleCancel = () => {
-        // setIsModalVisible(false)
-        refRBSheet.current.close()
-        setEditDataId('')
-        setEditSizeData(null)
-    };
-
-
-    const handleRessponseModalClose = () => {
-        setResponseModal(false)
-        if (type === 'Error') {
-            return;
-        }
-        else {
-            if (productInDraft?.isColor && !productInDraft?.isSize) {
-                return;
-            }
-            else if (productInDraft?.isColor && productInDraft?.isSize) {
-                return;
-            }
-            return navigation.navigate('Products')
-        }
-    }
-
     const modalIncrement = () => {
         const qt = modalQuantity + 1
         setModalQuantity(qt)
@@ -416,10 +376,11 @@ const AddProductVariant = ({ navigation }: any) => {
     }
 
     const handleModalFormSubmit = async (data: any) => {
+
         if (data?.size === "Select new Size") {
             Notifier.showNotification({
                 title: 'Size is Required',
-                description: '',
+                // description: "tghdddfdfd",
                 Component: NotifierComponents.Alert,
                 hideOnPress: false,
                 componentProps: {
@@ -453,7 +414,7 @@ const AddProductVariant = ({ navigation }: any) => {
                     var result = await dispatch(updateProductVariantSpec(editPayload))
                     if (updateProductVariantSpec.fulfilled.match(result)) {
                         dispatch(getProductBySlug(getSlug)).then(dd => {
-                            var filterData = dd?.payload?.product_variants?.find((data: any) => data?.id === prodVarId)
+                            var filterData = dd?.payload?.product_variants?.find((data: any )=> data?.id === prodVarId)
                             if (filterData === undefined) {
                                 return;
                             }
@@ -470,23 +431,23 @@ const AddProductVariant = ({ navigation }: any) => {
                     }
                     else {
                         var errMsg = result?.payload as string
-                        Notifier.showNotification({
-                            title: errMsg,
-                            description: '',
-                            Component: NotifierComponents.Alert,
-                            hideOnPress: false,
-                            componentProps: {
-                                alertType: 'error',
-                            },
-                        });
+                         Notifier.showNotification({
+                        title: errMsg,
+                        // description: "tghdddfdfd",
+                        Component: NotifierComponents.Alert,
+                        hideOnPress: false,
+                        componentProps: {
+                            alertType: 'error',
+                        },
+                    });
                         setLoader(false)
                     }
                 }
                 else {
                     var errMsg = bigR?.payload as string
-                    Notifier.showNotification({
+                     Notifier.showNotification({
                         title: errMsg,
-                        description: '',
+                        // description: "tghdddfdfd",
                         Component: NotifierComponents.Alert,
                         hideOnPress: false,
                         componentProps: {
@@ -531,7 +492,7 @@ const AddProductVariant = ({ navigation }: any) => {
                         var errMsg = results?.payload as string
                         Notifier.showNotification({
                             title: errMsg,
-                            description: '',
+                            // description: "tghdddfdfd",
                             Component: NotifierComponents.Alert,
                             hideOnPress: false,
                             componentProps: {
@@ -548,7 +509,6 @@ const AddProductVariant = ({ navigation }: any) => {
         }
 
     }
-
 
     const handleBothColorAndSize = async () => {
         if (multipleUpload?.length < 1 || multipleUpload === undefined) {
@@ -585,7 +545,12 @@ const AddProductVariant = ({ navigation }: any) => {
             var result = await dispatch(updateProductVariant(payload))
             if (updateProductVariant.fulfilled.match(result)) {
                 setLoader(false)
-                return navigation.navigate('AddProduct')
+                await AsyncStorage.removeItem('prodEditId')
+                await AsyncStorage.removeItem('slugEdit')
+                await AsyncStorage.removeItem('prodEditVarId')
+                await AsyncStorage.removeItem('editableEditId')
+                await AsyncStorage.removeItem('productEditInDraft')
+                return props.navigation.goBack()
             }
             else {
                 var errMsg = result?.payload as string
@@ -611,7 +576,7 @@ const AddProductVariant = ({ navigation }: any) => {
     const handleColorAlone = async () => {
         if (colorAloneVar?.product_variants?.length < 1) {
             Notifier.showNotification({
-                title: 'Minimum of 1 variant is required',
+                title: 'Minimum of 1 color spec is required',
                 description: '',
                 Component: NotifierComponents.Alert,
                 hideOnPress: false,
@@ -621,28 +586,31 @@ const AddProductVariant = ({ navigation }: any) => {
             });
             return
         }
-        try {
+        else {
             setLoader(true)
-            await AsyncStorage.removeItem('prodId')
-            await AsyncStorage.removeItem('slug')
-            await AsyncStorage.removeItem('prodVarId')
-            await AsyncStorage.removeItem('editableId')
-            await AsyncStorage.removeItem('productDraft')
+            try {
+                await AsyncStorage.removeItem('prodEditId')
+                await AsyncStorage.removeItem('slugEdit')
+                await AsyncStorage.removeItem('prodEditVarId')
+                await AsyncStorage.removeItem('editableEditId')
+                await AsyncStorage.removeItem('productEditInDraft')
+ 
+                Notifier.showNotification({
+                    title: 'Product Publish successfully',
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'success',
+                    },
+                });
+                setLoader(false)
+                return props.navigation.goBack()
 
-            Notifier.showNotification({
-                title: 'Product Publish successfully',
-                description: '',
-                Component: NotifierComponents.Alert,
-                hideOnPress: false,
-                componentProps: {
-                    alertType: 'success',
-                },
-            });
-            return navigation.navigate('Products')
-
-        }
-        catch (e) {
-            console.log({ e })
+            }
+            catch (e) {
+                console.log({ e })
+            }
         }
     }
 
@@ -662,20 +630,7 @@ const AddProductVariant = ({ navigation }: any) => {
     const addAnotherColor = async () => {
         if (multipleUpload?.length < 1) {
             Notifier.showNotification({
-                title: 'Minimum of 1 image is required',
-                description: '',
-                Component: NotifierComponents.Alert,
-                hideOnPress: false,
-                componentProps: {
-                    alertType: 'error',
-                },
-            });
-            return
-        }
-
-        if (colorValues.price < 500) {
-            Notifier.showNotification({
-                title: 'Price must be equal or greater than 500',
+                title: 'Minimum of 1 image upload is required',
                 description: '',
                 Component: NotifierComponents.Alert,
                 hideOnPress: false,
@@ -697,6 +652,18 @@ const AddProductVariant = ({ navigation }: any) => {
             });
             return
         }
+        if (colorValues.price < 500) {
+            Notifier.showNotification({
+                title: 'Price must be equal or greater than 500',
+                description: '',
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'error',
+                },
+            });
+            return
+        }
         const payload = {
             img_urls: multipleUpload,
             color: colorValues?.description,
@@ -706,8 +673,7 @@ const AddProductVariant = ({ navigation }: any) => {
         try {
             var result = await dispatch(createProductVariant(payload))
             if (createProductVariant.fulfilled.match(result)) {
-                console.log("first", { result })
-                await AsyncStorage.setItem('prodVarId', result?.payload?.data?.id)
+                await AsyncStorage.setItem('prodEditVarId', result?.payload?.data?.id)
                 setProdVarId(result?.payload?.data?.id)
                 var newPayload = {
                     amount: colorValues.price,
@@ -728,22 +694,7 @@ const AddProductVariant = ({ navigation }: any) => {
                 }
                 else {
                     var errMsg = secondResult?.payload as string
-                    Notifier.showNotification({
-                        title: errMsg,
-                        description: '',
-                        Component: NotifierComponents.Alert,
-                        hideOnPress: false,
-                        componentProps: {
-                            alertType: 'error',
-                        },
-                    });
-                    setLoader(false)
-                }
-
-            }
-            else {
-                var errMsg = result?.payload as string
-                Notifier.showNotification({
+                     Notifier.showNotification({
                     title: errMsg,
                     description: '',
                     Component: NotifierComponents.Alert,
@@ -752,7 +703,21 @@ const AddProductVariant = ({ navigation }: any) => {
                         alertType: 'error',
                     },
                 });
-                setLoader(false)
+                    setLoader(false)
+                }
+
+            }
+            else {
+                var errMsg = result?.payload as string
+                 Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
             }
         }
         catch (e) {
@@ -764,9 +729,12 @@ const AddProductVariant = ({ navigation }: any) => {
 
     const editVariant = async (data: any) => {
         await AsyncStorage.setItem('editableEditId', data?.data?.id)
-        return navigation.navigate('AddColorVariant')
+        return props.navigation.navigate('AddColorVariant', {
+            params: {
+                id: data?.data?.id
+            }
+        })
     }
-
 
     const deleteVariant = async (data: any) => {
         try {
@@ -793,6 +761,7 @@ const AddProductVariant = ({ navigation }: any) => {
             console.log({ e })
         }
     }
+
 
 
     const renderColorVariety = () => {
@@ -827,7 +796,6 @@ const AddProductVariant = ({ navigation }: any) => {
         try {
             var result = await dispatch(createProductVariant(payload))
             if (createProductVariant.fulfilled.match(result)) {
-                console.log({result, payload})
                 var newPayload = {
                     amount: parseInt(data?.price),
                     quantity: quantity,
@@ -835,7 +803,6 @@ const AddProductVariant = ({ navigation }: any) => {
                 }
                 var secondResult = await dispatch(createProductVariantSpec(newPayload))
                 if (createProductVariantSpec.fulfilled.match(secondResult)) {
-                    console.log({secondResult, newPayload})
                     Notifier.showNotification({
                         title: "Product successfully created",
                         description: '',
@@ -846,30 +813,17 @@ const AddProductVariant = ({ navigation }: any) => {
                         },
                     });
 
-                    await AsyncStorage.removeItem('slug')
-                    await AsyncStorage.removeItem('prodId')
-                    await AsyncStorage.removeItem('productDraft')
+                    await AsyncStorage.removeItem('prodEditId')
+                    await AsyncStorage.removeItem('slugEdit')
+                    await AsyncStorage.removeItem('prodEditVarId')
+                    await AsyncStorage.removeItem('editableEditId')
+                    await AsyncStorage.removeItem('productEditInDraft')
                     setLoader(false)
-                    return navigation.navigate('Products')
+                    return props.navigation.goBack()
                 }
                 else {
                     var errMsg = secondResult?.payload as string
-                    Notifier.showNotification({
-                        title: errMsg,
-                        description: '',
-                        Component: NotifierComponents.Alert,
-                        hideOnPress: false,
-                        componentProps: {
-                            alertType: 'error',
-                        },
-                    });
-                    setLoader(false)
-                }
-
-            }
-            else {
-                var errMsg = result?.payload as string
-                Notifier.showNotification({
+                   Notifier.showNotification({
                     title: errMsg,
                     description: '',
                     Component: NotifierComponents.Alert,
@@ -878,13 +832,26 @@ const AddProductVariant = ({ navigation }: any) => {
                         alertType: 'error',
                     },
                 });
-                setLoader(false)
+                    setLoader(false)
+                }
+
+            }
+            else {
+                var errMsg = result?.payload as string
+               Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
             }
         }
         catch (e) {
             console.log({ e })
         }
-       
     }
 
     const handleSizeAlonePublish = async () => {
@@ -922,26 +889,14 @@ const AddProductVariant = ({ navigation }: any) => {
                 }
                 var bigResult = await dispatch(updateProductVariant(payload))
                 if (updateProductVariant.fulfilled.match(bigResult)) {
-                    await AsyncStorage.removeItem('prodId')
-                    await AsyncStorage.removeItem('slug')
-                    await AsyncStorage.removeItem('prodVarId')
-                    await AsyncStorage.removeItem('productDraft')
-
-                    Notifier.showNotification({
-                        title: 'Product Publish successfully',
-                        description: '',
-                        Component: NotifierComponents.Alert,
-                        hideOnPress: false,
-                        componentProps: {
-                            alertType: 'success',
-                        },
-                    });
-                    return navigation.navigate('Products')
+                    setLoader(false)
+                    return props.navigation.goBack()
                 }
                 else {
                     var errMsg = bigResult?.payload as string
+                    setLoader(false)
                     Notifier.showNotification({
-                        title: 'Minimum of 1 image upload is required',
+                        title: errMsg,
                         description: '',
                         Component: NotifierComponents.Alert,
                         hideOnPress: false,
@@ -957,6 +912,24 @@ const AddProductVariant = ({ navigation }: any) => {
             }
         }
     }
+
+    const pickImage = async (index: number) => {
+        ImagePicker.openPicker({
+            width: 500,
+            height: 600,
+            cropping: true,
+            mediaType: "photo",
+            multiple: false,
+        }).then(async image => {
+            setImageLoader(true)
+            const ImageUrl = await pictureUpload(image)
+            setMultipleUpload([...multipleUpload, ImageUrl])
+            setDummyUploadImage([...dummyUploadImage, ""])
+            setImageLoader(false)
+        });
+    };
+
+
 
 
     const { values, errors, touched, handleChange, handleSubmit, handleBlur, resetForm } =
@@ -974,8 +947,6 @@ const AddProductVariant = ({ navigation }: any) => {
             onSubmit: (data: ProductSizeData) => handleModalFormSubmit(data),
             enableReinitialize: true
         });
-
-
 
     const { values: _values, errors: _errors, touched: _touched, handleChange: _handleChange, handleSubmit: _handleSubmit, handleBlur: _handleBlur } =
         useFormik({
@@ -995,304 +966,306 @@ const AddProductVariant = ({ navigation }: any) => {
 
 
 
-    return (
-        <View style={styles.container}>
-            <MobileHeader
-                props={navigation}
-                cart
-                categoryName='Product Details'
-            />
-            <View style={styles.columnContainer}>
-                <Text text='Upload Images' fontSize={hp(16)} fontWeight='400' />
+    
 
-                {
-                    multipleUpload?.length < 1 || multipleUpload === undefined ? <ImageUploadComponent single profileImageChange={pickImage} imageLoader={imageLoader} />
-                        :
-                        <View style={styles.rowStart}>
-                            {
-                                multipleUpload?.map((item: any, i: number) => {
-                                    return <View style={styles.rowStart}>
-                                        <View>
-                                            <Pressable onPress={() => removeImage(i)}>
-                                                <Image source={remove} style={styles.img2} />
-                                            </Pressable>
-                                            <Image source={{ uri: item }} style={styles.multContainer} />
-                                        </View>
 
-                                    </View>
-                                })
-                            }
-                            {
-                                dummyUploadImage?.filter((a, b) => multipleUpload?.length < b + 1 && multipleUpload?.length < 6).map((data, i) => {
-                                    return <Pressable onPress={() => pickImage(i)}>
-                                        <View style={styles.multContainer2}>
-                                            {
-                                                imageLoader ? <AntDesign name='loading1' color={'white'} /> :
-                                                    <Image source={plus} style={styles.img} />
-                                            }
+  return (
+    <View style={styles.container}>
+    <MobileHeader
+        props={props}
+        categoryName='Product Details'
+    />
+    <View style={styles.columnContainer}>
+        <Text text='Upload Images' fontSize={hp(16)} fontWeight='400' />
 
-                                        </View>
-
+        {
+            multipleUpload?.length < 1 || multipleUpload === undefined ? <ImageUploadComponent single profileImageChange={pickImage} imageLoader={imageLoader} />
+                :
+                <View style={styles.rowStart}>
+                    {
+                        multipleUpload?.map((item: any, i: number) => {
+                            return <View style={styles.rowStart}>
+                                <View>
+                                    <Pressable onPress={() => removeImage(i)}>
+                                        <Image source={remove} style={styles.img2} />
                                     </Pressable>
-                                })
-                            }
-
-                        </View>
-
-                }
-
-                {/* No size no color */}
-                {
-                    !productInDraft?.isColor && !productInDraft?.isSize && <>
-                        <Input
-                            style={styles.price}
-                            label='Price'
-                            // type='controlled'
-                            value={values.price.toString()}
-                            onChangeText={handleChange('price')}
-                            errorMsg={touched.price ? errors.price : undefined}
-                        />
-                        <View style={globalStyles.rowStart}>
-                            <View style={styles.subdiv}>
-                                <Input
-                                    label='Quantity'
-                                    // type='controlled'
-                                    value={quantity?.toString()}
-                                    onChangeText={(e: any) => setQuantity(e)}
-                                    errorMsg={touched.price ? errors.price : undefined}
-                                />
-                            </View>
-                            <Pressable onPress={() => decrement()}>
-                                <View style={styles.quantitydiv} >
-                                    <Text text='-' fontSize={hp(30)} />
+                                    <Image source={{ uri: item }} style={styles.multContainer} />
                                 </View>
-                            </Pressable>
-                            <Pressable onPress={() => increment()}>
-                                <View style={styles.quantitydiv} >
-                                    <Text text='+' fontSize={hp(30)} />
-                                </View>
-                            </Pressable>
 
-                        </View>
-                    </>
-                }
-
-                {/* No color but dere is size */}
-                {
-                    productInDraft?.isSize && !productInDraft?.isColor && <>
-                        <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                        <ScrollView>
-                            <View style={styles.bigDiv}>
-                                {renderSizeList()}
                             </View>
-                            <Pressable onPress={showModal}>
-                                <View style={[globalStyles.rowStart,{marginVertical: hp(5)}]}>
-                                    <Image
-                                        source={plusBig}
-                                        style={styles.plus}
-                                    />
-                                    <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
-                                </View>
-                            </Pressable>
-                        </ScrollView>
-
-                    </>
-                }
-
-
-                {/* There is color but no size */}
-
-                {
-                    productInDraft?.isColor && !productInDraft?.isSize && <>
-                        <Input
-                            label='Color'
-                            value={colorValues.description}
-                            onChangeText={colorHandleChange('description')}
-                            errorMsg={colorTouched.description ? colorErrors.description : undefined}
-                        />
-
-                        <Input
-                            label='Price'
-                            value={colorValues.price.toString()}
-                            onChangeText={colorHandleChange('price')}
-                            errorMsg={colorTouched.price ? colorErrors.price : undefined}
-                        />
-
-                        <View style={styles.rowStart}>
-                            <View style={styles.subdiv}>
-                                <Input
-                                    label='Quantity'
-                                    // type='controlled'
-                                    value={quantity?.toString()}
-                                />
-                            </View>
-                            <Pressable onPress={() => decrement()}>
-                                <View style={styles.quantitydiv2} >
-                                    <Text text='-' fontSize={hp(30)} />
-                                </View>
-                            </Pressable>
-                            <Pressable onPress={() => increment()}>
-                                <View style={styles.quantitydiv2} >
-                                    <Text text='+' fontSize={hp(30)} />
-                                </View>
-                            </Pressable>
-                        </View>
-
-                        <View style={styles.br2}></View>
-                        <Pressable onPress={addAnotherColor}>
-                            <View style={styles.rowStart}>
-                                <Image
-                                    source={plusBig}
-                                />
-                                {
-                                    loader ? <AntDesign name='loading1' style={{ marginTop: hp(5) }} color='white' /> : <Text text={colorAloneVar?.length > 0 ? 'Add Another Colour' : 'Add Colour'} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
-                                }
-                            </View>
-                        </Pressable>
-
-                        <ScrollView>
-                            <View style={styles.bigDiv2}>
-                                {renderColorVariety()}
-                            </View>
-                        </ScrollView>
-
-                    </>
-                }
-
-
-                {/* Both size and color true */}
-                {
-                    productInDraft?.isColor && productInDraft?.isSize && <>
-                        <Input
-                            label='Color Description'
-                            value={_values.description}
-                            onChangeText={_handleChange('description')}
-                            errorMsg={_touched.description ? _errors.description : undefined}
-                        />
-                        <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-                        {
-                            renderSizeList()
-                        }
-                        <Pressable onPress={showModal2}>
-                            <View style={[globalStyles.rowStart, {marginVertical: hp(5)}]}>
-                                <Image
-                                    source={plusBig}
-                                />
-                                <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400'style={{marginLeft: hp(5)}} />
-                            </View>
-                        </Pressable>
-                      {/* <View style={styles.br}></View> */}
-                    </>
-                }
-
-
-            </View>
-
-            <View style={styles.bottomContainer}>
-                {
-                    !productInDraft?.isColor && !productInDraft?.isSize && <Button
-                        isLoading={loader}
-                        title={"Publish"}
-                        onPress={handleSubmit}
-                    />
-                }
-                {
-                    !productInDraft?.isColor && productInDraft?.isSize && <Button
-                        isLoading={loader}
-                        title={"Publish"}
-                        onPress={handleSizeAlonePublish}
-                    />
-                }
-                {
-                    productInDraft?.isColor && !productInDraft?.isSize && <Button
-                        isLoading={loader}
-                        title={"Publish"}
-                        onPress={handleColorAlone}
-                    />
-                }
-                {
-                    productInDraft?.isColor && productInDraft?.isSize && <Button
-                        isLoading={loader}
-                        title={"Add this color"}
-                        onPress={handleBothColorAndSize}
-                    />
-                }
-            </View>
-
-
-            <RBSheet
-                ref={refRBSheet}
-                closeOnDragDown={true}
-                closeOnPressMask={false}
-                height={400}
-                animationType='slide'
-                customStyles={{
-                    wrapper: {
-                        backgroundColor: "transparent"
-                    },
-                    draggableIcon: {
-                        backgroundColor: colors.bazaraTint
-                    },
-                    container: {
-                        backgroundColor: 'black',
-                        height: hp(400)
+                        })
                     }
-                }}
-            >
-                <View style={styles.sheet}>
-                    <View style={[globalStyles.rowBetween]}>
-                        <Text text='Size Details' fontSize={hp(16)} fontWeight='600' />
-                        <Pressable onPress={handleCancel}>
-                            <View>
-                                <Image source={cancel} />
-                            </View>
-                        </Pressable>
-                    </View>
+                    {
+                        dummyUploadImage?.filter((a, b) => multipleUpload?.length < b + 1 && multipleUpload?.length < 6).map((data, i) => {
+                            return <Pressable onPress={() => pickImage(i)}>
+                                <View style={styles.multContainer2}>
+                                    {
+                                        imageLoader ? <AntDesign name='loading1' color={'white'} /> :
+                                            <Image source={plus} style={styles.img} />
+                                    }
 
-                    <View style={styles.columnContainer2}>
-                        <Select
-                            placeholder='Select Size'
-                            items={newSize}
-                            defaultValue={modalValues.size}
-                            setState={modalHandleChange('size')}
-                            errorMsg={modalTouched.size ? modalErrors.size : undefined}
-                        />
-                        <View style={styles.mins}></View>
-                        <Input
-                            style={{ marginTop: hp(5) }}
-                            label='Price'
-                            value={modalValues.price.toString()}
-                            onChangeText={modalHandleChange('price')}
-                            errorMsg={modalTouched.price ? modalErrors.price : undefined}
-                        />
-                        <View style={globalStyles.rowStart}>
-                            <View style={styles.subdiv}>
-                                <Input
-                                    label='Quantity'
-                                    value={modalQuantity?.toString()}
-                                />
-                            </View>
-                            <Pressable onPress={() => modalDecrement()}>
-                                <View style={styles.quantitydiv} >
-                                    <Text text='-' fontSize={hp(30)} />
                                 </View>
+
                             </Pressable>
-                            <Pressable onPress={() => modalIncrement()}>
-                                <View style={styles.quantitydiv} >
-                                    <Text text='+' fontSize={hp(30)} />
-                                </View>
-                            </Pressable>
-                        </View>
-                        <Button isLoading={loader} title={editSizeData ? "Update" : "Save and add new"} onPress={modalHandleSubmit} />
-                    </View>
+                        })
+                    }
 
                 </View>
-            </RBSheet>
+
+        }
+
+        {/* No size no color */}
+        {
+            !productInDraft?.isColor && !productInDraft?.isSize && <>
+                <Input
+                    style={styles.price}
+                    label='Price'
+                    // type='controlled'
+                    value={values.price.toString()}
+                    onChangeText={handleChange('price')}
+                    errorMsg={touched.price ? errors.price : undefined}
+                />
+                <View style={globalStyles.rowStart}>
+                    <View style={styles.subdiv}>
+                        <Input
+                            label='Quantity'
+                            // type='controlled'
+                            value={quantity?.toString()}
+                            onChangeText={(e: any) => setQuantity(e)}
+                            errorMsg={touched.price ? errors.price : undefined}
+                        />
+                    </View>
+                    <Pressable onPress={() => decrement()}>
+                        <View style={styles.quantitydiv} >
+                            <Text text='-' fontSize={hp(30)} />
+                        </View>
+                    </Pressable>
+                    <Pressable onPress={() => increment()}>
+                        <View style={styles.quantitydiv} >
+                            <Text text='+' fontSize={hp(30)} />
+                        </View>
+                    </Pressable>
+
+                </View>
+            </>
+        }
+
+        {/* No color but dere is size */}
+        {
+            productInDraft?.isSize && !productInDraft?.isColor && <>
+                <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
+                <ScrollView>
+                    <View style={styles.bigDiv}>
+                        {renderSizeList()}
+                    </View>
+                    <Pressable onPress={showModal}>
+                        <View style={[globalStyles.rowStart,{marginVertical: hp(5)}]}>
+                            <Image
+                                source={plusBig}
+                                style={styles.plus}
+                            />
+                            <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                        </View>
+                    </Pressable>
+                </ScrollView>
+
+            </>
+        }
+
+
+        {/* There is color but no size */}
+
+        {
+            productInDraft?.isColor && !productInDraft?.isSize && <>
+                <Input
+                    label='Color'
+                    value={colorValues.description}
+                    onChangeText={colorHandleChange('description')}
+                    errorMsg={colorTouched.description ? colorErrors.description : undefined}
+                />
+
+                <Input
+                    label='Price'
+                    value={colorValues.price.toString()}
+                    onChangeText={colorHandleChange('price')}
+                    errorMsg={colorTouched.price ? colorErrors.price : undefined}
+                />
+
+                <View style={styles.rowStart}>
+                    <View style={styles.subdiv}>
+                        <Input
+                            label='Quantity'
+                            // type='controlled'
+                            value={quantity?.toString()}
+                        />
+                    </View>
+                    <Pressable onPress={() => decrement()}>
+                        <View style={styles.quantitydiv2} >
+                            <Text text='-' fontSize={hp(30)} />
+                        </View>
+                    </Pressable>
+                    <Pressable onPress={() => increment()}>
+                        <View style={styles.quantitydiv2} >
+                            <Text text='+' fontSize={hp(30)} />
+                        </View>
+                    </Pressable>
+                </View>
+
+                <View style={styles.br2}></View>
+                <Pressable onPress={addAnotherColor}>
+                    <View style={styles.rowStart}>
+                        <Image
+                            source={plusBig}
+                        />
+                        {
+                            loader ? <AntDesign name='loading1' style={{ marginTop: hp(5) }} color='white' /> : <Text text={colorAloneVar?.length > 0 ? 'Add Another Colour' : 'Add Colour'} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                        }
+                    </View>
+                </Pressable>
+
+                <ScrollView>
+                    <View style={styles.bigDiv2}>
+                        {renderColorVariety()}
+                    </View>
+                </ScrollView>
+
+            </>
+        }
+
+
+        {/* Both size and color true */}
+        {
+            productInDraft?.isColor && productInDraft?.isSize && <>
+                <Input
+                    label='Color Description'
+                    value={_values.description}
+                    onChangeText={_handleChange('description')}
+                    errorMsg={_touched.description ? _errors.description : undefined}
+                />
+                <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
+                {
+                    renderSizeList()
+                }
+                <Pressable onPress={showModal2}>
+                    <View style={[globalStyles.rowStart, {marginVertical: hp(5)}]}>
+                        <Image
+                            source={plusBig}
+                        />
+                        <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400'style={{marginLeft: hp(5)}} />
+                    </View>
+                </Pressable>
+              {/* <View style={styles.br}></View> */}
+            </>
+        }
+
+
+    </View>
+
+    <View style={styles.bottomContainer}>
+        {
+            !productInDraft?.isColor && !productInDraft?.isSize && <Button
+                isLoading={loader}
+                title={"Publish"}
+                onPress={handleSubmit}
+            />
+        }
+        {
+            !productInDraft?.isColor && productInDraft?.isSize && <Button
+                isLoading={loader}
+                title={"Publish"}
+                onPress={handleSizeAlonePublish}
+            />
+        }
+        {
+            productInDraft?.isColor && !productInDraft?.isSize && <Button
+                isLoading={loader}
+                title={"Publish"}
+                onPress={handleColorAlone}
+            />
+        }
+        {
+            productInDraft?.isColor && productInDraft?.isSize && <Button
+                isLoading={loader}
+                title={"Add this color"}
+                onPress={handleBothColorAndSize}
+            />
+        }
+    </View>
+
+
+    <RBSheet
+        ref={refRBSheet}
+        closeOnDragDown={true}
+        closeOnPressMask={false}
+        height={400}
+        animationType='slide'
+        customStyles={{
+            wrapper: {
+                backgroundColor: "transparent"
+            },
+            draggableIcon: {
+                backgroundColor: colors.bazaraTint
+            },
+            container: {
+                backgroundColor: 'black',
+                height: hp(400)
+            }
+        }}
+    >
+        <View style={styles.sheet}>
+            <View style={[globalStyles.rowBetween]}>
+                <Text text='Size Details' fontSize={hp(16)} fontWeight='600' />
+                <Pressable onPress={handleCancel}>
+                    <View>
+                        <Image source={cancel} />
+                    </View>
+                </Pressable>
+            </View>
+
+            <View style={styles.columnContainer2}>
+                <Select
+                    placeholder='Select Size'
+                    items={newSize}
+                    defaultValue={modalValues.size}
+                    setState={modalHandleChange('size')}
+                    errorMsg={modalTouched.size ? modalErrors.size : undefined}
+                />
+                <View style={styles.mins}></View>
+                <Input
+                    style={{ marginTop: hp(5) }}
+                    label='Price'
+                    value={modalValues.price.toString()}
+                    onChangeText={modalHandleChange('price')}
+                    errorMsg={modalTouched.price ? modalErrors.price : undefined}
+                />
+                <View style={globalStyles.rowStart}>
+                    <View style={styles.subdiv}>
+                        <Input
+                            label='Quantity'
+                            value={modalQuantity?.toString()}
+                        />
+                    </View>
+                    <Pressable onPress={() => modalDecrement()}>
+                        <View style={styles.quantitydiv} >
+                            <Text text='-' fontSize={hp(30)} />
+                        </View>
+                    </Pressable>
+                    <Pressable onPress={() => modalIncrement()}>
+                        <View style={styles.quantitydiv} >
+                            <Text text='+' fontSize={hp(30)} />
+                        </View>
+                    </Pressable>
+                </View>
+                <Button isLoading={loader} title={editSizeData ? "Update" : "Save and add new"} onPress={modalHandleSubmit} />
+            </View>
+
         </View>
-    )
+    </RBSheet>
+</View>
+  )
 }
 
-export default AddProductVariant
+export default ProductDetailEditVariant
 
 const styles = StyleSheet.create({
     minidiv: {

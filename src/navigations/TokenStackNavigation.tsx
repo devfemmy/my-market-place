@@ -32,7 +32,17 @@ import StoreSuccessScreen from '../screens/StoreSuccessScreen';
 import AddProducts from '../screens/AddProducts';
 import AddProductVariant from '../screens/AddProductVariant';
 import AddColorVariant from '../screens/AddColorVariant';
-
+import SellerSettingScreen from '../screens/SellerSettingScreen';
+import SellerProductDetail from '../screens/SellerProductDetail';
+import ProductDetailEdit from '../screens/ProductDetailEdit';
+import ColorEditVariant from '../screens/ColorEditVariant';
+import ProductDetailEditVariant from '../screens/ProductDetailEditVariant';
+import SellerChatScreen from '../screens/SellerChatScreen';
+import EditStore from '../screens/SellerScreens/EditStore';
+import AddStaffScreen from '../screens/SellerScreens/StoreScreen/Staff/AddStaff';
+import { StaffScreen } from '../screens/SellerScreens';
+import Profile from '../screens/SellerScreens/Profile';
+import BuyerOrderDetail from '../screens/BuyerOrderDetail';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -141,8 +151,9 @@ const TokenStackNavigation = () => {
                 <Tab.Screen name="Store" component={MyStoreScreen} />
                 <Tab.Screen name="Products" component={ProductScreen} />
                 <Tab.Screen name="Order" component={SellerOrderScreen} />
-                <Tab.Screen name="Chat" component={BuyerChatScreen} />
-                <Tab.Screen name="Settings" component={BuyerProfileScreen} />
+                <Tab.Screen name="Chat" component={SellerChatScreen} />
+                <Tab.Screen name="Settings" component={SellerSettingScreen} />
+               
             </Tab.Navigator>
         );
     }
@@ -174,8 +185,15 @@ const TokenStackNavigation = () => {
             <Stack.Screen name='AddProduct' component={AddProducts} />
            <Stack.Screen name='AddProductVariant' component={AddProductVariant} />
            <Stack.Screen name='AddColorVariant' component={AddColorVariant} />
-            {/* <Stack.Screen name='DeliveryScreen' component={DeliveryScreen} />
-           */}
+           <Stack.Screen name='SellerProductDetail' component={SellerProductDetail} />
+           <Stack.Screen name='ProductDetailEdit' component={ProductDetailEdit} />
+           <Stack.Screen name='ColorEditVariant' component={ColorEditVariant} />
+           <Stack.Screen name='ProductDetailEditVariant' component={ProductDetailEditVariant} />
+           <Stack.Screen name='EditStore' component={EditStore} />
+           <Stack.Screen name='Staffs' component={StaffScreen} />
+           <Stack.Screen name='AddStaff' component={AddStaffScreen} />
+           <Stack.Screen name='Profile' component={Profile} />
+           <Stack.Screen name='BuyerOrderDetail' component={BuyerOrderDetail} />
         </Stack.Navigator>
     )
 }

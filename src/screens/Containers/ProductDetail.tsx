@@ -471,7 +471,7 @@ const ProductDetail = (props: any) => {
                             <Text text='-' fontWeight='bold' fontSize={hp(18)} />
                         </View>
                     </Pressable>
-                    <Text text={quantity.toString()} fontSize={hp(18)} />
+                    <Text text={quantity?.toString()} fontSize={hp(18)} />
                     <Pressable onPress={() => increment()}>
                         <View style={styles.box}>
                             <Text text='+' fontSize={hp(18)} />

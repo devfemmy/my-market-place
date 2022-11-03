@@ -471,7 +471,7 @@ const CartScreen = ({navigation}: any) => {
                                                                     <Text text='-' fontWeight='bold' fontSize={hp(18)} />
                                                                 </View>
                                                             </Pressable>
-                                                            <Text text={data?.quantity.toString()} fontSize={hp(18)} />
+                                                            <Text text={data?.quantity?.toString()} fontSize={hp(18)} />
                                                             <Pressable onPress={() => increment(i, data?.quantity)}>
                                                                 <View style={styles.box}>
                                                                     <Text text='+' fontSize={hp(18)} />
@@ -560,7 +560,7 @@ const CartScreen = ({navigation}: any) => {
                                                                     <Text text='-' fontWeight='bold' fontSize={hp(18)} />
                                                                 </View>
                                                             </Pressable>
-                                                            <Text text={data?.quantity.toString()} fontSize={hp(18)} />
+                                                            <Text text={data?.quantity?.toString()} fontSize={hp(18)} />
                                                             <Pressable onPress={() => incrementLive(i, data)}>
                                                                 <View style={styles.box}>
                                                                     <Text text='+' fontSize={hp(18)} />

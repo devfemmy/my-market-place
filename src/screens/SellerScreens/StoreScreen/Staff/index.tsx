@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { StatusBar, View, StyleSheet, ScrollView, Image, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView, Text } from '../../../../components/common';
@@ -10,8 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../../../../assets"
 import ListCard from '../../../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks"
-import { getPersonalStore, myStore, getStaff, staffs, loading, filteredStaffs, searchStaffs, error } from '../../../../redux/slices/StoreSlice';
-import { ArrayType } from '../../../../utils/types';
+
 import { Input } from '../../../../components/common/TextInput';
 import { hp } from '../../../../utils/helpers';
 import StaffCard from '../../../../components/resuable/StaffCard';
@@ -20,32 +19,41 @@ import { useNavigation } from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
 import { InfoCircle } from '../../../../constants/images';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getStaff, staffsData } from '../../../../redux/slices/StaffSlice';
+import MobileHeader from '../../../Containers/MobileHeader';
 
-export const StaffScreen = (): JSX.Element => {
+export const StaffScreen = (props: any): JSX.Element => {
 
-  const {navigate} = useNavigation<Nav>()
-
+  const [searchValue, setSearchValue] = useState('')
+  const staffList = useAppSelector(staffsData)
   const dispatch = useAppDispatch()
-  const myStoreList = useAppSelector(myStore)
-  const loader = useAppSelector(loading)
-  const Error = useAppSelector(error)
-  const AllStaffs = useAppSelector(filteredStaffs)
+  const [id, setId] = useState<any>()
+  const [stateLoader, setStateLoader] = useState(false)
+  const random = props ? props.route.params.params.random : null
 
+
+
+  const filterStaff = staffList?.filter((data: any) => data?.user?.first_name.toLowerCase().includes(searchValue.toLowerCase()) || data?.user?.last_name.toLowerCase().includes(searchValue.toLowerCase()))
+
+
+ 
 
   useEffect(() => {
-    geAllStaffs()
-  }, [])
-
-  const geAllStaffs = async () => {
-    const id: string = await AsyncStorage.getItem('activeId')
-    await dispatch(getStaff(id))
-  }
+    setStateLoader(true)
+    const loadData = async () => {
+      var ids = await AsyncStorage.getItem('activeId') as string
+      setId(ids)
+      await dispatch(getStaff(ids))
+      setStateLoader(false)
+    }
+    loadData()
+  }, [id, random])
 
   const renderItem = ({item}: any) => (
     <StaffCard item={item}/>
   );
 
-  if(loader){
+  if(stateLoader){
     return (
         <SafeAreaView>
             <View style={[globalStyles.rowCenter, {flex: 1}]}>
@@ -59,7 +67,7 @@ export const StaffScreen = (): JSX.Element => {
 
   // console.log(AllStaffs)
 
-  if(Error && AllStaffs?.length < 1){
+  if(filterStaff?.length < 1){
     return (
         <SafeAreaView>
             <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
@@ -74,25 +82,29 @@ export const StaffScreen = (): JSX.Element => {
   }
 
   return (
-    <View style={[globalStyles.wrapper]}>
+    <View style={[styles.container]}>
+      <MobileHeader 
+        props={props}
+        categoryName="All Staff"
+      />
       <View style={{paddingHorizontal: hp(15)}}>
         <Input
             label={''}
             placeholder={"Search for staff"}
-            onChangeText={(text) => dispatch(searchStaffs(text))}
+            // onChangeText={(text) => dispatch(searchStaffs(text))}
             searchInput
             containerStyle={{width: '100%'}}
         />
       </View>
       <FlatList
-        data={AllStaffs}
+        data={filterStaff}
         renderItem={renderItem}
         keyExtractor={item => item?._id}
         contentContainerStyle={{paddingBottom: hp(100)}}
         style={{marginBottom: hp(-50)}}
       />
       
-      <TouchableOpacity onPress={() => navigate('AddStaff')} style={[globalStyles.floating_button, {bottom: hp(20), right: hp(20)}]}>
+      <TouchableOpacity onPress={() => props.navigation.navigate('AddStaff')} style={[globalStyles.floating_button, {bottom: hp(20), right: hp(20)}]}>
             <Entypo name={'plus'} size={hp(35)} style={{color: colors.white}} />
       </TouchableOpacity>
 
@@ -101,6 +113,11 @@ export const StaffScreen = (): JSX.Element => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+    paddingTop: hp(10)
+  },
   cart: {
     width: 20,
     height: 20,

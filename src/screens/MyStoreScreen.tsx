@@ -17,6 +17,7 @@ import { colors } from '../utils/themes'
 import { globalStyles } from '../styles'
 import { LockClosed, LockOpened, Profile, Union } from '../constants/images'
 import { BarChart, LineChart } from 'react-native-chart-kit'
+import { Select } from '../components/common/SelectInput'
 
 const MyStoreScreen = () => {
   const dispatch = useAppDispatch()
@@ -44,6 +45,8 @@ const MyStoreScreen = () => {
     }
     loadAsync()
   }, [id])
+
+
 
   useEffect(() => {
     setStateLoader(true)
@@ -266,6 +269,7 @@ export default MyStoreScreen
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'black',
+    paddingTop: hp(20)
   },
   mt: {
     marginVertical: hp(35),

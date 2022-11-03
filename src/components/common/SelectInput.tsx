@@ -79,7 +79,8 @@ export const Select = (props: IProp) => {
     // </View>
     <View style={{marginBottom: hp(15)}}>
       <SelectList
-        placeholder={placeholder}
+        placeholder={defaultValue ? defaultValue : placeholder}
+        value={defaultValue}
         setSelected={setState}
         boxStyles={{ borderRadius: 5, height: hp(60), alignItems: 'center' }}
         inputStyles={{ color: 'white' }}

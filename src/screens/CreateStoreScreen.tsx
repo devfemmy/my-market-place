@@ -37,10 +37,11 @@ const CreateStoreScreen = (): JSX.Element => {
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const [headerText, setHeaderText] = useState('');
   const [msg, setMsg] = useState('');
+  const [imageLoader, setImageLoader] = useState(false)
 
 
   const [query, setQuery] = useState('');
-  const [imageData, setImageData] = useState('https://sh001-ct-mg.s3.us-east-2.amazonaws.com/image1150Name%2Cjpg.jpg')
+  const [imageData, setImageData] = useState('')
 
 
   const onSearch = (text: any) => {
@@ -148,8 +149,10 @@ const CreateStoreScreen = (): JSX.Element => {
       mediaType: "photo",
       multiple: false,
     }).then(async image => {
+      setImageLoader(true)
       const ImageUrl = await pictureUpload(image)
       setImageData(ImageUrl)
+      setImageLoader(false)
     });
   };
 
@@ -192,7 +195,9 @@ const CreateStoreScreen = (): JSX.Element => {
                 :
                 <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
-                    <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                    {
+                      imageLoader ? <AntDesign name="loading1" size={hp(30)} style={{ color: colors.white }} /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                    }
                   </View>
                 </Pressable>
             }

@@ -13,23 +13,15 @@ import { Text } from '../../components/common'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 
-const ProductCard = ({ data, setProductList }: any) => {
+const ProductCard = ({ data, setProductList, id }: any) => {
     const dispatch = useAppDispatch()
     const navigation = useNavigation()
-    const [id, setId] = useState('')
+    //const [id, setId] = useState('')
     const [visible, setVisible] = React.useState(false);
 
     const openMenu = () => setVisible(true);
 
     const closeMenu = () => setVisible(false)
-
-
-    useEffect(() => {
-        async () => {
-            var id = await AsyncStorage.getItem('activeId') as string
-            setId(id)
-        }
-    }, [])
 
     const updateProductStatus = async (data: any) => {
 
@@ -174,6 +166,7 @@ const styles = StyleSheet.create({
         height: hp(5),
         marginRight: hp(5),
         // marginLeft: hp(10),
+        marginTop: hp(5),
         borderRadius: 50,
         backgroundColor: colors.red
     },
@@ -196,6 +189,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
+        
     }
 
 

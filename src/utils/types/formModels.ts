@@ -419,8 +419,6 @@ export type ProfileFormData = {
     lName: string,
     fName: string,
     email: string,
-    mobile: string,
-    gender: string
 }
 
 export type BuyerProfileFormData = {

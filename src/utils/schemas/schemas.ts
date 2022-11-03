@@ -12,7 +12,15 @@ export const updateSchema = yup.object().shape({
   fName: yup.string().required('First Name is required'),
   lName: yup.string().required('Last Name is required')
 });
-
+export const AddStaffSchema = yup.object().shape({
+  email: yup.string().email().required('Email is required'),
+  role: yup.string().required('Role is required')
+ })
+ export const ProfileFormSchema = yup.object().shape({
+  lName: yup.string().required('Surname is required'),
+  fName: yup.string().required('First name is required'),
+  email: yup.string().email().required('Email is required'),
+ })
 export const RegisterSchema = yup.object().shape({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
@@ -40,6 +48,24 @@ export const StoreFormSchema = yup.object().shape({
   state: yup.string().required('State is required'),
   estimatedDeliveryDuration: yup.string().required('Estimated delivery duration is required'),
 });
+export const ProductColorAloneSchema = yup.object().shape({  
+  price: yup.number().min(500, ({min}) => `Price must be at least ${min}`).required('Price is required'),
+  description: yup.string().required('Description is required')
+});
+ 
+export const ProductNoColorSchema = yup.object().shape({  
+  price: yup.number().min(500, ({min}) => `Price must be at least ${min}`).required('Price is required')
+ });
+
+ export const ProductColorSchema = yup.object().shape({  
+  description: yup.string().required('Color description is required')
+ });
+ 
+export const ProductSizeSchema = yup.object().shape({  
+  price: yup.number().min(500, ({min}) => `Price must be at least ${min}`).required('Price is required'),
+  size: yup.string().required('Size is required')
+ });
+
 
 export const ProductSchema = yup.object().shape({  
   productName: yup.string().required('Product name is required'),

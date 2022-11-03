@@ -10,11 +10,16 @@ const ProductVariantCard = ({ image, name, price, edit, handleDeleteClick, handl
     return (
         <View>
             <View style={globalStyles.rowStart}>
-                <Image source={image} style={styles.img} />
+                <Image source={{uri: image}} style={styles.img} />
                 <View style={styles.div}>
                     <Text text={name} fontSize={hp(14)} fontWeight='400' />
-                    <Text text={`₦ ${numberFormat(price)}`} fontSize={hp(12)} />
-
+                
+                    <Text
+                        text={`₦${numberFormat(Number(price) || 0)}`}
+                        fontSize={hp(12)}
+                        numberOfLines={1}
+                        fontWeight={'400'}
+                    />
                 </View>
                 {
                     edit && <View style={styles.subdiv}>
@@ -44,11 +49,13 @@ const styles = StyleSheet.create({
     },
     div: {
         flex: 1,
-        marginLeft: hp(10)
+        marginLeft: hp(10),
     },
     subdiv: {
         width: wp(60),
+        flexDirection: 'row',
         justifyContent: 'space-around',
+        alignItems: 'flex-end',
     },
     br: {
         background: colors.lightwhite,

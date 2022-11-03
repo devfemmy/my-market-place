@@ -1,5 +1,5 @@
 import { View, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import React, { useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView, Text } from '../../components/common'
 import { globalStyles } from '../../styles'
 import { useNavigation } from '@react-navigation/native'
@@ -9,33 +9,33 @@ import { Nav } from '../../utils/types'
 import { firstLetterUppercase } from '../../utils/functions'
 import { numberFormat } from '../../utils/helpers'
 
-const BuyerProductCard = ({item}: any) => {
-    const  { navigate } = useNavigation<Nav>();
+const BuyerProductCard = ({ item }: any) => {
+    const { navigate } = useNavigation<Nav>();
 
     return (
         <View style={[styles.comp]}>
             <TouchableOpacity style={styles.imageCard} onPress={() => navigate("ProductDetail", {
-                params: {id: item?.slug}
+                params: { id: item?.slug }
             })}>
-                <Image source={{uri: item?.img_url}} resizeMode='cover' style={styles.imageContainer} />
+                <Image source={{ uri: item?.img_url }} resizeMode='cover' style={styles.imageContainer} />
             </TouchableOpacity>
-            <View style={{width: wp(160), alignItems: 'flex-start', marginTop: hp(5)}}>
-                <Text 
-                text={firstLetterUppercase(item?.name)} 
-                fontSize={hp(14)}
-                color={colors.white}
-                textAlign={'center'}
-                numberOfLines={1}
-                style={{marginTop: hp(5)}}
+            <View style={{ width: wp(160), alignItems: 'flex-start', marginTop: hp(5) }}>
+                <Text
+                    text={firstLetterUppercase(item?.name)}
+                    fontSize={hp(14)}
+                    color={colors.white}
+                    textAlign={'center'}
+                    numberOfLines={1}
+                    style={{ marginTop: hp(5) }}
                 />
-                <Text 
-                text={`₦${numberFormat(Number(item?.amount) || 0)}`} 
-                fontSize={hp(12)}
-                color={colors.accent}
-                textAlign={'center'}
-                numberOfLines={1}
-                fontWeight={'600'}
-                style={{marginTop: hp(5)}}
+                <Text
+                    text={item?.name ? `₦${numberFormat(Number(item?.amount) || 0)}` : null}
+                    fontSize={hp(12)}
+                    color={colors.accent}
+                    textAlign={'center'}
+                    numberOfLines={1}
+                    fontWeight={'600'}
+                    style={{ marginTop: hp(5) }}
                 />
             </View>
         </View>
