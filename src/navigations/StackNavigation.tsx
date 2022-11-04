@@ -21,7 +21,7 @@ const StackNavigation = () => {
 
     return (
         <Stack.Navigator
-            initialRouteName="HomeScreen"
+            initialRouteName="Home"
             screenOptions={() => ({
                 headerShown: false,
                 headerTintColor: colors.white,
@@ -29,7 +29,7 @@ const StackNavigation = () => {
                 headerStyle: { backgroundColor: colors.primaryBg }
             })}
         >
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+            <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="ProductByCategory" component={ProductByCategory} />
             <Stack.Screen name="ProductDetail" component={ProductDetail} />
             <Stack.Screen name='CartScreen' component={CartScreen} />

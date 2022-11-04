@@ -7,7 +7,7 @@ import { addToCart, deleteCart, getCarts, updateCart } from '../redux/slices/car
 import { getAddress, updateAddress } from '../redux/slices/AddressSlice'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { NavigationContainer } from '@react-navigation/native'
-import { hp, numberFormat, wp } from '../utils/helpers'
+import { getStorage, hp, numberFormat, wp } from '../utils/helpers'
 import { globalStyles } from '../styles'
 import MobileHeader from './Containers/MobileHeader'
 import { Text } from '../components/common'
@@ -15,8 +15,10 @@ import { colors } from '../utils/themes'
 import { deleteIc } from '../assets'
 import EmptyState from './Containers/EmptyState'
 import { Button } from '../components/common/Button'
+import { useIsFocused } from "@react-navigation/native";
+import AddToCartModal from './Containers/AddToCartModal'
 
-const CartScreen = ({navigation}: any) => {
+const CartScreen = (props: any,) => {
     const [quantity, setQuantity] = useState(0)
     const [visible, setVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
@@ -26,11 +28,13 @@ const CartScreen = ({navigation}: any) => {
     const [getCartData, setGetCartData] = useState<Array<any>>([])
     const [activeDelivery, setActiveDelivery] = useState<any>()
     const [userData, setUserData] = useState(null);
+    const isFocused = useIsFocused();
     const [phoneModalVisible, setPhoneModalVisible] = useState(false)
     const profileData = useAppSelector(profileInfo)
     const [incrementLoader, setIncrementLoader] = useState(false)
+    const renderName = props?.route?.params?.params?.renderName
     const [getCartFromStorage, setGetCartFromStorage] = useState<Array<any>>([])
-
+ const [refresh, setRefresh] = useState(false)
     const cartAmountLocal = getCartFromStorage && getCartFromStorage?.map((data: any) => data?.price * data.quantity);
     const cartTotalLocal = cartAmountLocal
         ? cartAmountLocal.length >= 1 && cartAmountLocal?.reduce((a, b) => a + b)
@@ -42,6 +46,7 @@ const CartScreen = ({navigation}: any) => {
 
     const [deliveryFeeData, setDeliveryFeeData] = useState(0)
     const [set, setSet] = useState(null)
+
 
     const choosenAddress = addressList?.find(ab => ab.default)
 
@@ -77,17 +82,75 @@ const CartScreen = ({navigation}: any) => {
         setModalVisible(false)
     }
 
+    const handleAdd = async () => {
+        await getCartFromStorage?.map(async data => {
+            var res = await dispatch(addToCart(
+                {
+                    product_id: data?.productId,
+                    quantity: data?.quantity,
+                    product_variant_id: data?.variantId,
+                    product_variant_spec_id: data?.specId,
+                }
+            ))
+            if (addToCart.fulfilled.match(res)) {
+                dispatch(getCarts()).then((data) => {
+                    setGetCartData(data?.payload)
+
+                })
+                dispatch(getAddress()).then((data) => {
+                    var filterDefault = data?.payload?.find((d: any) => d.default)
+                    setActiveDelivery(filterDefault)
+                    setAddressList(data?.payload)
+                    closeModalVisible()
+                    AsyncStorage.removeItem('checking')
+                })
+                dispatch(getProfile())
+            }
+            else {
+                var errMsg = res.payload as string
+                Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
+            }
+
+            await AsyncStorage.removeItem('cart')
+            await AsyncStorage.removeItem('newEntry')
+            setRefresh(true)
+        })
+    }
+
+    const handleDelete = async () => {
+        await AsyncStorage.removeItem('cart')
+        await AsyncStorage.removeItem('checking')
+      setRefresh(true)
+        closeModalVisible()
+    }
+
+
     useEffect(() => {
         const fetchStorage = async () => {
             var token = await AsyncStorage.getItem('token') as string
+            var checkToken = await getStorage('token') as string
+
             var carts = await AsyncStorage.getItem('cart').then((req: any) => JSON.parse(req))
                 .then(json => json)
                 .catch(error => console.log('error!'));
-            setGetUserToken(token)
+            setGetUserToken(checkToken)
+
+
             setGetCartFromStorage(carts)
         }
         fetchStorage()
-    }, [])
+    }, [getUserToken, isFocused, refresh, modalVisible])
+
+
+
 
 
     const deliveryList =
@@ -130,53 +193,7 @@ const CartScreen = ({navigation}: any) => {
     const reducedFee = calculatedFee && calculatedFee?.reduce((a, b) => a + b, 0);
 
 
-    const handleAdd = async () => {
-        await getCartFromStorage?.map(async data => {
-            var res = await dispatch(addToCart(
-                {
-                    product_id: data?.productId,
-                    quantity: data?.quantity,
-                    product_variant_id: data?.variantId,
-                    product_variant_spec_id: data?.specId,
-                }
-            ))
-            if (addToCart.fulfilled.match(res)) {
-                dispatch(getCarts()).then((data) => {
-                    setGetCartData(data?.payload)
 
-                })
-                dispatch(getAddress()).then((data) => {
-                    var filterDefault = data?.payload?.find((d: any) => d.default)
-                    setActiveDelivery(filterDefault)
-                    setAddressList(data?.payload)
-                    closeModalVisible()
-                    AsyncStorage.removeItem('checking')
-                })
-                dispatch(getProfile())
-            }
-            else {
-                var errMsg = res.payload as string
-                Notifier.showNotification({
-                    title: errMsg,
-                    description: '',
-                    Component: NotifierComponents.Alert,
-                    hideOnPress: false,
-                    componentProps: {
-                        alertType: 'error',
-                    },
-                });
-            }
-
-            await AsyncStorage.removeItem('cart')
-            await AsyncStorage.removeItem('newEntry')
-        })
-    }
-
-    const handleDelete = async () => {
-        await AsyncStorage.removeItem('cart')
-        await AsyncStorage.removeItem('checking')
-        closeModalVisible()
-    }
 
     const increment = async (index: number, quantity: any) => {
         var newData = getCartFromStorage?.map((aa, i) => {
@@ -231,6 +248,7 @@ const CartScreen = ({navigation}: any) => {
 
     }
 
+
     useEffect(() => {
         if (getUserToken) {
             if (getCartFromStorage?.length > 0) {
@@ -252,7 +270,7 @@ const CartScreen = ({navigation}: any) => {
 
         }
 
-    }, [getCartFromStorage])
+    }, [getCartFromStorage, isFocused, refresh, modalVisible])
 
 
 
@@ -324,7 +342,7 @@ const CartScreen = ({navigation}: any) => {
                 },
             });
             await AsyncStorage.setItem('checking', 'true')
-            return navigation.navigate('LoginScreen')
+            return props.navigation.navigate('LoginScreen')
         }
         else {
 
@@ -343,8 +361,8 @@ const CartScreen = ({navigation}: any) => {
                 },
             });
             await AsyncStorage.setItem('checking', 'true')
-            return navigation.navigate('LoginScreen')
-            
+            return props.navigation.navigate('LoginScreen')
+
         }
         else {
 
@@ -423,17 +441,25 @@ const CartScreen = ({navigation}: any) => {
         }
     }
 
-   const DeliveryRoute = () => {
-    return navigation.navigate('DeliveryScreen')
-   }
+    const DeliveryRoute = () => {
+        return props.navigation.navigate('DeliveryScreen', {
+            params: {
+                amount: cartTotalLive
+            }
+        })
+    }
+
+
+    //    const clear = async () => {
+    //     await AsyncStorage.clear()
+    //    }
 
 
     return (
         <View style={[globalStyles.wrapper, { paddingHorizontal: hp(15) }]}>
             <MobileHeader
-                props={navigation}
+                props={props}
                 categoryName="My Cart"
-                cart
             />
 
             {/* LocalStorage */}
@@ -623,7 +649,9 @@ const CartScreen = ({navigation}: any) => {
                     </View>
                     : null
             }
-
+            {/* <Pressable onPress={clear}>
+                    <Text text='clear ' />
+                </Pressable> */}
             {
                 (getCartFromStorage?.length < 1 || getCartFromStorage === undefined || getCartFromStorage === null) && getCartData?.length < 1 && <View style={styles.tgt}>
                     <EmptyState
@@ -633,6 +661,15 @@ const CartScreen = ({navigation}: any) => {
                     />
                 </View>
             }
+
+
+            <AddToCartModal
+                visible={modalVisible}
+                setVisible={closeModalVisible}
+                handleAdd={handleAdd}
+                handleDelete={handleDelete}
+                getCartFromStorage={getCartFromStorage}
+            />
 
         </View>
     )

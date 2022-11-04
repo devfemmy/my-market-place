@@ -41,9 +41,10 @@ const BodyContaner = () => {
 
     return (
         <NavigationContainer>
-            {
+            {/* {
                 auth || token ? <TokenStackNavigation /> : <StackNavigation />
-            }
+            } */}
+            <TokenStackNavigation />
         </NavigationContainer>
     )
 }

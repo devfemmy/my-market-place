@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Image, Pressable } from 'react-native'
+import { View, StyleSheet, ScrollView, Image, Pressable, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { hp, numberFormat, wp } from '../utils/helpers'
 import { globalStyles } from '../styles'
@@ -11,6 +11,7 @@ import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { colors } from '../utils/themes'
 import { calendar, pin } from '../assets'
 import { Button } from '../components/common/Button'
+import { useIsFocused } from "@react-navigation/native";
 
 const OrderDetails = (props: any) => {
     const navigation = props?.navigation
@@ -18,7 +19,7 @@ const OrderDetails = (props: any) => {
     const [sellerOrderDetail, setSellerOrderDetail] = useState<any>(null)
     const orderLoaderState = useAppSelector(orderLoader)
     const [loader, setLoader] = useState(false)
-
+    const isFocused = useIsFocused();
 
     const [action, setAction] = useState('')
     const [orderModalVisible, setOrderModalVisible] = useState(false)
@@ -26,7 +27,7 @@ const OrderDetails = (props: any) => {
     const orderId = props?.route?.params?.params?.id
 
     const [id, setId] = useState('')
-    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'This order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'This order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'This order is been dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'This order is completed' : `This order has been ${sellerOrderDetail?.status}`
+    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'This order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'This order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'This order is been dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'This order is completed' :  sellerOrderDetail?.status === 'CANCELLED' ? 'This order has been cancelled' :  sellerOrderDetail?.status === 'Rejected' ? 'This order has been rejected' : null
 
 
     useEffect(() => {
@@ -37,7 +38,7 @@ const OrderDetails = (props: any) => {
 
         }
         loadAsyn()
-    }, [])
+    }, [isFocused])
 
 
     useEffect(() => {
@@ -127,20 +128,24 @@ const OrderDetails = (props: any) => {
         }
     }
 
+    if(stateLoader) {
+        return  <View style={styles.container}>
+            <ActivityIndicator />
+        </View>
+    }
 
     return (
-        <ScrollView>
         <View style={styles.container}>
-            {
-                stateLoader ? null :
+            <ScrollView>
+                <View>
                     <View>
                         <MobileHeader
                             categoryName={'Order Details'}
                             props={props}
                         />
                         <View>
-                            <View style={[styles.tag, { backgroundColor: sellerOrderDetail?.status === 'PENDING' ? colors?.orange : sellerOrderDetail?.status === 'PROCESSING' ? colors?.pink : sellerOrderDetail?.status === 'DISPATCHED' ? colors?.purple : sellerOrderDetail?.status === 'COMPLETED' ? colors?.green : colors?.red }]}>
-                                <Text textAlign='center' style={styles.txt} text={statusUpdate} fontSize={hp(14)} />
+                            <View style={[styles.tag, { backgroundColor: sellerOrderDetail?.status === 'PENDING' ? colors?.orange : sellerOrderDetail?.status === 'PROCESSING' ? colors?.pink : sellerOrderDetail?.status === 'DISPATCHED' ? colors?.purple : sellerOrderDetail?.status === 'COMPLETED' ? colors?.green : sellerOrderDetail?.status === 'REJECTED' ?  colors?.red : sellerOrderDetail?.status === 'CANCELLED' ?  colors?.red : 'none'}]}>
+                                <Text textAlign='center' style={styles.txt} text={statusUpdate ? statusUpdate : ''} fontSize={hp(14)} />
                             </View>
 
                             <View style={styles.cont}>
@@ -251,46 +256,45 @@ const OrderDetails = (props: any) => {
                                 </View>
                             </View>
                             {
-                            sellerOrderDetail?.status === 'PENDING' ?
-                                <Button isLoading={loader} title={"Mark as processing"} onPress={() => handleSubmit('PROCESSING')} />
-                                : sellerOrderDetail?.status === 'PROCESSING' ?
-                                    <Button isLoading={loader} title={"Mark as dispatched"} onPress={() => handleSubmit('DISPATCHED')} />
-                                    : null
-                        }
-                        <View style={styles.hr}></View>
-                        {
-                            sellerOrderDetail?.status === "PENDING" || sellerOrderDetail?.status === 'PROCESSING' ?
-                                <View style={globalStyles.rowBetween}>
-                                    <Text text='Message Buyer' fontSize={hp(16)} />
+                                sellerOrderDetail?.status === 'PENDING' ?
+                                    <Button isLoading={loader} title={"Mark as processing"} onPress={() => handleSubmit('PROCESSING')} />
+                                    : sellerOrderDetail?.status === 'PROCESSING' ?
+                                        <Button isLoading={loader} title={"Mark as dispatched"} onPress={() => handleSubmit('DISPATCHED')} />
+                                        : null
+                            }
+                            <View style={styles.hr}></View>
+                            {
+                                sellerOrderDetail?.status === "PENDING" || sellerOrderDetail?.status === 'PROCESSING' ?
+                                    <View style={globalStyles.rowBetween}>
+                                        <Text text='Message Buyer' fontSize={hp(16)} />
 
-                                    {
-                                        sellerOrderDetail?.status === 'PENDING' ?
-                                           <Pressable onPress={() => handleOrderModalOpen('reject')}>
-                                             <View style={styles.cont2}>
-                                                <Text text='Reject Order' color={colors.red} fontSize={hp(16)} />
-                                            </View>
-                                           </Pressable>
-                                            : sellerOrderDetail?.status === 'PROCESSING' ?
-                                            <Pressable onPress={() => handleOrderModalOpen('cancel')}>
-                                            <View style={styles.cont2}>
-                                               <Text text='Cancel Order' color={colors.red} fontSize={hp(16)} />
-                                           </View>
-                                          </Pressable>
-                                                : null
-                                    }
-                                </View>
-                                :
-                                <View style={styles.contdiv}>
-                                    <Text text='Message Buyer' textAlign='center' fontSize={hp(16)} />
-                                </View>
-                        }
+                                        {
+                                            sellerOrderDetail?.status === 'PENDING' ?
+                                                <Pressable onPress={() => handleOrderModalOpen('reject')}>
+                                                    <View style={styles.cont2}>
+                                                        <Text text='Reject Order' color={colors.red} fontSize={hp(16)} />
+                                                    </View>
+                                                </Pressable>
+                                                : sellerOrderDetail?.status === 'PROCESSING' ?
+                                                    <Pressable onPress={() => handleOrderModalOpen('cancel')}>
+                                                        <View style={styles.cont2}>
+                                                            <Text text='Cancel Order' color={colors.red} fontSize={hp(16)} />
+                                                        </View>
+                                                    </Pressable>
+                                                    : null
+                                        }
+                                    </View>
+                                    :
+                                    <View style={styles.contdiv}>
+                                        <Text text='Message Buyer' textAlign='center' fontSize={hp(16)} />
+                                    </View>
+                            }
                         </View>
-                    
-                    </View>
-            }
 
+                    </View>
+                </View>
+            </ScrollView>
         </View>
-        </ScrollView>
     )
 }
 
@@ -298,7 +302,7 @@ export default OrderDetails
 
 const styles = StyleSheet.create({
     container: {
-       // flex: 1,
+        flex: 1,
         padding: hp(10),
         backgroundColor: 'black'
     },

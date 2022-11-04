@@ -13,6 +13,7 @@ import { Input } from '../components/common/TextInput'
 import EmptyState from './Containers/EmptyState'
 import { productLogo } from '../assets'
 import OrderCard from './Containers/OrderCard'
+import { useIsFocused } from "@react-navigation/native";
 
 const SellerOrderScreen = ({ navigation }: any) => {
     const dispatch = useAppDispatch()
@@ -22,6 +23,7 @@ const SellerOrderScreen = ({ navigation }: any) => {
     const [stateLoader, setStateLoader] = useState(false)
     const [id, setId] = useState('')
     const [visible, setVisible] = React.useState(false);
+    const isFocused = useIsFocused();
 
     const openMenu = () => setVisible(true);
 
@@ -35,7 +37,7 @@ const SellerOrderScreen = ({ navigation }: any) => {
             setId(id)
         }
         loadAsyn()
-    }, [])
+    }, [isFocused])
 
 
     useEffect(() => {
@@ -51,7 +53,7 @@ const SellerOrderScreen = ({ navigation }: any) => {
             setStateLoader(false)
         }
         loadData()
-    }, [id, status])
+    }, [id, status, isFocused])
 
 
     return (

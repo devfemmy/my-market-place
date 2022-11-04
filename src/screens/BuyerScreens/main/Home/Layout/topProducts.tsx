@@ -14,10 +14,12 @@ import { PRODUCTS_DATA } from '../../../DummyData'
 import BuyerProductCard from '../../../../../components/resuable/BuyerProductCard'
 import { buyerProducts, getProductBuyer } from '../../../../../redux/slices/productSlice'
 import { categoryData } from '../../../../../redux/slices/CategorySlice'
+import { useIsFocused } from "@react-navigation/native";
+
 
 const TopProducts = () => {
     const navigation = useNavigation<Nav>();
-
+    const isFocused = useIsFocused();
     const dispatch = useAppDispatch()
     const categoryItems = useAppSelector(categoryData)
     const buyerProoductList = useAppSelector(buyerProducts)
@@ -25,7 +27,7 @@ const TopProducts = () => {
     useEffect(() => {
         dispatch(getAllCategories())
         dispatch(getProductBuyer())
-    }, [])
+    }, [isFocused])
 
     const renderItem = ({item}: any) => (
         <BuyerProductCard item={item} />

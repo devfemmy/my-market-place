@@ -21,6 +21,8 @@ import { InfoCircle } from '../../../../constants/images';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getStaff, staffsData } from '../../../../redux/slices/StaffSlice';
 import MobileHeader from '../../../Containers/MobileHeader';
+import { useIsFocused } from "@react-navigation/native";
+
 
 export const StaffScreen = (props: any): JSX.Element => {
 
@@ -30,7 +32,7 @@ export const StaffScreen = (props: any): JSX.Element => {
   const [id, setId] = useState<any>()
   const [stateLoader, setStateLoader] = useState(false)
   const random = props ? props.route.params.params.random : null
-
+  const isFocused = useIsFocused();
 
 
   const filterStaff = staffList?.filter((data: any) => data?.user?.first_name.toLowerCase().includes(searchValue.toLowerCase()) || data?.user?.last_name.toLowerCase().includes(searchValue.toLowerCase()))
@@ -47,7 +49,7 @@ export const StaffScreen = (props: any): JSX.Element => {
       setStateLoader(false)
     }
     loadData()
-  }, [id, random])
+  }, [id, random, isFocused])
 
   const renderItem = ({item}: any) => (
     <StaffCard item={item}/>

@@ -21,7 +21,7 @@ type IProp = {
   placeholder: string,
   errorMsg?: string,
   setState: (value: string) => void;
-  roleSelector?: boolean
+  roleSelector?: boolean,
 };
 
 
@@ -88,7 +88,8 @@ export const Select = (props: IProp) => {
         arrowicon={<icons.Ionicons name="chevron-down" size={hp(12)} color="white" />}
         searchicon={<icons.Ionicons name="search" size={hp(12)} color="white" />}
         data={items}
-        onSelect={() => console.log(defaultValue)} />
+        onSelect={() => console.log(defaultValue)} 
+        />
 
       {errorMsg !== undefined ? (
         <View style={[globalStyles.rowStart, styles.errorHold]}>

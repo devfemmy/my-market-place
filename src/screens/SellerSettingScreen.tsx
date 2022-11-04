@@ -19,6 +19,7 @@ import CustomModal from '../components/common/CustomModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getStoreBySlug, storeBySlug } from '../redux/slices/CategorySlice';
 import { Notifier, NotifierComponents } from 'react-native-notifier';
+import { signOutUser } from '../redux/slices/AuthSlice';
 
 const SellerSettingScreen = ({ navigation }: any) => {
 
@@ -173,7 +174,11 @@ const SellerSettingScreen = ({ navigation }: any) => {
   }
 
   const LogOut = async () => {
-    AsyncStorage.clear()
+    await AsyncStorage.clear()
+    await dispatch(signOutUser()).then(dd => {
+      return navigation.navigate('Home')
+    })
+    return navigation.navigate('Home')
   }
 
   const SwitchToBuyer = async () => {

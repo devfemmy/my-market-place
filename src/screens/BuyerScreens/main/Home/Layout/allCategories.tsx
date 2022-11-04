@@ -14,16 +14,17 @@ import { categoryData, getAllCategories } from '../../../../../redux/slices/Cate
 import { getProfile, profileInfo } from '../../../../../redux/slices/ProfileSlice'
 import { buyerProducts, getProductBuyer } from '../../../../../redux/slices/productSlice'
 import { truncate } from '../../../../../utils/server'
+import { useIsFocused } from "@react-navigation/native";
 
 const AllCategories = ({navigation}: any) => {
    const nav = useNavigation();
     const dispatch = useAppDispatch()
     const categoryItems = useAppSelector(categoryData)
-
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         dispatch(getAllCategories())
-    }, [])
+    }, [isFocused])
 
 
 

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   widthPercentageToDP as wdp,
   heightPercentageToDP as hdp,
@@ -31,6 +32,12 @@ export const numberFormat = (value: number) => {
   const num = value?.toFixed(Math.max(0, ~~2));
   const str = num?.replace(new RegExp(re, 'g'), '$&' + ',');
   return str;
+}
+
+
+export const getStorage = async (route: string) => {
+  let response = await AsyncStorage.getItem(route)
+  return response
 }
 
 

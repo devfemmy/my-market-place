@@ -43,37 +43,71 @@ import AddStaffScreen from '../screens/SellerScreens/StoreScreen/Staff/AddStaff'
 import { StaffScreen } from '../screens/SellerScreens';
 import Profile from '../screens/SellerScreens/Profile';
 import BuyerOrderDetail from '../screens/BuyerOrderDetail';
+import { getStorage } from '../utils/helpers';
+import { useIsFocused } from "@react-navigation/native";
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
     const Tab = createBottomTabNavigator();
     const dispatch = useAppDispatch()
     const [loading, setLoading] = useState(true);
-
+    const isFocused = useIsFocused();
     const [store, setStore] = useState('')
 
 
     useEffect(() => {
 
-        dispatch(getPersonalStore()).then( async dd => {
-           var data = await AsyncStorage.getItem('type')
-            if (dd?.payload?.length > 0) {
-                setStore('SellerScreen')
-                setLoading(false)
-                return
-            }
-            if(data) {
-                setStore('CreateStoreScreen')
-                setLoading(false)
-                return
+        const loadAsync = async () => {
+             var data = await AsyncStorage.getItem('type') || null
+             var token = await AsyncStorage.getItem('token') || null
+            // console.log({data})
+            var cartCheck = await AsyncStorage.getItem('checking') || null
+            var userType = await AsyncStorage.getItem('mode') || null
+            var response = await dispatch(getPersonalStore())
+          
+            if (getPersonalStore.fulfilled.match(response)) {
+
+                // if (data) {
+                //     setStore('CreateStoreScreen')
+                //     setLoading(false)
+                // }
+                if (cartCheck) {
+                    setStore('CartScreen')
+                    setLoading(false)
+                }
+                else if (userType && userType === "Buyer" && token) {
+                    setStore('BuyerScreen')
+                    setLoading(false)
+                }
+                else if (userType && userType === "Seller" && token) {
+                    setStore('SellerScreen')
+                    setLoading(false)
+                }
+                else if (response?.payload?.length > 0 && token) {
+                    setStore('SellerScreen')
+                    setLoading(false)
+                }
+                else if (response?.payload?.length < 1 && token) {
+                    setStore('BuyerScreen')
+                    setLoading(false)
+                }
+                else {
+                    setStore('Home')
+                    setLoading(false)
+                }
             }
             else {
-                setStore('BuyerScreen')
+                var errMsg = response?.payload as string
+                console.log({ errMsg })
+                setStore('Home')
                 setLoading(false)
-                return
             }
-        })
-    }, [])
+
+
+        }
+
+        loadAsync()
+    }, [store, isFocused])
 
 
     const BuyerScreen = () => {
@@ -132,7 +166,7 @@ const TokenStackNavigation = () => {
                             iconName = focused ? 'ios-home' : 'ios-home-outline';
                         } else if (route.name === 'Products') {
                             iconName = 'search';
-                        } else if (route.name === 'Order') {
+                        } else if (route.name === 'Orders') {
                             iconName = focused ? 'cart' : 'cart-outline';
                         }
                         if (route.name === 'Chat') {
@@ -150,13 +184,14 @@ const TokenStackNavigation = () => {
             >
                 <Tab.Screen name="Store" component={MyStoreScreen} />
                 <Tab.Screen name="Products" component={ProductScreen} />
-                <Tab.Screen name="Order" component={SellerOrderScreen} />
+                <Tab.Screen name="Orders" component={SellerOrderScreen} />
                 <Tab.Screen name="Chat" component={SellerChatScreen} />
                 <Tab.Screen name="Settings" component={SellerSettingScreen} />
-               
+
             </Tab.Navigator>
         );
     }
+
 
     if (loading) {
         return null;
@@ -183,17 +218,21 @@ const TokenStackNavigation = () => {
             <Stack.Screen name='OrderDetails' component={OrderDetails} />
             <Stack.Screen name='StoreSuccessScreen' component={StoreSuccessScreen} />
             <Stack.Screen name='AddProduct' component={AddProducts} />
-           <Stack.Screen name='AddProductVariant' component={AddProductVariant} />
-           <Stack.Screen name='AddColorVariant' component={AddColorVariant} />
-           <Stack.Screen name='SellerProductDetail' component={SellerProductDetail} />
-           <Stack.Screen name='ProductDetailEdit' component={ProductDetailEdit} />
-           <Stack.Screen name='ColorEditVariant' component={ColorEditVariant} />
-           <Stack.Screen name='ProductDetailEditVariant' component={ProductDetailEditVariant} />
-           <Stack.Screen name='EditStore' component={EditStore} />
-           <Stack.Screen name='Staffs' component={StaffScreen} />
-           <Stack.Screen name='AddStaff' component={AddStaffScreen} />
-           <Stack.Screen name='Profile' component={Profile} />
-           <Stack.Screen name='BuyerOrderDetail' component={BuyerOrderDetail} />
+            <Stack.Screen name='AddProductVariant' component={AddProductVariant} />
+            <Stack.Screen name='AddColorVariant' component={AddColorVariant} />
+            <Stack.Screen name='SellerProductDetail' component={SellerProductDetail} />
+            <Stack.Screen name='ProductDetailEdit' component={ProductDetailEdit} />
+            <Stack.Screen name='ColorEditVariant' component={ColorEditVariant} />
+            <Stack.Screen name='ProductDetailEditVariant' component={ProductDetailEditVariant} />
+            <Stack.Screen name='EditStore' component={EditStore} />
+            <Stack.Screen name='Staffs' component={StaffScreen} />
+            <Stack.Screen name='AddStaff' component={AddStaffScreen} />
+            <Stack.Screen name='Profile' component={Profile} />
+            <Stack.Screen name='BuyerOrderDetail' component={BuyerOrderDetail} />
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name='LoginScreen' component={LoginScreen} />
+            <Stack.Screen name='DeliveryScreen' component={DeliveryScreen} />
+            {/* <Stack.Screen name='NoAuthMyStoreScreen' component={MyStoreScreen} /> */}
         </Stack.Navigator>
     )
 }

@@ -121,7 +121,6 @@ export const getPersonalStore = createAsyncThunk(
     'store/myStore',
     async () => {
         const response = await getRequest("/store/seller")
-       
         if (response?.status === 200) {
             return response?.data?.data
         }

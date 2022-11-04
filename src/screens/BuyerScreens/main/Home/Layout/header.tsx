@@ -10,16 +10,31 @@ import { colors } from '../../../../../utils/themes'
 import { hp, wp } from '../../../../../utils/helpers'
 import { Nav } from '../../../../../utils/types'
 import { copyToClipboard } from '../../../../../utils/functions'
-import { useAppSelector } from '../../../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks'
 import { userState } from '../../../../../redux/slices/AuthSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Badge } from 'react-native-paper';
-
+import { getNotifications } from '../../../../../redux/slices/notificationSlice'
+import { CartData, getCarts } from '../../../../../redux/slices/cartSlice'
+import { useIsFocused } from "@react-navigation/native";
 
 const UserHeader = ({ name, image }: any) => {
     const auth = useAppSelector(userState)
     const [token, setToken] = useState<string>()
     const [cartItem, setCartItem] = useState<any>()
+    const dispatch = useAppDispatch()
+    const cartList = useAppSelector(CartData)
+
+    const isFocused = useIsFocused();
+
+
+    useEffect(() => {
+        if (token) {
+            dispatch(getNotifications())
+            dispatch(getCarts())
+        }
+
+    }, [token, isFocused])
 
 
     useEffect(() => {
@@ -43,8 +58,10 @@ const UserHeader = ({ name, image }: any) => {
 
         getToken()
 
-    }, [token])
+    }, [token, isFocused])
     const navigation = useNavigation<Nav>();
+
+    console.log({token, isFocused, auth})
 
     return (
         <View style={[styles.comp]}>
@@ -69,7 +86,7 @@ const UserHeader = ({ name, image }: any) => {
                 auth || token ? <View style={globalStyles.rowAround}>
                     <View>
                         <Badge style={styles.bg2}>
-                            3
+                            0
                         </Badge>
                         <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.iconCard}>
                             <icons.Octicons name="bell-fill" size={hp(25)} color="white" />
@@ -77,10 +94,16 @@ const UserHeader = ({ name, image }: any) => {
                     </View>
                     <View style={{ marginLeft: hp(30) }} />
                     <View>
-                        <Badge style={styles.bg2}>
-                            3
-                        </Badge>
-                        <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.iconCard}>
+                        {
+                            cartList?.length > 0 && <Badge style={styles.bg2}>
+                                {cartList?.length}
+                            </Badge>
+                        }
+                        <TouchableOpacity onPress={() => navigation.navigate('CartScreen', {
+                            params: {
+                                renderName: 'none'
+                            }
+                        })} style={styles.iconCard}>
                             <icons.Ionicons name="ios-cart" size={hp(31)} color="white" />
                         </TouchableOpacity>
                     </View>
@@ -89,10 +112,16 @@ const UserHeader = ({ name, image }: any) => {
                     :
                     <View style={globalStyles.rowAround}>
                         <View style={styles.bg}>
-                            <Badge style={styles.bg2}>
-                                {cartItem?.length}
-                            </Badge>
-                            <TouchableOpacity onPress={() => navigation.navigate('CartScreen')} style={styles.iconCard}>
+                            {
+                                cartItem?.length > 0 && <Badge style={styles.bg2}>
+                                    {cartItem?.length}
+                                </Badge>
+                            }
+                            <TouchableOpacity onPress={() => navigation.navigate('CartScreen', {
+                                params: {
+                                    renderName: 'none'
+                                }
+                            })} style={styles.iconCard}>
                                 <icons.Ionicons name="ios-cart" size={hp(31)} color="white" />
                             </TouchableOpacity>
                         </View>
@@ -128,7 +157,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         width: 40,
         height: 40,
-        backgroundColor: colors.dimBlack,
+        backgroundColor: colors.black,
         overflow: 'hidden'
     },
     imageContainer: {

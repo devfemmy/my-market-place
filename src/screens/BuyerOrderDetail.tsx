@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Image, Pressable } from 'react-native'
+import { View, StyleSheet, ScrollView, Image, Pressable, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { hp, numberFormat, wp } from '../utils/helpers'
 import { globalStyles } from '../styles'
@@ -15,7 +15,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { Input } from '../components/common/TextInput'
 import { addReview } from '../redux/slices/ReviewSlice'
 import StarRating from 'react-native-star-rating';
-
+import { useIsFocused } from "@react-navigation/native";
 
 
 
@@ -32,9 +32,10 @@ const BuyerOrderDetail = (props: any) => {
     const [orderModalVisible, setOrderModalVisible] = useState(false)
     const [stateLoader, setStateLoader] = useState(false)
     const orderId = props?.route?.params?.params?.id
+    const isFocused = useIsFocused();
 
     const [id, setId] = useState('')
-    const statusUpdate = filteredOrder?.status === 'PENDING' ? 'This order is pending' : filteredOrder?.status === 'PROCESSING' ? 'This order is been processed' : filteredOrder?.status === 'DISPATCHED' ? 'This order is been dispatched' : filteredOrder?.status === 'COMPLETED' ? 'This order is completed' : `This order has been ${filteredOrder?.status}`
+    const statusUpdate = filteredOrder?.status === 'PENDING' ? 'This order is pending' : filteredOrder?.status === 'PROCESSING' ? 'This order is been processed' : filteredOrder?.status === 'DISPATCHED' ? 'This order is been dispatched' : filteredOrder?.status === 'COMPLETED' ? 'This order is completed' : filteredOrder?.status === 'CANCELLED' ? 'This order has been cancelled' : filteredOrder?.status === 'Rejected' ? 'This order has been rejected' : null
     const [ratingModal, setRatingModal] = useState(false)
 
     const openRatingModal = () => {
@@ -53,21 +54,27 @@ const BuyerOrderDetail = (props: any) => {
 
         }
         loadAsyn()
-    }, [])
+    }, [isFocused])
 
 
     useEffect(() => {
-        setStateLoader(true)
+
         const loadData = async () => {
-            await dispatch(getBuyerOrders()).then((data: any) => {
-                var fitlterOrders = data?.payload.find((dd: any) => dd?.id === orderId)
+            setStateLoader(true)
+            var response = await dispatch(getBuyerOrders())
+            if (getBuyerOrders.fulfilled.match(response)) {
+                var fitlterOrders = response?.payload.find((dd: any) => dd?.id === orderId)
                 setFilteredOrder(fitlterOrders)
                 setStateLoader(false)
-            })
+            }
+            else {
+                setStateLoader(false)
+            }
+
 
         }
         loadData()
-    }, [id, orderId])
+    }, [id, orderId, isFocused])
 
     const handleOrderModalOpen = (item: any) => {
         setOrderModalVisible(true)
@@ -140,22 +147,25 @@ const BuyerOrderDetail = (props: any) => {
 
         const payload = {
             rating: rate,
-            product_id: productId,
+            product_id: filteredOrder?.product_id,
             comment: comment
         }
+
         setLoader(true)
         try {
             var response = await dispatch(addReview(payload))
             if (addReview.fulfilled.match(response)) {
                 closeRatingModal()
                 setLoader(false)
+                setRate(0)
+                setComment('')
                 Notifier.showNotification({
                     title: 'Rating Successfull',
                     description: '',
                     Component: NotifierComponents.Alert,
                     hideOnPress: false,
                     componentProps: {
-                        alertType: 'error',
+                        alertType: 'success',
                     },
                 });
 
@@ -180,6 +190,11 @@ const BuyerOrderDetail = (props: any) => {
     }
 
 
+    if (stateLoader) {
+        return <View style={styles.container}>
+            <ActivityIndicator />
+        </View>
+    }
 
     return (
         <View style={styles.container}>
@@ -189,134 +204,132 @@ const BuyerOrderDetail = (props: any) => {
             />
             <ScrollView>
                 <View>
-                    {
-                        stateLoader ? null :
-                            <View>
+                    <View>
 
-                                <View>
-                                    <View style={[styles.tag, { backgroundColor: filteredOrder?.status === 'PENDING' ? colors?.orange : filteredOrder?.status === 'PROCESSING' ? colors?.pink : filteredOrder?.status === 'DISPATCHED' ? colors?.purple : filteredOrder?.status === 'COMPLETED' ? colors?.green : colors?.red }]}>
-                                        <Text textAlign='center' style={styles.txt} text={statusUpdate} fontSize={hp(14)} />
-                                    </View>
+                        <View>
+                            <View style={[styles.tag, { backgroundColor: filteredOrder?.status === 'PENDING' ? colors?.orange : filteredOrder?.status === 'PROCESSING' ? colors?.pink : filteredOrder?.status === 'DISPATCHED' ? colors?.purple : filteredOrder?.status === 'COMPLETED' ? colors?.green : filteredOrder?.status === 'REJECTED' ? colors?.red : filteredOrder?.status === 'CANCELLED' ? colors?.red : 'none' }]}>
+                                <Text textAlign='center' style={styles.txt} text={statusUpdate} fontSize={hp(14)} />
+                            </View>
 
-                                    <View style={styles.cont}>
-                                        <View style={[globalStyles.rowStart, styles.top]}>
-                                            <Image source={{ uri: filteredOrder?.variant_img_url }} style={styles.img} />
-                                            <View style={styles.minDiv}>
-                                                <Text fontWeight='600' text={filteredOrder?.meta?.product_details?.name} fontSize={hp(14)} />
-                                                <View style={styles.subdiv}>
-                                                    <Text fontWeight='600' text={'Size -'} fontSize={hp(13)} />
-                                                    <Text fontWeight='600' text={filteredOrder?.size ? filteredOrder?.size : 'N/A'} color={colors?.bazaraTint} style={styles.txt2} fontSize={hp(13)} />
-                                                    <Text fontWeight='600' text={'Color -'} fontSize={hp(13)} />
-                                                    <Text fontWeight='600' text={filteredOrder?.color ? filteredOrder?.color : 'N/A'} color={colors?.bazaraTint} style={styles.txt2} fontSize={hp(13)} />
-                                                </View>
-                                            </View>
+                            <View style={styles.cont}>
+                                <View style={[globalStyles.rowStart, styles.top]}>
+                                    <Image source={{ uri: filteredOrder?.variant_img_url }} style={styles.img} />
+                                    <View style={styles.minDiv}>
+                                        <Text fontWeight='600' text={filteredOrder?.meta?.product_details?.name} fontSize={hp(14)} />
+                                        <View style={styles.subdiv}>
+                                            <Text fontWeight='600' text={'Size -'} fontSize={hp(13)} />
+                                            <Text fontWeight='600' text={filteredOrder?.size ? filteredOrder?.size : 'N/A'} color={colors?.bazaraTint} style={styles.txt2} fontSize={hp(13)} />
+                                            <Text fontWeight='600' text={'Color -'} fontSize={hp(13)} />
+                                            <Text fontWeight='600' text={filteredOrder?.color ? filteredOrder?.color : 'N/A'} color={colors?.bazaraTint} style={styles.txt2} fontSize={hp(13)} />
                                         </View>
-                                        <View style={styles.hr}></View>
-
-                                        <View style={styles.alignStart}>
-                                            <Image source={pin} />
-                                            <View style={styles.minDiv}>
-                                                <Text fontWeight='600' text={"Receiver's Name"} fontSize={hp(16)} color={colors?.gray} style={styles.txt3} />
-                                                <Text fontWeight='600' lineHeight={21} text={filteredOrder?.delivery_information?.receivers_name} fontSize={hp(14)} style={{ textTransform: 'capitalize' }} />
-                                            </View>
-                                        </View>
-                                        <View style={styles.hr}></View>
-                                        <View style={styles.alignStart}>
-                                            <Image source={calendar} />
-                                            <View style={styles.minDiv}>
-                                                <Text fontWeight='600' text={"Receiver's Address"} fontSize={hp(16)} color={colors?.gray} style={styles.txt3} />
-                                                <Text fontWeight='600' lineHeight={21} text={filteredOrder?.delivery_information?.street + " " + filteredOrder?.delivery_information?.city + " " + filteredOrder?.delivery_information?.state} fontSize={hp(14)} />
-                                            </View>
-                                        </View>
-                                    </View>
-
-                                    <View style={styles.cont}>
-                                        <View style={[globalStyles.rowBetween, styles.big]}>
-                                            <Text text='Items Total' />
-                                            <Text
-                                                text={`₦${numberFormat(Number(filteredOrder?.amount) || 0)}`}
-                                                fontSize={hp(18)}
-                                                color={colors.white}
-                                                numberOfLines={1}
-                                                fontWeight={'600'}
-                                                style={{ marginTop: hp(5) }}
-                                            />
-                                        </View>
-                                        <View style={styles.hr}></View>
-                                        <View style={[globalStyles.rowBetween, styles.big]}>
-                                            <Text text='Quantity' />
-                                            <Text
-                                                text={filteredOrder?.quantity}
-                                                fontSize={hp(18)}
-                                                color={colors.white}
-                                                numberOfLines={1}
-                                                fontWeight={'600'}
-                                                style={{ marginTop: hp(5) }}
-                                            />
-                                        </View>
-                                        <View style={styles.hr}></View>
-                                        <View style={[globalStyles.rowBetween, styles.big]}>
-                                            <Text text='Delivery Fee' />
-                                            <Text
-                                                text={"N/A"}
-                                                fontSize={hp(18)}
-                                                color={colors.white}
-                                                numberOfLines={1}
-                                                fontWeight={'600'}
-                                                style={{ marginTop: hp(5) }}
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View style={styles.cont}>
-                                        <View style={[globalStyles.rowBetween, styles.big]}>
-                                            <Text text='Order ID' />
-                                            <Text
-                                                text={filteredOrder?.id}
-                                                fontSize={hp(18)}
-                                                color={colors.white}
-                                                numberOfLines={1}
-                                                fontWeight={'600'}
-                                                style={{ marginTop: hp(5) }}
-                                            />
-                                        </View>
-                                        <View style={styles.hr}></View>
-                                        <View style={[globalStyles.rowBetween, styles.big]}>
-                                            <Text text='Order Date' />
-                                            <Text
-                                                text={new Date(filteredOrder?.created_at).toDateString()}
-                                                fontSize={hp(18)}
-                                                color={colors.white}
-                                                numberOfLines={1}
-                                                fontWeight={'600'}
-                                                style={{ marginTop: hp(5) }}
-                                            />
-                                        </View>
-                                        <View style={styles.hr}></View>
-                                        <View style={[globalStyles.rowBetween, styles.big]}>
-                                            <Text text='Store Name' />
-                                            <Text
-                                                text={filteredOrder?.meta?.store_details?.store_name}
-                                                fontSize={hp(18)}
-                                                color={colors.white}
-                                                numberOfLines={1}
-                                                fontWeight={'600'}
-                                                style={{ marginTop: hp(5) }}
-                                            />
-                                        </View>
-                                    </View>
-                                    {
-                                        filteredOrder?.status === 'DISPATCHED' ?
-                                            <Button isLoading={loader} title={"Mark as Completed"} onPress={() => handleSubmit('COMPLETED')} /> : null
-                                    }
-                                    <View style={styles.hr}></View>
-                                    <View style={styles.contdiv}>
-                                        <Text text='Message Seller' textAlign='center' fontSize={hp(16)} />
                                     </View>
                                 </View>
+                                <View style={styles.hr}></View>
 
+                                <View style={styles.alignStart}>
+                                    <Image source={pin} />
+                                    <View style={styles.minDiv}>
+                                        <Text fontWeight='600' text={"Receiver's Name"} fontSize={hp(16)} color={colors?.gray} style={styles.txt3} />
+                                        <Text fontWeight='600' lineHeight={21} text={filteredOrder?.delivery_information?.receivers_name} fontSize={hp(14)} style={{ textTransform: 'capitalize' }} />
+                                    </View>
+                                </View>
+                                <View style={styles.hr}></View>
+                                <View style={styles.alignStart}>
+                                    <Image source={calendar} />
+                                    <View style={styles.minDiv}>
+                                        <Text fontWeight='600' text={"Receiver's Address"} fontSize={hp(16)} color={colors?.gray} style={styles.txt3} />
+                                        <Text fontWeight='600' lineHeight={21} text={filteredOrder?.delivery_information?.street + " " + filteredOrder?.delivery_information?.city + " " + filteredOrder?.delivery_information?.state} fontSize={hp(14)} />
+                                    </View>
+                                </View>
                             </View>
-                    }
+
+                            <View style={styles.cont}>
+                                <View style={[globalStyles.rowBetween, styles.big]}>
+                                    <Text text='Items Total' />
+                                    <Text
+                                        text={`₦${numberFormat(Number(filteredOrder?.amount) || 0)}`}
+                                        fontSize={hp(18)}
+                                        color={colors.white}
+                                        numberOfLines={1}
+                                        fontWeight={'600'}
+                                        style={{ marginTop: hp(5) }}
+                                    />
+                                </View>
+                                <View style={styles.hr}></View>
+                                <View style={[globalStyles.rowBetween, styles.big]}>
+                                    <Text text='Quantity' />
+                                    <Text
+                                        text={filteredOrder?.quantity}
+                                        fontSize={hp(18)}
+                                        color={colors.white}
+                                        numberOfLines={1}
+                                        fontWeight={'600'}
+                                        style={{ marginTop: hp(5) }}
+                                    />
+                                </View>
+                                <View style={styles.hr}></View>
+                                <View style={[globalStyles.rowBetween, styles.big]}>
+                                    <Text text='Delivery Fee' />
+                                    <Text
+                                        text={"N/A"}
+                                        fontSize={hp(18)}
+                                        color={colors.white}
+                                        numberOfLines={1}
+                                        fontWeight={'600'}
+                                        style={{ marginTop: hp(5) }}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={styles.cont}>
+                                <View style={[globalStyles.rowBetween, styles.big]}>
+                                    <Text text='Order ID' />
+                                    <Text
+                                        text={filteredOrder?.id}
+                                        fontSize={hp(18)}
+                                        color={colors.white}
+                                        numberOfLines={1}
+                                        fontWeight={'600'}
+                                        style={{ marginTop: hp(5) }}
+                                    />
+                                </View>
+                                <View style={styles.hr}></View>
+                                <View style={[globalStyles.rowBetween, styles.big]}>
+                                    <Text text='Order Date' />
+                                    <Text
+                                        text={new Date(filteredOrder?.created_at).toDateString()}
+                                        fontSize={hp(18)}
+                                        color={colors.white}
+                                        numberOfLines={1}
+                                        fontWeight={'600'}
+                                        style={{ marginTop: hp(5) }}
+                                    />
+                                </View>
+                                <View style={styles.hr}></View>
+                                <View style={[globalStyles.rowBetween, styles.big]}>
+                                    <Text text='Store Name' />
+                                    <Text
+                                        text={filteredOrder?.meta?.store_details?.store_name}
+                                        fontSize={hp(18)}
+                                        color={colors.white}
+                                        numberOfLines={1}
+                                        fontWeight={'600'}
+                                        style={{ marginTop: hp(5) }}
+                                    />
+                                </View>
+                            </View>
+                            {
+                                filteredOrder?.status === 'DISPATCHED' ?
+                                    <Button isLoading={loader} title={"Mark as Completed"} onPress={() => handleSubmit('COMPLETED')} /> : null
+                            }
+                            <View style={styles.hr}></View>
+                            <View style={styles.contdiv}>
+                                <Text text='Message Seller' textAlign='center' fontSize={hp(16)} />
+                            </View>
+                            
+                        </View>
+
+                    </View>
 
                 </View>
             </ScrollView>
@@ -341,7 +354,7 @@ const BuyerOrderDetail = (props: any) => {
             >
                 <View style={styles.sheet}>
                     <View style={[globalStyles.rowBetween]}>
-                        <Text text='Rate Product' fontSize={hp(16)} fontWeight='600' />
+                        <Text text='Rate Product' fontSize={hp(18)} fontWeight='600' />
                         <Pressable onPress={closeRatingModal}>
                             <View>
                                 <Image source={cancel} />
@@ -350,32 +363,29 @@ const BuyerOrderDetail = (props: any) => {
                     </View>
 
                     <View style={styles.columnContainer2}>
-                        <View style={styles.container}>
-
-
-                            <Text text='How would you rate this item?' fontSize={hp(14)} fontWeight='400' />
-                            <View style={styles.div2}>
-                                <StarRating
-                                    maxStars={5}
-                                    starSize={35}
-                                    rating={rate || 0}
-                                    fullStarColor={colors.bazaraTint}
-                                    selectedStar={(rating) => setRate(rating)}
-                                />
-                            </View>
-
-                            <Text text='Comment' fontSize={hp(14)} fontWeight='400' />
-                            <Input
-                                label={'Comment'}
-                                value={comment}
-                                multiline={true}
-                                numberOfLines={4}
-                                onBlur={(e: any) => setComment(e)}
-                                onChangeText={(e: any) => setComment(e)}
-
+                        <Text text='How would you rate this item?' style={{marginVertical: hp(10)}} fontSize={hp(14)} fontWeight='400' />
+                        <View style={styles.div2}>
+                            <StarRating
+                                maxStars={5}
+                                starSize={35}
+                                rating={rate || 0}
+                                fullStarColor={colors.bazaraTint}
+                                selectedStar={(rating) => setRate(rating)}
                             />
-                            <Button isLoading={loader} children={"Rate"} handlePress={() => handleRateSubmit()} />
                         </View>
+
+                        <Text text='Comment' fontSize={hp(14)} fontWeight='400' />
+                       <Input
+                            label={'Comment'}
+                            value={comment}
+                            multiline={true}
+                            numberOfLines={4}
+                            onBlur={(e: any) => setComment(e)}
+                            onChangeText={(e: any) => setComment(e)}
+
+                        />  
+                        <Button isLoading={loader} title={"Rate"} onPress={() => handleRateSubmit()} />
+                   
 
 
                     </View>
@@ -458,7 +468,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black'
     },
     columnContainer2: {
-
+        padding: hp(10)
     },
     div2: {
         justifyContent: 'center',

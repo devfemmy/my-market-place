@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, FlatList, Image } from 'react-native'
+import { View, StyleSheet, ScrollView, FlatList, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import StoreHeader from '../components/resuable/StoreHeader'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
@@ -190,76 +190,82 @@ const MyStoreScreen = () => {
   )
 
 
+  if (stateLoader) {
+    return <View style={styles.container}><ActivityIndicator /></View>
+  }
+
 
   return (
     <View style={styles.container}>
-      <StoreHeader name={activeName} slug={storebyIdData?.slug} />
-      {
-        stateLoader ? null : <ScrollView>
+      <View>
+        <StoreHeader name={activeName} slug={storebyIdData?.slug} />
         {
-          productList?.length < 1 ? <View style={styles.mt}>
+          stateLoader ? null : <ScrollView>
+            {
+              productList?.length < 1 ? <View style={styles.mt}>
 
-            <Text text='Quick Actions' style={styles.txt} fontSize={hp(16)} fontWeight='600' />
+                <Text text='Quick Actions' style={styles.txt} fontSize={hp(16)} fontWeight='600' />
 
-            {quickActionArray?.map((data: any) => {
-              return <ListCard key={data?.id} {...data} />
-            })
-            }
-          </View>
-            : null
-        }
-        {
-          productList?.length > 0 && <View>
-            <View style={styles.analyticsHolder}>
-              <View style={[globalStyles.lowerContainer, { width: wp(280) }]}>
-                <Text text="Analytics" fontWeight='600' fontSize={hp(14)} />
-              </View>
-              {
-                AnalyticsData.map((val) => {
-                  return (
-                    <AnalyticsRender item={val} />
-                  )
+                {quickActionArray?.map((data: any) => {
+                  return <ListCard key={data?.id} {...data} />
                 })
-              }
-            </View>
-            <FlatList
-              data={StoreInfoData}
-              renderItem={StoreInfoRender}
-              keyExtractor={item => item.id}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            />
-            <View style={styles.graphHolder}>
-              <View style={[globalStyles.lowerContainer, { width: wp(300) }]}>
-                <Text text="Total Sales" fontWeight='600' fontSize={hp(15)} />
+                }
               </View>
-              <LineChart
-                data={data}
-                width={wp(330)}
-                height={220}
-                chartConfig={chartConfig}
-                bezier
-              />
-            </View>
-            <View style={styles.graphHolder2}>
-              <View style={[globalStyles.lowerContainer, { width: wp(300) }]}>
-                <Text text="Store Views" fontWeight='600' fontSize={hp(15)} />
+                : null
+            }
+            {
+              productList?.length > 0 && <View>
+                <View style={styles.analyticsHolder}>
+                  <View style={[globalStyles.lowerContainer, { width: wp(280) }]}>
+                    <Text text="Analytics" fontWeight='600' fontSize={hp(14)} />
+                  </View>
+                  {
+                    AnalyticsData.map((val) => {
+                      return (
+                        <AnalyticsRender item={val} />
+                      )
+                    })
+                  }
+                </View>
+                <FlatList
+                  data={StoreInfoData}
+                  renderItem={StoreInfoRender}
+                  keyExtractor={item => item.id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                />
+                <View style={styles.graphHolder}>
+                  <View style={[globalStyles.lowerContainer, { width: wp(300) }]}>
+                    <Text text="Total Sales" fontWeight='600' fontSize={hp(15)} />
+                  </View>
+                  <LineChart
+                    data={data}
+                    width={wp(330)}
+                    height={220}
+                    chartConfig={chartConfig}
+                    bezier
+                  />
+                </View>
+                <View style={styles.graphHolder2}>
+                  <View style={[globalStyles.lowerContainer, { width: wp(300) }]}>
+                    <Text text="Store Views" fontWeight='600' fontSize={hp(15)} />
+                  </View>
+                  <BarChart
+                    // style={graphStyle}
+                    data={ViewsData}
+                    width={wp(310)}
+                    height={220}
+                    yAxisLabel=""
+                    chartConfig={chartConfig}
+                    verticalLabelRotation={30}
+                  />
+                </View>
               </View>
-              <BarChart
-                // style={graphStyle}
-                data={ViewsData}
-                width={wp(310)}
-                height={220}
-                yAxisLabel=""
-                chartConfig={chartConfig}
-                verticalLabelRotation={30}
-              />
-            </View>
-          </View>
+            }
+          </ScrollView>
         }
-      </ScrollView>
-      }
-     
+
+      </View>
     </View>
   )
 }
@@ -269,7 +275,8 @@ export default MyStoreScreen
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'black',
-    paddingTop: hp(20)
+    paddingTop: hp(20),
+    flex: 1
   },
   mt: {
     marginVertical: hp(35),

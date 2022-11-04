@@ -60,7 +60,7 @@ const ProductDetail = (props: any) => {
     const [productRating, setProductRating] = useState<any>(null)
 
 
-
+  
 
     const initialValues = {
         state: '',
@@ -81,6 +81,7 @@ const ProductDetail = (props: any) => {
             }),
             onSubmit: (data: { state: string, city: string }) => handleLandMark(data),
         });
+
 
     useEffect(() => {
         const getDeliveryFee = async () => {
@@ -260,7 +261,7 @@ const ProductDetail = (props: any) => {
                     Component: NotifierComponents.Alert,
                     hideOnPress: false,
                     componentProps: {
-                        alertType: 'error',
+                        alertType: 'success',
                     },
                 });
             })
@@ -299,7 +300,11 @@ const ProductDetail = (props: any) => {
             var res = await dispatch(addToCart(data))
             if (addToCart.fulfilled.match(res)) {
                 setLoader2(false)
-                props.navigation.navigate('CartScreen')
+                props.navigation.navigate('CartScreen', {
+                    params: {
+                        renderName: 'none'
+                    }
+                })
                 return Notifier.showNotification({
                     title: 'Product Added to Cart Successfully',
                     // description: "tghdddfdfd",
@@ -313,6 +318,15 @@ const ProductDetail = (props: any) => {
             else {
                 setLoader(false)
                 const errMsg = res.payload as string
+                Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
                 // toast.error(errMsg)
             }
 
@@ -327,14 +341,18 @@ const ProductDetail = (props: any) => {
                 JSON.stringify(updatedData)
             ).then(() => {
                 setLoader2(false)
-                props.navigation.navigate('CartScreen')
+                props.navigation.navigate('CartScreen', {
+                    params: {
+                        renderName: 'none'
+                    }
+                })
                 return Notifier.showNotification({
                     title: 'Product Added to Cart Successfully',
                     description: '',
                     Component: NotifierComponents.Alert,
                     hideOnPress: false,
                     componentProps: {
-                        alertType: 'error',
+                        alertType: 'success',
                     },
                 });
             })
@@ -521,15 +539,17 @@ const ProductDetail = (props: any) => {
                             errorMsg={touched.state ? errors.state : undefined}
                         />
                     </View>
-                    <View style={styles.dp}>
-                        <Select
-                            items={locationCity}
-                            defaultValue={values.city}
-                            placeholder={'Choose City'}
-                            setState={handleChange('city')}
-                            errorMsg={touched.city ? errors.city : undefined}
-                        />
-                    </View>
+                   {
+                    values.state?.length > 0 &&  <View style={styles.dp}>
+                    <Select
+                        items={locationCity}
+                        defaultValue={values.city}
+                        placeholder={'Choose City'}
+                        setState={handleChange('city')}
+                        errorMsg={touched.city ? errors.city : undefined}
+                    />
+                </View>
+                   }
 
                 </View>
                 <View >

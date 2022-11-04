@@ -1,45 +1,476 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, StyleSheet, Pressable, Switch, ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../components/common/Button'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { signOutUser, userState } from '../redux/slices/AuthSlice'
+import { forgetPassword, signOutUser, userState } from '../redux/slices/AuthSlice'
+import { getProfile, profileLoader, updateProfile } from '../redux/slices/ProfileSlice'
+import { getPersonalStore, myStore } from '../redux/slices/StoreSlice'
+import { ProfileFormData } from '../utils/types'
+import { getAddress, updateAddress } from '../redux/slices/AddressSlice'
+import { Notifier, NotifierComponents } from 'react-native-notifier'
+import { useFormik } from 'formik'
+import { ProfileFormSchema } from '../utils/schemas'
+import { hp, wp } from '../utils/helpers'
+import { ActivityIndicator } from 'react-native-paper'
+import MobileHeader from './Containers/MobileHeader'
+import { Text } from '../components/common/Text'
+import { globalStyles } from '../styles'
+import { colors } from '../utils/themes'
+import { Input } from '../components/common/TextInput'
+import DeliveryModal from './Containers/DeliveryModal'
 
-const BuyerProfileScreen = ({navigation}: any) => {
+const BuyerProfileScreen = ({ navigation }: any) => {
   const dispatch = useAppDispatch()
-  const userInfo = useAppSelector(userState)
+  const [loader, setLoader] = useState(false)
+  const [profileData, setProfileData] = useState<any>(null)
+  const profileLoading = useAppSelector(profileLoader)
+  const [edit, setEdit] = useState(false)
+
+  const [stateLoader, setStateLoader] = useState(false)
+  const myStoreList = useAppSelector(myStore)
+  //const [userInfo, setUserInfo] = useState<any>(typeof window !== 'undefined' ? secureLocalStorage.getItem('userInfo') : null)
+  const [imageUrl, setImageUrl] = useState<any>(profileData ? profileData?.img_url : "")
 
 
+  const initialValues: ProfileFormData = {
+    lName: profileData ? profileData?.last_name : '',
+    fName: profileData ? profileData?.first_name : '',
+    email: profileData ? profileData?.email : '',
+    mobile: profileData ? profileData?.mobile : '',
+    gender: profileData ? profileData?.sex : "",
+  }
 
-  const handleRemoval = async () => {
-    await AsyncStorage.removeItem("token")
-    await AsyncStorage.removeItem('activeId')
-    await AsyncStorage.removeItem('activeName')
-    await AsyncStorage.removeItem('activeSlug')
-    await AsyncStorage.removeItem('merchant-slug')
-    await AsyncStorage.removeItem('role')
-    await AsyncStorage.removeItem('mode')
-    await AsyncStorage.removeItem('userInfo')
-    await AsyncStorage.removeItem('checking')
-    await AsyncStorage.removeItem('type')
-    await AsyncStorage.removeItem('prodId')
-    await AsyncStorage.removeItem('slug')
-    await AsyncStorage.removeItem('prodVarId')
-    await AsyncStorage.removeItem('productDraft')
-    await AsyncStorage.removeItem('editableId')
-    
-    await dispatch(signOutUser()).then(dd => console.log({dd}))
-   // return navigation.navigate('HomeScreen')
+  const [addressList, setAddressList] = useState<any>(null)
+  const [visible, setVisible] = useState(false)
 
+  const openVisible = () => {
+    setVisible(true)
+  }
+
+  const closeVisible = () => {
+    setVisible(false)
+    dispatch(getAddress()).then((d) => {
+      setAddressList(d.payload)
+    })
   }
 
 
+
+  useEffect(() => {
+    setStateLoader(true)
+    const loadData = async () => {
+      await dispatch(getProfile()).then(d => {
+        setProfileData(d?.payload)
+      })
+      await dispatch(getAddress()).then((d) => {
+        setAddressList(d.payload)
+      })
+      await dispatch(getPersonalStore())
+      setStateLoader(false)
+    }
+    loadData()
+  }, [])
+
+  useEffect(() => {
+    const loadImage = () => {
+      setImageUrl(profileData?.img_url)
+    }
+    loadImage()
+  }, [profileData])
+
+
+  const updateDelivery = async (data: any) => {
+    const payload = {
+      id: data?.id,
+      default: !data?.default
+    }
+
+    try {
+      var response = await dispatch(updateAddress(payload))
+      if (updateAddress.fulfilled.match(response)) {
+        dispatch(getAddress()).then((data) => {
+          setAddressList(data?.payload)
+        })
+
+      }
+      else {
+        var errMsg = response?.payload as string
+        Notifier.showNotification({
+          title: errMsg,
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+      }
+    }
+    catch (e) {
+      console.log({ e })
+    }
+  }
+
+
+
+
+  const removeImage = () => {
+    setImageUrl("")
+  }
+
+  const handleProfileUpdate = async (data: any) => {
+    setLoader(true)
+    setStateLoader(true)
+    try {
+      var newData = {
+        first_name: data?.fName,
+        last_name: data?.lName,
+        email: data?.email,
+        mobile: data?.mobile?.toString(),
+        profile_cover_img: profileData?.img_url
+      }
+
+      var resultResponse = await dispatch(updateProfile(newData))
+      if (updateProfile.fulfilled.match(resultResponse)) {
+        await dispatch(getProfile()).then(d => {
+          setProfileData(d?.payload)
+        })
+        setLoader(false)
+        setStateLoader(false)
+        setEdit(false)
+        Notifier.showNotification({
+          title: "Profile Image updated successfully",
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'success',
+          },
+        });
+      }
+      else {
+        var errMsg = resultResponse?.payload as string
+        setLoader(false)
+        setStateLoader(false)
+        Notifier.showNotification({
+          title: errMsg,
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+      }
+
+    }
+    catch (e) {
+      setLoader(false)
+      setStateLoader(false)
+      console.log(e)
+    }
+  }
+
+  const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
+    useFormik({
+      initialValues,
+      validationSchema: ProfileFormSchema,
+      onSubmit: (data: ProfileFormData) => handleProfileUpdate(data),
+      enableReinitialize: true
+    });
+
+
+  const requestPassowrdChange = async () => {
+    setLoader(true)
+    const data = {
+      email: profileData?.email,
+      redirect_url: `http://localhost:3000/new-password`
+    }
+    try {
+      var resultAction = await dispatch(forgetPassword(data))
+      if (forgetPassword.fulfilled.match(resultAction)) {
+        await AsyncStorage.clear()
+        setLoader(false)
+        return navigation.navigate('LoginScreen')
+      }
+      else {
+        console.log("error")
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      console.log({ e })
+    }
+  }
+
+  const changeMode = async (item: any) => {
+    await AsyncStorage.setItem('mode', item)
+    return navigation.navigate('SellerScreen')
+  }
+
+  const signOut = async () => {
+    await AsyncStorage.clear()
+    await dispatch(signOutUser()).then(dd => {
+      return navigation.navigate('Home')
+    })
+    return navigation.navigate('Home')
+  }
+
+
+  if (stateLoader) {
+    return <View style={styles.container}>
+      <ActivityIndicator />
+    </View>
+  }
+
+
+
   return (
-    <View>
-      <Text>BuyerProfileScreen</Text>
-      <Button title='Remove all Token' onPress={() => handleRemoval()} />
+    <View style={styles.container}>
+      <ScrollView>
+        <View style={styles.containerBox}>
+
+          <View>
+            <View style={styles.containerDiv}>
+              <MobileHeader
+                props={navigation}
+                categoryName="Profile"
+                cart
+              />
+            </View>
+            <View>
+              <View style={styles.divContain}>
+                <View style={styles.contain}>
+                  {
+                    !imageUrl ? <View>
+
+                    </View>
+                      : <View></View>
+                  }
+                </View>
+                <Text text={profileData?.last_name + " " + profileData?.first_name} fontSize={hp(14)} fontWeight="400" style={{ marginLeft: hp(5) }} />
+              </View>
+
+              <View style={styles.subdiv}>
+                <View style={globalStyles.rowBetween}>
+                  <Text text={`Basic Information`} fontSize={hp(14)} fontWeight="400" />
+                  <Pressable onPress={edit ? () => handleSubmit() : () => setEdit(true)}>
+                    <View style={styles.pointerdiv}>
+                      <Text text={edit ? 'Save' : 'Edit'} fontSize={hp(12)} fontWeight="400" color={colors.bazaraTint} />
+                    </View>
+                  </Pressable>
+                </View>
+              </View>
+              {
+                edit ?
+                  <View style={styles.boxdiv}>
+                    <Input
+                      label='Surname'
+                      value={values.lName}
+                      onChangeText={handleChange('lName')}
+                      errorMsg={touched.lName ? errors.lName : undefined}
+                      disabled={!edit}
+                    />
+                    <Input
+                      label='First name'
+                      value={values.fName}
+                      onChangeText={handleChange('fName')}
+                      disabled={!edit}
+                      errorMsg={touched.fName ? errors.fName : undefined}
+                    />
+                    <Input
+                      label='Phone number'
+                      value={values.mobile}
+                      onChangeText={handleChange('mobile')}
+                      disabled={!edit}
+                      errorMsg={touched.mobile ? errors.mobile : undefined}
+                    />
+                    <View style={styles.box}>
+                      <Text text='Email' fontSize={hp(12)} color={colors.ashes} />
+                      <Text text={profileData?.email} fontSize={hp(15)} style={{ marginVertical: hp(5) }} />
+                    </View>
+                  </View>
+                  :
+                  <View>
+                    <View style={styles.box2}>
+                      <Text text='Surname' fontSize={hp(12)} color={colors.ashes} />
+                      <Text text={profileData?.last_name} fontSize={hp(15)} style={{ marginVertical: hp(5) }} />
+                    </View>
+                    <View style={styles.br}></View>
+                    <View style={styles.box2}>
+                      <Text text='First name' fontSize={hp(12)} color={colors.ashes} />
+                      <Text text={profileData?.first_name} fontSize={hp(15)} style={{ marginVertical: hp(5) }} />
+                    </View>
+                    <View style={styles.br}></View>
+                    <View style={styles.box2}>
+                      <Text text='Phone number' fontSize={hp(12)} color={colors.ashes} />
+                      <Text text={profileData?.mobile} fontSize={hp(15)} style={{ marginVertical: hp(5) }} />
+                    </View>
+                    <View style={styles.br}></View>
+                    <View style={styles.box2}>
+                      <Text text='Email' fontSize={hp(12)} color={colors.ashes} />
+                      <Text text={profileData?.email} fontSize={hp(15)} style={{ marginVertical: hp(5) }} />
+                    </View>
+
+                  </View>
+              }
+
+              <View style={styles.subdiv}>
+                <View style={globalStyles.rowBetween}>
+                  <Text text="Security" fontSize={hp(14)} fontWeight="400" />
+                </View>
+              </View>
+              <View style={styles.box}>
+                <Text text='Password' fontSize={hp(12)} fontWeight="600" color={colors.gray} style={{ marginVertical: hp(10) }} />
+                <View style={globalStyles.rowBetween}>
+                  <Text text='xxxxxxxxxxx' fontSize={hp(14)} fontWeight="400" />
+                  <Pressable onPress={() => requestPassowrdChange()}>
+                    <View style={styles.pointerdiv}>
+                      <Text text='Change password' fontSize={hp(12)} fontWeight="400" color={colors.bazaraTint} />
+                    </View>
+                  </Pressable>
+
+                </View>
+              </View>
+              <View style={styles.br} />
+              <View style={styles.subdiv}>
+                <View style={globalStyles.rowBetween}>
+                  <Text text="Delivery Address" fontSize={hp(14)} fontWeight="400" />
+                </View>
+
+              </View>
+              <View style={styles.div1}>
+                {
+                  addressList?.map((data: any) => {
+                    return <Pressable onPress={() => updateDelivery(data)}>
+                      <View style={[globalStyles.rowStart, styles.mindiv]}>
+                        <View style={[styles.checkbox, { backgroundColor: data?.default ? colors.bazaraTint : 'transparent' }]} ></View>
+                        <Text text={data?.street + " " + data?.city + " " + data?.state} fontSize={hp(14)} fontWeight='400' />
+                      </View>
+                    </Pressable>
+                  })
+                }
+
+                <Pressable onPress={() => openVisible()}>
+                  <Text text='+  Add delivery Address' fontSize={hp(12)} color={colors.bazaraTint} fontWeight='600' />
+                </Pressable>
+              </View>
+
+              <View style={styles.divbox}>
+                {
+                  myStoreList?.length > 0 && <View style={globalStyles.rowBetween}>
+                    <Text text='Switch to Seller' fontSize={hp(14)} fontWeight='400' />
+                    <Switch onChange={() => changeMode("Seller")} />
+                  </View>
+                }
+
+                {
+                  myStoreList?.length < 1 && <Pressable onPress={() => navigation.navigate('CreateStore')}>
+                    <View style={globalStyles.rowBetween}>
+                      <Text text='Become a Seller' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginBottom: hp(10) }} />
+                    </View>
+                  </Pressable>
+                }
+
+
+                <Pressable onPress={() => signOut()}>
+                  <Text text='Logout' fontSize={hp(14)} color={colors.bazaraTint} fontWeight='400' />
+                </Pressable>
+              </View>
+
+
+            </View>
+
+
+          </View>
+
+          <DeliveryModal
+            visible={visible}
+            setVisible={closeVisible}
+          />
+
+        </View>
+      </ScrollView>
     </View>
   )
 }
 
 export default BuyerProfileScreen
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+    paddingHorizontal: hp(1),
+    paddingBottom: hp(30)
+  },
+  containerBox: {
+
+  },
+  containerDiv: {
+    paddingVertical: hp(10),
+    paddingHorizontal: hp(15)
+  },
+  divContain: {
+    flexDirection: 'row',
+    marginTop: hp(5),
+    marginRight: hp(10),
+    marginBottom: hp(10),
+    alignItems: 'center',
+    paddingHorizontal: hp(15)
+  },
+  contain: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  div: {
+    position: 'relative',
+    width: '100%',
+    maxWidth: wp(200),
+  },
+  divbox: {
+  paddingHorizontal: hp(15),
+  marginTop: hp(10)
+  },
+  checkbox: {
+    width: wp(20),
+    height: hp(20),
+    borderRadius: 50,
+    borderColor: colors.bazaraTint,
+    borderWidth: 1,
+    marginRight: hp(10)
+  },
+  subdiv: {
+    paddingVertical: hp(10),
+    paddingHorizontal: hp(15),
+    backgroundColor: colors.artBoard
+  },
+  pointerdiv: {
+
+  },
+  boxdiv: {
+    paddingVertical: hp(0),
+    paddingHorizontal: hp(15),
+  },
+  box: {
+    paddingVertical: hp(3),
+    paddingHorizontal: hp(15),
+  },
+  br: {
+    marginVertical: hp(10)
+  },
+  div1: {
+    paddingVertical: hp(0),
+    paddingHorizontal: hp(15),
+  },
+  box2: {
+    paddingVertical: hp(5),
+    paddingHorizontal: hp(15),
+    borderBottomColor: colors.artBoard,
+    borderBottomWidth: 1,
+  },
+  mindiv: {
+    paddingVertical: hp(10)
+  }
+})

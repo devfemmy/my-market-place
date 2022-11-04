@@ -12,6 +12,16 @@ export const updateSchema = yup.object().shape({
   fName: yup.string().required('First Name is required'),
   lName: yup.string().required('Last Name is required')
 });
+export const DeliverySchema = yup.object().shape({
+  first_name: yup.string().required('Receiver firstname is required'), 
+  last_name: yup.string().required('Receiver lastname is required'), 
+  email: yup.string().email().required('Receiver email is required'), 
+  street: yup.string().required('Street is required'),
+  state: yup.string().required('State is required'),
+  city: yup.string().required('City is required'),
+  phone_number: yup.number().required('Phone number is required')
+ });
+
 export const AddStaffSchema = yup.object().shape({
   email: yup.string().email().required('Email is required'),
   role: yup.string().required('Role is required')
@@ -20,7 +30,9 @@ export const AddStaffSchema = yup.object().shape({
   lName: yup.string().required('Surname is required'),
   fName: yup.string().required('First name is required'),
   email: yup.string().email().required('Email is required'),
+  mobile: yup.string().required('Phone number is required'),
  })
+
 export const RegisterSchema = yup.object().shape({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),

@@ -359,8 +359,9 @@ export type DeliveryData = {
     first_name: string;
     last_name: string;
     email: string;
-    phone_number: number
+    phone_number: number | null
 }
+
 
 export type OrdersState = {
     sellerOrders: Array<any>,
@@ -419,6 +420,8 @@ export type ProfileFormData = {
     lName: string,
     fName: string,
     email: string,
+    mobile: string,
+    gender: string
 }
 
 export type BuyerProfileFormData = {

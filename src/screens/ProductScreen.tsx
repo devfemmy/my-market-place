@@ -16,6 +16,7 @@ import { Products } from './SellerScreens/main/Product/Products'
 import { globalStyles } from '../styles/globalStyles'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { colors } from '../utils/themes'
+import { useIsFocused } from "@react-navigation/native";
 
 
 const ProductScreen = ({ navigation }: any) => {
@@ -27,7 +28,7 @@ const ProductScreen = ({ navigation }: any) => {
     const [stateLoader, setStateLoader] = useState(false)
     const [id, setId] = useState('')
     const [activeName, setActiveName] = useState('')
-
+    const isFocused = useIsFocused();
 
 
     useEffect(() => {
@@ -45,7 +46,7 @@ const ProductScreen = ({ navigation }: any) => {
             setActiveName(name)
         }
         loadAsyn()
-    }, [id, productList?.length])
+    }, [id, productList?.length, isFocused])
 
 
     // useEffect(() => {

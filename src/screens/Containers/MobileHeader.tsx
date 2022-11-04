@@ -8,15 +8,17 @@ import { cancel } from '../../assets'
 import { styles } from '../auth/Login/styles'
 import { NavigationContainer } from '@react-navigation/native'
 
-const MobileHeader = ({ props, categoryName, auth, cart }: any) => {
+const MobileHeader = ({props,categoryName, auth, cart }: any) => {
+
+
     return (
         <View style={[globalStyles.rowBetween, gbStyle.mdTop]}>
             {
-                auth ? <Pressable  onPress={() => props?.navigate('HomeScreen')}><Image source={cancel} style={gbStyle.img}  /></Pressable> : <Ionicons
+                auth ? <Pressable  onPress={() => props?.navigate('Home')}><Image source={cancel} style={gbStyle.img}  /></Pressable> : <Ionicons
                 name={'chevron-back-outline'}
                 size={30}
                 color={'white'}
-                onPress={cart ? () => props?.goBack() :  () => props?.navigation.goBack()}
+                onPress={cart ? () => props?.goBack()  : () => props?.navigation.goBack()}
             />
             }
             <Text text={categoryName} fontSize={hp(18)} />

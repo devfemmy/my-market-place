@@ -11,16 +11,28 @@ import { hp } from '../utils/helpers'
 import AllCategories from './BuyerScreens/main/Home/Layout/allCategories'
 import UserHeader from './BuyerScreens/main/Home/Layout/header'
 import TopProducts from './BuyerScreens/main/Home/Layout/topProducts'
+import { useIsFocused } from "@react-navigation/native";
+
 
 const HomeScreen = (navigation: any) => {
   const dispatch = useAppDispatch()
   const [user, setUser] = useState<any>(null)
-
+  const isFocused = useIsFocused();
 
 
   useEffect(() => {
-    dispatch(getProfile()).then(bb => setUser(bb?.payload))
-  }, [])
+   const loadUser = async () => {
+    var response = await dispatch(getProfile())
+    if(getProfile.fulfilled.match(response)){
+      setUser(response?.payload)
+    }
+    else {
+      var errMsg = response?.payload as string
+      setUser(null)
+    }
+   }
+   loadUser()
+  }, [isFocused])
 
 
   return (

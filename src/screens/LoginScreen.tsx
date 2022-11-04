@@ -48,16 +48,20 @@ const LoginScreen = ({ navigation }: any) => {
                     var bb = await AsyncStorage.getItem('checking')
             
                     if (bb === 'true') {
-                        return navigation.navigate('CartScreen')
+                        return navigation.navigate('CartScreen', {
+                            params: {
+                                renderName: 'none'
+                            }
+                        })
                     }
                     if (resultAction.payload?.length > 0) {
                         await AsyncStorage.setItem('activeId', resultAction.payload[0]?.id)
                         await AsyncStorage.setItem('activeSlug', resultAction.payload[0]?.slug)
                         await AsyncStorage.setItem('activeName', resultAction.payload[0]?.brand_name)
-                        // return navigation.navigate('Store')
+                         return navigation.navigate('SellerScreen')
                     }
                     else {
-                        //return navigation.navigate('HomeScreen')
+                         return navigation.navigate('BuyerScreen')
                     }
                 }
             }
@@ -183,7 +187,11 @@ const LoginScreen = ({ navigation }: any) => {
                 if (getPersonalStore.fulfilled.match(resultAction)) {
                     var bb = await AsyncStorage.getItem('checking')
                     if (bb === 'true') {
-                        return navigation.navigate('CartScreen')
+                        return navigation.navigate('CartScreen',{
+                            params: {
+                                renderName: 'none'
+                            }
+                        })
                     }
                     if (resultAction.payload?.length > 0) {
                         await AsyncStorage.setItem('activeId', response.payload[0]?.id)
