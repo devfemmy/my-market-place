@@ -17,6 +17,7 @@ import EmptyState from './Containers/EmptyState'
 import { Button } from '../components/common/Button'
 import { useIsFocused } from "@react-navigation/native";
 import AddToCartModal from './Containers/AddToCartModal'
+import { truncate } from '../utils/server'
 
 const CartScreen = (props: any,) => {
     const [quantity, setQuantity] = useState(0)
@@ -486,11 +487,11 @@ const CartScreen = (props: any,) => {
                                                 getCartFromStorage?.map((data: any, i: number) => {
                                                     return <View style={styles.bord}>
                                                         <View style={globalStyles.rowBetween}>
-                                                            <View style={globalStyles.rowStart}>
+                                                            <View style={[globalStyles.rowStart,{ width: '70%'}]}>
                                                                 <Image source={{ uri: Array.isArray(data?.variantImg) ? data?.variantImg[0] : data?.variantImg }} style={styles.image} />
                                                                 <Text text='' style={{ marginVertical: 0, marginHorizontal: hp(10) }} />
                                                                 <View style={styles.algStart}>
-                                                                    <Text text={data?.name} />
+                                                                    <Text text={truncate(data?.name, 20)} />
                                                                     <Text
                                                                         text={`₦${numberFormat(Number(data?.price) || 0)}`}
                                                                         fontSize={hp(16)}
@@ -575,11 +576,11 @@ const CartScreen = (props: any,) => {
                                                 getCartData?.map((data: any, i: number) => {
                                                     return <View style={styles.bord}>
                                                         <View style={globalStyles.rowBetween}>
-                                                            <View style={globalStyles.rowStart}>
+                                                            <View style={[globalStyles.rowStart, { width: '70%'}]}>
                                                                 <Image source={{ uri: data?.variant_img_url }} style={styles.image} />
                                                                 <Text text='' style={{ marginVertical: 0, marginHorizontal: hp(10) }} />
                                                                 <View style={styles.algStart}>
-                                                                    <Text text={data?.product_details?.name ? data?.product_details?.name : "N/A"} />
+                                                                    <Text text={data?.product_details?.name ? truncate(data?.product_details?.name, 20) : "N/A"} />
                                                                     <Text
                                                                         text={`₦${numberFormat(Number(data?.amount) || 0)}`}
                                                                         fontSize={hp(16)}
