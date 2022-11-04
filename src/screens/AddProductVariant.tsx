@@ -1081,10 +1081,7 @@ const AddProductVariant = ({ navigation }: any) => {
                 {
                     productInDraft?.isSize && !productInDraft?.isColor && <>
                         <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                        <ScrollView>
-                            <View style={styles.bigDiv}>
-                                {renderSizeList()}
-                            </View>
+                        <ScrollView> 
                             <Pressable onPress={showModal}>
                                 <View style={[globalStyles.rowStart,{marginVertical: hp(5)}]}>
                                     <Image
@@ -1094,6 +1091,10 @@ const AddProductVariant = ({ navigation }: any) => {
                                     <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
                                 </View>
                             </Pressable>
+                            <View style={styles.bigDiv}>
+                                {renderSizeList()}
+                            </View>
+                           
                         </ScrollView>
 
                     </>
@@ -1170,10 +1171,7 @@ const AddProductVariant = ({ navigation }: any) => {
                             errorMsg={_touched.description ? _errors.description : undefined}
                         />
                         <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-                        {
-                            renderSizeList()
-                        }
-                        <Pressable onPress={showModal2}>
+                         <Pressable onPress={showModal2}>
                             <View style={[globalStyles.rowStart, {marginVertical: hp(5)}]}>
                                 <Image
                                     source={plusBig}
@@ -1181,6 +1179,12 @@ const AddProductVariant = ({ navigation }: any) => {
                                 <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400'style={{marginLeft: hp(5)}} />
                             </View>
                         </Pressable>
+                        <ScrollView>
+                        {
+                            renderSizeList()
+                        }
+                        </ScrollView>
+                       
                       {/* <View style={styles.br}></View> */}
                     </>
                 }

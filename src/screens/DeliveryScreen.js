@@ -141,7 +141,8 @@ const DeliveryScreen = (props) => {
                   alertType: 'success',
               },
           });
-            return props.navigation.navigate('Order')
+            return props.navigation.navigate('BuyerScreen', { screen: 'Order' })
+            // ({name: "BuyerScreen", key: 'Order'})
         }
         else {
             var errMsg = response?.payload

@@ -39,7 +39,7 @@ const AddColorVariant = ({ navigation }: any) => {
   const [specId, setSpecId] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [slug, setSlug] = useState('')
- 
+
 
 
   const [size, setSize] = useState(sizes)
@@ -96,33 +96,33 @@ const AddColorVariant = ({ navigation }: any) => {
 
   useEffect(() => {
     const loadData = async () => {
-        dispatch(getProductBySlug(slug)).then(dd => {
+      dispatch(getProductBySlug(slug)).then(dd => {
 
-            var filterData = dd?.payload?.product_variants?.find((dat: any) => dat?.id === editableItem)
-            if (productInDraft?.isColor && !productInDraft?.isSize) {
-                setMultipleUpload(filterData?.img_urls)
-                setDummyUploadImage([...filterData?.img_urls, ""])
-                setPrice(filterData?.product_variant_specs[0]?.amount)
-                setDescription(filterData?.color)
-                setQuantity(filterData?.product_variant_specs[0]?.quantity)
-                setSpecId(filterData?.product_variant_specs[0]?.id)
+        var filterData = dd?.payload?.product_variants?.find((dat: any) => dat?.id === editableItem)
+        if (productInDraft?.isColor && !productInDraft?.isSize) {
+          setMultipleUpload(filterData?.img_urls)
+          setDummyUploadImage([...filterData?.img_urls, ""])
+          setPrice(filterData?.product_variant_specs[0]?.amount)
+          setDescription(filterData?.color)
+          setQuantity(filterData?.product_variant_specs[0]?.quantity)
+          setSpecId(filterData?.product_variant_specs[0]?.id)
 
-            }
+        }
 
-            if (productInDraft?.isColor && productInDraft?.isSize) {
-                setMultipleUpload(filterData?.img_urls)
-                setColor(filterData?.color)
-                setDummyUploadImage([...filterData?.img_urls, ""])
-                setSizeLists(filterData?.product_variant_specs)
+        if (productInDraft?.isColor && productInDraft?.isSize) {
+          setMultipleUpload(filterData?.img_urls)
+          setColor(filterData?.color)
+          setDummyUploadImage([...filterData?.img_urls, ""])
+          setSizeLists(filterData?.product_variant_specs)
 
-            }
-        })
+        }
+      })
 
     }
 
     loadData()
 
-}, [editableItem])
+  }, [editableItem])
 
   useEffect(() => {
     const loadAsyn = async () => {
@@ -132,7 +132,7 @@ const AddColorVariant = ({ navigation }: any) => {
       var prodId = await AsyncStorage.getItem('prodEditId') as string
       var slug = await AsyncStorage.getItem('slug') as string
       var variant = await AsyncStorage.getItem('prodEditVarId') as string
-     
+
       setProductInDraft(productInDrafts)
       setActiveId(id)
       setProdId(prodId)
@@ -217,7 +217,7 @@ const AddColorVariant = ({ navigation }: any) => {
           alertType: 'error',
         },
       });
-        return
+      return
     }
     if (_values.description?.length < 1) {
       Notifier.showNotification({
@@ -229,7 +229,7 @@ const AddColorVariant = ({ navigation }: any) => {
           alertType: 'error',
         },
       });
-        return
+      return
     }
     if (sizeLists?.length < 1) {
       Notifier.showNotification({
@@ -241,38 +241,38 @@ const AddColorVariant = ({ navigation }: any) => {
           alertType: 'error',
         },
       });
-        return
+      return
     }
     setLoader(true)
     try {
-        const pData = {
-            img_urls: multipleUpload,
-            color: data?.description,
-            id: editableItem,
-        }
-        var bigR = await dispatch(updateProductVariant(pData))
-        if (updateProductVariant.fulfilled.match(bigR)) {
-            setLoader(false)
-            navigation.goBack()
-        }
-        else {
-            var errMsg = bigR?.payload as string
-            setLoader(false)
-            Notifier.showNotification({
-              title: errMsg,
-              // description: "tghdddfdfd",
-              Component: NotifierComponents.Alert,
-              hideOnPress: false,
-              componentProps: {
-                alertType: 'error',
-              },
-            });
-        }
+      const pData = {
+        img_urls: multipleUpload,
+        color: data?.description,
+        id: editableItem,
+      }
+      var bigR = await dispatch(updateProductVariant(pData))
+      if (updateProductVariant.fulfilled.match(bigR)) {
+        setLoader(false)
+        navigation.goBack()
+      }
+      else {
+        var errMsg = bigR?.payload as string
+        setLoader(false)
+        Notifier.showNotification({
+          title: errMsg,
+          // description: "tghdddfdfd",
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+      }
     }
     catch (e) {
-        console.log({ e })
+      console.log({ e })
     }
-}
+  }
 
 
   const showModal = async () => {
@@ -1291,9 +1291,11 @@ const AddColorVariant = ({ navigation }: any) => {
               errorMsg={_touched.description ? _errors.description : undefined}
             />
             <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-            {
-              renderSizeList()
-            }
+            <ScrollView>
+              {
+                renderSizeList()
+              }
+            </ScrollView>
             <Pressable onPress={showModal2}>
               <View style={globalStyles.rowStart}>
                 <Image

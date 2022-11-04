@@ -1143,9 +1143,11 @@ const ProductDetailEditVariant = (props: any) => {
                     errorMsg={_touched.description ? _errors.description : undefined}
                 />
                 <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
+                <ScrollView>
                 {
                     renderSizeList()
                 }
+                </ScrollView>
                 <Pressable onPress={showModal2}>
                     <View style={[globalStyles.rowStart, {marginVertical: hp(5)}]}>
                         <Image

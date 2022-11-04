@@ -22,7 +22,7 @@ const StoreSuccessScreen = ({navigation}: any) => {
 
   const routeDone = async () => {
     await AsyncStorage.removeItem('type')
-    return navigation.navigate('SellerScreen')
+    return navigation.navigate('SellerScreen', {screen: 'Store'})
   }
 
 

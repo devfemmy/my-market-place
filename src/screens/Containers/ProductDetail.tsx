@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, FlatList, Image, useWindowDimensions, Pressable } from 'react-native'
+import { View, StyleSheet, ScrollView, FlatList, Image, useWindowDimensions, Pressable, ActivityIndicator } from 'react-native'
 import React, { Component, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { addToCart, CartData, getCarts } from '../../redux/slices/cartSlice'
@@ -23,7 +23,7 @@ import { colors } from '../../utils/themes'
 import RenderHtml from 'react-native-render-html';
 import ViewMoreText from 'react-native-view-more-text';
 import Slick from 'react-native-slick';
-
+import { useIsFocused } from "@react-navigation/native";
 import { icons } from '../../utils/constants'
 import { Select } from '../../components/common/SelectInput'
 import { Button } from '../../components/common/Button'
@@ -32,11 +32,12 @@ import { Notifier, NotifierComponents } from 'react-native-notifier'
 
 const ProductDetail = (props: any) => {
     const dispatch = useAppDispatch()
+    const isFocused = useIsFocused();
     const [productDetail, setProductDetail] = useState<any>()
     const cartInfo = useAppSelector(CartData);
     const { width } = useWindowDimensions();
     const slugName = props?.route?.params?.params?.id
-    const [getUserToken, setGetUserToken] = useState(null)
+    const [getUserToken, setGetUserToken] = useState<any>(null)
     const [quantity, setQuantity] = useState(1)
     const [activeVariant, setActiveVariant] = useState({
         image: [],
@@ -58,9 +59,9 @@ const ProductDetail = (props: any) => {
     const sliderRef = useRef<any>();
     const [deliveryFeeData, setDeliveryFeeData] = useState(0)
     const [productRating, setProductRating] = useState<any>(null)
+    const [stateLoader, setStateLoader] = useState(false)
 
 
-  
 
     const initialValues = {
         state: '',
@@ -71,6 +72,15 @@ const ProductDetail = (props: any) => {
     const handleLandMark = (data: any) => {
 
     }
+
+
+    useEffect(() => {
+        const loadToken = async () => {
+            var token = await AsyncStorage.getItem('token') as string
+            setGetUserToken(token)
+        }
+        loadToken()
+    }, [isFocused])
 
     const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
         useFormik({
@@ -125,10 +135,11 @@ const ProductDetail = (props: any) => {
     }, [productDetail?.id])
 
     useEffect(() => {
-        dispatch(getProductBySlugBuyer(slugName))
-            .then(async (d: any) => {
-                const act = d?.payload?.product_variants?.filter((dd: any) => dd.status === 'ACTIVE')
-
+        const loadData = async () => {
+            setStateLoader(true)
+            var response = await dispatch(getProductBySlugBuyer(slugName))
+            if (getProductBySlugBuyer.fulfilled.match(response)) {
+                const act = response?.payload?.product_variants?.filter((dd: any) => dd.status === 'ACTIVE')
                 setActiveVariant({
                     image: act ? act[0]?.img_urls : ['https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png', 'https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png'],
                     price: act && act[0]?.product_variant_specs[0]?.amount,
@@ -139,15 +150,21 @@ const ProductDetail = (props: any) => {
                 })
                 setVariantList(act)
                 setVariantSpec(act && act[0]?.product_variant_specs)
-                setProductDetail(d.payload)
+                setProductDetail(response.payload)
+                setStateLoader(false)
 
-                // setVariantColor(colors)
             }
-            )
-        if (getUserToken) {
-            dispatch(getCarts())
-            dispatch(getStoreRating(productDetail?.sidehustle?.id))
+            else {
+                var errMsg = response?.payload as string
+                console.log({ errMsg })
+                setStateLoader(false)
+            }
+            if (getUserToken) {
+                dispatch(getCarts())
+                dispatch(getStoreRating(productDetail?.sidehustle?.id))
+            }
         }
+        loadData()
     }, [slugName])
 
 
@@ -188,7 +205,7 @@ const ProductDetail = (props: any) => {
         setQuantity(prev => prev === 1 ? prev : prev - 1)
     }
 
-
+ 
     const addItemToCart = async () => {
         const data = {
             product_id: productDetail?.id,
@@ -274,7 +291,6 @@ const ProductDetail = (props: any) => {
     }
 
 
-
     const buyNow = async () => {
         const data = {
             product_id: productDetail?.id,
@@ -358,7 +374,7 @@ const ProductDetail = (props: any) => {
             })
         }
 
-    
+
     }
 
     const locationState = locationData?.map((data: locationProp) => data?.state);
@@ -414,6 +430,12 @@ const ProductDetail = (props: any) => {
         return (
             <Text onPress={onPress} text='View less' color={colors.accent} />
         )
+    }
+
+    if (stateLoader) {
+        return <SafeAreaView style={globalStyles.containerWrapper}>
+            <ActivityIndicator />
+        </SafeAreaView>
     }
 
 
@@ -539,17 +561,17 @@ const ProductDetail = (props: any) => {
                             errorMsg={touched.state ? errors.state : undefined}
                         />
                     </View>
-                   {
-                    values.state?.length > 0 &&  <View style={styles.dp}>
-                    <Select
-                        items={locationCity}
-                        defaultValue={values.city}
-                        placeholder={'Choose City'}
-                        setState={handleChange('city')}
-                        errorMsg={touched.city ? errors.city : undefined}
-                    />
-                </View>
-                   }
+                    {
+                        values.state?.length > 0 && <View style={styles.dp}>
+                            <Select
+                                items={locationCity}
+                                defaultValue={values.city}
+                                placeholder={'Choose City'}
+                                setState={handleChange('city')}
+                                errorMsg={touched.city ? errors.city : undefined}
+                            />
+                        </View>
+                    }
 
                 </View>
                 <View >

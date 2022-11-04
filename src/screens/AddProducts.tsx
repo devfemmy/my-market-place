@@ -40,7 +40,7 @@ const AddProducts = ({ navigation }: any) => {
     const categoryList = useAppSelector(categoryData)
     const [colorAloneVar, setColorAloneVar] = useState([])
     const [prodId, setProdId] = useState<any>()
- 
+
     const listCate = categoryList?.map(data => {
         return {
             key: data?.id,
@@ -77,7 +77,7 @@ const AddProducts = ({ navigation }: any) => {
     useEffect(() => {
         dispatch(getAllCategories())
         dispatch(getProductVariants(prodId)).then(dd => {
-            console.log({dd}, dd?.payload)
+            console.log({ dd }, dd?.payload)
             var dList = dd?.payload?.map((data: any) => {
                 return {
                     img_urls: data?.img_urls[0],
@@ -252,17 +252,29 @@ const AddProducts = ({ navigation }: any) => {
                 await AsyncStorage.removeItem('prodVarId')
                 await AsyncStorage.removeItem('productDraft')
                 await AsyncStorage.removeItem('editableId')
-                setResponseModal(true)
-                setTitle('Product Publish successfully')
-                setType('Success')
                 setLoader(false)
+                Notifier.showNotification({
+                    title: 'Product Publish successfully',
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'success',
+                    },
+                });
                 return navigation.navigate('Products')
             }
             else {
                 var errMsg = bigRes?.payload as string
-                setResponseModal(true)
-                setTitle(errMsg)
-                setType('Error')
+                Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
                 setLoader(false)
                 return
             }
@@ -349,16 +361,19 @@ const AddProducts = ({ navigation }: any) => {
                         <View style={styles.divs}>
                             <Text text='Product Colours' fontSize={hp(14)} fontWeight='400' />
                         </View>
-
-                        {renderColorVariety()}
                         <Pressable onPress={() => addAnotherColor()}>
-                            <View style={globalStyles.rowStart}>
+                            <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]} >
                                 <Image
                                     source={plusBig}
                                 />
                                 <Text text='Add Another Colour' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' />
                             </View>
                         </Pressable>
+                        <ScrollView>
+                            {renderColorVariety()}
+                        </ScrollView>
+
+
                     </> : null
                 }
             </View>

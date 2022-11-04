@@ -206,7 +206,12 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
   const changeMode = async (item: any) => {
     await AsyncStorage.setItem('mode', item)
-    return navigation.navigate('SellerScreen')
+    if (item === "Buyer") {
+      return navigation.navigate('BuyerScreen')
+    }
+    else {
+      return navigation.navigate('SellerScreen', {screen: 'Store'})
+    }
   }
 
   const signOut = async () => {

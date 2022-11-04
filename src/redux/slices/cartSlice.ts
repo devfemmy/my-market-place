@@ -41,11 +41,11 @@ export const addToCart = createAsyncThunk(
 export const updateCart = createAsyncThunk(
     'cart/updateCart',
     async (payload: {quantity: string, id: string}, { rejectWithValue }) => {
-        // const pDay = {
-        //     quantity: payload?.quantity
-        // }
+        const pDay = {
+            quantity: payload?.quantity
+        }
         try {
-            const response = await postRequest(`/cart/update?cart_id=${payload?.id}`, payload?.quantity)
+            const response = await postRequest(`/cart/update?cart_id=${payload?.id}`, pDay)
             if (response?.status === 200) {
                 return response?.data?.data
             }

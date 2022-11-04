@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Pressable, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, ScrollView, Pressable, TouchableOpacity, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -19,6 +19,11 @@ import { colors } from '../utils/themes'
 import { useIsFocused } from "@react-navigation/native";
 
 
+const wait = (timeout: any) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
+
 const ProductScreen = ({ navigation }: any) => {
     const dispatch = useAppDispatch()
     const mystore = useAppSelector(myStore)
@@ -29,6 +34,14 @@ const ProductScreen = ({ navigation }: any) => {
     const [id, setId] = useState('')
     const [activeName, setActiveName] = useState('')
     const isFocused = useIsFocused();
+
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
 
 
     useEffect(() => {
@@ -82,25 +95,32 @@ const ProductScreen = ({ navigation }: any) => {
                 btnText="Add Product"
             />
             }
- 
+
             <ButtonPlus handleClick={() => navigation.navigate('AddProduct')} />
-           <View style={{zIndex: -3, elevation: -3}}>
-           <ScrollView>
-                {
-                    productList?.length >= 1 && <View style={styles.lit}>
-                        {
-                            productList?.map((data: any, i: number) => {
-                                return <ProductCard key={i} data={data} setProductList={setProductList} id={id} />
-                            })
-                        }
+            <View style={{ zIndex: -3, elevation: -3 }}>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                >
+                    {
+                        productList?.length >= 1 && <View style={styles.lit}>
+                            {
+                                productList?.map((data: any, i: number) => {
+                                    return <ProductCard key={i} data={data} setProductList={setProductList} id={id} />
+                                })
+                            }
 
 
-                    </View>
-                }
+                        </View>
+                    }
 
-            </ScrollView>
+                </ScrollView>
 
-           </View>
+            </View>
         </View>
     )
 }

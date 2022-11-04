@@ -18,10 +18,13 @@ import { globalStyles } from '../styles'
 import { LockClosed, LockOpened, Profile, Union } from '../constants/images'
 import { BarChart, LineChart } from 'react-native-chart-kit'
 import { Select } from '../components/common/SelectInput'
+import { useIsFocused } from "@react-navigation/native";
+
 
 const MyStoreScreen = () => {
   const dispatch = useAppDispatch()
   const storebyIdData = useAppSelector(storeBySlug)
+  const isFocused = useIsFocused();
   const sellerOrderList = useAppSelector(sellerOrders)
   const payout = useAppSelector(payouts)
   const productList = useAppSelector(products)
@@ -38,15 +41,15 @@ const MyStoreScreen = () => {
       var id = await AsyncStorage.getItem('activeId') as string
       var slug = await AsyncStorage.getItem('activeSlug') as string
       var name = await AsyncStorage.getItem('activeName') as string
-
+     
       setId(id)
       setActiveSlug(slug)
       setActiveName(name)
     }
     loadAsync()
-  }, [id])
+  }, [id, isFocused])
 
-
+  console.log({isFocused, id, activeName, activeSlug})
 
   useEffect(() => {
     setStateLoader(true)
