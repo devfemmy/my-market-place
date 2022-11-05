@@ -25,7 +25,7 @@ export const getProfile = createAsyncThunk(
         // if (response?.status === 200) {
         //     return response?.data?.data[0]
         // }
-        var profile = await  AsyncStorage.getItem('userInfo').then((req: any) => JSON.parse(req))
+        var profile = await AsyncStorage.getItem('userInfo').then((req: any) => JSON.parse(req))
 
         return profile
     }
@@ -43,12 +43,17 @@ export const changePassword = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
     'profile/updateProfile',
-    async (payload: {last_name?: string, first_name?: string, email?: string, mobile?: string, img_url?: string, sex?: string, dob?: string}) => {
-        const response = await postAuthRequest(`/auth/updateProfile`, payload)
-      
-        if (response?.status === 200) {
-            await AsyncStorage.setItem('userInfo',response?.data?.data)
-            return response?.data?.data
+    async (payload: { last_name?: string, first_name?: string, email?: string, mobile?: string, img_url?: string, sex?: string, dob?: string }, { rejectWithValue }) => {
+        try {
+            const response = await postAuthRequest(`/auth/updateProfile`, payload)
+
+            if (response?.status === 200) {
+                await AsyncStorage.setItem('userInfo', JSON.stringify(response?.data?.data))
+                return response?.data?.data
+            }
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
         }
     }
 )
@@ -65,14 +70,14 @@ export const ProfileSlice = createSlice({
         }),
             builder.addCase(getProfile.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loading = false,
-                state.profile = action.payload
+                    state.profile = action.payload
             })
         builder.addCase(getProfile.rejected, (state, action) => {
             state.loading = false,
-            state.error = action.error.message
+                state.error = action.error.message
         }),
             builder.addCase(updateProfile.pending, (state, action) => {
-                
+
             }),
             builder.addCase(updateProfile.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loading = false,
@@ -80,7 +85,7 @@ export const ProfileSlice = createSlice({
             })
         builder.addCase(updateProfile.rejected, (state, action) => {
             state.loading = false,
-            state.error = action.error.message
+                state.error = action.error.message
         })
 
     }

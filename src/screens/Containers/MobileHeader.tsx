@@ -21,7 +21,7 @@ const MobileHeader = ({props,categoryName, auth, cart }: any) => {
                 onPress={cart ? () => props?.goBack()  : () => props?.navigation.goBack()}
             />
             }
-            <Text text={categoryName} fontSize={hp(18)} />
+            <Text style={{textTransform: 'capitalize'}} text={categoryName} fontSize={hp(18)} />
             <View />
         </View>
     )

@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Switch, ScrollView } from 'react-native'
+import { View, StyleSheet, Pressable, Switch, ScrollView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../components/common/Button'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -19,6 +19,12 @@ import { globalStyles } from '../styles'
 import { colors } from '../utils/themes'
 import { Input } from '../components/common/TextInput'
 import DeliveryModal from './Containers/DeliveryModal'
+import ImagePicker from 'react-native-image-crop-picker';
+import { pictureUpload } from '../utils/functions'
+import { plus, remove } from '../assets'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+
+
 
 const BuyerProfileScreen = ({ navigation }: any) => {
   const dispatch = useAppDispatch()
@@ -31,7 +37,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
   const myStoreList = useAppSelector(myStore)
   //const [userInfo, setUserInfo] = useState<any>(typeof window !== 'undefined' ? secureLocalStorage.getItem('userInfo') : null)
   const [imageUrl, setImageUrl] = useState<any>(profileData ? profileData?.img_url : "")
-
+  const [imageLoader, setImageLoader] = useState(false)
 
   const initialValues: ProfileFormData = {
     lName: profileData ? profileData?.last_name : '',
@@ -128,7 +134,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
         last_name: data?.lName,
         email: data?.email,
         mobile: data?.mobile?.toString(),
-        profile_cover_img: profileData?.img_url
+        img_url: profileData?.img_url
       }
 
       var resultResponse = await dispatch(updateProfile(newData))
@@ -191,8 +197,11 @@ const BuyerProfileScreen = ({ navigation }: any) => {
       var resultAction = await dispatch(forgetPassword(data))
       if (forgetPassword.fulfilled.match(resultAction)) {
         await AsyncStorage.clear()
+        await dispatch(signOutUser()).then(dd => {
+          return navigation.navigate('Home')
+        })
         setLoader(false)
-        return navigation.navigate('LoginScreen')
+        return navigation.navigate('Home')
       }
       else {
         console.log("error")
@@ -207,10 +216,10 @@ const BuyerProfileScreen = ({ navigation }: any) => {
   const changeMode = async (item: any) => {
     await AsyncStorage.setItem('mode', item)
     if (item === "Buyer") {
-      return navigation.navigate('BuyerScreen')
+      return navigation.navigate('BuyerScreen', { screen: 'Home' })
     }
     else {
-      return navigation.navigate('SellerScreen', {screen: 'Store'})
+      return navigation.navigate('SellerScreen', { screen: 'Store' })
     }
   }
 
@@ -231,6 +240,55 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
 
 
+  const pickImage = async (index: number) => {
+    ImagePicker.openPicker({
+      width: 500,
+      height: 600,
+      cropping: true,
+      mediaType: "photo",
+      multiple: false,
+    }).then(async image => {
+      setStateLoader(true)
+      const ImageUrl = await pictureUpload(image)
+        const pd = {
+          img_url: ImageUrl
+        }
+        
+        var resultResponse = await dispatch(updateProfile(pd))
+
+        if (updateProfile.fulfilled.match(resultResponse)) {
+          await dispatch(getProfile()).then(d => {
+            setProfileData(d?.payload)
+          })
+          setStateLoader(false)
+          Notifier.showNotification({
+            title: "Profile Image updated successfully",
+            description: '',
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+                alertType: 'success',
+            },
+          });
+        }
+        else {
+          var errMsg = resultResponse?.payload as string
+          setStateLoader(false)
+          Notifier.showNotification({
+            title: errMsg,
+            description: '',
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+                alertType: 'error',
+            },
+        });
+        }
+    })
+  }
+   
+
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -248,10 +306,22 @@ const BuyerProfileScreen = ({ navigation }: any) => {
               <View style={styles.divContain}>
                 <View style={styles.contain}>
                   {
-                    !imageUrl ? <View>
-
+                    imageUrl ? <View>
+                      <Pressable onPress={() => removeImage()}>
+                        <Image source={remove} style={styles.img1} />
+                      </Pressable>
+                      <Image source={{ uri: imageUrl }} style={styles.multContainer} />
                     </View>
-                      : <View></View>
+                      : <Pressable onPress={() => pickImage(0)}>
+                        <View style={styles.multContainer2}>
+                          {
+                            stateLoader ? <ActivityIndicator size={15} color={'white'} /> :
+                              <Image source={plus} style={styles.img2} />
+                          }
+
+                        </View>
+
+                      </Pressable>
                   }
                 </View>
                 <Text text={profileData?.last_name + " " + profileData?.first_name} fontSize={hp(14)} fontWeight="400" style={{ marginLeft: hp(5) }} />
@@ -275,13 +345,13 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                       value={values.lName}
                       onChangeText={handleChange('lName')}
                       errorMsg={touched.lName ? errors.lName : undefined}
-                      disabled={!edit}
+                      disabled={edit}
                     />
                     <Input
                       label='First name'
                       value={values.fName}
                       onChangeText={handleChange('fName')}
-                      disabled={!edit}
+                      disabled={edit}
                       errorMsg={touched.fName ? errors.fName : undefined}
                     />
                     <Input
@@ -358,7 +428,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                 }
 
                 <Pressable onPress={() => openVisible()}>
-                  <Text text='+  Add delivery Address' fontSize={hp(12)} color={colors.bazaraTint} fontWeight='600' />
+                  <Text style={{marginVertical: hp(10)}} text='+  Add delivery Address' fontSize={hp(12)} color={colors.bazaraTint} fontWeight='600' />
                 </Pressable>
               </View>
 
@@ -371,7 +441,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                 }
 
                 {
-                  myStoreList?.length < 1 && <Pressable onPress={() => navigation.navigate('CreateStore')}>
+                  myStoreList?.length < 1 && <Pressable onPress={() => navigation.navigate('CreateStoreScreen')}>
                     <View style={globalStyles.rowBetween}>
                       <Text text='Become a Seller' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginBottom: hp(10) }} />
                     </View>
@@ -435,8 +505,8 @@ const styles = StyleSheet.create({
     maxWidth: wp(200),
   },
   divbox: {
-  paddingHorizontal: hp(15),
-  marginTop: hp(10)
+    paddingHorizontal: hp(15),
+    marginTop: hp(10)
   },
   checkbox: {
     width: wp(20),
@@ -477,5 +547,37 @@ const styles = StyleSheet.create({
   },
   mindiv: {
     paddingVertical: hp(10)
-  }
+  },
+  img1: {
+    width: wp(15),
+    height: hp(15),
+    position: 'absolute',
+    top: 20,
+    right: 20,
+  },
+  multContainer2: {
+    width: wp(100),
+    height: hp(120),
+    backgroundColor: colors.artBoard,
+    marginVertical: hp(10),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: hp(15)
+  },
+  img2: {
+    width: wp(30),
+    height: hp(30)
+  },
+  multContainer: {
+    width: wp(100),
+    height: hp(120),
+    backgroundColor: colors.artBoard,
+    marginVertical: hp(10),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: hp(15),
+    zIndex: -3,
+    elevation: -3
+
+  },
 })

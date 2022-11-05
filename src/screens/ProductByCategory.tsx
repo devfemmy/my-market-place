@@ -44,14 +44,14 @@ const ProductByCategory = (props: any, navigation: any) => {
             <MobileHeader categoryName={categoryName} props={props} />
             <ScrollView>
                 <View>
-                <FlatGrid
-            itemDimension={130}
-            data={alteredList}
-            spacing={10}
-            renderItem={({ item }) => (
-                <MobileProductContainer data={item} />
-            )}
-          />
+                    <FlatGrid
+                        itemDimension={130}
+                        data={alteredList}
+                        spacing={10}
+                        renderItem={({ item }) => (
+                            <MobileProductContainer data={item} />
+                        )}
+                    />
                     {/* {
                         filteredList?.filter(a => a?.product_variant_count > 0).map((data, j) => {
                             return <MobileProductContainer data={data} />

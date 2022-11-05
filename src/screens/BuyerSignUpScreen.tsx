@@ -42,8 +42,15 @@ const BuyerSignUpScreen = ({ navigation }: any) => {
             setLoading(true)
             const resultAction = await dispatch(createUser(payload))
             if (createUser.fulfilled.match(resultAction)) {
-                console.log({resultAction})
                 await AsyncStorage.setItem('userInfo', JSON.stringify(resultAction?.payload?.data))
+                var bb = await AsyncStorage.getItem('checking')
+                if (bb === 'true') {
+                    return navigation.navigate('CartScreen',{
+                        params: {
+                            renderName: 'none'
+                        }
+                    })
+                }           
                 setLoading(false)
                 return navigation.navigate('BuyerScreen')
             } else {

@@ -134,10 +134,10 @@ const SellerSettingScreen = ({ navigation }: any) => {
   const changeMode = async (item: any) => {
     await AsyncStorage.setItem('mode', item)
     if (item === "Buyer") {
-      return navigation.navigate('BuyerScreen')
+      return navigation.navigate('BuyerScreen', { screen: 'Home' })
     }
     else {
-      return navigation.navigate('SellerScreen')
+      return navigation.navigate('SellerScreen', { screen: 'Store' })
     }
   }
 
