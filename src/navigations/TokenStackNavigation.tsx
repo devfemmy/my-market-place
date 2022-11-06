@@ -41,6 +41,7 @@ import SellerChatScreen from '../screens/SellerChatScreen';
 import EditStore from '../screens/SellerScreens/EditStore';
 import AddStaffScreen from '../screens/SellerScreens/StoreScreen/Staff/AddStaff';
 import { StaffScreen } from '../screens/SellerScreens';
+import Account from '../screens/SellerScreens/StoreScreen/Payout';
 import Profile from '../screens/SellerScreens/Profile';
 import BuyerOrderDetail from '../screens/BuyerOrderDetail';
 import { getStorage } from '../utils/helpers';
@@ -232,6 +233,7 @@ const TokenStackNavigation = () => {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name='LoginScreen' component={LoginScreen} />
             <Stack.Screen name='DeliveryScreen' component={DeliveryScreen} />
+            <Stack.Screen name='Account' component={Account} />
             {/* <Stack.Screen name='NoAuthMyStoreScreen' component={MyStoreScreen} /> */}
         </Stack.Navigator>
     )

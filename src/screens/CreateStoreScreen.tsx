@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormik } from 'formik';
-import { StatusBar, View, StyleSheet, ScrollView, Image, Pressable, Platform } from 'react-native';
+import { StatusBar, View, StyleSheet, ScrollView, Image, Pressable, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView, Text } from '../components/common';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Input } from '../components/common/TextInput';
@@ -196,7 +196,7 @@ const CreateStoreScreen = (): JSX.Element => {
                 <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
                     {
-                      imageLoader ? <AntDesign name="loading1" size={hp(30)} style={{ color: colors.white }} /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                      imageLoader ? <ActivityIndicator size={'small'}   /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
                     }
                   </View>
                 </Pressable>

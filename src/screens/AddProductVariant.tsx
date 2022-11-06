@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Pressable,ScrollView } from 'react-native'
+import { View, StyleSheet, Image, Pressable,ScrollView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { createProductVariant, createProductVariantSpec, deleteProductVariant, deleteProductVariantSpec, getProductBySlug, productBySlug, updateProductVariant, updateProductVariantSpec } from '../redux/slices/productSlice'
@@ -1027,7 +1027,7 @@ const AddProductVariant = ({ navigation }: any) => {
                                     return <Pressable onPress={() => pickImage(i)}>
                                         <View style={styles.multContainer2}>
                                             {
-                                                imageLoader ? <AntDesign name='loading1' color={'white'} /> :
+                                                imageLoader ? <ActivityIndicator size={'small'} color={'white'} /> :
                                                     <Image source={plus} style={styles.img} />
                                             }
 

@@ -1,31 +1,36 @@
 
 import React, { useContext, useState, useEffect } from 'react'
-import { Pressable, StyleSheet, Switch, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Switch, View } from 'react-native'
 import { globalStyles } from '../styles'
 import { SafeAreaView, Text, Separator } from '../components/common';
 import { styles } from '../screens/auth/Register/styles';
 import { Button } from '../components/common/Button';
 
 import { AuthContext } from '../context/context';
-import { hp } from '../utils/helpers';
+import { hp, wp } from '../utils/helpers';
 import { colors } from '../utils/themes';
 import { blueUni, blueUser, storeActive, truckLogo, universityLogo, usersLogo } from '../assets';
 import ListCard from '../components/resuable/ListCard';
 import { useNavigation } from '@react-navigation/native'
 import { Nav } from '../utils/types'
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { activateStore, deactivateStore, getPersonalStore, getStoreById, storebyId, updateStore } from '../redux/slices/StoreSlice';
+import { activateStore, deactivateStore, deleteAccount, getPersonalStore, getStoreById, myStore, storebyId, updateStore } from '../redux/slices/StoreSlice';
 import CustomModal from '../components/common/CustomModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getStoreBySlug, storeBySlug } from '../redux/slices/CategorySlice';
 import { Notifier, NotifierComponents } from 'react-native-notifier';
 import { signOutUser } from '../redux/slices/AuthSlice';
+import { useIsFocused } from "@react-navigation/native";
+import DeleteAccountModal from './Containers/DeleteAccountModal';
+
+
 
 const SellerSettingScreen = ({ navigation }: any) => {
-
+  const [deleteAccountVisible, setDeleteAccountVisible] = useState(false)
   const dispatch = useAppDispatch()
   const [title, setTitle] = useState('')
   const [type, setType] = useState(false)
+  const myStoreData = useAppSelector(myStore)
   const [visible, setVisible] = useState(false)
   const storeIdData = useAppSelector(storebyId)
   const [activeId, setActiveId] = useState('')
@@ -33,14 +38,21 @@ const SellerSettingScreen = ({ navigation }: any) => {
   const storeInfo = useAppSelector(storeBySlug)
   const [activeSlug, setActiveSlug] = useState<any>()
   const [mode, setMode] = useState<any>()
-
+  const isFocused = useIsFocused();
   const [checked, setChecked] = useState<string>(storeInfo?.status)
-
-
+  const [deleteVisible, setDeleteVisible] = useState(false)
+  const [deleteAccountLoader, setDeleteAccountLoader] = useState(false)
+  const handleDeleteAccountClose = () => {
+    setDeleteAccountVisible(false)
+  }
+  const handleDeleteAccountOpen = () => {
+    setDeleteAccountVisible(true)
+  }
 
   const handleVisible = () => {
     setVisible(false)
   }
+
 
 
   useEffect(() => {
@@ -53,12 +65,12 @@ const SellerSettingScreen = ({ navigation }: any) => {
         setChecked(dd?.payload?.status)
       })
 
-      dispatch(getPersonalStore())
+      dispatch(getPersonalStore()).then(dd => console.log("paylod", dd?.payload))
       dispatch(getStoreById(id))
       setActiveId(id)
     }
     loadActiveId()
-  }, [activeId])
+  }, [activeId, isFocused])
 
   useEffect(() => {
     const loadStatus = async () => {
@@ -80,9 +92,9 @@ const SellerSettingScreen = ({ navigation }: any) => {
           Component: NotifierComponents.Alert,
           hideOnPress: false,
           componentProps: {
-              alertType: 'success',
+            alertType: 'success',
           },
-      });
+        });
         dispatch(getStoreBySlug(activeSlug)).then(dd => {
           setChecked(dd?.payload?.status)
         })
@@ -94,9 +106,9 @@ const SellerSettingScreen = ({ navigation }: any) => {
           Component: NotifierComponents.Alert,
           hideOnPress: false,
           componentProps: {
-              alertType: 'error',
+            alertType: 'error',
           },
-      });
+        });
       }
     }
     else {
@@ -108,9 +120,9 @@ const SellerSettingScreen = ({ navigation }: any) => {
           Component: NotifierComponents.Alert,
           hideOnPress: false,
           componentProps: {
-              alertType: 'success',
+            alertType: 'success',
           },
-      });
+        });
         setVisible(true)
         dispatch(getStoreBySlug(activeSlug)).then(dd => {
           setChecked(dd?.payload?.status)
@@ -123,9 +135,9 @@ const SellerSettingScreen = ({ navigation }: any) => {
           Component: NotifierComponents.Alert,
           hideOnPress: false,
           componentProps: {
-              alertType: 'error',
+            alertType: 'error',
           },
-      });
+        });
         setVisible(true)
       }
     }
@@ -143,35 +155,6 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
 
 
-  const toggleSwitch = async () => {
-    setIsEnabled(previousState => !previousState)
-    const payload = {
-      id: activeId,
-      brandName: storeIdData.brandName,
-      description: storeIdData.description,
-      imgUrl: storeIdData?.imgUrl,
-      address: storeIdData?.location?.street + " " + storeIdData?.location?.city + " " + storeIdData?.location?.state,
-      phoneNumber: storeIdData.phoneNumber,
-      status: isEnabled ? 'inactive' : 'active',
-      location: {
-        state: storeIdData?.location?.state,
-        city: storeIdData?.location?.city,
-        street: storeIdData?.location?.street,
-      },
-    }
-
-    const resultAction = await dispatch(updateStore(payload))
-    if (updateStore.fulfilled.match(resultAction)) {
-      setType(true)
-      setTitle('Store updated successfully')
-      setVisible(true)
-    }
-    else {
-      setType(false)
-      setTitle('Unable to update store')
-      setVisible(true)
-    }
-  }
 
   const LogOut = async () => {
     await AsyncStorage.clear()
@@ -223,6 +206,73 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
   ]
 
+  const changeStore = async (item: any) => {
+    await AsyncStorage.setItem('activeId', item?.id)
+    await AsyncStorage.setItem('activeSlug', item?.slug)
+    await AsyncStorage.setItem('activeName', item?.brand_name)
+    await AsyncStorage.setItem('role', item?.storeRole)
+
+    dispatch(getStoreById(activeId))
+    dispatch(getPersonalStore())
+    // dispatch(getAssignedStoresRole())
+    Notifier.showNotification({
+      title: `You are switching over to ${item?.brand_name} store `,
+      description: '',
+      Component: NotifierComponents.Alert,
+      hideOnPress: false,
+      componentProps: {
+        alertType: 'success',
+      },
+    });
+
+    setTimeout(() => {
+      return navigation.navigate('MyStoreScreen')
+    }, 2000)
+  }
+
+
+
+  const deleteAccountFunc = async () => {
+
+    const responseAction = await dispatch(deleteAccount())
+    if (deleteAccount.fulfilled.match(responseAction)) {
+      await AsyncStorage.removeItem('activeId')
+      await AsyncStorage.removeItem('activeName')
+      await AsyncStorage.removeItem('activeSlug')
+      await AsyncStorage.removeItem('merchant-slug')
+
+      handleDeleteAccountClose()
+
+      Notifier.showNotification({
+        title: "Account successfully deleted",
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+
+      return navigation.navigate('BuyerScreen', {screen: 'Home'})
+
+    }
+    else {
+      const erroMsg = responseAction?.payload as string
+      Notifier.showNotification({
+        title: erroMsg,
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+    }
+
+  }
+
+
+
   return (
     <SafeAreaView>
       <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
@@ -248,10 +298,40 @@ const SellerSettingScreen = ({ navigation }: any) => {
           })
         }
       </View>
+      <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+        <Text text='Stores' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
+      </View>
+      <View style={localStyle.subdiv}>
+        {
+          myStoreData?.filter((n, i) => n && i <= 3)?.map((data, j) => {
+            return (
+              <Pressable onPress={() => changeStore(data)}>
+                <View style={localStyle.listdiv} key={j} >
+                  <View style={globalStyles.rowBetween}>
+                    <View style={localStyle.menudiv}>
+                      <Text text={data?.brand_name} />
+                      <Text text={data?.store_role} color={colors.gray} />
+                    </View>
+                    {
+                      data?.id === activeId && <Image style={localStyle.image} source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1659439185/Group_10652_tia6rl.png" }} />
+                    }
 
+                  </View>
+                </View>
+              </Pressable>
+
+            )
+          })
+        }
+        {
+          myStoreData?.filter((n) => n)?.length < 3 && <Pressable onPress={() => navigation.navigate('CreateStoreScreen')}>
+            <Text text="+ Add another store" color={colors.bazaraTint} style={{ marginTop: hp(5) }} />
+          </Pressable>
+        }
+      </View>
 
       {
-        storeInfo?.status !== "IN-REVIEW" && <>
+        storeInfo?.status !== "IN-REVIEW" && <View>
           <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
             <Text text='Activate / Deactivate Store' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
             <Switch
@@ -262,76 +342,56 @@ const SellerSettingScreen = ({ navigation }: any) => {
               value={isEnabled}
             />
           </View>
-        </>
+        </View>
 
       }
       {
         mode === "Buyer" ? <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-        <Text text='Switch to Seller' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
-        <Switch
-          trackColor={{ false: colors.black, true: colors.bazaraTint }}
-          thumbColor={isEnabled ? colors.bazaraTint : colors.white}
-          ios_backgroundColor={colors.black}
-          onValueChange={() => changeMode('Seller')}
-          // value={isEnabled}
-        />
-      </View>
-          :
-          <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-          <Text text='Switch to Buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+          <Text text='Switch to Seller' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
           <Switch
             trackColor={{ false: colors.black, true: colors.bazaraTint }}
             thumbColor={isEnabled ? colors.bazaraTint : colors.white}
             ios_backgroundColor={colors.black}
-            onValueChange={() => changeMode('Buyer')}
-            // value={isEnabled}
+            onValueChange={() => changeMode('Seller')}
+          // value={isEnabled}
           />
         </View>
-      }
-
-      {/* {
-        mode === "Buyer" ? <RowBetween>
-          <Paragraph text='Switch to Seller' fontSize={GlobalStyle.size.size14} fontWeight='400' />
-          <Switch onChange={() => changeMode("Seller")} className='switched' />
-        </RowBetween>
           :
-          <RowBetween>
-            <Paragraph text='Switch to Buyer' fontSize={GlobalStyle.size.size14} fontWeight='400' />
-            <Switch onChange={() => changeMode("Buyer")} className='switched' />
-          </RowBetween>
+          <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+            <Text text='Switch to Buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+            <Switch
+              trackColor={{ false: colors.black, true: colors.bazaraTint }}
+              thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+              ios_backgroundColor={colors.black}
+              onValueChange={() => changeMode('Buyer')}
+            // value={isEnabled}
+            />
+          </View>
       }
 
-      <RowStart onClick={() => handleDeleteOpen()}>
-        <Paragraph text='Delete Store' fontSize={GlobalStyle.size.size14} color={GlobalStyle.color.bazaraTint} margin='10px 0px ' />
-      </RowStart> */}
+
+      <Pressable onPress={() => handleDeleteAccountOpen()}>
+        <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
+          <Text text='Delete Store' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
+        </View>
+      </Pressable>
 
 
-
-
-
-
-
-
-
-
-
-
-      {/* <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-        <Text text='Switch to buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
-        <Switch
-          trackColor={{ false: colors.black, true: colors.bazaraTint }}
-          thumbColor={isEnabled ? colors.bazaraTint : colors.white}
-          ios_backgroundColor={colors.black}
-          onValueChange={SwitchToBuyer}
-          value={false}
-        />
-      </View> */}
       <CustomModal
         handleVisible={handleVisible}
         visibleBoolean={visible}
         isSuccess={type}
         headerText={title}
       />
+
+      <DeleteAccountModal
+        deleteVisible={deleteAccountVisible}
+        closeDelete={handleDeleteAccountClose}
+        deleteAction={() => deleteAccountFunc()}
+        loading={deleteAccountLoader}
+      />
+
+
     </SafeAreaView>
   )
 }
@@ -342,6 +402,22 @@ export default SellerSettingScreen
 const localStyle = StyleSheet.create({
   mTop: {
     marginVertical: 10
+  },
+  image: {
+    width: wp(20),
+    height: hp(20)
+  },
+  subdiv: {
+    marginBottom: hp(10),
+    marginHorizontal: hp(15)
+  },
+  listdiv: {
+    paddingVertical: hp(10),
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.lightwhite,
+  },
+  menudiv: {
+
   }
 })
 

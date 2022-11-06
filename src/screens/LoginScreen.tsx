@@ -197,10 +197,10 @@ const LoginScreen = ({ navigation }: any) => {
                         await AsyncStorage.setItem('activeId', response.payload[0]?.id)
                         await AsyncStorage.setItem('activeSlug', response.payload[0]?.slug)
                         await AsyncStorage.setItem('activeName', response.payload[0]?.brand_name)
-                        return navigation.navigate('Store')
+                        return navigation.navigate('SellerScreen', { screen: 'Store' })
                     }
                     else {
-                        return navigation.navigate('HomeScreen')
+                        return navigation.navigate('BuyerScreen', { screen: 'Home' })
                     }
                 }
             }

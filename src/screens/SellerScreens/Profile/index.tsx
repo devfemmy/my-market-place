@@ -16,12 +16,13 @@ import { styles } from './styles';
 import { ProfileFormData } from '../../../utils/types';
 import { getProfile, updateProfile } from '../../../redux/slices/ProfileSlice';
 import { Notifier, NotifierComponents } from 'react-native-notifier';
-import { forgetPassword } from '../../../redux/slices/AuthSlice';
+import { forgetPassword, signOutUser } from '../../../redux/slices/AuthSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImagePicker from 'react-native-image-crop-picker';
 import { pictureUpload } from '../../../utils/functions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MobileHeader from '../../Containers/MobileHeader';
+import { plus, remove } from '../../../assets';
 
 
 
@@ -38,18 +39,19 @@ const Profile = ({ navigation }: any) => {
     const antIcon = <ActivityIndicator />;
     const [stateLoader, setStateLoader] = useState(false)
 
-    const [imageUrl, setImageUrl] = useState(profileData ? profileData?.img_url : "")
 
     const initialValues: ProfileFormData = {
         lName: profileData ? profileData?.last_name : '',
         fName: profileData ? profileData?.first_name : '',
         email: profileData ? profileData?.email : '',
+        mobile: profileData ? profileData?.mobile : '',
+        gender: profileData ? profileData?.sex : "",
 
     }
     const [imageLoader, setImageLoader] = useState(false)
     const [imageData, setImageData] = useState(profileData ? profileData?.img_url : "")
 
-
+  
     useEffect(() => {
         setStateLoader(true)
         const loadData = async () => {
@@ -64,18 +66,50 @@ const Profile = ({ navigation }: any) => {
 
     const pickImage = async (index: number) => {
         ImagePicker.openPicker({
-            width: 500,
-            height: 600,
-            cropping: true,
-            mediaType: "photo",
-            multiple: false,
+          width: 500,
+          height: 600,
+          cropping: true,
+          mediaType: "photo",
+          multiple: false,
         }).then(async image => {
-            setImageLoader(true)
-            const ImageUrl = await pictureUpload(image)
-            setImageData(ImageUrl)
-            setImageLoader(false)
-        });
-    };
+          setStateLoader(true)
+          const ImageUrl = await pictureUpload(image)
+            const pd = {
+              img_url: ImageUrl
+            }
+            
+            var resultResponse = await dispatch(updateProfile(pd))
+    
+            if (updateProfile.fulfilled.match(resultResponse)) {
+              await dispatch(getProfile()).then(d => {
+                setProfileData(d?.payload)
+              })
+              setStateLoader(false)
+              Notifier.showNotification({
+                title: "Profile Image updated successfully",
+                description: '',
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'success',
+                },
+              });
+            }
+            else {
+              var errMsg = resultResponse?.payload as string
+              setStateLoader(false)
+              Notifier.showNotification({
+                title: errMsg,
+                description: '',
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'error',
+                },
+            });
+            }
+        })
+      }
 
     const resetImage = () => {
         //dispatch(resetStoreImage())
@@ -86,53 +120,61 @@ const Profile = ({ navigation }: any) => {
         setLoader(true)
         setStateLoader(true)
         try {
-            var newData = {
-                first_name: data?.fName,
-                last_name: data?.lName,
-                email: data?.email,
-                profile_cover_img: profileData?.img_url
-            }
-
-            var resultResponse = await dispatch(updateProfile(newData))
-            if (updateProfile.fulfilled.match(resultResponse)) {
-                await dispatch(getProfile()).then(d => {
-                    setProfileData(d?.payload)
-                })
-                setLoader(false)
-                setStateLoader(false)
-                setEdit(false)
-                Notifier.showNotification({
-                    title: "Profile Image updated successfully",
-                    description: '',
-                    Component: NotifierComponents.Alert,
-                    hideOnPress: false,
-                    componentProps: {
-                        alertType: 'error',
-                    },
-                })
-            }
-            else {
-                var errMsg = resultResponse?.payload as string
-                setLoader(false)
-                setStateLoader(false)
-                Notifier.showNotification({
-                    title: errMsg,
-                    description: '',
-                    Component: NotifierComponents.Alert,
-                    hideOnPress: false,
-                    componentProps: {
-                        alertType: 'error',
-                    },
-                })
-
-            }
-        }
-        catch (e) {
+          var newData = {
+            first_name: data?.fName,
+            last_name: data?.lName,
+            email: data?.email,
+            mobile: data?.mobile?.toString(),
+            img_url: profileData?.img_url
+          }
+    
+          var resultResponse = await dispatch(updateProfile(newData))
+          if (updateProfile.fulfilled.match(resultResponse)) {
+            await dispatch(getProfile()).then(d => {
+              setProfileData(d?.payload)
+            })
             setLoader(false)
             setStateLoader(false)
-            console.log(e)
+            setEdit(false)
+            Notifier.showNotification({
+              title: "Profile Image updated successfully",
+              description: '',
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'success',
+              },
+            });
+          }
+          else {
+            var errMsg = resultResponse?.payload as string
+            setLoader(false)
+            setStateLoader(false)
+            Notifier.showNotification({
+              title: errMsg,
+              description: '',
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'error',
+              },
+            });
+          }
+    
         }
-    }
+        catch (e) {
+          setLoader(false)
+          setStateLoader(false)
+          console.log(e)
+        }
+      }
+    
+      useEffect(() => {
+        const loadImage = () => {
+          setImageData(profileData?.img_url)
+        }
+        loadImage()
+      }, [profileData])
 
     const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
         useFormik({
@@ -153,9 +195,11 @@ const Profile = ({ navigation }: any) => {
             var resultAction = await dispatch(forgetPassword(data))
             if (forgetPassword.fulfilled.match(resultAction)) {
                 await AsyncStorage.clear()
-
-                setLoader(false)
-                // return navigation.navigate()
+                await dispatch(signOutUser()).then(dd => {
+                    return navigation.navigate('Home')
+                  })
+                  setLoader(false)
+                  return navigation.navigate('Home')
             }
             else {
                 console.log("error")
@@ -178,55 +222,40 @@ const Profile = ({ navigation }: any) => {
         )
     }
 
-    // if(Error){
-    //     return (
-    //         <SafeAreaView>
-    //             <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
-    //             <Image
-    //                 source={InfoCircle}
-    //                 style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
-    //             />
-    //             <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
-    //             <TouchableOpacity onPress={() => dispatch(getUserDetails())}>
-    //                 <icons.Ionicons style={{marginTop: hp(20)}} name="refresh-circle" size={40} color={colors.bazaraTint} />
-    //             </TouchableOpacity>
-    //             </View>
-    //         </SafeAreaView>
-    //     )
-    // }
 
-    console.log({ imageData })
+    const removeImage = () => {
+        setImageData("")
+    }
+
 
     return (
         <View style={[globalStyles.wrapper, { paddingTop: hp(10) }]}>
             <MobileHeader props={navigation} categoryName='Profile' cart />
             <ScrollView>
                 <View style={gbStyle.imageContainer}>
-                    <Text text="Store Cover Image" fontSize={hp(16)} />
-
-
-                    {
-                        imageData?.length > 0 ?
-                            <Pressable onPress={() => resetImage()}>
-
-                                <View style={[gbStyle.image, { marginTop: hp(10) }]}>
-                                    <View style={gbStyle.round}>
-                                        <AntDesign name="minus" size={hp(15)} style={{ color: colors.white }} />
-                                    </View>
-                                    <Image source={{ uri: imageData }} style={gbStyle.image} />
+                    <View style={gbStyle.divContain}>
+                        <View style={gbStyle.contain}>
+                            {
+                                imageData ? <View>
+                                    <Pressable onPress={() => removeImage()}>
+                                        <Image source={remove} style={gbStyle.img1} />
+                                    </Pressable>
+                                    <Image source={{ uri: imageData }} style={gbStyle.multContainer} />
                                 </View>
-                            </Pressable>
-                            :
-                            <View style={gbStyle.formContainer}>
-                                <Pressable onPress={() => pickImage(1)}>
+                                    : <Pressable onPress={() => pickImage(0)}>
+                                        <View style={gbStyle.multContainer2}>
+                                            {
+                                                stateLoader ? <ActivityIndicator size={15} color={'white'} /> :
+                                                    <Image source={plus} style={gbStyle.img2} />
+                                            }
 
-                                    {
-                                        imageLoader ? <ActivityIndicator /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
-                                    }
+                                        </View>
 
-                                </Pressable> </View>
-                        // <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
-                    }
+                                    </Pressable>
+                            }
+                        </View>
+                        <Text text={profileData?.last_name + " " + profileData?.first_name} fontSize={hp(14)} fontWeight="400" style={{ marginLeft: hp(5) }} />
+                    </View>
                 </View>
                 {/* <Text fontWeight="500" fontSize={hp(18)} text={profileData?.last_name + " " + profileData?.first_name} /> */}
                 <View style={globalStyles.list_header}>
@@ -248,6 +277,7 @@ const Profile = ({ navigation }: any) => {
                                 editable={editing}
                                 onBlur={handleBlur('lName')}
                                 onChangeText={handleChange('lName')}
+                                disabled={!edit}
                                 errorMsg={touched.lName ? errors.lName : undefined}
                             />
                             <Input
@@ -257,18 +287,20 @@ const Profile = ({ navigation }: any) => {
                                 editable={editing}
                                 onBlur={handleBlur('fName')}
                                 onChangeText={handleChange('fName')}
+                                disabled={!edit}
                                 errorMsg={touched.fName ? errors.fName : undefined}
                             />
+
                             <Input
-                                label={'Email'}
-                                value={values?.email}
-                                defaultValue={profileData?.email}
-                                editable={editing}
-                                onBlur={handleBlur('email')}
-                                onChangeText={handleChange('email')}
-                                disabled
-                                errorMsg={touched.email ? errors.email : undefined}
+                                label='Phone number'
+                                value={values.mobile}
+                                onChangeText={handleChange('mobile')}
+                                errorMsg={touched.mobile ? errors.mobile : undefined}
                             />
+                            <View style={gbStyle.box}>
+                                <Text text='Email' fontSize={hp(12)} color={colors.ashes} />
+                                <Text text={profileData?.email} fontSize={hp(15)} style={{ marginVertical: hp(5) }} />
+                            </View>
                         </View>
                     ) :
                         <View style={styles.marginB}>
@@ -279,6 +311,10 @@ const Profile = ({ navigation }: any) => {
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label} fontSize={hp(14)} text={'First Name'} />
                                 <Text fontSize={hp(14)} text={profileData?.last_name} />
+                            </View>
+                            <View style={gbStyle.box2}>
+                                <Text text='Phone number' fontSize={hp(12)} color={colors.ashes} />
+                                <Text text={profileData?.mobile} fontSize={hp(15)} style={{ marginVertical: hp(5) }} />
                             </View>
                             <View style={styles.inputContainer}>
                                 <Text style={styles.label} fontSize={hp(14)} text={'Email'} />
@@ -331,7 +367,7 @@ const gbStyle = StyleSheet.create({
     },
     imageContainer: {
         marginHorizontal: hp(5),
-        height: hp(200)
+        height: hp(150)
     },
     image: {
         width: 100,
@@ -360,5 +396,59 @@ const gbStyle = StyleSheet.create({
     horizon: {
         marginHorizontal: 15
     },
+    img1: {
+        width: wp(15),
+        height: hp(15),
+        position: 'absolute',
+        top: 20,
+        right: 20,
+    },
+    multContainer2: {
+        width: wp(100),
+        height: hp(120),
+        backgroundColor: colors.artBoard,
+        marginVertical: hp(10),
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: hp(15)
+    },
+    img2: {
+        width: wp(30),
+        height: hp(30)
+    },
+    multContainer: {
+        width: wp(100),
+        height: hp(120),
+        backgroundColor: colors.artBoard,
+        marginVertical: hp(10),
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: hp(15),
+        zIndex: -3,
+        elevation: -3
+
+    },
+    divContain: {
+        flexDirection: 'row',
+        marginTop: hp(5),
+        marginRight: hp(10),
+        marginBottom: hp(10),
+        alignItems: 'center',
+        paddingHorizontal: hp(15)
+    },
+    contain: {
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+    },
+    box2: {
+        paddingVertical: hp(5),
+        paddingHorizontal: hp(15),
+        borderBottomColor: colors.artBoard,
+        borderBottomWidth: 1,
+    },
+    box: {
+        paddingVertical: hp(3),
+        paddingHorizontal: hp(15),
+      },
 });
 

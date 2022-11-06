@@ -21,7 +21,11 @@ export const DeliverySchema = yup.object().shape({
   city: yup.string().required('City is required'),
   phone_number: yup.number().required('Phone number is required')
  });
+ export const PayoutSchema = yup.object().shape({
+  bankName: yup.string().required('Bank name is required'),
+  bankNumber: yup.string().required('Bank number is required'),
 
+ })
 export const AddStaffSchema = yup.object().shape({
   email: yup.string().email().required('Email is required'),
   role: yup.string().required('Role is required')
