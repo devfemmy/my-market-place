@@ -13,7 +13,7 @@ import { globalStyles } from "../../../styles/globalStyles"
 import { hp, wp } from '../../../utils/helpers';
 ;
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { addStoreImage, createStore, getStoreById, resetStoreImage, storebyId, storeImage, updateStore, myStore, getPersonalStore } from "../../../redux/slices/StoreSlice"
+import { createStore, getStoreById, storebyId, updateStore, myStore, getPersonalStore } from "../../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../../utils/types';
 import CustomModal from '../../../components/common/CustomModal';
 import { colors } from '../../../utils/themes';
@@ -175,7 +175,7 @@ const EditStore = (): JSX.Element => {
 };
 
   const resetImage = () => {
-    dispatch(resetStoreImage())
+   setImageData('')
   }
 
   const removeImage = () => {
@@ -258,6 +258,15 @@ const EditStore = (): JSX.Element => {
               onChangeText={handleChange('phoneNumber')}
               errorMsg={touched.phoneNumber ? errors.phoneNumber : undefined}
             />
+             <View>
+              <Select
+                placeholder='Estimated Delivery Date'
+                items={['1', '2', '3', '4', '5']}
+                defaultValue={values.estimatedDeliveryDuration}
+                setState={handleChange('estimatedDeliveryDuration')}
+                errorMsg={touched.estimatedDeliveryDuration ? errors.estimatedDeliveryDuration : undefined}
+              />
+            </View>
 
             <Text
               text="Store Location"
@@ -291,14 +300,6 @@ const EditStore = (): JSX.Element => {
               onBlur={handleBlur('street')}
               onChangeText={handleChange('street')}
               errorMsg={touched.street ? errors.street : undefined}
-            />
-
-            <Input
-              label={'Estimated delivery duration'}
-              value={values.estimatedDeliveryDuration}
-              onBlur={handleBlur('estimatedDeliveryDuration')}
-              onChangeText={handleChange('estimatedDeliveryDuration')}
-              errorMsg={touched.estimatedDeliveryDuration ? errors.estimatedDeliveryDuration : undefined}
             />
           </View>
 

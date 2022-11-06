@@ -93,6 +93,7 @@ const CommentCard = ({ image, name, comment, date, rate, id, productOwner, comme
                     ratingColor={colors.bazaraTint}
                     tintColor='black'
                     style={{ paddingVertical: 10 }}
+                    readonly
                 />
                 <Text text={date ? getCurrentDate(date) : 'N/A'} />
             </View>

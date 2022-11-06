@@ -58,10 +58,10 @@ const LoginScreen = ({ navigation }: any) => {
                         await AsyncStorage.setItem('activeId', resultAction.payload[0]?.id)
                         await AsyncStorage.setItem('activeSlug', resultAction.payload[0]?.slug)
                         await AsyncStorage.setItem('activeName', resultAction.payload[0]?.brand_name)
-                         return navigation.navigate('SellerScreen')
+                         return navigation.navigate('SellerScreen',{ screen: 'Store' })
                     }
                     else {
-                         return navigation.navigate('BuyerScreen')
+                         return navigation.navigate('BuyerScreen',{ screen: 'Home' })
                     }
                 }
             }
@@ -171,13 +171,14 @@ const LoginScreen = ({ navigation }: any) => {
         setLoading(true)
         try {
             await GoogleSignin.hasPlayServices();
-            //const currentUser = await GoogleSignin.getCurrentUser();
+            const currentUser = await GoogleSignin.getCurrentUser();
             const userInfo = await GoogleSignin.signIn();
             const tokenInfo = await GoogleSignin.getTokens();
             const payload = {
                 token: tokenInfo.idToken,
 
             }
+            console.log({payload, tokenInfo})
 
             var response = await dispatch(oauthLogin(payload))
             if (oauthLogin.fulfilled.match(response)) {

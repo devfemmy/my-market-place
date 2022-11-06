@@ -1,6 +1,6 @@
 
 import React, { useContext, useState, useEffect } from 'react'
-import { Image, Pressable, StyleSheet, Switch, View } from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native'
 import { globalStyles } from '../styles'
 import { SafeAreaView, Text, Separator } from '../components/common';
 import { styles } from '../screens/auth/Register/styles';
@@ -207,14 +207,12 @@ const SellerSettingScreen = ({ navigation }: any) => {
   ]
 
   const changeStore = async (item: any) => {
-    await AsyncStorage.setItem('activeId', item?.id)
-    await AsyncStorage.setItem('activeSlug', item?.slug)
-    await AsyncStorage.setItem('activeName', item?.brand_name)
-    await AsyncStorage.setItem('role', item?.storeRole)
+    // console.log({item})
+     AsyncStorage.setItem('activeId', item?.id)
+     AsyncStorage.setItem('activeSlug', item?.slug)
+     AsyncStorage.setItem('activeName', item?.brand_name)
+     AsyncStorage.setItem('role', item?.storeRole)
 
-    dispatch(getStoreById(activeId))
-    dispatch(getPersonalStore())
-    // dispatch(getAssignedStoresRole())
     Notifier.showNotification({
       title: `You are switching over to ${item?.brand_name} store `,
       description: '',
@@ -225,9 +223,12 @@ const SellerSettingScreen = ({ navigation }: any) => {
       },
     });
 
-    setTimeout(() => {
-      return navigation.navigate('MyStoreScreen')
-    }, 2000)
+    navigation.navigate('Store')
+
+    dispatch(getStoreById(activeId))
+    dispatch(getPersonalStore())
+    // dispatch(getAssignedStoresRole())
+    
   }
 
 
@@ -253,7 +254,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
         },
       });
 
-      return navigation.navigate('BuyerScreen', {screen: 'Home'})
+      return navigation.navigate('BuyerScreen', { screen: 'Home' })
 
     }
     else {
@@ -275,107 +276,108 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView>
-      <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-        <Text text='Store Information' fontSize={hp(22)} fontWeight="600" lineHeight={28} />
-        <Pressable onPress={LogOut}>
-          <Text text='Log out' fontSize={hp(16)} fontWeight="600" color={colors.bazaraTint} />
-        </Pressable>
-      </View>
-      <View style={[localStyle.mTop, styles.width90]}>
-        {
-          quickActionArray?.map((data: any) => {
-            return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.route)} props={navigation} />
-          })
-        }
-      </View>
-      <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-        <Text text='Personal Information' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
-      </View>
-      <View style={[localStyle.mTop, styles.width90]}>
-        {
-          quickActionPersonal?.map((data: any) => {
-            return <ListCard key={data?.id} {...data} props={navigation} />
-          })
-        }
-      </View>
-      <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-        <Text text='Stores' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
-      </View>
-      <View style={localStyle.subdiv}>
-        {
-          myStoreData?.filter((n, i) => n && i <= 3)?.map((data, j) => {
-            return (
-              <Pressable onPress={() => changeStore(data)}>
-                <View style={localStyle.listdiv} key={j} >
-                  <View style={globalStyles.rowBetween}>
-                    <View style={localStyle.menudiv}>
-                      <Text text={data?.brand_name} />
-                      <Text text={data?.store_role} color={colors.gray} />
-                    </View>
-                    {
-                      data?.id === activeId && <Image style={localStyle.image} source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1659439185/Group_10652_tia6rl.png" }} />
-                    }
-
-                  </View>
-                </View>
-              </Pressable>
-
-            )
-          })
-        }
-        {
-          myStoreData?.filter((n) => n)?.length < 3 && <Pressable onPress={() => navigation.navigate('CreateStoreScreen')}>
-            <Text text="+ Add another store" color={colors.bazaraTint} style={{ marginTop: hp(5) }} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+          <Text text='Store Information' fontSize={hp(22)} fontWeight="600" lineHeight={28} />
+          <Pressable onPress={LogOut}>
+            <Text text='Log out' fontSize={hp(16)} fontWeight="600" color={colors.bazaraTint} />
           </Pressable>
-        }
-      </View>
+        </View>
+        <View style={[localStyle.mTop, styles.width90]}>
+          {
+            quickActionArray?.map((data: any) => {
+              return <ListCard key={data?.id} {...data} onPress={() => navigation.navigate(data?.route)} props={navigation} />
+            })
+          }
+        </View>
+        <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+          <Text text='Personal Information' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
+        </View>
+        <View style={[localStyle.mTop, styles.width90]}>
+          {
+            quickActionPersonal?.map((data: any) => {
+              return <ListCard key={data?.id} {...data} props={navigation} />
+            })
+          }
+        </View>
+        <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+          <Text text='Stores' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
+        </View>
+        <View style={localStyle.subdiv}>
+          {
+            myStoreData?.filter((n, i) => n && i <= 3)?.map((data, j) => {
+              return (
+                <Pressable onPress={() => changeStore(data)}>
+                  <View style={localStyle.listdiv} key={j} >
+                    <View style={globalStyles.rowBetween}>
+                      <View style={localStyle.menudiv}>
+                        <Text text={data?.brand_name} />
+                        <Text text={data?.store_role} color={colors.gray} />
+                      </View>
+                      {
+                        data?.id === activeId && <Image style={localStyle.image} source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1659439185/Group_10652_tia6rl.png" }} />
+                      }
 
-      {
-        storeInfo?.status !== "IN-REVIEW" && <View>
-          <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-            <Text text='Activate / Deactivate Store' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
-            <Switch
-              trackColor={{ false: colors.black, true: colors.bazaraTint }}
-              thumbColor={isEnabled ? colors.bazaraTint : colors.white}
-              ios_backgroundColor={colors.black}
-              onValueChange={onChange}
-              value={isEnabled}
-            />
+                    </View>
+                  </View>
+                </Pressable>
+              )
+            })
+          }
+          {
+            myStoreData?.filter((n) => n)?.length < 3 && <Pressable onPress={() => navigation.navigate('CreateStoreScreen')}>
+              <Text text="+ Add another store" color={colors.bazaraTint} style={{ marginTop: hp(5) }} />
+            </Pressable>
+          }
+        </View>
+
+        {
+          storeInfo?.status !== "IN-REVIEW" && <View>
+            <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+              <Text text='Activate / Deactivate Store' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+              <Switch
+                trackColor={{ false: colors.black, true: colors.bazaraTint }}
+                thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+                ios_backgroundColor={colors.black}
+                onValueChange={onChange}
+                value={isEnabled}
+              />
+            </View>
           </View>
-        </View>
 
-      }
-      {
-        mode === "Buyer" ? <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-          <Text text='Switch to Seller' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
-          <Switch
-            trackColor={{ false: colors.black, true: colors.bazaraTint }}
-            thumbColor={isEnabled ? colors.bazaraTint : colors.white}
-            ios_backgroundColor={colors.black}
-            onValueChange={() => changeMode('Seller')}
-          // value={isEnabled}
-          />
-        </View>
-          :
-          <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
-            <Text text='Switch to Buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+        }
+        {
+          mode === "Buyer" ? <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+            <Text text='Switch to Seller' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
             <Switch
               trackColor={{ false: colors.black, true: colors.bazaraTint }}
               thumbColor={isEnabled ? colors.bazaraTint : colors.white}
               ios_backgroundColor={colors.black}
-              onValueChange={() => changeMode('Buyer')}
+              onValueChange={() => changeMode('Seller')}
             // value={isEnabled}
             />
           </View>
-      }
+            :
+            <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+              <Text text='Switch to Buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+              <Switch
+                trackColor={{ false: colors.black, true: colors.bazaraTint }}
+                thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+                ios_backgroundColor={colors.black}
+                onValueChange={() => changeMode('Buyer')}
+              // value={isEnabled}
+              />
+            </View>
+        }
 
 
-      <Pressable onPress={() => handleDeleteAccountOpen()}>
-        <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
-          <Text text='Delete Store' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
-        </View>
-      </Pressable>
+        <Pressable onPress={() => handleDeleteAccountOpen()}>
+          <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
+            <Text text='Delete Store' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
+          </View>
+        </Pressable>
 
+      </ScrollView>
 
       <CustomModal
         handleVisible={handleVisible}

@@ -439,6 +439,9 @@ const ProductDetail = (props: any) => {
     }
 
 
+    console.log({productDetail})
+
+
     return (
         <SafeAreaView style={globalStyles.containerWrapper}>
             <MobileHeader categoryName={'Product detail page'} props={props} />
@@ -455,7 +458,11 @@ const ProductDetail = (props: any) => {
             </View>
             <ScrollView>
                 <View style={[globalStyles.rowBetween, styles.pd]}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('StoreInfo', {
+                        params: {
+                            store: productDetail?.store
+                        }
+                    })}>
                         <View>
                             <Text style={styles.txt} text='Visit Store' fontSize={hp(18)} />
                         </View>

@@ -82,8 +82,7 @@ const Account = ({ navigation }: any) => {
 
 
   return (
-   <ScrollView>
-     <View style={globalStyles.wrapper}>
+    <View style={[globalStyles.wrapper]}>
       <View style={styles.container}>
         <View style={styles.justify} >
           <View style={styles.divsub} >
@@ -160,14 +159,15 @@ const Account = ({ navigation }: any) => {
         />
       </View>
     </View>
-   </ScrollView>
   );
 };
 
 export default Account
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1
+  },
   justify: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -176,7 +176,8 @@ const styles = StyleSheet.create({
   },
   divsub: {},
   column: {
-    width: '100%'
+    width: '100%',
+    flex: 1
   },
   card: {
     marginTop: hp(5),
