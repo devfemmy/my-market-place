@@ -49,7 +49,6 @@ const MyStoreScreen = () => {
     loadAsync()
   }, [id, isFocused])
 
-  console.log({isFocused, id, activeName, activeSlug})
 
   useEffect(() => {
     setStateLoader(true)

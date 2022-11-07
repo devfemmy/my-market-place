@@ -1,19 +1,32 @@
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView, Text } from "../common"
 import { globalStyles } from '../../styles'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { storeImage, checkbox } from "../../assets"
 import { colors } from '../../utils/themes'
 import { StoreHeaderProps } from '../../interfaces'
 import { hp } from '../../utils/helpers'
 import { Nav } from '../../utils/types'
 import { copyToClipboard } from '../../utils/functions'
+import { useAppDispatch } from '../../redux/hooks'
+import { getNotifications } from '../../redux/slices/notificationSlice'
+import { Badge } from 'react-native-paper'
 
 
 const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
     const  { navigate } = useNavigation<Nav>();
+
+    const [notification, setNotification] = useState<any>()
+    const dispatch = useAppDispatch()
+    const isFocused = useIsFocused();
+
+
+    useEffect(() => {
+        dispatch(getNotifications()).then(dd => setNotification(dd?.payload))
+
+    }, [isFocused])
 
     const link = `https://bazara.co/store/${slug}`
     return (
@@ -36,7 +49,10 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
                         </View>
                     </View>
                 </View>
-                <TouchableOpacity onPress={() => navigate('NotificationScreen')} style={styles.iconCard}>
+                <TouchableOpacity onPress={() => navigate('SellerNotification')} style={styles.iconCard}>
+                    {
+                        notification?.length > 0 && <Badge size={10} style={styles.bg2}></Badge>
+                    }
                     <Ionicons
                         name={'notifications-outline'}
                         size={25}
@@ -87,5 +103,11 @@ const styles = StyleSheet.create({
     },
     div: {
         marginLeft: 5
+    },
+    bg2: {
+        position: 'absolute',
+        left: 10,
+        top: 0,
+        zIndex: 10
     }
 })

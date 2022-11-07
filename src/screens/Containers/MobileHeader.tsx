@@ -8,7 +8,7 @@ import { cancel } from '../../assets'
 import { styles } from '../auth/Login/styles'
 import { NavigationContainer } from '@react-navigation/native'
 
-const MobileHeader = ({props,categoryName, auth, cart }: any) => {
+const MobileHeader = ({props,categoryName, auth, cart, myCart, token}: any) => {
 
 
     return (
@@ -18,7 +18,7 @@ const MobileHeader = ({props,categoryName, auth, cart }: any) => {
                 name={'chevron-back-outline'}
                 size={30}
                 color={'white'}
-                onPress={cart ? () => props?.goBack()  : () => props?.navigation.goBack()}
+                onPress={cart ? () => props?.goBack()  : myCart && token ? () => props.navigation.navigate('BuyerScreen', {screen: 'Home'}) : myCart && !token ? () => props.navigation.navigate('Home') : () => props?.navigation.goBack()}
             />
             }
             <Text style={{textTransform: 'capitalize'}} text={categoryName} fontSize={hp(18)} />

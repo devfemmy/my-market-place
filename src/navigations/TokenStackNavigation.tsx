@@ -47,6 +47,8 @@ import BuyerOrderDetail from '../screens/BuyerOrderDetail';
 import { getStorage } from '../utils/helpers';
 import { useIsFocused } from "@react-navigation/native";
 import StoreInfo from '../screens/StoreInfo';
+import NotificationScreen from '../screens/NotificationScreen';
+import SellerNotificationScreen from '../screens/SellerNotificationScreen';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -236,7 +238,8 @@ const TokenStackNavigation = () => {
             <Stack.Screen name='DeliveryScreen' component={DeliveryScreen} />
             <Stack.Screen name='Account' component={Account} />
             <Stack.Screen name='StoreInfo' component={StoreInfo} />
-          
+            <Stack.Screen name='Notification' component={NotificationScreen} />
+            <Stack.Screen name='SellerNotification' component={SellerNotificationScreen} />
         </Stack.Navigator>
     )
 }

@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Image, StyleSheet, TouchableOpacity, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, Text } from '../../../../../components/common'
 import { globalStyles } from '../../../../../styles'
@@ -24,13 +24,14 @@ const UserHeader = ({ name, image }: any) => {
     const [cartItem, setCartItem] = useState<any>()
     const dispatch = useAppDispatch()
     const cartList = useAppSelector(CartData)
+    const [notification, setNotification] = useState<any>()
 
     const isFocused = useIsFocused();
 
 
     useEffect(() => {
         if (token) {
-            dispatch(getNotifications())
+            dispatch(getNotifications()).then(dd => setNotification(dd?.payload))
             dispatch(getCarts())
         }
 
@@ -61,7 +62,7 @@ const UserHeader = ({ name, image }: any) => {
     }, [token, isFocused])
     const navigation = useNavigation<Nav>();
 
-    console.log({token, isFocused, auth})
+    console.log({ token, isFocused, auth })
 
     return (
         <View style={[styles.comp]}>
@@ -84,14 +85,16 @@ const UserHeader = ({ name, image }: any) => {
 
             {
                 auth || token ? <View style={globalStyles.rowAround}>
-                    <View>
-                        <Badge style={styles.bg2}>
-                            0
-                        </Badge>
-                        <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.iconCard}>
+                    <Pressable onPress={() => navigation.navigate('Notification')}>
+                        {
+                            notification?.length > 0 && <Badge style={styles.bg2}>
+                                {notification?.length}
+                            </Badge>
+                        }
+                        <TouchableOpacity onPress={() => navigation.navigate('Notification')} style={styles.iconCard}>
                             <icons.Octicons name="bell-fill" size={hp(25)} color="white" />
                         </TouchableOpacity>
-                    </View>
+                    </Pressable>
                     <View style={{ marginLeft: hp(30) }} />
                     <View>
                         {

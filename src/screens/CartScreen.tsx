@@ -471,6 +471,8 @@ const CartScreen = (props: any,) => {
                 <MobileHeader
                     props={props}
                     categoryName="My Cart"
+                    myCart
+                    token={getUserToken}
                 />
 
                 {/* LocalStorage */}
