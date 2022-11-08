@@ -15,7 +15,7 @@ import { Button } from '../components/common/Button'
 import { AuthButton } from '../components/common/AuthButtons'
 import { AppleLogo, GoogleLogo } from '../constants/images'
 import appleAuth from '@invertase/react-native-apple-authentication'
-import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin'
 import { useAppDispatch } from '../redux/hooks'
 import { oauthLogin, signInUser } from '../redux/slices/AuthSlice'
 import { getPersonalStore } from '../redux/slices/StoreSlice'
@@ -140,7 +140,8 @@ const LoginScreen = ({ navigation }: any) => {
                 //         },
                 //     });
                 // }
-            } catch (error) {
+            } catch (error: any) {
+               
                 Notifier.showNotification({
                     title: 'Login failed!',
                     description: 'Authentication was unsuccessful, kindly try again',
@@ -171,19 +172,18 @@ const LoginScreen = ({ navigation }: any) => {
         setLoading(true)
         try {
             await GoogleSignin.hasPlayServices();
-            const currentUser = await GoogleSignin.getCurrentUser();
-            const userInfo = await GoogleSignin.signIn();
+             await GoogleSignin.signIn();
+          // const currentUser = await GoogleSignin.getCurrentUser();
             const tokenInfo = await GoogleSignin.getTokens();
             const payload = {
                 token: tokenInfo.idToken,
 
             }
-            console.log({payload, tokenInfo})
 
-            var response = await dispatch(oauthLogin(payload))
+           var response = await dispatch(oauthLogin(payload))
             if (oauthLogin.fulfilled.match(response)) {
                 setLoading(false)
-                await AsyncStorage.setItem('userInfo', JSON.stringify(response?.payload?.data))
+                await AsyncStorage.setItem('userInfo', JSON.stringify(response?.payload))
                 var resultAction = await dispatch(getPersonalStore())
                 if (getPersonalStore.fulfilled.match(resultAction)) {
                     var bb = await AsyncStorage.getItem('checking')
@@ -195,9 +195,10 @@ const LoginScreen = ({ navigation }: any) => {
                         })
                     }
                     if (resultAction.payload?.length > 0) {
-                        await AsyncStorage.setItem('activeId', response.payload[0]?.id)
-                        await AsyncStorage.setItem('activeSlug', response.payload[0]?.slug)
-                        await AsyncStorage.setItem('activeName', response.payload[0]?.brand_name)
+                        await AsyncStorage.setItem('activeId', resultAction.payload[0]?.id)
+                        await AsyncStorage.setItem('activeSlug', resultAction.payload[0]?.slug)
+                        await AsyncStorage.setItem('activeName', resultAction.payload[0]?.brand_name)
+
                         return navigation.navigate('SellerScreen', { screen: 'Store' })
                     }
                     else {
@@ -206,6 +207,7 @@ const LoginScreen = ({ navigation }: any) => {
                 }
             }
             else {
+                setLoading(false)
                 var errMsg = response?.payload as string
                 Notifier.showNotification({
                     title: errMsg,
@@ -218,16 +220,7 @@ const LoginScreen = ({ navigation }: any) => {
                 });
             }
 
-        } catch (err) {
-            Notifier.showNotification({
-                title: 'Login failed!',
-                description: 'Authentication was unsuccessful, kindly try again',
-                Component: NotifierComponents.Alert,
-                hideOnPress: false,
-                componentProps: {
-                    alertType: 'error',
-                },
-            });
+        } catch (err: any) {
             console.log(err)
             setLoading(false)
         }

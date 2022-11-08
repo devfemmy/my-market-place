@@ -94,7 +94,7 @@ const BuyerSignUpScreen = ({ navigation }: any) => {
 
             var resultAction = await dispatch(oauthSignup(payload))
             if (oauthSignup.fulfilled.match(resultAction)) {
-                await AsyncStorage.setItem('userInfo', JSON.stringify(resultAction?.payload?.data))
+                await AsyncStorage.setItem('userInfo', JSON.stringify(resultAction?.payload))
                 setLoading(false)
                 return navigation.navigate('BuyerScreen')
             } else {

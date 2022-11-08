@@ -83,10 +83,9 @@ export const oauthLogin = createAsyncThunk(
   async (payload: OauthAction, { rejectWithValue }) => {
     try {
       var response = await postAuthRequest('/auth/oAuth/google', payload)
-      console.log({response})
       if (response?.status === 200) {
-       await AsyncStorage.setItem("token", response?.data?.data?.accessToken)
-        return response?.data
+         await AsyncStorage.setItem("token", response?.data?.data?.accessToken)
+        return response?.data?.data
       }
 
     }
@@ -103,7 +102,7 @@ export const oauthSignup = createAsyncThunk(
       var response = await postAuthRequest('/auth/oAuth/google/register', payload)
       if (response?.status === 200) {
         await AsyncStorage.setItem("token", response?.data?.data?.accessToken)
-        return response?.data
+        return response?.data?.data
       }
 
     }
