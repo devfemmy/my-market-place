@@ -260,7 +260,7 @@ const LoginScreen = ({ navigation }: any) => {
                         errorMsg={touched.password ? errors.password : undefined}
                     />
                     <Text
-                        onPress={() => navigation.navigate('ForgotPassword')}
+                        onPress={() => navigation.navigate('ForgetPassword')}
                         fontWeight="500"
                         fontSize={hp(16)}
                         text="Forgot password?"

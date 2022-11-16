@@ -29,6 +29,8 @@ import { Select } from '../../components/common/SelectInput'
 import { Button } from '../../components/common/Button'
 
 import { Notifier, NotifierComponents } from 'react-native-notifier'
+import { love } from '../../assets'
+import { addToWishlist } from '../../redux/slices/Wishlist'
 
 const ProductDetail = (props: any) => {
     const dispatch = useAppDispatch()
@@ -205,7 +207,7 @@ const ProductDetail = (props: any) => {
         setQuantity(prev => prev === 1 ? prev : prev - 1)
     }
 
- 
+
     const addItemToCart = async () => {
         const data = {
             product_id: productDetail?.id,
@@ -439,12 +441,49 @@ const ProductDetail = (props: any) => {
     }
 
 
-    console.log({productDetail})
+    const saveForLater = async () => {
+        try {
+            const payload = {
+                product_id: productDetail?.id,
+            }
+            setLoader(true)
+            var response = await dispatch(addToWishlist(payload))
+            if (addToWishlist.fulfilled.match(response)) {
+                setLoader(false)
+                Notifier.showNotification({
+                    title: 'Product saved for later',
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'success',
+                    },
+                });
+            }
+            else {
+                setLoader(false)
+                var errMsg = response?.payload as string
+                Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'error',
+                    },
+                });
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
 
 
     return (
         <SafeAreaView style={globalStyles.containerWrapper}>
-            <MobileHeader categoryName={'Product detail page'} props={props} />
+            <MobileHeader categoryName={productDetail?.name} props={props} />
             <View style={styles.imageContainer}>
                 <Slick style={styles.wrapper} showsButtons={false}>
                     {
@@ -468,9 +507,13 @@ const ProductDetail = (props: any) => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity>
-                        <View>
-
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: wp(100) }}>
                             <Text text={`${productDetail?.rating === undefined ? 'N/A' : productDetail?.rating} stars`} />
+                            {
+                                getUserToken && <Pressable onPress={() => saveForLater()}>
+                                <Image source={love} />
+                            </Pressable>
+                            }
                         </View>
                     </TouchableOpacity>
                 </View>

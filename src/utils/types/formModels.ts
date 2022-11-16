@@ -21,7 +21,15 @@ export type LoginFormData = {
     email: string;
     password: string;
 }
+export type WishlistState = {
+    lists: any,
+    loading: boolean,
+    error: any,
+}
 
+export type ForgotPasswordFormData = {
+    email: string
+}
 export type SignupType = {
     email: string;
     password: string;

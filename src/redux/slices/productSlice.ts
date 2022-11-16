@@ -63,6 +63,21 @@ export const updateProduct = createAsyncThunk(
     }
 )
 
+export const elasticSearch = createAsyncThunk(
+    'product/elasticSearch',
+    async (payload: { search: string }, { rejectWithValue }) => {
+        try {
+            const response = await getRequest(`/product/search?search_string=${payload.search}`)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
 export const activateProduct = createAsyncThunk(
     'product/activateProduct',
     async (payload: string, { rejectWithValue }) => {
@@ -243,7 +258,7 @@ export const updateProductVariantSpec = createAsyncThunk(
             amount: payload?.amount,
             size: payload?.size
         }
-        
+
         try {
             const response = await postRequest(`/product/variant/spec/update?product_variant_spec_id=${payload?.product_variant_spec_id}`, payloadData)
             return response?.data?.data
@@ -451,6 +466,15 @@ export const ProductSlice = createSlice({
             })
         builder.addCase(deleteProductVariant.rejected, (state, action) => {
             state.loading = false
+        })
+        builder.addCase(elasticSearch.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(elasticSearch.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(elasticSearch.rejected, (state, action) => {
+            
         })
     }
 })

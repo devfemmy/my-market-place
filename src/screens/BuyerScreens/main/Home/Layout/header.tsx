@@ -5,7 +5,7 @@ import { globalStyles } from '../../../../../styles'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { icons } from '../../../../../utils/constants'
 import { useNavigation } from '@react-navigation/native'
-import { storeImage, checkbox, bazaraLogo, profile } from '../../../../../assets'
+import { storeImage, checkbox, bazaraLogo, profile, heart } from '../../../../../assets'
 import { colors } from '../../../../../utils/themes'
 import { hp, wp } from '../../../../../utils/helpers'
 import { Nav } from '../../../../../utils/types'
@@ -17,6 +17,7 @@ import { Badge } from 'react-native-paper';
 import { getNotifications } from '../../../../../redux/slices/notificationSlice'
 import { CartData, getCarts } from '../../../../../redux/slices/cartSlice'
 import { useIsFocused } from "@react-navigation/native";
+import { getWishlist } from '../../../../../redux/slices/Wishlist'
 
 const UserHeader = ({ name, image }: any) => {
     const auth = useAppSelector(userState)
@@ -25,7 +26,7 @@ const UserHeader = ({ name, image }: any) => {
     const dispatch = useAppDispatch()
     const cartList = useAppSelector(CartData)
     const [notification, setNotification] = useState<any>()
-
+    const [wishlist, setWishlist] = useState<any>(null)
     const isFocused = useIsFocused();
 
 
@@ -33,6 +34,9 @@ const UserHeader = ({ name, image }: any) => {
         if (token) {
             dispatch(getNotifications()).then(dd => setNotification(dd?.payload))
             dispatch(getCarts())
+            dispatch(getWishlist()).then(dd => {
+                setWishlist(dd?.payload)
+            })
         }
 
     }, [token, isFocused])
@@ -87,7 +91,7 @@ const UserHeader = ({ name, image }: any) => {
                 auth || token ? <View style={globalStyles.rowAround}>
                     <Pressable onPress={() => navigation.navigate('Notification')}>
                         {
-                            notification?.length > 0 && <Badge style={styles.bg2}>
+                            notification?.length > 0 && <Badge size={15} style={styles.bg2}>
                                 {notification?.length}
                             </Badge>
                         }
@@ -95,10 +99,22 @@ const UserHeader = ({ name, image }: any) => {
                             <icons.Octicons name="bell-fill" size={hp(25)} color="white" />
                         </TouchableOpacity>
                     </Pressable>
-                    <View style={{ marginLeft: hp(30) }} />
+                    <View style={{ marginLeft: hp(20)}} />
+                    <Pressable onPress={() => navigation.navigate('Wishlist')}>
+                        {
+                            wishlist?.length > 0 && <Badge size={15} style={styles.bg2}>
+                                {wishlist?.length}
+                            </Badge>
+                        }
+                        <TouchableOpacity onPress={() => navigation.navigate('Notification')} style={styles.iconCard}>
+                            {/* <icons.Octicons name="bell-fill" size={hp(25)} color="white" /> */}
+                            <Image source={heart} />
+                        </TouchableOpacity>
+                    </Pressable>
+                    <View style={{ marginLeft: hp(20) }} />
                     <View>
                         {
-                            cartList?.length > 0 && <Badge style={styles.bg2}>
+                            cartList?.length > 0 && <Badge size={15} style={styles.bg2}>
                                 {cartList?.length}
                             </Badge>
                         }
@@ -116,7 +132,7 @@ const UserHeader = ({ name, image }: any) => {
                     <View style={globalStyles.rowAround}>
                         <View style={styles.bg}>
                             {
-                                cartItem?.length > 0 && <Badge style={styles.bg2}>
+                                cartItem?.length > 0 && <Badge size={15} style={styles.bg2}>
                                     {cartItem?.length}
                                 </Badge>
                             }
@@ -193,8 +209,9 @@ const styles = StyleSheet.create({
     },
     bg2: {
         position: 'absolute',
-        left: 20,
+        left: 10,
         top: 0,
-        zIndex: 10
+        zIndex: 10,
+        
     }
 })

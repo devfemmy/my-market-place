@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { createStackNavigator as createNativeStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator as createNativeStackNavigator,TransitionPresets } from '@react-navigation/stack';
 import { Home } from '../screens/BuyerScreens/main/Home';
 import { colors } from '../utils/themes';
 import { View } from 'react-native';
@@ -49,6 +49,9 @@ import { useIsFocused } from "@react-navigation/native";
 import StoreInfo from '../screens/StoreInfo';
 import NotificationScreen from '../screens/NotificationScreen';
 import SellerNotificationScreen from '../screens/SellerNotificationScreen';
+import ForgetPassword from '../screens/ForgetPassword';
+import LinkSent from '../screens/auth/LinkSent';
+import Wishlist from '../screens/Wishlist';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -208,7 +211,9 @@ const TokenStackNavigation = () => {
                 headerShown: false,
                 headerTintColor: colors.white,
                 headerShadowVisible: false,
-                headerStyle: { backgroundColor: colors.primaryBg }
+                headerStyle: { backgroundColor: colors.primaryBg },
+                gestureEnabled: true,
+                ...TransitionPresets.SlideFromRightIOS
             })}
         >
             <Stack.Screen name="BuyerScreen" component={BuyerScreen} />
@@ -240,6 +245,9 @@ const TokenStackNavigation = () => {
             <Stack.Screen name='StoreInfo' component={StoreInfo} />
             <Stack.Screen name='Notification' component={NotificationScreen} />
             <Stack.Screen name='SellerNotification' component={SellerNotificationScreen} />
+            <Stack.Screen name='ForgetPassword' component={ForgetPassword} />
+            <Stack.Screen name="LinkSent" component={LinkSent} />
+            <Stack.Screen name="Wishlist" component={Wishlist} />
         </Stack.Navigator>
     )
 }

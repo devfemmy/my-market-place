@@ -13,6 +13,9 @@ import PayoutReducer from './slices/PayoutSlice'
 import ProfileReducer from './slices/ProfileSlice'
 import ReviewReducer from './slices/ReviewSlice'
 import StaffReducer from './slices/StaffSlice'
+import WishlistReducer from './slices/Wishlist'
+
+
 
 export const store = configureStore({
   reducer: {
@@ -29,7 +32,8 @@ export const store = configureStore({
     payouts: PayoutReducer,
     profiles: ProfileReducer,
     review: ReviewReducer,
-    staff: StaffReducer
+    staff: StaffReducer,
+    wishlist: WishlistReducer,
   },
 })
 

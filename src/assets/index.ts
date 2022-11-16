@@ -31,3 +31,6 @@ export const upload : ImageSourcePropType = require('../assets/images/upload.png
 export const plusBig: ImageSourcePropType = require('../assets/images/Plusa.png');
 export const profileDelete: ImageSourcePropType = require('../assets/images/profile-delete.png');
 export const payoutBack: ImageSourcePropType = require('../assets/images/Payoutback.png');
+export const love: ImageSourcePropType = require('../assets/love.png');
+export const heart: ImageSourcePropType = require('../assets/Heart.png');
+export const rem: ImageSourcePropType = require('../assets/rem.png');
