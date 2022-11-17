@@ -52,6 +52,9 @@ import SellerNotificationScreen from '../screens/SellerNotificationScreen';
 import ForgetPassword from '../screens/ForgetPassword';
 import LinkSent from '../screens/auth/LinkSent';
 import Wishlist from '../screens/Wishlist';
+import ChatBox from '../screens/ChatBox';
+import SellerChatBox from '../screens/SellerChatBox';
+import RatingScreen from '../screens/RatingScreen';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -248,6 +251,9 @@ const TokenStackNavigation = () => {
             <Stack.Screen name='ForgetPassword' component={ForgetPassword} />
             <Stack.Screen name="LinkSent" component={LinkSent} />
             <Stack.Screen name="Wishlist" component={Wishlist} />
+            <Stack.Screen name="ChatBox" component={ChatBox} />
+            <Stack.Screen name="SellerChatBox" component={SellerChatBox} />
+            <Stack.Screen name="Ratings" component={RatingScreen} />
         </Stack.Navigator>
     )
 }

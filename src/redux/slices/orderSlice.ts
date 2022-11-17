@@ -79,7 +79,8 @@ export const changeOrderStatus = createAsyncThunk(
     async (payload: any, { rejectWithValue }) => {
         try {
         const pd = {
-            status: payload?.status
+            status: payload?.status,
+            reason: payload?.reason
         }
             const response = await postRequest(`/order/update?order_item_id=${payload?.orderId}`, pd)
             if (response?.status === 200) {
@@ -100,7 +101,8 @@ export const rejectAndCancelOrder = createAsyncThunk(
     async (payload: any, { rejectWithValue }) => {
         try {
             const pd = {
-                status: payload?.status
+                status: payload?.status,
+                reason: payload?.reason
             }
 
             const response = await postRequest(`/order/update?order_item_id=${payload?.orderId}`, pd)

@@ -181,12 +181,12 @@ const SellerSettingScreen = ({ navigation }: any) => {
       icon: usersLogo,
       route: 'Staffs'
     },
-    {
-      id: 4,
-      title: "Reviews and Ratings",
-      icon: universityLogo,
-      route: 'Reviews'
-    }
+    // {
+    //   id: 4,
+    //   title: "Reviews and Ratings",
+    //   icon: universityLogo,
+    //   route: 'Reviews'
+    // }
 
   ]
 

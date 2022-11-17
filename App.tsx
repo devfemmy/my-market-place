@@ -15,6 +15,8 @@ import SplashScreen from 'react-native-splash-screen'
 import { NotifierWrapper } from 'react-native-notifier';
 import BodyContaner from './src/screens/BodyContainer';
 
+
+
 const App = (): JSX.Element => {
   useEffect(() => {
     SplashScreen.hide();

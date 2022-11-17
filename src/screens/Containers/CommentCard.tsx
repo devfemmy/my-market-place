@@ -12,9 +12,11 @@ import { colors } from '../../utils/themes'
 import { Rating } from 'react-native-ratings';
 import { TextInput } from 'react-native-gesture-handler'
 import { Input } from '../../components/common/TextInput'
+import { Notifier, NotifierComponents } from 'react-native-notifier'
 
 const CommentCard = ({ image, name, comment, date, rate, id, productOwner, commentId, reply }: any) => {
     const [selected, setSelected] = useState('')
+    const [replyM, setReplyM] = useState('')
     const dispatch = useAppDispatch()
     const [userId, setUserId] = useState(null)
 
@@ -22,26 +24,51 @@ const CommentCard = ({ image, name, comment, date, rate, id, productOwner, comme
         dispatch(getProfile()).then((d: any) => setUserId(d.payload?.id))
     }, [])
 
-    const initialValues: { reply: string } = {
-        reply: ''
-    }
+  
 
-    const handleCommentSubmit = async (data: any) => {
-
+    const handleCommentSubmit = async () => {
+        if(replyM?.length < 1) {
+            Notifier.showNotification({
+                title: 'Reply message is required',
+                description: '',
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'success',
+                },
+            });
+            return
+        }
         const payload = {
             comment_id: commentId,
-            reply: data?.reply,
+            reply: replyM,
         }
-
+        console.log("yekkkii",{payload})
         try {
             var response = await dispatch(reviewComment(payload))
             if (reviewComment.fulfilled.match(response)) {
-                resetForm()
-                // toast.success(response?.payload)
+                setReplyM('')
+                Notifier.showNotification({
+                    title: response?.payload,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'success',
+                    },
+                });
             }
             else {
                 var errMsg = response?.payload as string
-                //  toast.error(errMsg)
+                Notifier.showNotification({
+                    title: errMsg,
+                    description: '',
+                    Component: NotifierComponents.Alert,
+                    hideOnPress: false,
+                    componentProps: {
+                        alertType: 'success',
+                    },
+                });
             }
         }
         catch (e) {
@@ -60,15 +87,7 @@ const CommentCard = ({ image, name, comment, date, rate, id, productOwner, comme
     }
 
 
-    const { values, errors, touched, handleChange, handleSubmit, handleBlur, resetForm } =
-        useFormik({
-            initialValues,
-            validationSchema: yup.object().shape({
-                reply: yup.string().min(1, ({ min }) => `Comment must be at least ${min} length`).required('Reply is required'),
-            }),
-            onSubmit: (data: { reply: string }) => handleCommentSubmit(data),
-            enableReinitialize: true
-        });
+
 
 
     return (
@@ -115,13 +134,12 @@ const CommentCard = ({ image, name, comment, date, rate, id, productOwner, comme
                     selected === id ? <View>
                         <Input
                             label='Reply'
-                            value={values.reply}
+                            value={replyM}
                             multiline
                             numberOfLines={4}
-                            onChange={handleChange('reply')}
-                            errorMsg={touched.reply ? errors.reply : undefined}
+                            onChangeText={(e) => setReplyM(e)}
                         />
-                        <Pressable onPress={() => handleSubmit()}>
+                        <Pressable onPress={() => handleCommentSubmit()}>
                             <Text text={'Send'} color={colors.purple} textAlign='right' />
                         </Pressable>
                     </View>

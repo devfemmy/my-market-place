@@ -81,7 +81,7 @@ export default BuyerSearchScreen
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: hp(15),
+    paddingHorizontal: hp(10),
     paddingVertical: hp(10),
     backgroundColor: 'black',
     flex: 1,

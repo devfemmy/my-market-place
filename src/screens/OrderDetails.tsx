@@ -12,6 +12,10 @@ import { colors } from '../utils/themes'
 import { calendar, pin } from '../assets'
 import { Button } from '../components/common/Button'
 import { useIsFocused } from "@react-navigation/native";
+import firestore from '@react-native-firebase/firestore';
+
+
+
 
 const OrderDetails = (props: any) => {
     const navigation = props?.navigation
@@ -25,9 +29,9 @@ const OrderDetails = (props: any) => {
     const [orderModalVisible, setOrderModalVisible] = useState(false)
     const [stateLoader, setStateLoader] = useState(false)
     const orderId = props?.route?.params?.params?.id
-
+    const [messageLoader, setMessageLoader] = useState(false)
     const [id, setId] = useState('')
-    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'This order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'This order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'This order is been dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'This order is completed' :  sellerOrderDetail?.status === 'CANCELLED' ? 'This order has been cancelled' :  sellerOrderDetail?.status === 'Rejected' ? 'This order has been rejected' : null
+    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'This order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'This order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'This order is been dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'This order is completed' : sellerOrderDetail?.status === 'CANCELLED' ? 'This order has been cancelled' : sellerOrderDetail?.status === 'Rejected' ? 'This order has been rejected' : null
 
 
     useEffect(() => {
@@ -128,11 +132,59 @@ const OrderDetails = (props: any) => {
         }
     }
 
-    if(stateLoader) {
-        return  <View style={styles.container}>
+
+    const messageBuyer = async () => {
+        try {
+            setMessageLoader(true)
+            const docRef = await firestore()
+                .collection('messaging')
+                .add({
+                    message: null,
+                    createdAt: firestore.FieldValue.serverTimestamp(),
+                    details: {
+                        deliveryLocation: sellerOrderDetail?.delivery_information?.street + " " + sellerOrderDetail?.delivery_information?.city + " " + sellerOrderDetail?.delivery_information?.state,
+                        imageUrl: sellerOrderDetail?.variant_img_url,
+                        price: sellerOrderDetail?.amount,
+                        quantity: sellerOrderDetail?.quantity,
+                        size: sellerOrderDetail?.size,
+                        title: sellerOrderDetail?.meta?.product_details?.name,
+                    },
+                    receiver: {
+                        id: sellerOrderDetail?.meta?.buyer_details?.id,
+                        imageUrl: sellerOrderDetail?.meta?.buyer_details?.img_url,
+                        name: sellerOrderDetail?.meta?.buyer_details?.first_name
+                    },
+                    sender: {
+                        id: sellerOrderDetail?.store_id,
+                        name: sellerOrderDetail?.meta?.store_details?.store_name
+                    }
+                })
+                .then(() => {
+                    setMessageLoader(false)
+                    return navigation.navigate('SellerChatBox', {
+                        params: {
+                            id: sellerOrderDetail?.meta?.buyer_details?.id,
+                            storeName: sellerOrderDetail?.meta?.buyer_details?.first_name,
+                            storeImage: sellerOrderDetail?.meta?.buyer_details?.img_url
+                        }
+                    })
+                })
+
+        }
+        catch (e) {
+            setMessageLoader(false)
+            console.log({ e })
+        }
+    }
+
+
+    if (stateLoader) {
+        return <View style={styles.container}>
             <ActivityIndicator />
         </View>
     }
+
+
 
     return (
         <View style={styles.container}>
@@ -144,7 +196,7 @@ const OrderDetails = (props: any) => {
                             props={props}
                         />
                         <View>
-                            <View style={[styles.tag, { backgroundColor: sellerOrderDetail?.status === 'PENDING' ? colors?.orange : sellerOrderDetail?.status === 'PROCESSING' ? colors?.pink : sellerOrderDetail?.status === 'DISPATCHED' ? colors?.purple : sellerOrderDetail?.status === 'COMPLETED' ? colors?.green : sellerOrderDetail?.status === 'REJECTED' ?  colors?.red : sellerOrderDetail?.status === 'CANCELLED' ?  colors?.red : 'none'}]}>
+                            <View style={[styles.tag, { backgroundColor: sellerOrderDetail?.status === 'PENDING' ? colors?.orange : sellerOrderDetail?.status === 'PROCESSING' ? colors?.pink : sellerOrderDetail?.status === 'DISPATCHED' ? colors?.purple : sellerOrderDetail?.status === 'COMPLETED' ? colors?.green : sellerOrderDetail?.status === 'REJECTED' ? colors?.red : sellerOrderDetail?.status === 'CANCELLED' ? colors?.red : 'none' }]}>
                                 <Text textAlign='center' style={styles.txt} text={statusUpdate ? statusUpdate : ''} fontSize={hp(14)} />
                             </View>
 
@@ -246,7 +298,7 @@ const OrderDetails = (props: any) => {
                                 <View style={[globalStyles.rowBetween, styles.big]}>
                                     <Text text='Buyer’s Name' />
                                     <Text
-                                        text={"N/A"}
+                                        text={sellerOrderDetail?.meta?.buyer_details?.first_name}
                                         fontSize={hp(18)}
                                         color={colors.white}
                                         numberOfLines={1}
@@ -266,7 +318,9 @@ const OrderDetails = (props: any) => {
                             {
                                 sellerOrderDetail?.status === "PENDING" || sellerOrderDetail?.status === 'PROCESSING' ?
                                     <View style={globalStyles.rowBetween}>
-                                        <Text text='Message Buyer' fontSize={hp(16)} />
+                                        <Pressable onPress={messageLoader ? () => { } : () => messageBuyer()}>
+                                            <Text text='Message Buyer' fontSize={hp(16)} />
+                                        </Pressable>
 
                                         {
                                             sellerOrderDetail?.status === 'PENDING' ?
@@ -285,9 +339,13 @@ const OrderDetails = (props: any) => {
                                         }
                                     </View>
                                     :
-                                    <View style={styles.contdiv}>
-                                        <Text text='Message Buyer' textAlign='center' fontSize={hp(16)} />
-                                    </View>
+                                    <Pressable onPress={messageLoader ? () => { } : () => messageBuyer()}>
+                                        <View style={styles.contdiv}>
+                                            {
+                                                messageLoader ? <ActivityIndicator /> : <Text text='Message Buyer' textAlign='center' fontSize={hp(16)} />
+                                            }
+                                        </View>
+                                    </Pressable>
                             }
                         </View>
 

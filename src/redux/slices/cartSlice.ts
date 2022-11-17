@@ -72,6 +72,21 @@ export const cartCheckout = createAsyncThunk(
     }
 )
 
+export const getDeliveryFeeData = createAsyncThunk(
+    'cart/getDeliveryFeeData',
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await postRequest(`/order/checkout`, payload)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
 export const deleteCart = createAsyncThunk(
     'cart/deleteCart',
     async (payload: any, { rejectWithValue }) => {
@@ -135,6 +150,16 @@ export const CartSlice = createSlice({
                     state.carts = []
             }),
             builder.addCase(deleteCart.rejected, (state, action) => {
+                state.loading = false,
+                    state.error = action.error.message
+            })
+            builder.addCase(getDeliveryFeeData.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(getDeliveryFeeData.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            }),
+            builder.addCase(getDeliveryFeeData.rejected, (state, action) => {
                 state.loading = false,
                     state.error = action.error.message
             })

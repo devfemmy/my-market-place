@@ -80,7 +80,7 @@ const SellerOrderScreen = ({ navigation }: any) => {
                 </View>
             </View>
             <View>
-                <Input label={'Search for orders'} searchInput />
+                <Input label={'Search for orders'} value={searchValue} onChangeText={(e: any) => setSearchValue(e)} searchInput />
             </View>
             {filterData?.length < 1 && <EmptyState
                 icon={productLogo}
@@ -92,7 +92,7 @@ const SellerOrderScreen = ({ navigation }: any) => {
 
             <ScrollView>
             {
-                filterData?.length >= 1 && filterData?.map((data: any, i: number) => {
+                filterData?.length >= 1 && filterData?.filter((data: any) =>  data?.meta?.product_details?.name?.toLowerCase().includes(searchValue.toLowerCase()))?.map((data: any, i: number) => {
                     return <OrderCard
                         key={i}
                         image={data?.variant_img_url}

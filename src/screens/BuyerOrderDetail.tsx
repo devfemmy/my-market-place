@@ -16,7 +16,8 @@ import { Input } from '../components/common/TextInput'
 import { addReview } from '../redux/slices/ReviewSlice'
 import StarRating from 'react-native-star-rating';
 import { useIsFocused } from "@react-navigation/native";
-
+import firestore from '@react-native-firebase/firestore';
+import { getProfile, profileInfo } from '../redux/slices/ProfileSlice'
 
 
 const BuyerOrderDetail = (props: any) => {
@@ -33,6 +34,8 @@ const BuyerOrderDetail = (props: any) => {
     const [stateLoader, setStateLoader] = useState(false)
     const orderId = props?.route?.params?.params?.id
     const isFocused = useIsFocused();
+    const [messageLoader,setMessageLoader] = useState(false)
+    const userProfile = useAppSelector(profileInfo)
 
     const [id, setId] = useState('')
     const statusUpdate = filteredOrder?.status === 'PENDING' ? 'This order is pending' : filteredOrder?.status === 'PROCESSING' ? 'This order is been processed' : filteredOrder?.status === 'DISPATCHED' ? 'This order is been dispatched' : filteredOrder?.status === 'COMPLETED' ? 'This order is completed' : filteredOrder?.status === 'CANCELLED' ? 'This order has been cancelled' : filteredOrder?.status === 'Rejected' ? 'This order has been rejected' : null
@@ -45,6 +48,10 @@ const BuyerOrderDetail = (props: any) => {
     const closeRatingModal = () => {
         refRBSheet.current.close()
     }
+
+    useEffect(() => {
+        dispatch(getProfile())
+      }, [])
 
     useEffect(() => {
         const loadAsyn = async () => {
@@ -190,6 +197,54 @@ const BuyerOrderDetail = (props: any) => {
     }
 
 
+
+    const messageSeller = async () => {
+
+        try {
+            setMessageLoader(true)
+            const docRef = await firestore()
+            .collection('messaging')
+            .add({
+              message: null,
+              createdAt: firestore.FieldValue.serverTimestamp(),
+              details: {
+                  deliveryLocation: filteredOrder?.delivery_information?.street + " " + filteredOrder?.delivery_information?.city + " " + filteredOrder?.delivery_information?.state,
+                  imageUrl: filteredOrder?.variant_img_url,
+                  price: filteredOrder?.amount,
+                  quantity: filteredOrder?.quantity,
+                  size: filteredOrder?.size,
+                  title: filteredOrder?.meta?.product_details?.name,
+                  slug: filteredOrder?.meta?.product_details?.slug
+              },
+              receiver: {
+                  id: filteredOrder?.store_id,
+                  imageUrl: filteredOrder?.meta?.store_details?.store_img_url,
+                  name: filteredOrder?.meta?.store_details?.store_name
+              },
+              sender: {
+                  id: userProfile?.id,
+                  name: userProfile?.first_name
+              }
+            })
+            .then(() => {
+                setMessageLoader(false)
+                return navigation.navigate('ChatBox', {
+                    params: {
+                        id: filteredOrder?.store_id,
+                        storeName: filteredOrder?.meta?.store_details?.store_name,
+                        storeImage: filteredOrder?.meta?.store_details?.store_img_url
+                    }
+                })
+              })
+               
+        }
+        catch (e) {
+            setMessageLoader(false)
+            console.log({ e })
+        }
+    }
+
+
     if (stateLoader) {
         return <View style={styles.container}>
             <ActivityIndicator />
@@ -208,7 +263,7 @@ const BuyerOrderDetail = (props: any) => {
 
                         <View>
                             <View style={[styles.tag, { backgroundColor: filteredOrder?.status === 'PENDING' ? colors?.orange : filteredOrder?.status === 'PROCESSING' ? colors?.pink : filteredOrder?.status === 'DISPATCHED' ? colors?.purple : filteredOrder?.status === 'COMPLETED' ? colors?.green : filteredOrder?.status === 'REJECTED' ? colors?.red : filteredOrder?.status === 'CANCELLED' ? colors?.red : 'none' }]}>
-                                <Text textAlign='center' style={styles.txt} text={statusUpdate} fontSize={hp(14)} />
+                                <Text textAlign='center' style={styles.txt} text={`${statusUpdate}`} fontSize={hp(14)} />
                             </View>
 
                             <View style={styles.cont}>
@@ -323,10 +378,14 @@ const BuyerOrderDetail = (props: any) => {
                                     <Button isLoading={loader} title={"Mark as Completed"} onPress={() => handleSubmit('COMPLETED')} /> : null
                             }
                             <View style={styles.hr}></View>
-                            <View style={styles.contdiv}>
-                                <Text text='Message Seller' textAlign='center' fontSize={hp(16)} />
-                            </View>
-                            
+                            <Pressable onPress={() => messageSeller()}>
+                                <View style={styles.contdiv}>
+                                  {
+                                    messageLoader ? <ActivityIndicator /> : <Text text='Message Seller' textAlign='center' fontSize={hp(16)} />
+                                  }  
+                                </View>
+                            </Pressable>
+
                         </View>
 
                     </View>
@@ -363,7 +422,7 @@ const BuyerOrderDetail = (props: any) => {
                     </View>
 
                     <View style={styles.columnContainer2}>
-                        <Text text='How would you rate this item?' style={{marginVertical: hp(10)}} fontSize={hp(14)} fontWeight='400' />
+                        <Text text='How would you rate this item?' style={{ marginVertical: hp(10) }} fontSize={hp(14)} fontWeight='400' />
                         <View style={styles.div2}>
                             <StarRating
                                 maxStars={5}
@@ -375,7 +434,7 @@ const BuyerOrderDetail = (props: any) => {
                         </View>
 
                         <Text text='Comment' fontSize={hp(14)} fontWeight='400' />
-                       <Input
+                        <Input
                             label={'Comment'}
                             value={comment}
                             multiline={true}
@@ -383,9 +442,9 @@ const BuyerOrderDetail = (props: any) => {
                             onBlur={(e: any) => setComment(e)}
                             onChangeText={(e: any) => setComment(e)}
 
-                        />  
+                        />
                         <Button isLoading={loader} title={"Rate"} onPress={() => handleRateSubmit()} />
-                   
+
 
 
                     </View>

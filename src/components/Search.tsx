@@ -10,7 +10,7 @@ const Search = ({ data, image, name, amount, slug, mini }: any) => {
     const navigation = useNavigation()
     return (
         <View>
-            <Pressable onPress={() => navigation.navigate('Product', {
+            <Pressable onPress={() => navigation.navigate('ProductDetail', {
                 params: {
                     id: slug
                 }

@@ -34,3 +34,5 @@ export const payoutBack: ImageSourcePropType = require('../assets/images/Payoutb
 export const love: ImageSourcePropType = require('../assets/love.png');
 export const heart: ImageSourcePropType = require('../assets/Heart.png');
 export const rem: ImageSourcePropType = require('../assets/rem.png');
+export const telegram: ImageSourcePropType = require('../assets/images/telegram.png');
+export const attachment: ImageSourcePropType = require('../assets/images/attachment.png');
