@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { getCurrentDate, hp } from '../utils/helpers'
 import MobileHeader from './Containers/MobileHeader'
@@ -23,27 +23,30 @@ const SellerNotificationScreen = ({ navigation }: any) => {
 
     }, [isFocused])
 
+    const sellerNotification = notification?.filter((data: any) => data?.type !== "ORDER")
 
     return (
         <View style={styles.container}>
-             <MobileHeader
-                        categoryName='Notification'
-                        props={navigation}
-                        cart
-                    />
+            <MobileHeader
+                categoryName='Notification'
+                props={navigation}
+                cart
+            />
             {
-                notification?.length > 0 && <View>
+                sellerNotification?.length > 0 && <View>
 
                     <View style={{ marginTop: hp(10) }}>
                         <FlatList
-                            data={notification}
+                            data={sellerNotification}
                             keyExtractor={item => item?.id}
                             renderItem={({ item }: any) => {
                                 return (
-                                    <View style={{ borderBottomColor: colors.gray, borderBottomWidth: 1, paddingBottom: hp(15) }}>
-                                        <Text text={item?.message} fontSize={hp(14)} lineHeight={22} style={{ marginVertical: hp(10) }} />
-                                        <Text text={getCurrentDate(item?.created_at)} fontSize={hp(13)} lineHeight={18} color={colors.gray} />
-                                    </View>
+                                    <Pressable onPress={() => navigation.navigate('Products')}>
+                                        <View style={{ borderBottomColor: colors.gray, borderBottomWidth: 1, paddingBottom: hp(15) }}>
+                                            <Text text={item?.message} fontSize={hp(14)} lineHeight={22} style={{ marginVertical: hp(10) }} />
+                                            <Text text={getCurrentDate(item?.created_at)} fontSize={hp(13)} lineHeight={18} color={colors.gray} />
+                                        </View>
+                                    </Pressable>
                                 )
                             }}
                         />
@@ -52,7 +55,7 @@ const SellerNotificationScreen = ({ navigation }: any) => {
             }
 
             {
-                notification?.length < 1 && <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                sellerNotification?.length < 1 && <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text text={'No notification available'} fontSize={hp(24)} lineHeight={22} style={{ marginVertical: hp(10) }} />
                 </View>
             }

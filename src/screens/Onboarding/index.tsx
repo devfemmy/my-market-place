@@ -59,7 +59,7 @@ export const OnboardScreen = (): JSX.Element => {
             style={{marginTop: hp(20)}}
             />
             <View style={[globalStyles.rowCenter, styles.btn]}>
-                <Button title={'Get Started'} style={styles.btn} onPress={() => console.log("clicked")} />
+                <Button title={'Get Started'} style={styles.btn} onPress={() => navigation.navigate("Home")} />
             </View>
           </View>
         </ImageBackground>

@@ -42,10 +42,9 @@ export const updateAddress = createAsyncThunk(
     'address/updateAddress',
     async (payload: { id: string, default: boolean }, { rejectWithValue }) => {
         try {
-            const pd = {
-                default: payload?.default
-            }
-            const response = await postRequest(`/addressBook/update?address_book_id=${payload.id}`, pd)
+         
+            const response = await postRequest(`/addressBook/update?address_book_id=${payload.id}`)
+            
             if (response?.status === 200) {
                 return response?.data?.data
             }
@@ -60,7 +59,7 @@ export const deleteAddress = createAsyncThunk(
     'address/deleteAddress',
     async (payload: { id: string }, { rejectWithValue }) => {
         try {
-            const response = await deleteRequestNoPayload(`/addressBook/delete?address_item_id=${payload.id}`)
+            const response = await deleteRequestNoPayload(`/addressBook/delete?address_book_id=${payload.id}`)
             if (response?.status === 200) {
                 return response?.data?.data
             }

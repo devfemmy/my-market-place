@@ -7,7 +7,7 @@ import { forgetPassword, signOutUser, userState } from '../redux/slices/AuthSlic
 import { getProfile, profileLoader, updateProfile } from '../redux/slices/ProfileSlice'
 import { getPersonalStore, myStore } from '../redux/slices/StoreSlice'
 import { ProfileFormData } from '../utils/types'
-import { getAddress, updateAddress } from '../redux/slices/AddressSlice'
+import { deleteAddress, getAddress, updateAddress } from '../redux/slices/AddressSlice'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { useFormik } from 'formik'
 import { ProfileFormSchema } from '../utils/schemas'
@@ -21,7 +21,7 @@ import { Input } from '../components/common/TextInput'
 import DeliveryModal from './Containers/DeliveryModal'
 import ImagePicker from 'react-native-image-crop-picker';
 import { pictureUpload } from '../utils/functions'
-import { plus, remove } from '../assets'
+import { deleteIcon, plus, remove } from '../assets'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
 
@@ -66,6 +66,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
   useEffect(() => {
     setStateLoader(true)
     const loadData = async () => {
+
       await dispatch(getProfile()).then(d => {
         setProfileData(d?.payload)
       })
@@ -97,6 +98,15 @@ const BuyerProfileScreen = ({ navigation }: any) => {
       if (updateAddress.fulfilled.match(response)) {
         dispatch(getAddress()).then((data) => {
           setAddressList(data?.payload)
+          Notifier.showNotification({
+            title: "Address updated successfully",
+            description: '',
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+              alertType: 'success',
+            },
+          });
         })
 
       }
@@ -250,43 +260,83 @@ const BuyerProfileScreen = ({ navigation }: any) => {
     }).then(async image => {
       setStateLoader(true)
       const ImageUrl = await pictureUpload(image)
-        const pd = {
-          img_url: ImageUrl
-        }
-        
-        var resultResponse = await dispatch(updateProfile(pd))
+      const pd = {
+        img_url: ImageUrl
+      }
 
-        if (updateProfile.fulfilled.match(resultResponse)) {
-          await dispatch(getProfile()).then(d => {
-            setProfileData(d?.payload)
-          })
-          setStateLoader(false)
-          Notifier.showNotification({
-            title: "Profile Image updated successfully",
-            description: '',
-            Component: NotifierComponents.Alert,
-            hideOnPress: false,
-            componentProps: {
-                alertType: 'success',
-            },
-          });
-        }
-        else {
-          var errMsg = resultResponse?.payload as string
-          setStateLoader(false)
-          Notifier.showNotification({
-            title: errMsg,
-            description: '',
-            Component: NotifierComponents.Alert,
-            hideOnPress: false,
-            componentProps: {
-                alertType: 'error',
-            },
+      var resultResponse = await dispatch(updateProfile(pd))
+
+      if (updateProfile.fulfilled.match(resultResponse)) {
+        await dispatch(getProfile()).then(d => {
+          setProfileData(d?.payload)
+        })
+        setStateLoader(false)
+        Notifier.showNotification({
+          title: "Profile Image updated successfully",
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'success',
+          },
         });
-        }
+      }
+      else {
+        var errMsg = resultResponse?.payload as string
+        setStateLoader(false)
+        Notifier.showNotification({
+          title: errMsg,
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+      }
     })
   }
-   
+
+
+  const deleteDelivery = async (data: any) => {
+    const payload = {
+      id: data?.id,
+    }
+
+    try {
+      var response = await dispatch(deleteAddress(payload))
+      if (deleteAddress.fulfilled.match(response)) {
+        dispatch(getAddress()).then((data) => {
+          setAddressList(data?.payload)
+          Notifier.showNotification({
+            title: "Address deleted successfully",
+            description: '',
+            Component: NotifierComponents.Alert,
+            hideOnPress: false,
+            componentProps: {
+              alertType: 'success',
+            },
+          });
+        })
+
+      }
+      else {
+        var errMsg = response?.payload as string
+        Notifier.showNotification({
+          title: errMsg,
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+      }
+    }
+    catch (e) {
+      console.log({ e })
+    }
+  }
 
 
   return (
@@ -418,17 +468,23 @@ const BuyerProfileScreen = ({ navigation }: any) => {
               <View style={styles.div1}>
                 {
                   addressList?.map((data: any) => {
-                    return <Pressable onPress={() => updateDelivery(data)}>
-                      <View style={[globalStyles.rowStart, styles.mindiv]}>
-                        <View style={[styles.checkbox, { backgroundColor: data?.default ? colors.bazaraTint : 'transparent' }]} ></View>
-                        <Text text={data?.street + " " + data?.city + " " + data?.state} fontSize={hp(14)} fontWeight='400' />
-                      </View>
-                    </Pressable>
+                    return <View style={styles.rowBtw}>
+                      <Pressable onPress={() => updateDelivery(data)}>
+                        <View style={[globalStyles.rowStart, styles.mindiv]}>
+                          <View style={[styles.checkbox, { backgroundColor: data?.default ? colors.bazaraTint : 'transparent' }]} ></View>
+                          <Text text={data?.street + " " + data?.city + " " + data?.state} fontSize={hp(14)} fontWeight='400' />
+                        </View>
+                      </Pressable>
+
+                      <Pressable onPress={() => deleteDelivery(data)}>
+                          <Image source={deleteIcon} />
+                      </Pressable>
+                    </View>
                   })
                 }
 
                 <Pressable onPress={() => openVisible()}>
-                  <Text style={{marginVertical: hp(10)}} text='+  Add delivery Address' fontSize={hp(12)} color={colors.bazaraTint} fontWeight='600' />
+                  <Text style={{ marginVertical: hp(10) }} text='+  Add delivery Address' fontSize={hp(12)} color={colors.bazaraTint} fontWeight='600' />
                 </Pressable>
               </View>
 
@@ -580,4 +636,9 @@ const styles = StyleSheet.create({
     elevation: -3
 
   },
+  rowBtw: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
 })

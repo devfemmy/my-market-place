@@ -55,6 +55,7 @@ import Wishlist from '../screens/Wishlist';
 import ChatBox from '../screens/ChatBox';
 import SellerChatBox from '../screens/SellerChatBox';
 import RatingScreen from '../screens/RatingScreen';
+import { OnboardScreen } from '../screens/Onboarding';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -101,6 +102,10 @@ const TokenStackNavigation = () => {
                     setStore('BuyerScreen')
                     setLoading(false)
                 }
+                else if (!token) {
+                    setStore('OnboardScreen')
+                    setLoading(false)
+                }
                 else {
                     setStore('Home')
                     setLoading(false)
@@ -109,7 +114,7 @@ const TokenStackNavigation = () => {
             else {
                 var errMsg = response?.payload as string
                 console.log({ errMsg })
-                setStore('Home')
+                setStore('OnboardScreen')
                 setLoading(false)
             }
 
@@ -207,6 +212,8 @@ const TokenStackNavigation = () => {
         return null;
     }
 
+    console.log({store})
+
     return (
         <Stack.Navigator
             initialRouteName={store}
@@ -219,6 +226,7 @@ const TokenStackNavigation = () => {
                 ...TransitionPresets.SlideFromRightIOS
             })}
         >
+            <Stack.Screen name="OnboardScreen" component={OnboardScreen} />
             <Stack.Screen name="BuyerScreen" component={BuyerScreen} />
             <Stack.Screen name="CreateStoreScreen" component={CreateStoreScreen} />
             <Stack.Screen name="ProductByCategory" component={ProductByCategory} />

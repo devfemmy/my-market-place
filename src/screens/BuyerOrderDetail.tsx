@@ -37,6 +37,8 @@ const BuyerOrderDetail = (props: any) => {
     const [messageLoader,setMessageLoader] = useState(false)
     const userProfile = useAppSelector(profileInfo)
 
+   
+
     const [id, setId] = useState('')
     const statusUpdate = filteredOrder?.status === 'PENDING' ? 'This order is pending' : filteredOrder?.status === 'PROCESSING' ? 'This order is been processed' : filteredOrder?.status === 'DISPATCHED' ? 'This order is been dispatched' : filteredOrder?.status === 'COMPLETED' ? 'This order is completed' : filteredOrder?.status === 'CANCELLED' ? 'This order has been cancelled' : filteredOrder?.status === 'Rejected' ? 'This order has been rejected' : null
     const [ratingModal, setRatingModal] = useState(false)
@@ -70,7 +72,9 @@ const BuyerOrderDetail = (props: any) => {
             setStateLoader(true)
             var response = await dispatch(getBuyerOrders())
             if (getBuyerOrders.fulfilled.match(response)) {
-                var fitlterOrders = response?.payload.find((dd: any) => dd?.id === orderId)
+               
+                var fitlterOrders = response?.payload.find((dd: any) => dd?.id === parseInt(orderId))
+
                 setFilteredOrder(fitlterOrders)
                 setStateLoader(false)
             }

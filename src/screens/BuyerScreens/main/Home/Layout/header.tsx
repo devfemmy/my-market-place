@@ -31,6 +31,9 @@ const UserHeader = ({ name, image }: any) => {
     const isFocused = useIsFocused();
     const profiles = useAppSelector(profileInfo)
 
+    const buyerNotification = notification?.filter((data: any) => data?.type === "ORDER")
+
+
 
 
     useEffect(() => {
@@ -95,8 +98,8 @@ const UserHeader = ({ name, image }: any) => {
                 auth || token ? <View style={globalStyles.rowAround}>
                     <Pressable onPress={() => navigation.navigate('Notification')}>
                         {
-                            notification?.length > 0 && <Badge size={15} style={styles.bg2}>
-                                {notification?.length}
+                            buyerNotification?.length > 0 && <Badge size={15} style={styles.bg2}>
+                                {buyerNotification?.length}
                             </Badge>
                         }
                         <TouchableOpacity onPress={() => navigation.navigate('Notification')} style={styles.iconCard}>

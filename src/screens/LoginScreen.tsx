@@ -42,9 +42,11 @@ const LoginScreen = ({ navigation }: any) => {
             var response = await dispatch(signInUser(payload))
             if (signInUser.fulfilled.match(response)) {
                 setLoading(false)
+   
                 await AsyncStorage.setItem('userInfo', JSON.stringify(response?.payload?.data))
                 var resultAction = await dispatch(getPersonalStore())
                 if (getPersonalStore.fulfilled.match(resultAction)) {
+      
                     var bb = await AsyncStorage.getItem('checking')
             
                     if (bb === 'true') {
@@ -58,7 +60,8 @@ const LoginScreen = ({ navigation }: any) => {
                         await AsyncStorage.setItem('activeId', resultAction.payload[0]?.id)
                         await AsyncStorage.setItem('activeSlug', resultAction.payload[0]?.slug)
                         await AsyncStorage.setItem('activeName', resultAction.payload[0]?.brand_name)
-                         return navigation.navigate('SellerScreen',{ screen: 'Store' })
+                        
+                        return navigation.navigate('SellerScreen',{ screen: 'Store' })
                     }
                     else {
                          return navigation.navigate('BuyerScreen',{ screen: 'Home' })

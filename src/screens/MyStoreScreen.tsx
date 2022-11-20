@@ -104,6 +104,7 @@ const MyStoreScreen = () => {
 const barViews = viewAnalysis?.map((data: any) => data?.view_count);
 
 
+
   const ViewsData = {
     labels: barLabels,
     datasets: [

@@ -22,6 +22,8 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
     const dispatch = useAppDispatch()
     const isFocused = useIsFocused();
 
+    const sellerNotification = notification?.filter((data: any) => data?.type !== "ORDER")
+
 
     useEffect(() => {
         dispatch(getNotifications()).then(dd => setNotification(dd?.payload))
@@ -51,7 +53,7 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
                 </View>
                 <TouchableOpacity onPress={() => navigate('SellerNotification')} style={styles.iconCard}>
                     {
-                        notification?.length > 0 && <Badge size={10} style={styles.bg2}></Badge>
+                        sellerNotification?.length > 0 && <Badge size={10} style={styles.bg2}></Badge>
                     }
                     <Ionicons
                         name={'notifications-outline'}
