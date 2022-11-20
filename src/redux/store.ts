@@ -14,7 +14,7 @@ import ProfileReducer from './slices/ProfileSlice'
 import ReviewReducer from './slices/ReviewSlice'
 import StaffReducer from './slices/StaffSlice'
 import WishlistReducer from './slices/Wishlist'
-
+import DashboardReducer from './slices/DashboardSlice'
 
 
 export const store = configureStore({
@@ -33,6 +33,7 @@ export const store = configureStore({
     profiles: ProfileReducer,
     review: ReviewReducer,
     staff: StaffReducer,
+    dashboard: DashboardReducer,
     wishlist: WishlistReducer,
   },
 })

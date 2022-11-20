@@ -19,6 +19,7 @@ import { LockClosed, LockOpened, Profile, Union } from '../constants/images'
 import { BarChart, LineChart } from 'react-native-chart-kit'
 import { Select } from '../components/common/SelectInput'
 import { useIsFocused } from "@react-navigation/native";
+import { activityData, fetchActivityAnalysis, fetchStoreAnalysis, fetchViewAnalysis, fetchWalletAnalysis, storeData, viewData, walletData } from '../redux/slices/DashboardSlice'
 
 
 const MyStoreScreen = () => {
@@ -34,6 +35,10 @@ const MyStoreScreen = () => {
   const [activeSlug, setActiveSlug] = useState('')
   const [activeName, setActiveName] = useState('')
 
+  const activityAnalysis = useAppSelector(activityData)
+  const storeAnalysis = useAppSelector(storeData)
+  const [viewAnalysis, setViewAnalysis] = useState<any>()
+  const walletAnalysis = useAppSelector(walletData)
   const [stateLoader, setStateLoader] = useState(false)
 
   useEffect(() => {
@@ -53,6 +58,8 @@ const MyStoreScreen = () => {
   useEffect(() => {
     setStateLoader(true)
     const loadData = async () => {
+      var id = await AsyncStorage.getItem('activeId') as string
+      
       const payload = {
         id: id,
         status: ''
@@ -64,12 +71,18 @@ const MyStoreScreen = () => {
       dispatch(getStaff(id))
       dispatch(getPayouts(id))
       dispatch(storeWallet(id))
+      dispatch(fetchActivityAnalysis(id))
+      dispatch(fetchWalletAnalysis(id))
+      dispatch(fetchStoreAnalysis(id))
+      dispatch(fetchViewAnalysis(id)).then(dd => setViewAnalysis(dd?.payload))
       await dispatch(getProduct(id))
       setStateLoader(false)
     }
 
     loadData()
   }, [id])
+
+ 
 
   const data = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -87,18 +100,15 @@ const MyStoreScreen = () => {
     ]
   }
 
+  const barLabels = viewAnalysis?.map((data: any )=> data?.formatted_date);
+const barViews = viewAnalysis?.map((data: any) => data?.view_count);
+
+
   const ViewsData = {
-    labels: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"],
+    labels: barLabels,
     datasets: [
       {
-        data: [
-          Math.round(Math.random() * 100),
-          Math.round(Math.random() * 100),
-          Math.round(Math.random() * 100),
-          Math.round(Math.random() * 100),
-          Math.round(Math.random() * 100),
-          Math.round(Math.random() * 100)
-        ]
+        data: barViews
       }
     ]
   }

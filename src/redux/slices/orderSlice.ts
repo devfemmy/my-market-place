@@ -82,7 +82,7 @@ export const changeOrderStatus = createAsyncThunk(
             status: payload?.status,
             reason: payload?.reason
         }
-            const response = await postRequest(`/order/update?order_item_id=${payload?.orderId}`, pd)
+            const response = await postRequest(`/order/update/status?order_item_id=${payload?.orderId}`, pd)
             if (response?.status === 200) {
                 const newData = response?.data.data
                 return newData
@@ -105,7 +105,7 @@ export const rejectAndCancelOrder = createAsyncThunk(
                 reason: payload?.reason
             }
 
-            const response = await postRequest(`/order/update?order_item_id=${payload?.orderId}`, pd)
+            const response = await postRequest(`/order/update/status?order_item_id=${payload?.orderId}`, pd)
             if (response?.status === 200) {
                 const newData = response?.data.data
                 return newData

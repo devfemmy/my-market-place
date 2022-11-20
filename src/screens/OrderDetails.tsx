@@ -13,6 +13,7 @@ import { calendar, pin } from '../assets'
 import { Button } from '../components/common/Button'
 import { useIsFocused } from "@react-navigation/native";
 import firestore from '@react-native-firebase/firestore';
+import OrderActionModal from '../components/resuable/OrderActionModal'
 
 
 
@@ -31,7 +32,8 @@ const OrderDetails = (props: any) => {
     const orderId = props?.route?.params?.params?.id
     const [messageLoader, setMessageLoader] = useState(false)
     const [id, setId] = useState('')
-    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'This order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'This order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'This order is been dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'This order is completed' : sellerOrderDetail?.status === 'CANCELLED' ? 'This order has been cancelled' : sellerOrderDetail?.status === 'Rejected' ? 'This order has been rejected' : null
+
+    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'This order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'This order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'This order is been dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'This order is completed' : sellerOrderDetail?.status === 'CANCELLED' ? 'This order has been cancelled' : sellerOrderDetail?.status === 'REJECTED' ? 'This order has been rejected' : null
 
 
     useEffect(() => {
@@ -351,7 +353,17 @@ const OrderDetails = (props: any) => {
 
                     </View>
                 </View>
+
+                <OrderActionModal
+                action={action}
+                modalVisible={orderModalVisible}
+                setModalVisible={handleOrderModalClose}
+                orderId={sellerOrderDetail?.id}
+            />
             </ScrollView>
+
+
+           
         </View>
     )
 }

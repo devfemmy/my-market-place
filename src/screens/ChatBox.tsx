@@ -188,10 +188,10 @@ const ChatBox = (props: any) => {
       mediaType: "photo",
       multiple: false,
     }).then(async image => {
-
+      setBtnDisabled(true)
       const ImageUrl = await pictureUpload(image)
 
-      const docRef = await firestore()
+      await firestore()
         .collection('messaging')
         .add({
           message: message,

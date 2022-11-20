@@ -189,10 +189,10 @@ const SellerChatBox = (props: any) => {
       mediaType: "photo",
       multiple: false,
     }).then(async image => {
-
+    setBtnDisabled(true)
       const ImageUrl = await pictureUpload(image)
       var activeId = await AsyncStorage.getItem('activeId')
-      const docRef = await firestore()
+      await firestore()
         .collection('messaging')
         .add({
           message: message,
@@ -209,11 +209,11 @@ const SellerChatBox = (props: any) => {
             name: userProfile?.first_name
           }
         })
-        .then(() => {
-          dispatch(getProfile()).then(async (dd: any) => {
+        .then(async () => {
+         await dispatch(getProfile()).then(async (dd: any) => {
             setMessage('')
             setBtnDisabled(false)
-            firestore().collection('messaging').orderBy('createdAt', 'asc').onSnapshot((documentSnapshot: any) => {
+            firestore().collection('messaging').onSnapshot((documentSnapshot: any) => {
               const arr: any = []
               documentSnapshot?.forEach((doc: any) => {
                 if (
@@ -230,6 +230,7 @@ const SellerChatBox = (props: any) => {
 
               });
               setMessageData(arr);
+            
             })
           })
         });
@@ -238,8 +239,6 @@ const SellerChatBox = (props: any) => {
     })
   }
 
-
-  // console.log({ messageData })
 
 
 

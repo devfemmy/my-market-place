@@ -89,7 +89,7 @@ const BuyerChatScreen = ({ navigation }: any) => {
               <Pressable onPress={() => routeChat(data)}>
                 <View style={styles.container2} key={data?.id} >
                   <View style={styles.div1}>
-                    <Image source={{ uri: data?.image }} style={styles.img} />
+                    <Image source={{ uri: data?.image ? data?.image : "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} style={styles.img} />
                   </View>
                   <View style={styles.div2}>
                     <Text text={truncate(data?.name, 35)} fontSize={hp(14)} />
