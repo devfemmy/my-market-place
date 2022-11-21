@@ -7,7 +7,7 @@ import { forgetPassword, signOutUser, userState } from '../redux/slices/AuthSlic
 import { getProfile, profileLoader, updateProfile } from '../redux/slices/ProfileSlice'
 import { getPersonalStore, myStore } from '../redux/slices/StoreSlice'
 import { ProfileFormData } from '../utils/types'
-import { deleteAddress, getAddress, updateAddress } from '../redux/slices/AddressSlice'
+import { deleteAddress, getAddress, updateAddress, updateAddressDefault } from '../redux/slices/AddressSlice'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { useFormik } from 'formik'
 import { ProfileFormSchema } from '../utils/schemas'
@@ -89,13 +89,12 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
   const updateDelivery = async (data: any) => {
     const payload = {
-      id: data?.id,
-      default: !data?.default
+      id: data?.id
     }
 
     try {
-      var response = await dispatch(updateAddress(payload))
-      if (updateAddress.fulfilled.match(response)) {
+      var response = await dispatch(updateAddressDefault(payload))
+      if (updateAddressDefault.fulfilled.match(response)) {
         dispatch(getAddress()).then((data) => {
           setAddressList(data?.payload)
           Notifier.showNotification({

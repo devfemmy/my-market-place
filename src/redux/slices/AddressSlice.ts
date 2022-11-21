@@ -42,9 +42,24 @@ export const updateAddress = createAsyncThunk(
     'address/updateAddress',
     async (payload: { id: string, default: boolean }, { rejectWithValue }) => {
         try {
-         
+
             const response = await postRequest(`/addressBook/update?address_book_id=${payload.id}`)
-            
+
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+export const updateAddressDefault = createAsyncThunk(
+    'address/updateAddressDefault',
+    async (payload: { id: string }, { rejectWithValue }) => {
+        try {
+            const response = await postRequest(`/addressBook/set_default?address_book_id=${payload.id}`)
             if (response?.status === 200) {
                 return response?.data?.data
             }
@@ -141,6 +156,16 @@ export const AddressSlice = createSlice({
                 state.loading = false
             }),
             builder.addCase(deliveryFee.rejected, (state, action) => {
+                state.loading = false,
+                    state.error = action.error.message
+            })
+        builder.addCase(updateAddressDefault.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(updateAddressDefault.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            }),
+            builder.addCase(updateAddressDefault.rejected, (state, action) => {
                 state.loading = false,
                     state.error = action.error.message
             })
