@@ -58,7 +58,8 @@ const ProductDetailEdit = (props: any) => {
     const initialValues: ProductFormData = {
         productName: productBySlugData?.name,
         productDescription: productBySlugData?.description,
-        category: productBySlugData?.category
+        category: productBySlugData?.category,
+        estimated_delivery_duration: productBySlugData?.estimated_delivery_duration
     };
 
     const handleFormSubmit = async (data: any) => {
@@ -80,8 +81,10 @@ const ProductDetailEdit = (props: any) => {
                 id: productBySlugData?.id,
                 name: data?.productName,
                 description: data?.productDescription,
+                estimated_delivery_duration: parseInt(data?.estimated_delivery_duration),
                 category_id: categoryList?.find(item => item?.category === data?.category)?.id,
             }
+           
             var bigRes = await dispatch(updateProduct(payload))
             if (updateProduct.fulfilled.match(bigRes)) {
                 await AsyncStorage.removeItem('prodEditId')
@@ -216,8 +219,6 @@ const ProductDetailEdit = (props: any) => {
 
 
 
-
-
     return (
         <View style={styles.container}>
             <MobileHeader
@@ -248,7 +249,12 @@ const ProductDetailEdit = (props: any) => {
                     setState={handleChange('category')}
                     errorMsg={touched.category ? errors.category : undefined}
                 />
-
+                <Input
+                    label='Expected Delivery Duration'
+                    value={values?.estimated_delivery_duration.toString()}
+                    onChangeText={handleChange('estimated_delivery_duration')}
+                    errorMsg={touched.estimated_delivery_duration ? errors.estimated_delivery_duration : undefined}
+                />
                 <View style={styles.divs}>
                     <Text text='Product Colours' fontSize={hp(14)} fontWeight='400' />
                 </View>

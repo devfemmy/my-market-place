@@ -52,6 +52,7 @@ const AddProducts = ({ navigation }: any) => {
         productName: productSlug ? productSlug?.name : "",
         productDescription: productSlug ? productSlug?.description : "",
         category: productSlug ? productSlug?.category : "",
+        estimated_delivery_duration: productSlug ? productSlug?.estimated_delivery_duration : ""
 
     }
 
@@ -113,6 +114,7 @@ const AddProducts = ({ navigation }: any) => {
             name: data?.productName,
             description: data?.productDescription,
             category_id: data?.category,
+            estimated_delivery_duration: parseInt(data?.estimated_delivery_duration),
             store_id: activeId
         }
 
@@ -243,6 +245,7 @@ const AddProducts = ({ navigation }: any) => {
                 id: productSlug?.id,
                 name: values?.productName,
                 description: values?.productDescription,
+                estimated_delivery_duration: parseInt(values?.estimated_delivery_duration),
                 category_id: categoryList?.find(item => item?.category === values?.category)?.id,
             }
             var bigRes = await dispatch(updateProduct(payload))
@@ -323,6 +326,12 @@ const AddProducts = ({ navigation }: any) => {
                     setState={handleChange('category')}
                     errorMsg={touched.category ? errors.category : undefined}
                 />
+                 <Input
+                    label='Expected Delivery Duration'
+                    value={values?.estimated_delivery_duration?.toString()}
+                    onChangeText={handleChange('estimated_delivery_duration')}
+                    errorMsg={touched.estimated_delivery_duration ? errors.estimated_delivery_duration : undefined}
+                />
 
                 {
                     !getSlug || getSlug === undefined ? <>
@@ -369,8 +378,8 @@ const AddProducts = ({ navigation }: any) => {
                                 <Text text='Add Another Colour' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' />
                             </View>
                         </Pressable>
-                        <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
                             {renderColorVariety()}
                         </ScrollView>
 

@@ -151,6 +151,7 @@ export type ProductCreateFormData = {
     name: string,
     description: string,
     category_id: string,
+    estimated_delivery_duration: number,
    store_id: string,
   //  variants?: Array<any>,
     // isDraft: boolean,
@@ -173,6 +174,7 @@ export type ProductUpdateFormData = {
     name?: string,
     description?: string,
     category_id?: string,
+    estimated_delivery_duration: number,
    // store_id?: string,
    // variants?: Array<any>,
 }
@@ -338,6 +340,7 @@ export type ProductFormData = {
     productName: string;
     productDescription: string;
     category: string;
+    estimated_delivery_duration: string
 }
 
 

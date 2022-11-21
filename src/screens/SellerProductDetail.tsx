@@ -201,6 +201,13 @@ const SellerProductDetail = (props: any) => {
                                         </View>
                                     </View>
                                     <View style={styles.br}></View>
+                                    <View style={globalStyles.rowStart}>
+                                        <View style={styles.minidiv}>
+                                            <Text text='Expected delivery duration' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
+                                            <Text text={productBySlugData?.estimated_deliery_duration} fontSize={hp(12)} fontWeight='600' />
+                                        </View>
+                                    </View>
+                                    <View style={styles.br}></View>
                                 </View>
 
                                 <Text text='Colours' fontSize={hp(14)} fontWeight='400' style={{ marginVertical: hp(10) }} />

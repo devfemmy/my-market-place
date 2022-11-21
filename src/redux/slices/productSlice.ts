@@ -26,13 +26,14 @@ export const createProduct = createAsyncThunk(
             name: payload?.name,
             description: payload?.description,
             category_id: payload?.category_id,
+            estimated_delivery_duration: payload?.estimated_delivery_duration,
             store_id: payload?.store_id
         }
 
 
         try {
             const response = await postRequest(`/product/create`, payloadData)
-
+            
             return response?.data
         }
         catch (e: any) {
@@ -50,11 +51,12 @@ export const updateProduct = createAsyncThunk(
             name: payload?.name,
             description: payload?.description,
             category_id: payload?.category_id,
+            estimated_delivery_duration: payload?.estimated_delivery_duration
             //store_id: payload?.store_id
         }
         try {
             const response = await postRequest(`/product/update/?product_id=${payload.id}`, payloadData)
-
+            console.log("=======",{response})
         }
         catch (e: any) {
             return rejectWithValue(e?.response?.data?.message)

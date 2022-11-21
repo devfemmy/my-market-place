@@ -495,8 +495,8 @@ const ProductDetail = (props: any) => {
                     }
                 </Slick>
             </View>
-            <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}>
                 <View style={[globalStyles.rowBetween, styles.pd]}>
                     <TouchableOpacity onPress={() => props.navigation.navigate('StoreInfo', {
                         params: {
@@ -512,8 +512,8 @@ const ProductDetail = (props: any) => {
                             <Text text={`${productDetail?.rating === undefined ? 'N/A' : productDetail?.rating} stars`} />
                             {
                                 getUserToken && <Pressable onPress={() => saveForLater()}>
-                                <Image source={love} />
-                            </Pressable>
+                                    <Image source={love} />
+                                </Pressable>
                             }
                         </View>
                     </TouchableOpacity>
@@ -571,7 +571,7 @@ const ProductDetail = (props: any) => {
                 </View>
 
                 <View style={styles.contView}>
-                    <Text fontSize={hp(18)} text='Delivery in 5 - 7 days between Monday, August 8 - Wednesday, August 9.' />
+                    <Text fontSize={hp(18)} text={'Delivery in ' +  productDetail?.estimated_deliery_duration} />
                 </View>
                 <View style={[styles.contView, styles.row]}>
                     <Text
@@ -581,7 +581,7 @@ const ProductDetail = (props: any) => {
                         numberOfLines={1}
                         fontWeight={'600'}
                     />
-                    <Text fontSize={hp(16)} text=' Shipping fee to' />
+                    <Text fontSize={hp(16)} text={' Shipping fee to'+ " " + values?.city + " " + values?.state}  />
                 </View>
                 <View style={styles.contView}>
                     <Text text='Description' fontSize={hp(18)} />
