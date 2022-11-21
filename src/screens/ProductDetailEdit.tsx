@@ -251,6 +251,7 @@ const ProductDetailEdit = (props: any) => {
                     errorMsg={touched.category ? errors.category : undefined}
                 />
                 <Input
+                    number
                     label='Expected Delivery Duration'
                     value={values?.estimated_delivery_duration.toString()}
                     onChangeText={handleChange('estimated_delivery_duration')}

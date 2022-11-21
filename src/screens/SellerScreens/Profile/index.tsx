@@ -125,7 +125,7 @@ const Profile = ({ navigation }: any) => {
             last_name: data?.lName,
             email: data?.email,
             mobile: data?.mobile?.toString(),
-            img_url: profileData?.img_url
+            // img_url: profileData?.img_url
           }
     
           var resultResponse = await dispatch(updateProfile(newData))
@@ -189,7 +189,7 @@ const Profile = ({ navigation }: any) => {
         setLoader(true)
         const data = {
             email: profileData?.email,
-            redirect_url: `http://localhost:3000/new-password`
+            redirect_url: `https//bazara.herokuapp.com/new-password`
         }
         try {
             var resultAction = await dispatch(forgetPassword(data))

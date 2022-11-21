@@ -17,7 +17,8 @@ type InputProps = ComponentProps<typeof BaseInput> & {
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   iconMarginTop?: number,
-  disabled?: boolean
+  disabled?: boolean,
+  number?: boolean
 };
 
 export const Input = memo(
@@ -29,6 +30,7 @@ export const Input = memo(
     placeholder,
     disabled,
     label,
+    number,
     iconMarginTop,
     ...rest
   }: InputProps) => {
@@ -44,6 +46,7 @@ export const Input = memo(
           autoCapitalize="none"
           disabled={disabled}
           autoCorrect={false}
+          keyboardType={number ? 'numeric' : "default"}
           outlineColor={searchInput ? "transparent" : colors.gray}
           theme={{
             roundness: 7,
