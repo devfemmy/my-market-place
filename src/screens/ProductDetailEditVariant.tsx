@@ -1054,7 +1054,8 @@ const ProductDetailEditVariant = (props: any) => {
         {
             productInDraft?.isSize && !productInDraft?.isColor && <>
                 <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                <ScrollView>
+                <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                     <View style={styles.bigDiv}>
                         {renderSizeList()}
                     </View>
@@ -1123,7 +1124,8 @@ const ProductDetailEditVariant = (props: any) => {
                     </View>
                 </Pressable>
 
-                <ScrollView>
+                <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                     <View style={styles.bigDiv2}>
                         {renderColorVariety()}
                     </View>
@@ -1143,7 +1145,8 @@ const ProductDetailEditVariant = (props: any) => {
                     errorMsg={_touched.description ? _errors.description : undefined}
                 />
                 <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-                <ScrollView>
+                <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                 {
                     renderSizeList()
                 }

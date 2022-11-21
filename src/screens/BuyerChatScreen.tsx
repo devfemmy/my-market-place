@@ -82,7 +82,8 @@ const BuyerChatScreen = ({ navigation }: any) => {
     <View style={styles.container}>
       <MobileHeader categoryName="Chat" props={navigation} cart />
 
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         {
           messageData && messageData?.length > 0 && messageData?.map((data: any) => {
             return (

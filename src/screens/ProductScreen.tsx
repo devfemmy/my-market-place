@@ -99,6 +99,8 @@ const ProductScreen = ({ navigation }: any) => {
             <ButtonPlus handleClick={() => navigation.navigate('AddProduct')} />
             <View style={{ zIndex: -3, elevation: -3 }}>
                 <ScrollView
+                 showsVerticalScrollIndicator={false}
+                 showsHorizontalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}

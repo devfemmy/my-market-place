@@ -90,7 +90,8 @@ const SellerOrderScreen = ({ navigation }: any) => {
             />
             }
 
-            <ScrollView>
+            <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
             {
                 filterData?.length >= 1 && filterData?.filter((data: any) =>  data?.meta?.product_details?.name?.toLowerCase().includes(searchValue.toLowerCase()))?.map((data: any, i: number) => {
                     return <OrderCard

@@ -53,7 +53,8 @@ const BuyerSearchScreen = (props: any) => {
       <View>
         <Input searchInput label={'Search top selling products'} value={searchValue} onChangeText={(e) => setSearchValue(e)} />
       </View>
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         {
           searchValue?.length > 0 && <FlatGrid
             itemDimension={130}

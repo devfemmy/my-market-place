@@ -144,7 +144,8 @@ const AddStaffScreen = ({navigation}: any) => {
         cart
         categoryName="Add New Staff"
       />
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
       <View style={[globalStyles.rowStart, globalStyles.lowerContainer]}>
         <Text fontWeight="500" fontSize={hp(18)} text="Kindly provide new user details" />
       </View>

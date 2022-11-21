@@ -1081,7 +1081,8 @@ const AddProductVariant = ({ navigation }: any) => {
                 {
                     productInDraft?.isSize && !productInDraft?.isColor && <>
                         <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                        <ScrollView> 
+                        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}> 
                             <Pressable onPress={showModal}>
                                 <View style={[globalStyles.rowStart,{marginVertical: hp(5)}]}>
                                     <Image
@@ -1151,7 +1152,8 @@ const AddProductVariant = ({ navigation }: any) => {
                             </View>
                         </Pressable>
 
-                        <ScrollView>
+                        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                             <View style={styles.bigDiv2}>
                                 {renderColorVariety()}
                             </View>
@@ -1179,7 +1181,8 @@ const AddProductVariant = ({ navigation }: any) => {
                                 <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400'style={{marginLeft: hp(5)}} />
                             </View>
                         </Pressable>
-                        <ScrollView>
+                        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                         {
                             renderSizeList()
                         }

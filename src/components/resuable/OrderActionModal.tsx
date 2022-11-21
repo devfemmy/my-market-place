@@ -67,7 +67,8 @@ const OrderActionModal = ({ action, modalVisible, setModalVisible, orderId }: an
 
 
     return (
-       <ScrollView>
+       <ScrollView  showsVerticalScrollIndicator={false}
+       showsHorizontalScrollIndicator={false}>
          <Modal
             animationType="slide"
             transparent={true}

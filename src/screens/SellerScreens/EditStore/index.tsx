@@ -90,7 +90,7 @@ const EditStore = (): JSX.Element => {
     street: '',
     city: '',
     state: '',
-    estimatedDeliveryDuration: ''
+    // estimatedDeliveryDuration: ''
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
@@ -101,7 +101,7 @@ const EditStore = (): JSX.Element => {
       coverImg:  imageData?.length > 1 ? imageData : editImg,
       address: data.street + " " + data.city + " " + data.state,
       phoneNumber: data.phoneNumber.toString(),
-      estimated_delivery_duration: data?.estimatedDeliveryDuration,
+      // estimated_delivery_duration: data?.estimatedDeliveryDuration,
       location: {
           state: data.state,
           city: data.city,
@@ -258,7 +258,7 @@ const EditStore = (): JSX.Element => {
               onChangeText={handleChange('phoneNumber')}
               errorMsg={touched.phoneNumber ? errors.phoneNumber : undefined}
             />
-             <View>
+             {/* <View>
               <Select
                 placeholder='Estimated Delivery Date'
                 items={['1', '2', '3', '4', '5']}
@@ -266,7 +266,7 @@ const EditStore = (): JSX.Element => {
                 setState={handleChange('estimatedDeliveryDuration')}
                 errorMsg={touched.estimatedDeliveryDuration ? errors.estimatedDeliveryDuration : undefined}
               />
-            </View>
+            </View> */}
 
             <Text
               text="Store Location"

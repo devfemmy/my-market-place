@@ -369,7 +369,8 @@ const AddProducts = ({ navigation }: any) => {
                                 <Text text='Add Another Colour' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' />
                             </View>
                         </Pressable>
-                        <ScrollView>
+                        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                             {renderColorVariety()}
                         </ScrollView>
 

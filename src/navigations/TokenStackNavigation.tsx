@@ -212,7 +212,6 @@ const TokenStackNavigation = () => {
         return null;
     }
 
-    console.log({store})
 
     return (
         <Stack.Navigator
@@ -222,8 +221,8 @@ const TokenStackNavigation = () => {
                 headerTintColor: colors.white,
                 headerShadowVisible: false,
                 headerStyle: { backgroundColor: colors.primaryBg },
-                gestureEnabled: true,
-                ...TransitionPresets.SlideFromRightIOS
+                // gestureEnabled: true,
+                // ...TransitionPresets.SlideFromRightIOS
             })}
         >
             <Stack.Screen name="OnboardScreen" component={OnboardScreen} />

@@ -42,7 +42,8 @@ const ProductByCategory = (props: any, navigation: any) => {
     return (
         <SafeAreaView style={globalStyles.containerWrapper}>
             <MobileHeader categoryName={categoryName} props={props} />
-            <ScrollView>
+            <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                 <View>
                     <FlatGrid
                         itemDimension={130}

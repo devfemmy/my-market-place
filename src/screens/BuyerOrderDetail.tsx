@@ -261,7 +261,8 @@ const BuyerOrderDetail = (props: any) => {
                 categoryName={'Order Details'}
                 props={props}
             />
-            <ScrollView>
+            <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                 <View>
                     <View>
 

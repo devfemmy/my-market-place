@@ -340,7 +340,8 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         <View style={styles.containerBox}>
 
           <View>

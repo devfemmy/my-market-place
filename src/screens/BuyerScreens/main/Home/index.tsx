@@ -41,7 +41,8 @@ export const Home = (): JSX.Element => {
     <SafeAreaView style={{backgroundColor: 'red'}}>
       <StatusBar translucent={true} backgroundColor={'white'} />
       <UserHeader name={`${user?.first_name}`} image={user?.img_url} />
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         <View style={styles.imageCard}>
             <Image source={Banner} resizeMode='contain' style={styles.imageContainer} />
         </View>

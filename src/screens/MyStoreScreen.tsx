@@ -213,7 +213,8 @@ const barViews = viewAnalysis?.map((data: any) => data?.view_count);
       <View>
         <StoreHeader name={activeName} slug={storebyIdData?.slug} />
         {
-          stateLoader ? null : <ScrollView>
+          stateLoader ? null : <ScrollView  showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
             {
               productList?.length < 1 ? <View style={styles.mt}>
 

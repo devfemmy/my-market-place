@@ -93,7 +93,8 @@ const DeliveryModal = ({ visible, setVisible }: any) => {
             presentationStyle='pageSheet'
         >
             <View style={styles.contain}>
-                <ScrollView>
+                <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                     <View>
                         <View style={globalStyles.rowBetween}>
                             <Text style={{ textTransform: 'capitalize', marginVertical: hp(5) }} text={`Delivery Address`} fontSize={hp(16)} fontWeight='700' />

@@ -182,7 +182,8 @@ const SellerSignUpScreen = ({ navigation }: any) => {
             <View style={styles.container}>
                 <MobileHeader categoryName={'Sign Up'} props={navigation} auth />
                 <View style={styles.top}>
-                    <ScrollView>
+                    <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                         <Input
                             label={'First Name'}
                             value={values.firstName}

@@ -30,7 +30,7 @@ export const createStore = createAsyncThunk(
             img_url: payload.coverImg,
             state: payload.location.state,
             phone_number: payload.phoneNumber,
-            estimated_delivery_duration: payload.estimated_delivery_duration
+            // estimated_delivery_duration: payload.estimated_delivery_duration
         }
         try {
             const response = await postRequest("/store/create", data)
@@ -55,7 +55,7 @@ export const updateStore = createAsyncThunk(
             img_url: payload.coverImg,
             state: payload.location.state,
             phone_number: payload.phoneNumber,
-            estimated_delivery_duration: payload?.estimated_delivery_duration
+            // estimated_delivery_duration: payload?.estimated_delivery_duration
         }
 
         try {

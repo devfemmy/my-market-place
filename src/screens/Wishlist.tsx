@@ -69,7 +69,8 @@ const Wishlist = (props: any) => {
             {
                 wishlist?.length > 0 && <>
                     <Text text={`You have ${wishlist?.length} saved items`} fontSize={hp(16)} lineHeight={30} />
-                    <ScrollView>
+                    <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                         {
                             wishlist?.map((data: any) => {
                                 return <View>

@@ -414,7 +414,8 @@ return (
                 <View style={styles.container}>
                     <Text text={`${getCartFromStorage?.length} item(s)`} style={styles.txt} />
                     <View style={styles.top}>
-                        <ScrollView>
+                        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                             <View>
                                 <View>
 
@@ -503,7 +504,8 @@ return (
                 <View style={styles.container}>
                     <Text text={`${getCartData?.length} item(s)`} style={styles.txt} />
                     <View style={styles.top}>
-                        <ScrollView>
+                        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                             <View>
                                 <View>
 

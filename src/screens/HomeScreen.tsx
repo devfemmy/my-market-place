@@ -38,7 +38,8 @@ const HomeScreen = (navigation: any) => {
   return (
     <SafeAreaView style={globalStyles.containerWrapper}>
       <UserHeader name={`${user?.first_name}`} image={user?.img_url} />
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         <View style={styles.imageCard}>
           <Image source={Banner} resizeMode='contain' style={styles.imageContainer} />
         </View>

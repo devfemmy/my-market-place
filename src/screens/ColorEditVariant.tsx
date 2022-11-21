@@ -937,7 +937,8 @@ const ColorEditVariant = (props: any) => {
                 {
                     productInDraft?.isSize && !productInDraft?.isColor && <>
                         <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                        <ScrollView>
+                        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                             <View style={styles.bigDiv}>
                                 {renderSizeList()}
                             </View>

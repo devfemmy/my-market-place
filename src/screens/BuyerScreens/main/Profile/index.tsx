@@ -76,7 +76,8 @@ export const Profile = (): JSX.Element => {
 
   return (
     <View style={globalStyles.wrapper} >
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
       <View style={[globalStyles.rowStart, globalStyles.lowerContainer, globalStyles.Verticalspacing]}>
           <View style={localStyle.imageCard}>
               <Image source={{uri: user?.imgUrl}} resizeMode='cover' style={localStyle.imageContainer} />

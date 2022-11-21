@@ -92,7 +92,8 @@ const BuyerOrderScreen = ({ navigation }: any) => {
         <Input label={'Search for orders'} searchInput />
       </View> */}
         
-        <ScrollView>
+        <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
           {
             filterBuyerData?.length >= 1 && filterBuyerData?.map((data: any, i: number) => {
               return <Pressable onPress={() => navigation.navigate('BuyerOrderDetail', {

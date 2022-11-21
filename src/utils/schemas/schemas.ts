@@ -62,7 +62,7 @@ export const StoreFormSchema = yup.object().shape({
   street: yup.string().required('Street name is required'),
   city: yup.string().required('City is required'),
   state: yup.string().required('State is required'),
-  estimatedDeliveryDuration: yup.string().required('Estimated delivery duration is required'),
+  // estimatedDeliveryDuration: yup.string().required('Estimated delivery duration is required'),
 });
 export const ProductColorAloneSchema = yup.object().shape({  
   price: yup.number().min(500, ({min}) => `Price must be at least ${min}`).required('Price is required'),

@@ -160,7 +160,8 @@ const SellerProductDetail = (props: any) => {
                             props={props}
                         />
                         <View style={styles.top}>
-                            <ScrollView>
+                            <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                                 <View>
                                     <View style={[styles.div, { backgroundColor: productBySlugData?.status === 'ACTIVE' ? colors.green : productBySlugData?.status === 'INACTIVE' ? colors.red : colors.orange }]} >
                                         <Text style={{ textTransform: 'capitalize' }} textAlign='center' text={productBySlugData?.status} fontSize={hp(14)} />

@@ -495,7 +495,8 @@ const ProductDetail = (props: any) => {
                     }
                 </Slick>
             </View>
-            <ScrollView>
+            <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                 <View style={[globalStyles.rowBetween, styles.pd]}>
                     <TouchableOpacity onPress={() => props.navigation.navigate('StoreInfo', {
                         params: {

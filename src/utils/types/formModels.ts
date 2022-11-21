@@ -141,7 +141,7 @@ export type StoreFormData = {
     storeName: string;
     description: string;
     phoneNumber: string;
-    estimatedDeliveryDuration: string;
+    // estimatedDeliveryDuration: string;
     street: string;
     city: string;
     state: string;
@@ -206,7 +206,7 @@ export type StoreCreateFormData = {
     coverImg: string,
     address: string,
     phoneNumber: string,
-    estimated_delivery_duration: string,
+    // estimated_delivery_duration: string,
     location: {
         state: string,
         city: string,
@@ -223,7 +223,7 @@ export type StoreUpdateFormData = {
     coverImg: string,
     address: string,
     phoneNumber: string,
-    estimated_delivery_duration: string,
+    // estimated_delivery_duration: string,
     location: {
         state: string,
         city: string,

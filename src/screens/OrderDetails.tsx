@@ -190,7 +190,8 @@ const OrderDetails = (props: any) => {
 
     return (
         <View style={styles.container}>
-            <ScrollView>
+            <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
                 <View>
                     <View>
                         <MobileHeader
