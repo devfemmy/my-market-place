@@ -87,7 +87,7 @@ export const ProductSchema = yup.object().shape({
   productName: yup.string().required('Product name is required'),
   productDescription: yup.string().required('Product description is required'),
   category: yup.string().required('Category is required'),
-  expectedDeliveryDuration: yup.string().required("Expected Delivery Duration is required")
+  estimated_delivery_duration: yup.string().required("Expected Delivery Duration is required")
  });
 
 export const ProductFormData1Schema = yup.object().shape({

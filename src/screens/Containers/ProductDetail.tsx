@@ -571,7 +571,7 @@ const ProductDetail = (props: any) => {
                 </View>
 
                 <View style={styles.contView}>
-                    <Text fontSize={hp(18)} text={'Delivery in ' +  productDetail?.estimated_deliery_duration} />
+                    <Text fontSize={hp(18)} text={'Delivery in ' +  productDetail?.estimated_deliery_duration + " " + "Day(s)"} />
                 </View>
                 <View style={[styles.contView, styles.row]}>
                     <Text

@@ -63,6 +63,7 @@ const ProductDetailEdit = (props: any) => {
     };
 
     const handleFormSubmit = async (data: any) => {
+        
         if (productBySlugData?.product_variants?.length < 1 || productBySlugData?.product_variants === undefined) {
             Notifier.showNotification({
                 title: 'Minimum of 1 color spec is required',
