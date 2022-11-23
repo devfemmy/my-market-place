@@ -310,7 +310,7 @@ const ChatBox = (props: any) => {
                                   style={{ marginRight: "1%" }}
                                 />
                               </View>
-                              <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).format("DD-MM-YY")}`} fontSize={hp(10)} />
+                              <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).startOf('hour').fromNow()}`} fontSize={hp(10)} />
 
                             </View>
                           )
@@ -374,7 +374,7 @@ const ChatBox = (props: any) => {
                                   style={{ marginRight: "1%" }}
                                 />
                               </View>
-                              <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).format("DD-MM-YY")}`} fontSize={hp(10)} />
+                              <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).startOf('hour').fromNow()}`} fontSize={hp(10)} />
                             </View>
                           )}
                       </View>

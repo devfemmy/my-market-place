@@ -204,6 +204,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
             />
 
             <Input
+              number
               label={'Phone Number'}
               value={values.phoneNumber}
               onBlur={handleBlur('phoneNumber')}

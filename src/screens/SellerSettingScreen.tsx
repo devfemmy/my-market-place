@@ -159,9 +159,9 @@ const SellerSettingScreen = ({ navigation }: any) => {
   const LogOut = async () => {
     await AsyncStorage.clear()
     await dispatch(signOutUser()).then(dd => {
-      return navigation.navigate('Home')
+      return navigation.navigate('HomeScreen')
     })
-    return navigation.navigate('Home')
+    return navigation.navigate('HomeScreen')
   }
 
   const SwitchToBuyer = async () => {
@@ -234,18 +234,15 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
 
   const deleteAccountFunc = async () => {
-
-    const responseAction = await dispatch(deleteAccount())
+    setDeleteAccountLoader(true)
+    var activeId = await AsyncStorage.getItem('activeId') as string
+    const responseAction = await dispatch(deleteAccount(activeId))
     if (deleteAccount.fulfilled.match(responseAction)) {
-      await AsyncStorage.removeItem('activeId')
-      await AsyncStorage.removeItem('activeName')
-      await AsyncStorage.removeItem('activeSlug')
-      await AsyncStorage.removeItem('merchant-slug')
-
+   
       handleDeleteAccountClose()
-
+      setDeleteAccountLoader(false)
       Notifier.showNotification({
-        title: "Account successfully deleted",
+        title: "Store successfully deleted",
         description: '',
         Component: NotifierComponents.Alert,
         hideOnPress: false,
@@ -254,11 +251,12 @@ const SellerSettingScreen = ({ navigation }: any) => {
         },
       });
 
-      return navigation.navigate('BuyerScreen', { screen: 'Home' })
+      LogOut()
 
     }
     else {
       const erroMsg = responseAction?.payload as string
+      setDeleteAccountLoader(false)
       Notifier.showNotification({
         title: erroMsg,
         description: '',
@@ -371,11 +369,11 @@ const SellerSettingScreen = ({ navigation }: any) => {
         }
 
 
-        <Pressable onPress={() => handleDeleteAccountOpen()}>
+        {/* <Pressable onPress={() => handleDeleteAccountOpen()}>
           <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
             <Text text='Delete Store' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
           </View>
-        </Pressable>
+        </Pressable> */}
 
       </ScrollView>
 
@@ -389,7 +387,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
       <DeleteAccountModal
         deleteVisible={deleteAccountVisible}
         closeDelete={handleDeleteAccountClose}
-        deleteAction={() => deleteAccountFunc()}
+        deleteAction={deleteAccountFunc}
         loading={deleteAccountLoader}
       />
 

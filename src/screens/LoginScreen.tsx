@@ -41,6 +41,7 @@ const LoginScreen = ({ navigation }: any) => {
         try {
             var response = await dispatch(signInUser(payload))
             if (signInUser.fulfilled.match(response)) {
+                
                 setLoading(false)
    
                 await AsyncStorage.setItem('userInfo', JSON.stringify(response?.payload?.data))

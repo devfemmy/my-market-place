@@ -248,7 +248,7 @@ const TokenStackNavigation = () => {
             <Stack.Screen name='AddStaff' component={AddStaffScreen} />
             <Stack.Screen name='Profile' component={Profile} />
             <Stack.Screen name='BuyerOrderDetail' component={BuyerOrderDetail} />
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name='LoginScreen' component={LoginScreen} />
             <Stack.Screen name='DeliveryScreen' component={DeliveryScreen} />
             <Stack.Screen name='Account' component={Account} />

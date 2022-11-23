@@ -5,7 +5,7 @@ export interface ListCardProps {
     route: string,
     icon?: ImageSourcePropType,
     isActive?: boolean,
-    props?: any
+    props?: any,
 }
 
 export interface OrderCardProps {

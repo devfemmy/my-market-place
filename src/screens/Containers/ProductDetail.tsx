@@ -410,18 +410,26 @@ const ProductDetail = (props: any) => {
     }
     const sizeVarList = variantList?.filter((a: any) => a['color'] !== null)
 
-
     const source = {
         html: `${productDetail?.description}`,
     };
     const tagsStyles = {
         body: {
             color: 'white',
+            whiteSpace: 'normal'
         },
         a: {
             color: 'blue'
+        },
+        ul: {
+            color: "white"
+        },
+        li: {
+            color: "white"
         }
     };
+
+
 
     const renderViewMore = (onPress: any) => {
         return (
@@ -483,21 +491,24 @@ const ProductDetail = (props: any) => {
 
     return (
         <SafeAreaView style={globalStyles.containerWrapper}>
-            <MobileHeader categoryName={productDetail?.name} props={props} />
-            <View style={styles.imageContainer}>
-                <Slick style={styles.wrapper} showsButtons={false}>
-                    {
-                        activeVariant?.image?.map((data: any) => {
-                            return <View>
-                                <Image style={styles.imgSlick} source={{ uri: data?.length > 0 ? data : "https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png" }} />
-                            </View>
-                        })
-                    }
-                </Slick>
-            </View>
+            <MobileHeader categoryName={"Product Detail"} props={props} />
+
             <ScrollView showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}>
+                <View style={styles.imageContainer}>
+                    <Slick style={styles.wrapper} showsButtons={false}>
+                        {
+                            activeVariant?.image?.map((data: any) => {
+                                return <View>
+                                    <Image style={styles.imgSlick} source={{ uri: data?.length > 0 ? data : "https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png" }} />
+                                </View>
+                            })
+                        }
+                    </Slick>
+                </View>
+                <Text text={productDetail?.name} style={{ marginVertical: hp(10) }} />
                 <View style={[globalStyles.rowBetween, styles.pd]}>
+
                     <TouchableOpacity onPress={() => props.navigation.navigate('StoreInfo', {
                         params: {
                             store: productDetail?.store
@@ -571,7 +582,7 @@ const ProductDetail = (props: any) => {
                 </View>
 
                 <View style={styles.contView}>
-                    <Text fontSize={hp(18)} text={'Delivery in ' +  productDetail?.estimated_deliery_duration + " " + "Day(s)"} />
+                    <Text fontSize={hp(18)} text={`Delivery in ${productDetail?.estimated_deliery_duration ? productDetail?.estimated_deliery_duration : "2"} Day(s)`} />
                 </View>
                 <View style={[styles.contView, styles.row]}>
                     <Text
@@ -581,7 +592,7 @@ const ProductDetail = (props: any) => {
                         numberOfLines={1}
                         fontWeight={'600'}
                     />
-                    <Text fontSize={hp(16)} text={' Shipping fee to'+ " " + values?.city + " " + values?.state}  />
+                    <Text fontSize={hp(16)} text={' Shipping fee to' + " " + values?.city + " " + values?.state} />
                 </View>
                 <View style={styles.contView}>
                     <Text text='Description' fontSize={hp(18)} />

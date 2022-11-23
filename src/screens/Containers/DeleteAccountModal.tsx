@@ -28,10 +28,10 @@ const DeleteAccountModal = ({ deleteVisible, closeDelete, deleteAction, loading 
                     <Image
                         source={profileDelete}
                     />
-                    <Text text='Delete Account' fontWeight='700' style={{ marginVertical: hp(10) }} fontSize={hp(20)} />
-                    <Text text='If you delete your account you will no longer have access to your data' lineHeight={22} textAlign='center' fontWeight='400' style={{ marginVertical: hp(10) }} fontSize={hp(16)} />
+                    <Text text='Delete Store' fontWeight='700' style={{ marginVertical: hp(10) }} fontSize={hp(20)} />
+                    <Text text='If you delete your store you will no longer have access to your data' lineHeight={22} textAlign='center' fontWeight='400' style={{ marginVertical: hp(10) }} fontSize={hp(16)} />
                     <View style={styles.br} />
-                    <Button title='Yes, delete my account' isLoading={loading} handlePress={() => deleteAction()} />
+                    <Button title='Yes, delete my store' isLoading={loading} onPress={() => deleteAction()} />
                     <View style={styles.br} />
                     <Pressable onPress={closeDelete}>
                         <View style={globalStyles.rowStart}>

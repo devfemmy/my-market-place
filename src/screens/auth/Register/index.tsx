@@ -233,6 +233,7 @@ const Register = (): JSX.Element => {
           errorMsg={touched.email ? errors.email : undefined}
         />
         <Input
+          number
           label={'Phone Number'}
           value={values.phone_number}
           onBlur={handleBlur('phone_number')}

@@ -69,40 +69,40 @@ const Wishlist = (props: any) => {
             {
                 wishlist?.length > 0 && <>
                     <Text text={`You have ${wishlist?.length} saved items`} fontSize={hp(16)} lineHeight={30} />
-                    <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+                    <ScrollView showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}>
                         {
                             wishlist?.map((data: any) => {
                                 return <View>
-                                    <Pressable onPress={() => props?.navigation.navigate('ProductDetail', {
-                                        params: {
-                                            id: data?.product_details?.slug
-                                        }
-                                    })}>
-                                        <View style={styles.row}>
-                                            <Image source={{ uri: data?.product_details?.product_variants?.img_urls[0] }} style={styles.img} />
-                                            <View style={styles.row2}>
+                                    <View style={styles.row}>
+                                        <Image source={{ uri: data?.product_details?.product_variants?.img_urls[0] }} style={styles.img} />
+                                        <View style={styles.row2}>
+                                            <Pressable onPress={() => props?.navigation.navigate('ProductDetail', {
+                                                params: {
+                                                    id: data?.product_details?.slug
+                                                }
+                                            })}>
                                                 <View>
-                                                    <Text text={truncate(data?.product_details?.name, 30)} fontSize={hp(16)} />
+                                                    <Text text={truncate(data?.product_details?.name, 30)} fontSize={hp(14)} />
                                                 </View>
-                                                <Pressable onPress={() => removeWishlist(data?.id)}>
-                                                    <View style={styles.row3}>
-                                                        <Image source={rem} />
-                                                        <Text text='REMOVE' fontSize={hp(12)} color={colors.bazaraTint} style={styles.tt} />
-                                                    </View>
-                                                </Pressable>
-                                            </View>
+                                            </Pressable>
+                                            <Pressable onPress={() => removeWishlist(data?.id)}>
+                                                <View style={styles.row3}>
+                                                    <Image source={rem} />
+                                                    <Text text='REMOVE' fontSize={hp(12)} color={colors.bazaraTint} style={styles.tt} />
+                                                </View>
+                                            </Pressable>
                                         </View>
-                                    </Pressable>
+                                    </View>
                                 </View>
                             })
                         }
                     </ScrollView>
                 </>
             }
-             {
+            {
                 wishlist?.length < 1 && <>
-                    <EmptyState icon={love} header={'Items saved for later will appear here'} title={'No Item Saved'}                  
+                    <EmptyState icon={love} header={'Items saved for later will appear here'} title={'No Item Saved'}
                     />
                 </>
             }
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     row3: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: hp(5)
+        marginTop: hp(10)
     },
     tt: {
         marginLeft: hp(5)

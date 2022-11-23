@@ -189,17 +189,17 @@ const Profile = ({ navigation }: any) => {
         setLoader(true)
         const data = {
             email: profileData?.email,
-            redirect_url: `https//bazara.herokuapp.com/new-password`
+            redirect_url:  `https://bazara.herokuapp.com/new-password`
         }
         try {
             var resultAction = await dispatch(forgetPassword(data))
             if (forgetPassword.fulfilled.match(resultAction)) {
                 await AsyncStorage.clear()
                 await dispatch(signOutUser()).then(dd => {
-                    return navigation.navigate('Home')
+                    return navigation.navigate('HomeScreen')
                   })
                   setLoader(false)
-                  return navigation.navigate('Home')
+                  return navigation.navigate('HomeScreen')
             }
             else {
                 console.log("error")
@@ -292,6 +292,7 @@ const Profile = ({ navigation }: any) => {
                             />
 
                             <Input
+                                number
                                 label='Phone number'
                                 value={values.mobile}
                                 onChangeText={handleChange('mobile')}

@@ -11,7 +11,7 @@ import { Nav } from '../../utils/types'
 
 
 
-const ListCard: React.FC<ListCardProps> = ({ title, icon, route, isActive, props }) => {
+const ListCard: React.FC<ListCardProps> = ({ title, icon, route, isActive, props}) => {
     const navigation = useNavigation<Nav>()
 
     const handlePress = (data: string) => {

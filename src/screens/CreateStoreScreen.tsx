@@ -225,6 +225,7 @@ const CreateStoreScreen = (): JSX.Element => {
             />
 
             <Input
+              number
               label={'Phone Number'}
               value={values.phoneNumber}
               onBlur={handleBlur('phoneNumber')}

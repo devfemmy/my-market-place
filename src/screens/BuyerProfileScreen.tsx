@@ -198,19 +198,21 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
   const requestPassowrdChange = async () => {
     setLoader(true)
+   
     const data = {
       email: profileData?.email,
-      redirect_url: `https//bazara.herokuapp.com/new-password`
-    }
+      redirect_url: `https://bazara.herokuapp.com/new-password`
+    } 
+
     try {
       var resultAction = await dispatch(forgetPassword(data))
       if (forgetPassword.fulfilled.match(resultAction)) {
         await AsyncStorage.clear()
         await dispatch(signOutUser()).then(dd => {
-          return navigation.navigate('Home')
+          return navigation.navigate('HomeScreen')
         })
         setLoader(false)
-        return navigation.navigate('Home')
+        return navigation.navigate('HomeScreen')
       }
       else {
         console.log("error")
@@ -235,9 +237,9 @@ const BuyerProfileScreen = ({ navigation }: any) => {
   const signOut = async () => {
     await AsyncStorage.clear()
     await dispatch(signOutUser()).then(dd => {
-      return navigation.navigate('Home')
+      return navigation.navigate('HomeScreen')
     })
-    return navigation.navigate('Home')
+    return navigation.navigate('HomeScreen')
   }
 
 
@@ -405,6 +407,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                       errorMsg={touched.fName ? errors.fName : undefined}
                     />
                     <Input
+                      number
                       label='Phone number'
                       value={values.mobile}
                       onChangeText={handleChange('mobile')}
@@ -506,7 +509,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
 
                 <Pressable onPress={() => signOut()}>
-                  <Text text='Logout' fontSize={hp(14)} color={colors.bazaraTint} fontWeight='400' />
+                  <Text text='Logout' fontSize={hp(14)} color={colors.bazaraTint} style={{marginVertical: hp(20)}} fontWeight='400' />
                 </Pressable>
               </View>
 

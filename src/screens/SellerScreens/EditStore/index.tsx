@@ -54,20 +54,20 @@ const EditStore = (): JSX.Element => {
 
 
   useEffect(() => {
-      setEditImg(storeIdData?.imgUrl)
+    setEditImg(storeIdData?.imgUrl)
   }, [storeIdData])
 
   const loadActiveId = async () => {
     const id = await AsyncStorage.getItem('activeId') as string
 
-    if(!id){
+    if (!id) {
       navigation.navigate('AuthStoreCreationScreen')
     }
     await dispatch(getPersonalStore())
     setActiveId(id)
     // dispatch(getStoreById(id))
     const selectedStore = await myStoreList?.filter((val) => {
-      if(val?.id == id){
+      if (val?.id == id) {
         setEditImg(val?.img_url)
         setFieldValue('state', val?.state)
         setFieldValue('storeName', val?.brand_name)
@@ -76,9 +76,9 @@ const EditStore = (): JSX.Element => {
         setFieldValue('street', val?.street)
         setFieldValue('estimatedDeliveryDuration', val?.estimated_delivery_duration)
         setFieldValue('city', val?.city)
-      } 
+      }
     })
-   setLoader(false)
+    setLoader(false)
   }
 
 
@@ -98,16 +98,16 @@ const EditStore = (): JSX.Element => {
       id: activeId,
       brandName: data.storeName,
       description: data.description,
-      coverImg:  imageData?.length > 1 ? imageData : editImg,
+      coverImg: imageData?.length > 1 ? imageData : editImg,
       address: data.street + " " + data.city + " " + data.state,
       phoneNumber: data.phoneNumber.toString(),
       // estimated_delivery_duration: data?.estimatedDeliveryDuration,
       location: {
-          state: data.state,
-          city: data.city,
-          street: data.street,
+        state: data.state,
+        city: data.city,
+        street: data.street,
       },
-  };
+    };
 
     setLoader(true)
     const resultAction = await dispatch(updateStore(payload))
@@ -119,9 +119,9 @@ const EditStore = (): JSX.Element => {
         Component: NotifierComponents.Alert,
         hideOnPress: false,
         componentProps: {
-            alertType: 'success',
+          alertType: 'success',
         },
-    });
+      });
     } else {
       var errMsg = resultAction?.payload as string
       setLoader(false)
@@ -131,9 +131,9 @@ const EditStore = (): JSX.Element => {
         Component: NotifierComponents.Alert,
         hideOnPress: false,
         componentProps: {
-            alertType: 'error',
+          alertType: 'error',
         },
-    });
+      });
     }
   }
 
@@ -149,7 +149,7 @@ const EditStore = (): JSX.Element => {
       validationSchema: StoreFormSchema,
       onSubmit: (val: StoreFormData) => handleStoreSubmission(val),
       enableReinitialize: true
-  });
+    });
 
 
   const locationState = locationData?.map((data: locationProp) => data?.state);
@@ -161,21 +161,21 @@ const EditStore = (): JSX.Element => {
 
   const pickImage = async (index: number) => {
     ImagePicker.openPicker({
-        width: 500,
-        height: 600,
-        cropping: true,
-        mediaType: "photo",
-        multiple: false,
+      width: 500,
+      height: 600,
+      cropping: true,
+      mediaType: "photo",
+      multiple: false,
     }).then(async image => {
       setImgLoader(true)
-        const ImageUrl = await pictureUpload(image)
-        setImageData(ImageUrl)
-        setImgLoader(false)
+      const ImageUrl = await pictureUpload(image)
+      setImageData(ImageUrl)
+      setImgLoader(false)
     });
-};
+  };
 
   const resetImage = () => {
-   setImageData('')
+    setImageData('')
   }
 
   const removeImage = () => {
@@ -183,13 +183,13 @@ const EditStore = (): JSX.Element => {
   }
 
 
-  if(loader){
+  if (loader) {
     return (
-        <SafeAreaView>
-            <View style={[globalStyles.rowCenter, {flex: 1}]}>
-                <ActivityIndicator size={'small'}/>
-            </View>
-        </SafeAreaView>
+      <SafeAreaView>
+        <View style={[globalStyles.rowCenter, { flex: 1 }]}>
+          <ActivityIndicator size={'small'} />
+        </View>
+      </SafeAreaView>
     )
   }
 
@@ -209,8 +209,8 @@ const EditStore = (): JSX.Element => {
 
           <View style={gbStyles.formContainer}>
             {
-             editImg || imageData?.length > 1 ?
-                <Pressable onPress={editImg?.length > 1 ? () => removeImage() :() => resetImage()}>
+              editImg || imageData?.length > 1 ?
+                <Pressable onPress={editImg?.length > 1 ? () => removeImage() : () => resetImage()}>
                   <View style={gbStyles.image}>
                     <View style={gbStyles.round}>
                       <AntDesign name="minus" size={hp(15)} style={{ color: colors.white }} />
@@ -222,9 +222,9 @@ const EditStore = (): JSX.Element => {
                 <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
                     {
-                      imgLoader ? <AntDesign name='loading1' /> :  <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                      imgLoader ? <AntDesign name='loading1' /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
                     }
-                   
+
                   </View>
                 </Pressable>
             }
@@ -252,13 +252,14 @@ const EditStore = (): JSX.Element => {
             />
 
             <Input
+              number
               label={'Phone Number'}
               value={values.phoneNumber}
               onBlur={handleBlur('phoneNumber')}
               onChangeText={handleChange('phoneNumber')}
               errorMsg={touched.phoneNumber ? errors.phoneNumber : undefined}
             />
-             {/* <View>
+            {/* <View>
               <Select
                 placeholder='Estimated Delivery Date'
                 items={['1', '2', '3', '4', '5']}
