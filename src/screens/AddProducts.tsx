@@ -302,7 +302,8 @@ const AddProducts = ({ navigation }: any) => {
                 cart
                 categoryName="Add Product"
             />
-            <View style={styles.viewContainer}>
+           <ScrollView showsVerticalScrollIndicator={false}>
+           <View style={styles.viewContainer}>
                 <Text text="Kindly provide product information" fontSize={hp(16)} />
                 <Input
                     label='Product Name'
@@ -328,7 +329,7 @@ const AddProducts = ({ navigation }: any) => {
                 />
                  <Input
                     number
-                    label='Expected Delivery Duration'
+                    label='Expected Delivery Duration (Days)'
                     value={values?.estimated_delivery_duration?.toString()}
                     onChangeText={handleChange('estimated_delivery_duration')}
                     errorMsg={touched.estimated_delivery_duration ? errors.estimated_delivery_duration : undefined}
@@ -394,6 +395,7 @@ const AddProducts = ({ navigation }: any) => {
                 {!getSlug || getSlug === undefined ? <Button isLoading={loader} title={"Continue"} onPress={handleSubmit} /> : null}
                 {getSlug ? <Button isLoading={loader} title={"Publish"} onPress={handleBothColorAndSize} /> : null}
             </View>
+           </ScrollView>
 
         </View>
     )
@@ -410,6 +412,7 @@ const styles = StyleSheet.create({
     },
     viewContainer: {
         flex: 6,
+        paddingHorizontal: hp(10)
     },
     div: {
         paddingVertical: hp(5)
@@ -440,5 +443,7 @@ const styles = StyleSheet.create({
     },
     bottomContainer: {
         flex: 1,
+        paddingHorizontal: hp(10),
+        marginTop: hp(50)
     }
 })

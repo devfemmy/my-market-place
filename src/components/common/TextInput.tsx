@@ -70,7 +70,7 @@ export const Input = memo(
             searchInput ? (
               <BaseInput.Icon
                 color={colors.white}
-                onPress={toggleEntry}
+                // onPress={toggleEntry}
                 name={'magnify'}
                 size={hp(25)}
                 style={{marginTop: iconMarginTop}}

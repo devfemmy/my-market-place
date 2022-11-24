@@ -15,7 +15,7 @@ import MobileHeader from './Containers/MobileHeader'
 import { useFormik } from 'formik'
 import { ProductColorAloneData, ProductColorData, ProductNoColorData, ProductSizeData } from '../utils/types'
 import { ProductColorAloneSchema, ProductColorSchema, ProductNoColorSchema, ProductSizeSchema } from '../utils/constants'
-import { useAppDispatch,useAppSelector } from '../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { createProductVariant, createProductVariantSpec, deleteProductVariant, deleteProductVariantSpec, getProductBySlug, productBySlug, updateProductVariant, updateProductVariantSpec } from '../redux/slices/productSlice'
 import { sizes } from '../utils/constants/sizes'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
@@ -31,7 +31,7 @@ import { pictureUpload } from '../utils/functions'
 
 const ProductDetailEditVariant = (props: any) => {
     const getSlug = props?.route.params.params.slug
-    const productInDraft =  props?.route.params.params.productEditInDraft
+    const productInDraft = props?.route.params.params.productEditInDraft
     const prodId = props?.route.params.params.productEditId
     const activeId = props?.route.params.params.activeId
     const [multipleUpload, setMultipleUpload] = useState<any>([])
@@ -76,7 +76,7 @@ const ProductDetailEditVariant = (props: any) => {
     const [colorAloneVar, setColorAloneVar] = useState<any>([])
     // const [color, setColor] = useState<string>('')
 
-  
+
 
 
     const initialValues: ProductNoColorData = {
@@ -121,24 +121,24 @@ const ProductDetailEditVariant = (props: any) => {
                     setSizeLists(filterData?.product_variant_specs)
                 })
             }
-    
-    
+
+
             if (prodVarId && productInDraft?.isColor && !productInDraft?.isSize) {
                 dispatch(getProductBySlug(getSlug)).then(dd => {
                     setColorAloneVar(dd?.payload)
                 })
                 return;
             }
-    
+
             else {
                 var id = await AsyncStorage.getItem('prodVarId').then((req: any) => JSON.parse(req))
                 setProdVarId(id)
             }
-    
+
         }
     }, [getSlug, prodVarId, prodId])
 
-   
+
 
     const removeImage = (index: any) => {
         const update = multipleUpload?.filter((data, i) => i !== index)
@@ -167,7 +167,7 @@ const ProductDetailEditVariant = (props: any) => {
     }
 
     const deleteSize = async (info: any) => {
-      console.log({info})
+        console.log({ info })
         try {
             var result = await dispatch(deleteProductVariantSpec(info))
             if (deleteProductVariantSpec.fulfilled.match(result)) {
@@ -414,7 +414,7 @@ const ProductDetailEditVariant = (props: any) => {
                     var result = await dispatch(updateProductVariantSpec(editPayload))
                     if (updateProductVariantSpec.fulfilled.match(result)) {
                         dispatch(getProductBySlug(getSlug)).then(dd => {
-                            var filterData = dd?.payload?.product_variants?.find((data: any )=> data?.id === prodVarId)
+                            var filterData = dd?.payload?.product_variants?.find((data: any) => data?.id === prodVarId)
                             if (filterData === undefined) {
                                 return;
                             }
@@ -431,21 +431,21 @@ const ProductDetailEditVariant = (props: any) => {
                     }
                     else {
                         var errMsg = result?.payload as string
-                         Notifier.showNotification({
-                        title: errMsg,
-                        // description: "tghdddfdfd",
-                        Component: NotifierComponents.Alert,
-                        hideOnPress: false,
-                        componentProps: {
-                            alertType: 'error',
-                        },
-                    });
+                        Notifier.showNotification({
+                            title: errMsg,
+                            // description: "tghdddfdfd",
+                            Component: NotifierComponents.Alert,
+                            hideOnPress: false,
+                            componentProps: {
+                                alertType: 'error',
+                            },
+                        });
                         setLoader(false)
                     }
                 }
                 else {
                     var errMsg = bigR?.payload as string
-                     Notifier.showNotification({
+                    Notifier.showNotification({
                         title: errMsg,
                         // description: "tghdddfdfd",
                         Component: NotifierComponents.Alert,
@@ -594,7 +594,7 @@ const ProductDetailEditVariant = (props: any) => {
                 await AsyncStorage.removeItem('prodEditVarId')
                 await AsyncStorage.removeItem('editableEditId')
                 await AsyncStorage.removeItem('productEditInDraft')
- 
+
                 Notifier.showNotification({
                     title: 'Product Publish successfully',
                     description: '',
@@ -694,22 +694,22 @@ const ProductDetailEditVariant = (props: any) => {
                 }
                 else {
                     var errMsg = secondResult?.payload as string
-                     Notifier.showNotification({
-                    title: errMsg,
-                    description: '',
-                    Component: NotifierComponents.Alert,
-                    hideOnPress: false,
-                    componentProps: {
-                        alertType: 'error',
-                    },
-                });
+                    Notifier.showNotification({
+                        title: errMsg,
+                        description: '',
+                        Component: NotifierComponents.Alert,
+                        hideOnPress: false,
+                        componentProps: {
+                            alertType: 'error',
+                        },
+                    });
                     setLoader(false)
                 }
 
             }
             else {
                 var errMsg = result?.payload as string
-                 Notifier.showNotification({
+                Notifier.showNotification({
                     title: errMsg,
                     description: '',
                     Component: NotifierComponents.Alert,
@@ -823,22 +823,22 @@ const ProductDetailEditVariant = (props: any) => {
                 }
                 else {
                     var errMsg = secondResult?.payload as string
-                   Notifier.showNotification({
-                    title: errMsg,
-                    description: '',
-                    Component: NotifierComponents.Alert,
-                    hideOnPress: false,
-                    componentProps: {
-                        alertType: 'error',
-                    },
-                });
+                    Notifier.showNotification({
+                        title: errMsg,
+                        description: '',
+                        Component: NotifierComponents.Alert,
+                        hideOnPress: false,
+                        componentProps: {
+                            alertType: 'error',
+                        },
+                    });
                     setLoader(false)
                 }
 
             }
             else {
                 var errMsg = result?.payload as string
-               Notifier.showNotification({
+                Notifier.showNotification({
                     title: errMsg,
                     description: '',
                     Component: NotifierComponents.Alert,
@@ -966,308 +966,313 @@ const ProductDetailEditVariant = (props: any) => {
 
 
 
-    
 
 
-  return (
-    <View style={styles.container}>
-    <MobileHeader
-        props={props}
-        categoryName='Product Details'
-    />
-    <View style={styles.columnContainer}>
-        <Text text='Upload Images' fontSize={hp(16)} fontWeight='400' />
 
-        {
-            multipleUpload?.length < 1 || multipleUpload === undefined ? <ImageUploadComponent single profileImageChange={pickImage} imageLoader={imageLoader} />
-                :
-                <View style={styles.rowStart}>
-                    {
-                        multipleUpload?.map((item: any, i: number) => {
-                            return <View style={styles.rowStart}>
-                                <View>
-                                    <Pressable onPress={() => removeImage(i)}>
-                                        <Image source={remove} style={styles.img2} />
+    return (
+        <View style={styles.container}>
+            <MobileHeader
+                props={props}
+                categoryName='Product Details'
+            />
+            <View style={styles.columnContainer}>
+                <Text text='Upload Images' fontSize={hp(16)} fontWeight='400' />
+
+                {
+                    multipleUpload?.length < 1 || multipleUpload === undefined ? <ImageUploadComponent single profileImageChange={pickImage} imageLoader={imageLoader} />
+                        :
+                        <View style={styles.rowStart}>
+                            {
+                                multipleUpload?.map((item: any, i: number) => {
+                                    return <View style={styles.rowStart}>
+                                        <View>
+                                            <Pressable onPress={() => removeImage(i)}>
+                                                <Image source={remove} style={styles.img2} />
+                                            </Pressable>
+                                            <Image source={{ uri: item }} style={styles.multContainer} />
+                                        </View>
+
+                                    </View>
+                                })
+                            }
+                            {
+                                dummyUploadImage?.filter((a, b) => multipleUpload?.length < b + 1 && multipleUpload?.length < 6).map((data, i) => {
+                                    return <Pressable onPress={() => pickImage(i)}>
+                                        <View style={styles.multContainer2}>
+                                            {
+                                                imageLoader ? <AntDesign name='loading1' color={'white'} /> :
+                                                    <Image source={plus} style={styles.img} />
+                                            }
+
+                                        </View>
+
                                     </Pressable>
-                                    <Image source={{ uri: item }} style={styles.multContainer} />
-                                </View>
+                                })
+                            }
 
-                            </View>
-                        })
-                    }
-                    {
-                        dummyUploadImage?.filter((a, b) => multipleUpload?.length < b + 1 && multipleUpload?.length < 6).map((data, i) => {
-                            return <Pressable onPress={() => pickImage(i)}>
-                                <View style={styles.multContainer2}>
-                                    {
-                                        imageLoader ? <AntDesign name='loading1' color={'white'} /> :
-                                            <Image source={plus} style={styles.img} />
-                                    }
+                        </View>
 
-                                </View>
+                }
 
-                            </Pressable>
-                        })
-                    }
-
-                </View>
-
-        }
-
-        {/* No size no color */}
-        {
-            !productInDraft?.isColor && !productInDraft?.isSize && <>
-                <Input
-                    style={styles.price}
-                    label='Price'
-                    // type='controlled'
-                    value={values.price.toString()}
-                    onChangeText={handleChange('price')}
-                    errorMsg={touched.price ? errors.price : undefined}
-                />
-                <View style={globalStyles.rowStart}>
-                    <View style={styles.subdiv}>
+                {/* No size no color */}
+                {
+                    !productInDraft?.isColor && !productInDraft?.isSize && <>
                         <Input
-                            label='Quantity'
+                            style={styles.price}
+                            label='Price'
+                            number
                             // type='controlled'
-                            value={quantity?.toString()}
-                            onChangeText={(e: any) => setQuantity(e)}
+                            value={values.price.toString()}
+                            onChangeText={handleChange('price')}
                             errorMsg={touched.price ? errors.price : undefined}
                         />
-                    </View>
-                    <Pressable onPress={() => decrement()}>
-                        <View style={styles.quantitydiv} >
-                            <Text text='-' fontSize={hp(30)} />
+                        <View style={globalStyles.rowStart}>
+                            <View style={styles.subdiv}>
+                                <Input
+                                    label='Quantity'
+                                    // type='controlled'
+                                    value={quantity?.toString()}
+                                    onChangeText={(e: any) => setQuantity(e)}
+                                    errorMsg={touched.price ? errors.price : undefined}
+                                />
+                            </View>
+                            <Pressable onPress={() => decrement()}>
+                                <View style={styles.quantitydiv} >
+                                    <Text text='-' fontSize={hp(30)} />
+                                </View>
+                            </Pressable>
+                            <Pressable onPress={() => increment()}>
+                                <View style={styles.quantitydiv} >
+                                    <Text text='+' fontSize={hp(30)} />
+                                </View>
+                            </Pressable>
+
                         </View>
-                    </Pressable>
-                    <Pressable onPress={() => increment()}>
-                        <View style={styles.quantitydiv} >
-                            <Text text='+' fontSize={hp(30)} />
-                        </View>
-                    </Pressable>
-
-                </View>
-            </>
-        }
-
-        {/* No color but dere is size */}
-        {
-            productInDraft?.isSize && !productInDraft?.isColor && <>
-                <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-                    <View style={styles.bigDiv}>
-                        {renderSizeList()}
-                    </View>
-                    <Pressable onPress={showModal}>
-                        <View style={[globalStyles.rowStart,{marginVertical: hp(5)}]}>
-                            <Image
-                                source={plusBig}
-                                style={styles.plus}
-                            />
-                            <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
-                        </View>
-                    </Pressable>
-                </ScrollView>
-
-            </>
-        }
-
-
-        {/* There is color but no size */}
-
-        {
-            productInDraft?.isColor && !productInDraft?.isSize && <>
-                <Input
-                    label='Color'
-                    value={colorValues.description}
-                    onChangeText={colorHandleChange('description')}
-                    errorMsg={colorTouched.description ? colorErrors.description : undefined}
-                />
-
-                <Input
-                    label='Price'
-                    value={colorValues.price.toString()}
-                    onChangeText={colorHandleChange('price')}
-                    errorMsg={colorTouched.price ? colorErrors.price : undefined}
-                />
-
-                <View style={styles.rowStart}>
-                    <View style={styles.subdiv}>
-                        <Input
-                            label='Quantity'
-                            // type='controlled'
-                            value={quantity?.toString()}
-                        />
-                    </View>
-                    <Pressable onPress={() => decrement()}>
-                        <View style={styles.quantitydiv2} >
-                            <Text text='-' fontSize={hp(30)} />
-                        </View>
-                    </Pressable>
-                    <Pressable onPress={() => increment()}>
-                        <View style={styles.quantitydiv2} >
-                            <Text text='+' fontSize={hp(30)} />
-                        </View>
-                    </Pressable>
-                </View>
-
-                <View style={styles.br2}></View>
-                <Pressable onPress={addAnotherColor}>
-                    <View style={styles.rowStart}>
-                        <Image
-                            source={plusBig}
-                        />
-                        {
-                            loader ? <AntDesign name='loading1' style={{ marginTop: hp(5) }} color='white' /> : <Text text={colorAloneVar?.length > 0 ? 'Add Another Colour' : 'Add Colour'} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
-                        }
-                    </View>
-                </Pressable>
-
-                <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-                    <View style={styles.bigDiv2}>
-                        {renderColorVariety()}
-                    </View>
-                </ScrollView>
-
-            </>
-        }
-
-
-        {/* Both size and color true */}
-        {
-            productInDraft?.isColor && productInDraft?.isSize && <>
-                <Input
-                    label='Color Description'
-                    value={_values.description}
-                    onChangeText={_handleChange('description')}
-                    errorMsg={_touched.description ? _errors.description : undefined}
-                />
-                <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-                <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-                {
-                    renderSizeList()
+                    </>
                 }
-                </ScrollView>
-                <Pressable onPress={showModal2}>
-                    <View style={[globalStyles.rowStart, {marginVertical: hp(5)}]}>
-                        <Image
-                            source={plusBig}
-                        />
-                        <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400'style={{marginLeft: hp(5)}} />
-                    </View>
-                </Pressable>
-              {/* <View style={styles.br}></View> */}
-            </>
-        }
+
+                {/* No color but dere is size */}
+                {
+                    productInDraft?.isSize && !productInDraft?.isColor && <>
+                        <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
+                            <Pressable onPress={showModal}>
+                                <View style={[globalStyles.rowStart, { marginVertical: hp(5) }]}>
+                                    <Image
+                                        source={plusBig}
+                                        style={styles.plus}
+                                    />
+                                    <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                                </View>
+                            </Pressable>
+                            <View style={styles.bigDiv}>
+                                {renderSizeList()}
+                            </View>
+
+                        </ScrollView>
+
+                    </>
+                }
 
 
-    </View>
+                {/* There is color but no size */}
 
-    <View style={styles.bottomContainer}>
-        {
-            !productInDraft?.isColor && !productInDraft?.isSize && <Button
-                isLoading={loader}
-                title={"Publish"}
-                onPress={handleSubmit}
-            />
-        }
-        {
-            !productInDraft?.isColor && productInDraft?.isSize && <Button
-                isLoading={loader}
-                title={"Publish"}
-                onPress={handleSizeAlonePublish}
-            />
-        }
-        {
-            productInDraft?.isColor && !productInDraft?.isSize && <Button
-                isLoading={loader}
-                title={"Publish"}
-                onPress={handleColorAlone}
-            />
-        }
-        {
-            productInDraft?.isColor && productInDraft?.isSize && <Button
-                isLoading={loader}
-                title={"Add this color"}
-                onPress={handleBothColorAndSize}
-            />
-        }
-    </View>
-
-
-    <RBSheet
-        ref={refRBSheet}
-        closeOnDragDown={true}
-        closeOnPressMask={false}
-        height={400}
-        animationType='slide'
-        customStyles={{
-            wrapper: {
-                backgroundColor: "transparent"
-            },
-            draggableIcon: {
-                backgroundColor: colors.bazaraTint
-            },
-            container: {
-                backgroundColor: 'black',
-                height: hp(400)
-            }
-        }}
-    >
-        <View style={styles.sheet}>
-            <View style={[globalStyles.rowBetween]}>
-                <Text text='Size Details' fontSize={hp(16)} fontWeight='600' />
-                <Pressable onPress={handleCancel}>
-                    <View>
-                        <Image source={cancel} />
-                    </View>
-                </Pressable>
-            </View>
-
-            <View style={styles.columnContainer2}>
-                <Select
-                    placeholder='Select Size'
-                    items={newSize}
-                    defaultValue={modalValues.size}
-                    setState={modalHandleChange('size')}
-                    errorMsg={modalTouched.size ? modalErrors.size : undefined}
-                />
-                <View style={styles.mins}></View>
-                <Input
-                    style={{ marginTop: hp(5) }}
-                    label='Price'
-                    value={modalValues.price.toString()}
-                    onChangeText={modalHandleChange('price')}
-                    errorMsg={modalTouched.price ? modalErrors.price : undefined}
-                />
-                <View style={globalStyles.rowStart}>
-                    <View style={styles.subdiv}>
+                {
+                    productInDraft?.isColor && !productInDraft?.isSize && <>
                         <Input
-                            label='Quantity'
-                            value={modalQuantity?.toString()}
+                            label='Color'
+                            value={colorValues.description}
+                            onChangeText={colorHandleChange('description')}
+                            errorMsg={colorTouched.description ? colorErrors.description : undefined}
                         />
-                    </View>
-                    <Pressable onPress={() => modalDecrement()}>
-                        <View style={styles.quantitydiv} >
-                            <Text text='-' fontSize={hp(30)} />
+
+                        <Input
+                            label='Price'
+                            number
+                            value={colorValues.price.toString()}
+                            onChangeText={colorHandleChange('price')}
+                            errorMsg={colorTouched.price ? colorErrors.price : undefined}
+                        />
+
+                        <View style={styles.rowStart}>
+                            <View style={styles.subdiv}>
+                                <Input
+                                    label='Quantity'
+                                    // type='controlled'
+                                    value={quantity?.toString()}
+                                />
+                            </View>
+                            <Pressable onPress={() => decrement()}>
+                                <View style={styles.quantitydiv2} >
+                                    <Text text='-' fontSize={hp(30)} />
+                                </View>
+                            </Pressable>
+                            <Pressable onPress={() => increment()}>
+                                <View style={styles.quantitydiv2} >
+                                    <Text text='+' fontSize={hp(30)} />
+                                </View>
+                            </Pressable>
                         </View>
-                    </Pressable>
-                    <Pressable onPress={() => modalIncrement()}>
-                        <View style={styles.quantitydiv} >
-                            <Text text='+' fontSize={hp(30)} />
-                        </View>
-                    </Pressable>
-                </View>
-                <Button isLoading={loader} title={editSizeData ? "Update" : "Save and add new"} onPress={modalHandleSubmit} />
+
+                        <View style={styles.br2}></View>
+                        <Pressable onPress={addAnotherColor}>
+                            <View style={styles.rowStart}>
+                                <Image
+                                    source={plusBig}
+                                />
+                                {
+                                    loader ? <AntDesign name='loading1' style={{ marginTop: hp(5) }} color='white' /> : <Text text={colorAloneVar?.length > 0 ? 'Add Another Colour' : 'Add Colour'} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                                }
+                            </View>
+                        </Pressable>
+
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
+                            <View style={styles.bigDiv2}>
+                                {renderColorVariety()}
+                            </View>
+                        </ScrollView>
+
+                    </>
+                }
+
+
+                {/* Both size and color true */}
+                {
+                    productInDraft?.isColor && productInDraft?.isSize && <>
+                        <Input
+                            label='Color Description'
+                            value={_values.description}
+                            onChangeText={_handleChange('description')}
+                            errorMsg={_touched.description ? _errors.description : undefined}
+                        />
+                        <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
+                            <Pressable onPress={showModal2}>
+                                <View style={[globalStyles.rowStart, { marginVertical: hp(5) }]}>
+                                    <Image
+                                        source={plusBig}
+                                    />
+                                    <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                                </View>
+                            </Pressable>
+                            {
+                                renderSizeList()
+                            }
+                        </ScrollView>
+
+                        {/* <View style={styles.br}></View> */}
+                    </>
+                }
+
+
             </View>
 
+            <View style={styles.bottomContainer}>
+                {
+                    !productInDraft?.isColor && !productInDraft?.isSize && <Button
+                        isLoading={loader}
+                        title={"Publish"}
+                        onPress={handleSubmit}
+                    />
+                }
+                {
+                    !productInDraft?.isColor && productInDraft?.isSize && <Button
+                        isLoading={loader}
+                        title={"Publish"}
+                        onPress={handleSizeAlonePublish}
+                    />
+                }
+                {
+                    productInDraft?.isColor && !productInDraft?.isSize && <Button
+                        isLoading={loader}
+                        title={"Publish"}
+                        onPress={handleColorAlone}
+                    />
+                }
+                {
+                    productInDraft?.isColor && productInDraft?.isSize && <Button
+                        isLoading={loader}
+                        title={"Add this color"}
+                        onPress={handleBothColorAndSize}
+                    />
+                }
+            </View>
+
+
+            <RBSheet
+                ref={refRBSheet}
+                closeOnDragDown={true}
+                closeOnPressMask={false}
+                height={400}
+                animationType='slide'
+                customStyles={{
+                    wrapper: {
+                        backgroundColor: "transparent"
+                    },
+                    draggableIcon: {
+                        backgroundColor: colors.bazaraTint
+                    },
+                    container: {
+                        backgroundColor: 'black',
+                        height: hp(400)
+                    }
+                }}
+            >
+                <View style={styles.sheet}>
+                    <View style={[globalStyles.rowBetween]}>
+                        <Text text='Size Details' fontSize={hp(16)} fontWeight='600' />
+                        <Pressable onPress={handleCancel}>
+                            <View>
+                                <Image source={cancel} />
+                            </View>
+                        </Pressable>
+                    </View>
+
+                    <View style={styles.columnContainer2}>
+                        <Select
+                            placeholder='Select Size'
+                            items={newSize}
+                            defaultValue={modalValues.size}
+                            setState={modalHandleChange('size')}
+                            errorMsg={modalTouched.size ? modalErrors.size : undefined}
+                        />
+                        <View style={styles.mins}></View>
+                        <Input
+                            style={{ marginTop: hp(5) }}
+                            label='Price'
+                            number
+                            value={modalValues.price.toString()}
+                            onChangeText={modalHandleChange('price')}
+                            errorMsg={modalTouched.price ? modalErrors.price : undefined}
+                        />
+                        <View style={globalStyles.rowStart}>
+                            <View style={styles.subdiv}>
+                                <Input
+                                    label='Quantity'
+                                    value={modalQuantity?.toString()}
+                                />
+                            </View>
+                            <Pressable onPress={() => modalDecrement()}>
+                                <View style={styles.quantitydiv} >
+                                    <Text text='-' fontSize={hp(30)} />
+                                </View>
+                            </Pressable>
+                            <Pressable onPress={() => modalIncrement()}>
+                                <View style={styles.quantitydiv} >
+                                    <Text text='+' fontSize={hp(30)} />
+                                </View>
+                            </Pressable>
+                        </View>
+                        <Button isLoading={loader} title={editSizeData ? "Update" : "Save and add new"} onPress={modalHandleSubmit} />
+                    </View>
+
+                </View>
+            </RBSheet>
         </View>
-    </RBSheet>
-</View>
-  )
+    )
 }
 
 export default ProductDetailEditVariant

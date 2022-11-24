@@ -102,7 +102,7 @@ const ColorEditVariant = (props: any) => {
         const loadData = async () => {
             dispatch(getProductBySlug(slug)).then(dd => {
                 var filterData = dd?.payload?.product_variants?.find((dat: any) => dat?.id === editableItem)
-                console.log({filterData}, productInDraft?.isColor,productInDraft?.isSize)
+                console.log({ filterData }, productInDraft?.isColor, productInDraft?.isSize)
                 if (productInDraft?.isColor && !productInDraft?.isSize) {
                     setMultipleUpload(filterData?.img_urls)
                     setDummyUploadImage([...filterData?.img_urls, ""])
@@ -903,6 +903,7 @@ const ColorEditVariant = (props: any) => {
                         <Input
                             style={styles.price}
                             label='Price'
+                            number
                             // type='controlled'
                             value={values.price.toString()}
                             onChangeText={handleChange('price')}
@@ -937,13 +938,10 @@ const ColorEditVariant = (props: any) => {
                 {
                     productInDraft?.isSize && !productInDraft?.isColor && <>
                         <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                        <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-                            <View style={styles.bigDiv}>
-                                {renderSizeList()}
-                            </View>
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
                             <Pressable onPress={showModal}>
-                                <View style={globalStyles.rowStart}>
+                                <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]}>
                                     <Image
                                         source={plusBig}
                                         style={styles.plus}
@@ -951,6 +949,10 @@ const ColorEditVariant = (props: any) => {
                                     <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
                                 </View>
                             </Pressable>
+                            <View style={styles.bigDiv}>
+                                {renderSizeList()}
+                            </View>
+
                         </ScrollView>
 
                     </>
@@ -970,6 +972,7 @@ const ColorEditVariant = (props: any) => {
 
                         <Input
                             label='Price'
+                            number
                             value={colorValues.price.toString()}
                             onChangeText={colorHandleChange('price')}
                             errorMsg={colorTouched.price ? colorErrors.price : undefined}
@@ -1009,19 +1012,20 @@ const ColorEditVariant = (props: any) => {
                             errorMsg={_touched.description ? _errors.description : undefined}
                         />
                         <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-                       <ScrollView>
-                       {
-                            renderSizeList()
-                        }
-                       </ScrollView>
-                        <Pressable onPress={showModal2}>
-                            <View style={globalStyles.rowStart}>
-                                <Image
-                                    source={plusBig}
-                                />
-                                <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
-                            </View>
-                        </Pressable>
+                        <ScrollView showsVerticalScrollIndicator={false}>
+                            <Pressable onPress={showModal2}>
+                                <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]}>
+                                    <Image
+                                        source={plusBig}
+                                    />
+                                    <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                                </View>
+                            </Pressable>
+                            {
+                                renderSizeList()
+                            }
+                        </ScrollView>
+
                         {/* <View style={styles.br}></View> */}
                     </>
                 }
@@ -1078,6 +1082,7 @@ const ColorEditVariant = (props: any) => {
                         <Input
                             style={{ marginTop: hp(5) }}
                             label='Price'
+                            number
                             value={modalValues.price.toString()}
                             onChangeText={modalHandleChange('price')}
                             errorMsg={modalTouched.price ? modalErrors.price : undefined}

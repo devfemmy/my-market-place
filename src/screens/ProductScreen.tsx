@@ -43,6 +43,8 @@ const ProductScreen = ({ navigation }: any) => {
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
+    const filteredData = productList?.filter((dd: any )=> dd?.name?.toLowerCase().includes(searchValue.toLowerCase()))
+
 
     useEffect(() => {
         const loadAsyn = async () => {
@@ -83,10 +85,10 @@ const ProductScreen = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
             <View>
-                <Text style={{ textTransform: 'capitalize' }} text={`${activeName} (${productList?.length})`} fontSize={hp(18)} />
-                <Input label={'Search for products'} searchInput />
+                <Text style={{ textTransform: 'capitalize' }} text={`${activeName} (${filteredData?.length})`} fontSize={hp(18)} />
+                <Input label={'Search for products'} value={searchValue} onChangeText={(e) => setSearchValue(e)} searchInput />
             </View>
-            {productList?.length < 1 && <EmptyState
+            {filteredData?.length < 1 && <EmptyState
                 icon={productLogo}
                 title="No Products Yet"
                 header='Add products to your store to start selling'
@@ -109,9 +111,9 @@ const ProductScreen = ({ navigation }: any) => {
                     }
                 >
                     {
-                        productList?.length >= 1 && <View style={styles.lit}>
+                        filteredData?.length >= 1 && <View style={styles.lit}>
                             {
-                                productList?.map((data: any, i: number) => {
+                                filteredData?.map((data: any, i: number) => {
                                     return <ProductCard key={i} data={data} setProductList={setProductList} id={id} />
                                 })
                             }

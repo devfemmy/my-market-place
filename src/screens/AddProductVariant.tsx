@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Pressable,ScrollView, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, Image, Pressable, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { createProductVariant, createProductVariantSpec, deleteProductVariant, deleteProductVariantSpec, getProductBySlug, productBySlug, updateProductVariant, updateProductVariantSpec } from '../redux/slices/productSlice'
@@ -827,7 +827,7 @@ const AddProductVariant = ({ navigation }: any) => {
         try {
             var result = await dispatch(createProductVariant(payload))
             if (createProductVariant.fulfilled.match(result)) {
-                console.log({result, payload})
+                console.log({ result, payload })
                 var newPayload = {
                     amount: parseInt(data?.price),
                     quantity: quantity,
@@ -835,7 +835,7 @@ const AddProductVariant = ({ navigation }: any) => {
                 }
                 var secondResult = await dispatch(createProductVariantSpec(newPayload))
                 if (createProductVariantSpec.fulfilled.match(secondResult)) {
-                    console.log({secondResult, newPayload})
+                    console.log({ secondResult, newPayload })
                     Notifier.showNotification({
                         title: "Product successfully created",
                         description: '',
@@ -884,7 +884,7 @@ const AddProductVariant = ({ navigation }: any) => {
         catch (e) {
             console.log({ e })
         }
-       
+
     }
 
     const handleSizeAlonePublish = async () => {
@@ -1045,6 +1045,7 @@ const AddProductVariant = ({ navigation }: any) => {
                 {
                     !productInDraft?.isColor && !productInDraft?.isSize && <>
                         <Input
+                            number
                             style={styles.price}
                             label='Price'
                             // type='controlled'
@@ -1059,7 +1060,7 @@ const AddProductVariant = ({ navigation }: any) => {
                                     // type='controlled'
                                     value={quantity?.toString()}
                                     onChangeText={(e: any) => setQuantity(e)}
-                                    errorMsg={touched.price ? errors.price : undefined}
+                                    errorMsg={undefined}
                                 />
                             </View>
                             <Pressable onPress={() => decrement()}>
@@ -1081,10 +1082,10 @@ const AddProductVariant = ({ navigation }: any) => {
                 {
                     productInDraft?.isSize && !productInDraft?.isColor && <>
                         <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
-                        <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}> 
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
                             <Pressable onPress={showModal}>
-                                <View style={[globalStyles.rowStart,{marginVertical: hp(5)}]}>
+                                <View style={[globalStyles.rowStart, { marginVertical: hp(5) }]}>
                                     <Image
                                         source={plusBig}
                                         style={styles.plus}
@@ -1095,7 +1096,7 @@ const AddProductVariant = ({ navigation }: any) => {
                             <View style={styles.bigDiv}>
                                 {renderSizeList()}
                             </View>
-                           
+
                         </ScrollView>
 
                     </>
@@ -1114,6 +1115,7 @@ const AddProductVariant = ({ navigation }: any) => {
                         />
 
                         <Input
+                            number
                             label='Price'
                             value={colorValues.price.toString()}
                             onChangeText={colorHandleChange('price')}
@@ -1152,8 +1154,8 @@ const AddProductVariant = ({ navigation }: any) => {
                             </View>
                         </Pressable>
 
-                        <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
                             <View style={styles.bigDiv2}>
                                 {renderColorVariety()}
                             </View>
@@ -1173,22 +1175,22 @@ const AddProductVariant = ({ navigation }: any) => {
                             errorMsg={_touched.description ? _errors.description : undefined}
                         />
                         <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-                         <Pressable onPress={showModal2}>
-                            <View style={[globalStyles.rowStart, {marginVertical: hp(5)}]}>
+                        <Pressable onPress={showModal2}>
+                            <View style={[globalStyles.rowStart, { marginVertical: hp(5) }]}>
                                 <Image
                                     source={plusBig}
                                 />
-                                <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400'style={{marginLeft: hp(5)}} />
+                                <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
                             </View>
                         </Pressable>
-                        <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-                        {
-                            renderSizeList()
-                        }
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
+                            {
+                                renderSizeList()
+                            }
                         </ScrollView>
-                       
-                      {/* <View style={styles.br}></View> */}
+
+                        {/* <View style={styles.br}></View> */}
                     </>
                 }
 
@@ -1266,6 +1268,7 @@ const AddProductVariant = ({ navigation }: any) => {
                         />
                         <View style={styles.mins}></View>
                         <Input
+                            number
                             style={{ marginTop: hp(5) }}
                             label='Price'
                             value={modalValues.price.toString()}

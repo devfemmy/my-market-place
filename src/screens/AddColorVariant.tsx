@@ -1233,6 +1233,7 @@ const AddColorVariant = ({ navigation }: any) => {
             />
 
             <Input
+              number
               label='Price'
               value={colorValues.price.toString()}
               onChangeText={colorHandleChange('price')}
@@ -1271,8 +1272,8 @@ const AddColorVariant = ({ navigation }: any) => {
               </View>
             </Pressable>
 
-            <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
               <View style={styles.bigDiv2}>
                 {renderColorVariety()}
               </View>
@@ -1292,20 +1293,22 @@ const AddColorVariant = ({ navigation }: any) => {
               errorMsg={_touched.description ? _errors.description : undefined}
             />
             <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-            <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+
+            <ScrollView showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
+              <Pressable onPress={showModal2}>
+                <View style={[globalStyles.rowStart, {marginVertical: hp(10)}]}>
+                  <Image
+                    source={plusBig}
+                  />
+                  <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                </View>
+              </Pressable>
               {
                 renderSizeList()
               }
             </ScrollView>
-            <Pressable onPress={showModal2}>
-              <View style={globalStyles.rowStart}>
-                <Image
-                  source={plusBig}
-                />
-                <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
-              </View>
-            </Pressable>
+
             {/* <View style={styles.br}></View> */}
           </>
         }
@@ -1372,6 +1375,7 @@ const AddColorVariant = ({ navigation }: any) => {
             <Input
               style={{ marginTop: hp(5) }}
               label='Price'
+              number
               value={modalValues.price.toString()}
               onChangeText={modalHandleChange('price')}
               errorMsg={modalTouched.price ? modalErrors.price : undefined}

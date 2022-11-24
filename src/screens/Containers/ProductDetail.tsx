@@ -506,211 +506,214 @@ const ProductDetail = (props: any) => {
                         }
                     </Slick>
                 </View>
-                <Text text={productDetail?.name} style={{ marginVertical: hp(10) }} />
-                <View style={[globalStyles.rowBetween, styles.pd]}>
+                <View style={{ paddingHorizontal: hp(10) }}>
 
-                    <TouchableOpacity onPress={() => props.navigation.navigate('StoreInfo', {
-                        params: {
-                            store: productDetail?.store
-                        }
-                    })}>
-                        <View>
-                            <Text style={styles.txt} text='Visit Store' fontSize={hp(18)} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: wp(100) }}>
-                            <Text text={`${productDetail?.rating === undefined ? 'N/A' : productDetail?.rating} stars`} />
-                            {
-                                getUserToken && <Pressable onPress={() => saveForLater()}>
-                                    <Image source={love} />
-                                </Pressable>
+                    <Text text={productDetail?.name} style={{ marginVertical: hp(10) }} />
+                    <View style={[globalStyles.rowBetween, styles.pd]}>
+
+                        <TouchableOpacity onPress={() => props.navigation.navigate('StoreInfo', {
+                            params: {
+                                store: productDetail?.store
                             }
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <Text
-                        text={`₦${numberFormat(Number(activeVariant?.price) || 0)}`}
-                        fontSize={hp(18)}
-                        color={colors.accent}
-                        numberOfLines={1}
-                        fontWeight={'600'}
-                        style={{ marginTop: hp(5) }}
-                    />
-                </View>
-                {variantList?.some((vd: any) => vd['color'] !== null) &&
-                    <View style={styles.contView}>
-                        <Text style={styles.sizeText} text='Available Colors' fontSize={hp(18)} />
-                        <FlatList
-                            data={sizeVarList}
-                            keyExtractor={(item) => item?.id}
-                            renderItem={renderVarList}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
+                        })}>
+                            <View>
+                                <Text style={styles.txt} text='Visit Store' fontSize={hp(18)} />
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: wp(100) }}>
+                                <Text text={`${productDetail?.rating === undefined ? 'N/A' : productDetail?.rating} stars`} />
+                                {
+                                    getUserToken && <Pressable onPress={() => saveForLater()}>
+                                        <Image source={love} />
+                                    </Pressable>
+                                }
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        <Text
+                            text={`₦${numberFormat(Number(activeVariant?.price) || 0)}`}
+                            fontSize={hp(18)}
+                            color={colors.accent}
+                            numberOfLines={1}
+                            fontWeight={'600'}
+                            style={{ marginTop: hp(5) }}
                         />
                     </View>
-                }
-                {variantSpec?.some((vd: any) => vd['size'] !== null) &&
-                    <View style={styles.contView}>
-                        <Text style={styles.sizeText} text='Available Sizes' fontSize={hp(18)} />
-                        <FlatList
-                            data={variantSpec}
-                            keyExtractor={(item) => item?.id}
-                            renderItem={renderSizeList}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </View>
-                }
-                <View style={[styles.contView, styles.row]}>
-                    <Text text='Quantity' fontSize={hp(18)} />
-                    <Text text='*' color='red' fontSize={hp(18)} />
-                </View>
-                <View style={[styles.rowDiv]}>
-                    <Pressable onPress={() => decrement()}>
-                        <View style={styles.box}>
-                            <Text text='-' fontWeight='bold' fontSize={hp(18)} />
-                        </View>
-                    </Pressable>
-                    <Text text={quantity?.toString()} fontSize={hp(18)} />
-                    <Pressable onPress={() => increment()}>
-                        <View style={styles.box}>
-                            <Text text='+' fontSize={hp(18)} />
-                        </View>
-                    </Pressable>
-                </View>
-
-                <View style={styles.contView}>
-                    <Text fontSize={hp(18)} text={`Delivery in ${productDetail?.estimated_deliery_duration ? productDetail?.estimated_deliery_duration : "2"} Day(s)`} />
-                </View>
-                <View style={[styles.contView, styles.row]}>
-                    <Text
-                        text={`₦${numberFormat(Number(deliveryFeeData) || 0)}`}
-                        fontSize={hp(16)}
-                        color={colors.accent}
-                        numberOfLines={1}
-                        fontWeight={'600'}
-                    />
-                    <Text fontSize={hp(16)} text={' Shipping fee to' + " " + values?.city + " " + values?.state} />
-                </View>
-                <View style={styles.contView}>
-                    <Text text='Description' fontSize={hp(18)} />
-                    <ViewMoreText
-                        numberOfLines={1}
-                        renderViewMore={renderViewMore}
-                        renderViewLess={renderViewLess}
-                    >
-                        <RenderHtml
-                            contentWidth={width}
-                            source={source}
-                            tagsStyles={tagsStyles}
-                        />
-                    </ViewMoreText>
-                </View>
-                <View style={styles.contView}>
-                    <Text text='Delivery & Returns' fontSize={hp(18)} />
-                    <Text fontSize={hp(16)} text='Lorem Ipsum is simply dummy text of the printing and typesetting industry.' />
-                </View>
-                <View style={styles.contView}>
-                    <Text text='Choose a Location' style={styles.locationText} fontSize={hp(18)} />
-                    <View style={styles.dp}>
-                        <Select
-                            items={locationState}
-                            defaultValue={values.state}
-                            placeholder={'Choose State'}
-                            setState={handleChange('state')}
-                            errorMsg={touched.state ? errors.state : undefined}
-                        />
-                    </View>
-                    {
-                        values.state?.length > 0 && <View style={styles.dp}>
-                            <Select
-                                items={locationCity}
-                                defaultValue={values.city}
-                                placeholder={'Choose City'}
-                                setState={handleChange('city')}
-                                errorMsg={touched.city ? errors.city : undefined}
+                    {variantList?.some((vd: any) => vd['color'] !== null) &&
+                        <View style={styles.contView}>
+                            <Text style={styles.sizeText} text='Available Colors' fontSize={hp(18)} />
+                            <FlatList
+                                data={sizeVarList}
+                                keyExtractor={(item) => item?.id}
+                                renderItem={renderVarList}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
                             />
                         </View>
                     }
+                    {variantSpec?.some((vd: any) => vd['size'] !== null) &&
+                        <View style={styles.contView}>
+                            <Text style={styles.sizeText} text='Available Sizes' fontSize={hp(18)} />
+                            <FlatList
+                                data={variantSpec}
+                                keyExtractor={(item) => item?.id}
+                                renderItem={renderSizeList}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                            />
+                        </View>
+                    }
+                    <View style={[styles.contView, styles.row]}>
+                        <Text text='Quantity' fontSize={hp(18)} />
+                        <Text text='*' color='red' fontSize={hp(18)} />
+                    </View>
+                    <View style={[styles.rowDiv]}>
+                        <Pressable onPress={() => decrement()}>
+                            <View style={styles.box}>
+                                <Text text='-' fontWeight='bold' fontSize={hp(18)} />
+                            </View>
+                        </Pressable>
+                        <Text text={quantity?.toString()} fontSize={hp(18)} />
+                        <Pressable onPress={() => increment()}>
+                            <View style={styles.box}>
+                                <Text text='+' fontSize={hp(18)} />
+                            </View>
+                        </Pressable>
+                    </View>
 
-                </View>
-                <View >
-                    <Text text='Customers Feedback' fontSize={hp(18)} />
-                    <Text text={`${productRating ? productRating?.length : 0} review`} />
-                </View>
-                <View style={globalStyles.rowBetween}>
-                    <View style={styles.textDiv}>
-                        <Text text='Excellent' fontSize={hp(16)} />
+                    <View style={styles.contView}>
+                        <Text fontSize={hp(18)} text={`Delivery in ${productDetail?.estimated_deliery_duration ? productDetail?.estimated_deliery_duration : "2"} Day(s)`} />
                     </View>
-                    <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={excellent ? (excellent?.length / 1000) : 0} width={200} />
-                    </View>
-                    <View>
-                        <Text text={excellent ? excellent?.length : 0} fontSize={hp(16)} />
-                    </View>
-                </View>
-                <View style={globalStyles.rowBetween}>
-                    <View style={styles.textDiv}>
-                        <Text text='Very good' fontSize={hp(16)} />
-                    </View>
-                    <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={good ? (good?.length / 1000) : 0} width={200} />
-                    </View>
-                    <View>
-                        <Text text={good ? good?.length : 0} fontSize={hp(16)} />
-                    </View>
-                </View>
-                <View style={globalStyles.rowBetween}>
-                    <View style={styles.textDiv}>
-                        <Text text='Average' fontSize={hp(16)} />
-                    </View>
-                    <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={average ? (average?.length / 1000) : 0} width={200} />
-                    </View>
-                    <View>
-                        <Text text={average ? average?.length : 0} fontSize={hp(16)} />
-                    </View>
-                </View>
-                <View style={globalStyles.rowBetween}>
-                    <View style={styles.textDiv}>
-                        <Text text='Poor' fontSize={hp(16)} />
-                    </View>
-                    <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={poor ? (poor?.length / 1000) : 0} width={200} />
-                    </View>
-                    <View>
-                        <Text text={poor ? poor?.length : 0} fontSize={hp(16)} />
-                    </View>
-                </View>
-                <View style={globalStyles.rowBetween}>
-                    <View style={styles.textDiv}>
-                        <Text text='Terrible' fontSize={hp(16)} />
-                    </View>
-                    <View style={styles.progressDiv}>
-                        <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={terrible ? (terrible?.length / 1000) : 0} width={200} />
-                    </View>
-                    <View>
-                        <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
-                    </View>
-                </View>
-                {
-                    productRating?.map((data: any) => {
-                        return <CommentCard
-                            image={data?.user?.img_url}
-                            name={data?.user?.first_name + " " + data?.user?.last_name}
-                            comment={data?.comment?.comment}
-                            date={data?.created_at}
-                            rate={data?.rating}
-                            id={data?._id}
-                            reply={data?.comment?.reply}
-                            commentId={data?.comment?.id}
-                            productOwner={productDetail?.user_id}
+                    <View style={[styles.contView, styles.row]}>
+                        <Text
+                            text={`₦${numberFormat(Number(deliveryFeeData) || 0)}`}
+                            fontSize={hp(16)}
+                            color={colors.accent}
+                            numberOfLines={1}
+                            fontWeight={'600'}
                         />
-                    })
-                }
-                <View style={styles.br}></View>
+                        <Text fontSize={hp(16)} text={' Shipping fee to' + " " + values?.city + " " + values?.state} />
+                    </View>
+                    <View style={styles.contView}>
+                        <Text text='Description' fontSize={hp(18)} />
+                        <ViewMoreText
+                            numberOfLines={1}
+                            renderViewMore={renderViewMore}
+                            renderViewLess={renderViewLess}
+                        >
+                            <RenderHtml
+                                contentWidth={width}
+                                source={source}
+                                tagsStyles={tagsStyles}
+                            />
+                        </ViewMoreText>
+                    </View>
+                    <View style={styles.contView}>
+                        <Text text='Delivery & Returns' fontSize={hp(18)} />
+                        <Text fontSize={hp(16)} text='Lorem Ipsum is simply dummy text of the printing and typesetting industry.' />
+                    </View>
+                    <View style={styles.contView}>
+                        <Text text='Choose a Location' style={styles.locationText} fontSize={hp(18)} />
+                        <View style={styles.dp}>
+                            <Select
+                                items={locationState}
+                                defaultValue={values.state}
+                                placeholder={'Choose State'}
+                                setState={handleChange('state')}
+                                errorMsg={touched.state ? errors.state : undefined}
+                            />
+                        </View>
+                        {
+                            values.state?.length > 0 && <View style={styles.dp}>
+                                <Select
+                                    items={locationCity}
+                                    defaultValue={values.city}
+                                    placeholder={'Choose City'}
+                                    setState={handleChange('city')}
+                                    errorMsg={touched.city ? errors.city : undefined}
+                                />
+                            </View>
+                        }
+
+                    </View>
+                    <View >
+                        <Text text='Customers Feedback' fontSize={hp(18)} />
+                        <Text text={`${productRating ? productRating?.length : 0} review`} />
+                    </View>
+                    <View style={globalStyles.rowBetween}>
+                        <View style={styles.textDiv}>
+                            <Text text='Excellent' fontSize={hp(16)} />
+                        </View>
+                        <View style={styles.progressDiv}>
+                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={excellent ? (excellent?.length / 1000) : 0} width={200} />
+                        </View>
+                        <View>
+                            <Text text={excellent ? excellent?.length : 0} fontSize={hp(16)} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.rowBetween}>
+                        <View style={styles.textDiv}>
+                            <Text text='Very good' fontSize={hp(16)} />
+                        </View>
+                        <View style={styles.progressDiv}>
+                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={good ? (good?.length / 1000) : 0} width={200} />
+                        </View>
+                        <View>
+                            <Text text={good ? good?.length : 0} fontSize={hp(16)} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.rowBetween}>
+                        <View style={styles.textDiv}>
+                            <Text text='Average' fontSize={hp(16)} />
+                        </View>
+                        <View style={styles.progressDiv}>
+                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={average ? (average?.length / 1000) : 0} width={200} />
+                        </View>
+                        <View>
+                            <Text text={average ? average?.length : 0} fontSize={hp(16)} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.rowBetween}>
+                        <View style={styles.textDiv}>
+                            <Text text='Poor' fontSize={hp(16)} />
+                        </View>
+                        <View style={styles.progressDiv}>
+                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={poor ? (poor?.length / 1000) : 0} width={200} />
+                        </View>
+                        <View>
+                            <Text text={poor ? poor?.length : 0} fontSize={hp(16)} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.rowBetween}>
+                        <View style={styles.textDiv}>
+                            <Text text='Terrible' fontSize={hp(16)} />
+                        </View>
+                        <View style={styles.progressDiv}>
+                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={terrible ? (terrible?.length / 1000) : 0} width={200} />
+                        </View>
+                        <View>
+                            <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
+                        </View>
+                    </View>
+                    {
+                        productRating?.map((data: any) => {
+                            return <CommentCard
+                                image={data?.user?.img_url}
+                                name={data?.user?.first_name + " " + data?.user?.last_name}
+                                comment={data?.comment?.comment}
+                                date={data?.created_at}
+                                rate={data?.rating}
+                                id={data?._id}
+                                reply={data?.comment?.reply}
+                                commentId={data?.comment?.id}
+                                productOwner={productDetail?.user_id}
+                            />
+                        })
+                    }
+                    <View style={styles.br}></View>
+                </View>
             </ScrollView>
             <View style={styles.btn}>
                 <Button style={styles.add} containerStyle={{ width: '48%' }} isLoading={loader} title='Add to Cart' onPress={addItemToCart} />

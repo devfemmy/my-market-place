@@ -12,6 +12,7 @@ import { colors } from '../../utils/themes'
 import { Text } from '../../components/common'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
+import { truncate } from '../../utils/server'
 
 const ProductCard = ({ data, setProductList, id }: any) => {
     const dispatch = useAppDispatch()
@@ -89,33 +90,37 @@ const ProductCard = ({ data, setProductList, id }: any) => {
 
     return (
         <View style={[globalStyles.rowBetween, styles.bbf]}>
-            <Pressable onPress={() => navigation.navigate('SellerProductDetail', {
-                params: {
-                    slug: data.slug
-                }
-            })}>
-                <View style={styles.columnDiv}>
-                    <View style={globalStyles.rowStart}>
-                        <Image source={{ uri: data?.img_url ? data?.img_url : "https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png" }} style={styles.img} />
-                        <View style={styles.subDiv}>
-                            <Text text={data?.name} fontSize={hp(12)} fontWeight='600' />
-                            <View style={globalStyles.rowStart}>
-                                {/* <CurrencyFormat value={data?.product_variants[0]?.spec[0]?.price} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <Paragraph color={GlobalStyle.color.gray} text={value} fontSize={GlobalStyle.size.size12} fontWeight='600' />} /> */}
-                                <View style={styles.cont}>
-                                    {
-                                        data?.status === 'ACTIVE'
-                                            ? <View style={styles.contActiveDiv}></View>
-                                            : data?.status === 'INACTIVE'
-                                                ? <View style={styles.contInactiveDiv}></View>
-                                                : <View style={styles.contDraftDiv}></View>
-                                    }
-                                    <Text text={data?.status} style={{ textTransform: 'capitalize' }} fontSize={hp(10)} fontWeight='600' />
+            <View style={{ width: '80%' }}>
+                <Pressable onPress={() => navigation.navigate('SellerProductDetail', {
+                    params: {
+                        slug: data.slug
+                    }
+                })}>
+                    <View style={styles.columnDiv}>
+                        <View style={globalStyles.rowStart}>
+                            <Image source={{ uri: data?.img_url ? data?.img_url : "https://res.cloudinary.com/doouwbecx/image/upload/v1660556942/download_fcyeex.png" }} style={styles.img} />
+                            <View style={styles.subDiv}>
+                                <View style={{ width: '100%' }}>
+                                    <Text text={truncate(data?.name, 60)} fontSize={hp(12)} fontWeight='600' />
+                                </View>
+                                <View style={globalStyles.rowStart}>
+                                    {/* <CurrencyFormat value={data?.product_variants[0]?.spec[0]?.price} displayType={'text'} thousandSeparator={true} prefix={'₦'} renderText={value => <Paragraph color={GlobalStyle.color.gray} text={value} fontSize={GlobalStyle.size.size12} fontWeight='600' />} /> */}
+                                    <View style={styles.cont}>
+                                        {
+                                            data?.status === 'ACTIVE'
+                                                ? <View style={styles.contActiveDiv}></View>
+                                                : data?.status === 'INACTIVE'
+                                                    ? <View style={styles.contInactiveDiv}></View>
+                                                    : <View style={styles.contDraftDiv}></View>
+                                        }
+                                        <Text text={data?.status} style={{ textTransform: 'capitalize' }} fontSize={hp(10)} fontWeight='600' />
+                                    </View>
                                 </View>
                             </View>
                         </View>
                     </View>
-                </View>
-            </Pressable>
+                </Pressable>
+            </View>
             <View>
                 <Menu
                     visible={visible}
@@ -147,7 +152,6 @@ const styles = StyleSheet.create({
         paddingVertical: hp(10),
         borderBottomWidth: 1,
         borderColor: colors.darkBlack,
-        width: '100%',
     },
     subDiv: {
         marginLeft: hp(10)
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        
+
     }
 
 
