@@ -134,33 +134,34 @@ const OrderDetails = (props: any) => {
         }
     }
 
-
     const messageBuyer = async () => {
+        const payload = {
+            message: null,
+            createdAt: firestore.FieldValue.serverTimestamp(),
+            details: {
+                deliveryLocation: sellerOrderDetail?.delivery_information?.street + " " + sellerOrderDetail?.delivery_information?.city + " " + sellerOrderDetail?.delivery_information?.state,
+                imageUrl: sellerOrderDetail?.variant_img_url,
+                price: sellerOrderDetail?.amount,
+                quantity: sellerOrderDetail?.quantity,
+                size: sellerOrderDetail?.size,
+                title: sellerOrderDetail?.meta?.product_details?.name,
+            },
+            receiver: {
+                id: sellerOrderDetail?.meta?.buyer_details?.id,
+                imageUrl: sellerOrderDetail?.meta?.buyer_details?.img_url,
+                name: sellerOrderDetail?.meta?.buyer_details?.first_name
+            },
+            sender: {
+                id: sellerOrderDetail?.store_id,
+                name: sellerOrderDetail?.meta?.store_details?.store_name
+            }
+        }
+        
         try {
             setMessageLoader(true)
             const docRef = await firestore()
                 .collection('messaging')
-                .add({
-                    message: null,
-                    createdAt: firestore.FieldValue.serverTimestamp(),
-                    details: {
-                        deliveryLocation: sellerOrderDetail?.delivery_information?.street + " " + sellerOrderDetail?.delivery_information?.city + " " + sellerOrderDetail?.delivery_information?.state,
-                        imageUrl: sellerOrderDetail?.variant_img_url,
-                        price: sellerOrderDetail?.amount,
-                        quantity: sellerOrderDetail?.quantity,
-                        size: sellerOrderDetail?.size,
-                        title: sellerOrderDetail?.meta?.product_details?.name,
-                    },
-                    receiver: {
-                        id: sellerOrderDetail?.meta?.buyer_details?.id,
-                        imageUrl: sellerOrderDetail?.meta?.buyer_details?.img_url,
-                        name: sellerOrderDetail?.meta?.buyer_details?.first_name
-                    },
-                    sender: {
-                        id: sellerOrderDetail?.store_id,
-                        name: sellerOrderDetail?.meta?.store_details?.store_name
-                    }
-                })
+                .add(payload)
                 .then(() => {
                     setMessageLoader(false)
                     return navigation.navigate('SellerChatBox', {

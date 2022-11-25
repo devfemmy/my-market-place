@@ -31,7 +31,7 @@ const UserHeader = ({ name, image }: any) => {
     const isFocused = useIsFocused();
     const profiles = useAppSelector(profileInfo)
 
-    const buyerNotification = notification?.filter((data: any) => data?.type === "ORDER")
+    const buyerNotification = notification?.filter((data: any) => data?.type === "ORDER" && data?.status === "UNREAD")
 
 
 

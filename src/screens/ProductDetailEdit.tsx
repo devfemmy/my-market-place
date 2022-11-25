@@ -20,6 +20,7 @@ import { checkbox, plus, plusBig } from '../assets'
 import { Button } from '../components/common/Button'
 import { sizes } from '../utils/constants/sizes'
 import { NavigationContainer } from '@react-navigation/native'
+import Editor from '../components/resuable/Editor'
 
 const ProductDetailEdit = (props: any) => {
     const productSlug = props?.route?.params?.params?.slug
@@ -234,12 +235,19 @@ const ProductDetailEdit = (props: any) => {
                     onChangeText={handleChange('productName')}
                     errorMsg={touched.productName ? errors.productName : undefined}
                 />
-                <Input
+                {/* <Input
                     label='Tell us about your product'
                     multiline={true}
                     numberOfLines={4}
                     onBlur={handleBlur('description')}
                     value={values.productDescription}
+                    onChangeText={handleChange('productDescription')}
+                    errorMsg={touched.productDescription ? errors.productDescription : undefined}
+                /> */}
+                   <Editor 
+                    placeholder='Tell us about your product'
+                    value={values.productDescription}
+                    onBlur={handleBlur('productDescription')}
                     onChangeText={handleChange('productDescription')}
                     errorMsg={touched.productDescription ? errors.productDescription : undefined}
                 />

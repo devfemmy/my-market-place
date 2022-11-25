@@ -102,7 +102,7 @@ const SellerChatScreen = ({ navigation }: any) => {
                     <Text text={truncate(data?.message, 35)} color={colors.gray} fontSize={hp(14)} />
                   </View>
                   <View style={styles.div3}>
-                    <Text text={`${moment(new Date(data?.createdAt?.seconds * 1000)).startOf('hour').fromNow()}`} fontSize={hp(14)} />
+                    <Text text={`${moment(new Date(data?.createdAt?.seconds * 1000)).calendar()}`} fontSize={hp(14)} />
                     {data?.new && <View style={styles.min}></View>}
                   </View>
                 </View>

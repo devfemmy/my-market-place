@@ -4,7 +4,7 @@ import { getCurrentDate, hp } from '../utils/helpers'
 import MobileHeader from './Containers/MobileHeader'
 import { useIsFocused } from "@react-navigation/native";
 import { useAppDispatch } from '../redux/hooks';
-import { getNotifications } from '../redux/slices/notificationSlice';
+import { getNotifications, markAsRead } from '../redux/slices/notificationSlice';
 import { Text } from '../components/common/Text';
 import { colors } from '../utils/themes';
 import { Image } from 'react-native-animatable';
@@ -25,6 +25,17 @@ const SellerNotificationScreen = ({ navigation }: any) => {
 
     const sellerNotification = notification?.filter((data: any) => data?.type !== "ORDER")
 
+    const routeNotification = async (item: any) => {
+        const payload = {
+            notification_id: item?.id
+        }
+        var response = await dispatch(markAsRead(payload))
+        if(markAsRead.fulfilled.match(response)){
+            return navigation.navigate('Products')
+        }
+        
+    }
+
     return (
         <View style={styles.container}>
             <MobileHeader
@@ -41,9 +52,9 @@ const SellerNotificationScreen = ({ navigation }: any) => {
                             keyExtractor={item => item?.id}
                             renderItem={({ item }: any) => {
                                 return (
-                                    <Pressable onPress={() => navigation.navigate('Products')}>
+                                    <Pressable onPress={() => routeNotification(item)}>
                                         <View style={{ borderBottomColor: colors.gray, borderBottomWidth: 1, paddingBottom: hp(15) }}>
-                                            <Text text={item?.message} fontSize={hp(14)} lineHeight={22} style={{ marginVertical: hp(10) }} />
+                                            <Text text={item?.message} color={item?.status === "UNREAD" ? colors.bazaraTint : colors.gray} fontSize={hp(14)} lineHeight={22} style={{ marginVertical: hp(10) }} />
                                             <Text text={getCurrentDate(item?.created_at)} fontSize={hp(13)} lineHeight={18} color={colors.gray} />
                                         </View>
                                     </Pressable>

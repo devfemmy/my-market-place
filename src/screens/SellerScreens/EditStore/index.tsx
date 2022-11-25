@@ -28,6 +28,7 @@ import { styles } from '../main/Product/AddProduct/styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Notifier, NotifierComponents } from 'react-native-notifier';
+import Editor from '../../../components/resuable/Editor';
 
 
 const EditStore = (): JSX.Element => {
@@ -241,11 +242,9 @@ const EditStore = (): JSX.Element => {
               errorMsg={touched.storeName ? errors.storeName : undefined}
             />
 
-            <Input
-              label={'Description'}
+             <Editor
+              placeholder='Description'
               value={values.description}
-              multiline={true}
-              numberOfLines={4}
               onBlur={handleBlur('description')}
               onChangeText={handleChange('description')}
               errorMsg={touched.description ? errors.description : undefined}

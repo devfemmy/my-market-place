@@ -27,6 +27,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { createStore } from '../redux/slices/StoreSlice';
 import { Notifier, NotifierComponents } from 'react-native-notifier';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Editor from '../components/resuable/Editor';
 
 
 const CreateStoreScreen = (): JSX.Element => {
@@ -87,13 +88,13 @@ const CreateStoreScreen = (): JSX.Element => {
 
     setLoader(true)
     const resultAction = await dispatch(createStore(payload))
-    
+
     if (createStore.fulfilled.match(resultAction)) {
-     
+
       //await dispatch(resetImage())
       await AsyncStorage.setItem('activeId', resultAction?.payload?.id)
       await AsyncStorage.setItem('activeName', resultAction?.payload?.brand_name)
-      await AsyncStorage.setItem('activeSlug',  resultAction?.payload?.slug)
+      await AsyncStorage.setItem('activeSlug', resultAction?.payload?.slug)
       setLoader(false)
       setImageData('')
       return navigation.navigate('StoreSuccessScreen')
@@ -196,7 +197,7 @@ const CreateStoreScreen = (): JSX.Element => {
                 <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
                     {
-                      imageLoader ? <ActivityIndicator size={'small'}   /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                      imageLoader ? <ActivityIndicator size={'small'} /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
                     }
                   </View>
                 </Pressable>
@@ -214,11 +215,18 @@ const CreateStoreScreen = (): JSX.Element => {
               errorMsg={touched.storeName ? errors.storeName : undefined}
             />
 
-            <Input
+            {/* <Input
               label={'Description'}
               value={values.description}
               multiline={true}
               numberOfLines={4}
+              onBlur={handleBlur('description')}
+              onChangeText={handleChange('description')}
+              errorMsg={touched.description ? errors.description : undefined}
+            /> */}
+            <Editor
+              placeholder='Description'
+              value={values.description}
               onBlur={handleBlur('description')}
               onChangeText={handleChange('description')}
               errorMsg={touched.description ? errors.description : undefined}
