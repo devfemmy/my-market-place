@@ -340,6 +340,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
   }
 
 
+
   return (
     <View style={styles.container}>
       <ScrollView  showsVerticalScrollIndicator={false}
@@ -478,10 +479,12 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                           <Text text={data?.street + " " + data?.city + " " + data?.state} fontSize={hp(14)} fontWeight='400' />
                         </View>
                       </Pressable>
-
-                      <Pressable onPress={() => deleteDelivery(data)}>
+                      {
+                        data?.type !== "STORE_ADDRESS" &&  <Pressable onPress={() => deleteDelivery(data)}>
                           <Image source={deleteIcon} />
                       </Pressable>
+                      }
+                     
                     </View>
                   })
                 }

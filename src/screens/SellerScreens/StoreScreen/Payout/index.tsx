@@ -20,6 +20,9 @@ import { icons } from '../../../../utils/constants';
 import { bank, payoutBack } from '../../../../assets';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PayoutModal from '../../../Containers/PayoutModal';
+import EmptyState2 from '../../../../components/common/EmptyState';
+import { getStoreTransaction } from '../../../../redux/slices/StoreSlice';
+import TransactionHistory from '../../../../components/resuable/TransactionHistory';
 
 const Account = ({ navigation }: any) => {
 
@@ -30,6 +33,8 @@ const Account = ({ navigation }: any) => {
   const [loader, setLoader] = useState(false)
   const [activeId, setActiveId] = useState<any>()
   const isFocused = useIsFocused()
+  const [transactionHistory, setTransactionHistory] = useState([])
+
 
   useEffect(() => {
     const loadAsync = async () => {
@@ -41,6 +46,7 @@ const Account = ({ navigation }: any) => {
 
   useEffect(() => {
     dispatch(getPayouts(activeId)).then(data => setPayout(data?.payload))
+    dispatch(getStoreTransaction(activeId)).then((dd: any) => setTransactionHistory(dd?.payload))
   }, [activeId, isFocused])
 
 
@@ -123,24 +129,31 @@ const Account = ({ navigation }: any) => {
 
           {
             payout !== null && payout !== undefined &&
-            <View style={{marginHorizontal: hp(15)}}>
-              
+            <View style={{ marginHorizontal: hp(15) }}>
+
               <ImageBackground source={payoutBack} resizeMode="cover" style={[styles.card]}>
                 <Text text={payout?.account_name} textAlign='center' fontSize={hp(14)} fontWeight='600' />
                 <Text text={`${payout?.bank_account_number} - ${payout?.bank_name}`} textAlign='center' fontSize={hp(11)} fontWeight='600' style={{ marginVertical: hp(5) }} />
               </ImageBackground>
 
 
-              <View style={{marginTop: hp(10)}}>
+              <View style={{ marginTop: hp(10) }}>
                 <Text text='Transactions' color={colors.white} style={{ marginVertical: hp(10) }} />
 
-                <View style={styles.carddiv}>
-                  <Image
-                    source={bank}
-                    style={styles.img3}
+                {
+                  payout !== null && payout !== undefined && transactionHistory?.length < 1 && <EmptyState2
+                    icon={bank}
+                    header={"No Transactions at the moment"}
                   />
-                  <Text text='No Transactions at the moment' fontSize={hp(16)} fontWeight='600' textAlign='center' />
-                </View>
+                }
+
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {
+                    payout !== null && payout !== undefined && transactionHistory?.length > 0 && transactionHistory?.map((data: any) => {
+                      return <TransactionHistory type={data?.type} amount={data?.amount} />
+                    })
+                  }
+                </ScrollView>
               </View>
             </View>
           }
@@ -219,3 +232,4 @@ const styles = StyleSheet.create({
     marginVertical: hp(10)
   }
 })
+

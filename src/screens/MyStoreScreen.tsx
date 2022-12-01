@@ -19,7 +19,7 @@ import { LockClosed, LockOpened, Profile, Union } from '../constants/images'
 import { BarChart, LineChart } from 'react-native-chart-kit'
 import { Select } from '../components/common/SelectInput'
 import { useIsFocused } from "@react-navigation/native";
-import { activityData, fetchActivityAnalysis, fetchStoreAnalysis, fetchViewAnalysis, fetchWalletAnalysis, storeData, viewData, walletData } from '../redux/slices/DashboardSlice'
+import { activityData, fetchActivityAnalysis, fetchProductAnalysis, fetchStoreAnalysis, fetchStoreSalesAnalysis, fetchViewAnalysis, fetchWalletAnalysis, productAnalysis, storeSales, viewData, walletData } from '../redux/slices/DashboardSlice'
 
 
 const MyStoreScreen = () => {
@@ -36,10 +36,13 @@ const MyStoreScreen = () => {
   const [activeName, setActiveName] = useState('')
 
   const activityAnalysis = useAppSelector(activityData)
-  const storeAnalysis = useAppSelector(storeData)
+
   const [viewAnalysis, setViewAnalysis] = useState<any>()
-  const walletAnalysis = useAppSelector(walletData)
+  const walletAnalysis = useAppSelector(walletData) 
   const [stateLoader, setStateLoader] = useState(false)
+  const storeData = useAppSelector(storeSales) as any
+  const productData = useAppSelector(productAnalysis) as any
+ 
 
   useEffect(() => {
     const loadAsync = async () => {
@@ -75,6 +78,8 @@ const MyStoreScreen = () => {
       dispatch(fetchWalletAnalysis(id))
       dispatch(fetchStoreAnalysis(id))
       dispatch(fetchViewAnalysis(id)).then(dd => setViewAnalysis(dd?.payload))
+      dispatch(fetchStoreSalesAnalysis(id))
+      dispatch(fetchProductAnalysis(id))
       await dispatch(getProduct(id))
       setStateLoader(false)
     }
@@ -84,25 +89,22 @@ const MyStoreScreen = () => {
 
  
 
+
+
+const barLabels = productData?.map((data: any) => data?.name);
+const barViews = productData?.map((data: any) => data?.views);
+
+const lineLabels = storeData?.map((data: any) => data?.month);
+const lineViews = storeData?.map((data: any) => data?.sales);
+
   const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: lineLabels,
     datasets: [
       {
-        data: [
-          Math.random() * 100,
-          Math.random() * 100,
-          Math.random() * 100,
-          Math.random() * 100,
-          Math.random() * 100,
-          Math.random() * 100
-        ]
+        data: lineViews
       }
     ]
   }
-
-  const barLabels = viewAnalysis?.map((data: any )=> data?.formatted_date);
-const barViews = viewAnalysis?.map((data: any) => data?.view_count);
-
 
 
   const ViewsData = {
@@ -115,6 +117,17 @@ const barViews = viewAnalysis?.map((data: any) => data?.view_count);
   }
 
   const chartConfig = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: "#08130D",
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => colors.bazaraTint,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false // optional
+  };
+
+  const chartConfig2 = {
     backgroundGradientFrom: "#1E2923",
     backgroundGradientFromOpacity: 0,
     backgroundGradientTo: "#08130D",
@@ -257,6 +270,8 @@ const barViews = viewAnalysis?.map((data: any) => data?.view_count);
                     width={wp(330)}
                     height={220}
                     chartConfig={chartConfig}
+                    withVerticalLines={false}
+                    withHorizontalLines={false}
                     bezier
                   />
                 </View>
@@ -265,13 +280,13 @@ const barViews = viewAnalysis?.map((data: any) => data?.view_count);
                     <Text text="Store Views" fontWeight='600' fontSize={hp(15)} />
                   </View>
                   <BarChart
-                    // style={graphStyle}
+                    style={styles.graphStyle}
                     data={ViewsData}
                     width={wp(310)}
-                    height={220}
-                    yAxisLabel=""
-                    chartConfig={chartConfig}
-                    verticalLabelRotation={30}
+                    height={hp(400)}
+                    withInnerLines={false}
+                    chartConfig={chartConfig2}
+                    verticalLabelRotation={90}
                   />
                 </View>
               </View>
@@ -357,4 +372,7 @@ const styles = StyleSheet.create({
     width: wp(25),
     height: wp(25),
   },
+  graphStyle: {
+    
+  }
 })

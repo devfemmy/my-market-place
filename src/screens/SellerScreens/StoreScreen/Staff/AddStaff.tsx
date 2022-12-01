@@ -3,11 +3,11 @@ import { StatusBar, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { SafeAreaView, Text } from '../../../../components/common';
 import { colors } from '../../../../utils/themes';
 import { globalStyles } from "../../../../styles/globalStyles"
-import { hp } from '../../../../utils/helpers';
+import { capitalizeSentence, hp } from '../../../../utils/helpers';
 import StoreHeader from '../../../../components/resuable/StoreHeader';
 import ScrollCard from '../../../../components/resuable/ScrollCard';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import {colorCart, universityLogo, truckLogo, usersLogo, productLogo} from "../../../../assets"
+import { colorCart, universityLogo, truckLogo, usersLogo, productLogo } from "../../../../assets"
 import ListCard from '../../../../components/resuable/ListCard';
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks"
 
@@ -29,14 +29,14 @@ import MobileHeader from '../../../Containers/MobileHeader';
 
 
 
-const AddStaffScreen = ({navigation}: any) => {
+const AddStaffScreen = ({ navigation }: any) => {
   const [loading, setLoading] = useState(false)
   const [role, setRole] = useState('')
   const dispatch = useAppDispatch()
   const userRoles = useAppSelector(storeRolesList)
   const initialValues: AddStaffData = {
-      email: '',
-      role: ''
+    email: '',
+    role: ''
   }
 
   const [id, setId] = useState<any>()
@@ -54,71 +54,71 @@ const AddStaffScreen = ({navigation}: any) => {
     dispatch(getRoles())
   }, [])
 
-  
+
   const { values, errors, touched, handleChange, handleSubmit, handleBlur } =
-  useFormik({
+    useFormik({
       initialValues,
       validationSchema: AddStaffSchema,
       onSubmit: (data: AddStaffData) => handleAddStaff(data),
-  });
+    });
 
 
   const roleId = userRoles?.find((data: any) => data?.id === values.role)?.id
 
-  const userRoleData = userRoles?.map((data: any )=> {
+  const userRoleData = userRoles?.map((data: any) => {
     return {
       key: data?.id.toString(),
-      value: data?.role
+      value: capitalizeSentence(data?.role)
     }
   })
 
   const handleAddStaff = async (data: any) => {
     setLoading(true)
     const paylaod = {
-        email: data?.email,
-        role_id: roleId,
-        store_id: id
+      email: data?.email,
+      role_id: roleId,
+      store_id: id
     }
 
     try {
-        const response = await dispatch(addStaff(paylaod))
-        if(addStaff.fulfilled.match(response)) {
-          Notifier.showNotification({
-            title: 'Staff Added',
-            description: '',
-            Component: NotifierComponents.Alert,
-            hideOnPress: false,
-            componentProps: {
-                alertType: 'success',
-            },
+      const response = await dispatch(addStaff(paylaod))
+      if (addStaff.fulfilled.match(response)) {
+        Notifier.showNotification({
+          title: 'Staff Added',
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'success',
+          },
         });
-            setLoading(false)
-            return navigation.navigate('Staffs', {
-              params: {
-                random: data?.email
-              }
-            })
-        }
-        else {
-          var errMsg = response?.payload as string
-          Notifier.showNotification({
-            title: errMsg,
-            description: '',
-            Component: NotifierComponents.Alert,
-            hideOnPress: false,
-            componentProps: {
-                alertType: 'error',
-            },
-        });
-            setLoading(false)
-           
-        }
-    }
-    catch(e) {
-        console.log({e})
         setLoading(false)
+        return navigation.navigate('Staffs', {
+          params: {
+            random: data?.email
+          }
+        })
+      }
+      else {
+        var errMsg = response?.payload as string
+        Notifier.showNotification({
+          title: errMsg,
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+        setLoading(false)
+
+      }
     }
-}
+    catch (e) {
+      console.log({ e })
+      setLoading(false)
+    }
+  }
 
 
   //const permissionData = userRoles?.find(data => data?.role === values?.role)?.permissions
@@ -127,7 +127,7 @@ const AddStaffScreen = ({navigation}: any) => {
 
   const handleRoleChange = (e: any) => {
     setRole(e)
-  
+
   }
 
 
@@ -139,35 +139,37 @@ const AddStaffScreen = ({navigation}: any) => {
 
   return (
     <SafeAreaView>
-       <MobileHeader
+      <MobileHeader
         props={navigation}
         cart
         categoryName="Add New Staff"
       />
-      <ScrollView  showsVerticalScrollIndicator={false}
+      <ScrollView showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
-      <View style={[globalStyles.rowStart, globalStyles.lowerContainer]}>
-        <Text fontWeight="500" fontSize={hp(18)} text="Kindly provide new user details" />
-      </View>
-      <Input
-        label={'Email'}
-        value={values.email}
-        onBlur={handleBlur('email')}
-        onChangeText={handleChange('email')}
-        errorMsg={touched.email ? errors.email : undefined}
-      />
+        <View style={styles.staff}>
+          <View style={[globalStyles.rowStart, globalStyles.lowerContainer]}>
+            <Text fontWeight="500" fontSize={hp(18)} text="Kindly provide new user details" />
+          </View>
+          <Input
+            label={'Email'}
+            value={values.email}
+            onBlur={handleBlur('email')}
+            onChangeText={handleChange('email')}
+            errorMsg={touched.email ? errors.email : undefined}
+          />
 
-      <Select
-          items={userRoleData}
-          defaultValue={values.role}
-          placeholder={'Store role'}
-          setState={handleChange('role')}
-          errorMsg={touched.role ? errors.role : undefined}
-          roleSelector
-      />
+          <Select
+            items={userRoleData}
+            defaultValue={values.role}
+            placeholder={'Store role'}
+            setState={handleChange('role')}
+            errorMsg={touched.role ? errors.role : undefined}
+            roleSelector
+          />
+        </View>
 
       </ScrollView>
-      <View style={globalStyles.footer}>
+      <View style={[globalStyles.footer, styles.staff]}>
         <View style={globalStyles.rowCenter}>
           <Button
             isLoading={loading}
@@ -176,7 +178,7 @@ const AddStaffScreen = ({navigation}: any) => {
           />
         </View>
       </View>
-  
+
     </SafeAreaView>
   );
 };
@@ -184,6 +186,9 @@ const AddStaffScreen = ({navigation}: any) => {
 export default AddStaffScreen
 
 const styles = StyleSheet.create({
+  staff: {
+    paddingHorizontal: hp(10),
+  },
   cart: {
     width: 20,
     height: 20,

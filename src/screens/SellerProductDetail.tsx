@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Pressable, useWindowDimensions } from 'react-native'
+import { View, StyleSheet, ScrollView, Pressable, useWindowDimensions, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { hp } from '../utils/helpers'
 import MobileHeader from './Containers/MobileHeader'
@@ -58,7 +58,6 @@ const SellerProductDetail = (props: any) => {
     useEffect(() => {
         setStateLoader(true)
         const loadData = async () => {
-
             await dispatch(getProductBySlug(productSlug))
             setStateLoader(false)
         }
@@ -149,11 +148,12 @@ const SellerProductDetail = (props: any) => {
     const terrible = productRating?.filter((data: any) => data?.rating === 1)
 
 
+    if(stateLoader) {
+        return  <View style={styles.container}><ActivityIndicator /></View>
+    }
 
     return (
         <View style={styles.container}>
-            {
-                stateLoader ? <AntDesign name='loading1' /> :
                     <View style={styles.container}>
                         <MobileHeader
                             categoryName={'Product Detail'}
@@ -226,7 +226,8 @@ const SellerProductDetail = (props: any) => {
                                             params: {
                                                 id: productBySlugData?.id,
                                                 ownerId: productBySlugData?.user_id,
-                                                productRating: productRating
+                                                productRating: productRating,
+                                                ratings: productBySlugData?.rating
                                             }
                                         })}>
                                             <Text text='view more' fontSize={hp(14)} fontWeight='400' color={colors?.bazaraTint} style={{ marginVertical: hp(10) }} />
@@ -304,7 +305,6 @@ const SellerProductDetail = (props: any) => {
                             </Pressable>
                         </View>
                     </View >
-            }
         </View>
     )
 }

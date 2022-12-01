@@ -11,13 +11,15 @@ import { buyerProducts, elasticSearch, getProductBuyer } from '../redux/slices/p
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { FlatGrid } from 'react-native-super-grid';
 import Search from '../components/Search'
+import EmptyState2 from '../components/common/EmptyState'
+import { globalSearch } from '../assets'
 
 
 const BuyerSearchScreen = (props: any) => {
   const [searchValue, setSearchValue] = useState('')
   const dispatch = useAppDispatch()
 
-  const [searchResult, setSearchResult] = useState<any>()
+  const [searchResult, setSearchResult] = useState<any>([])
 
 
   useEffect(() => {
@@ -26,6 +28,7 @@ const BuyerSearchScreen = (props: any) => {
         search: searchValue
       }
       var response = await dispatch(elasticSearch(payload))
+    
       if (elasticSearch.fulfilled.match(response)) {
         setSearchResult(response?.payload)
       }
@@ -45,6 +48,8 @@ const BuyerSearchScreen = (props: any) => {
     loadSearch()
   }, [searchValue])
 
+
+  console.log({searchResult, searchValue})
 
 
   return (
@@ -66,6 +71,12 @@ const BuyerSearchScreen = (props: any) => {
           />
 
         }
+        {/* {
+         (searchValue?.length > 0 && searchResult?.length < 1) && <EmptyState2 
+          icon={globalSearch}
+          header={`No product found for ${searchValue} `}
+         />
+        } */}
         {
           searchValue?.length < 1 && <>
             <AllCategories navigation={props?.navigation} />

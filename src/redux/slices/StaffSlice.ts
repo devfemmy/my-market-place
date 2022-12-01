@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
 import { StaffState } from "../../utils/types";
-import { getRequest, postRequest } from "../../utils/server"
+import { deleteRequestNoPayload, getRequest, postRequest } from "../../utils/server"
 
 
 
@@ -63,6 +63,33 @@ export const addStaff = createAsyncThunk(
 )
 
 
+export const updateStaff = createAsyncThunk(
+    'staff/updateStaff',
+    async (payload: {role_id: string, store_role_id: string }, { rejectWithValue }) => {
+        const data = {
+            role_id: payload?.role_id
+        }
+        try {
+            const response = await postRequest(`/storeRole/update?store_role_id=${payload?.store_role_id}`, data)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+export const deleteStaff = createAsyncThunk(
+    'staff/deleteStaff',
+    async (payload: string) => {
+        const response = await deleteRequestNoPayload(`/storeRole/delete?store_role_id=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
 
 
 
@@ -112,6 +139,28 @@ export const StaffSlice = createSlice({
 
             })
         builder.addCase(addStaff.rejected, (state, action) => {
+            state.loading = false,
+                state.error = action
+        })
+        builder.addCase(deleteStaff.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(deleteStaff.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+
+            })
+        builder.addCase(deleteStaff.rejected, (state, action) => {
+            state.loading = false,
+                state.error = action
+        })
+        builder.addCase(updateStaff.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(updateStaff.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+
+            })
+        builder.addCase(updateStaff.rejected, (state, action) => {
             state.loading = false,
                 state.error = action
         })

@@ -223,6 +223,17 @@ export const uploadImage = createAsyncThunk(
 )
 
 
+export const getStoreTransaction = createAsyncThunk(
+    'store/getStoreTransaction',
+    async (payload: string) => {
+        const response = await getRequest(`/transactions?store_id=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+
+    }
+)
+
 
 
 export const StoreSlice = createSlice({
@@ -360,6 +371,16 @@ export const StoreSlice = createSlice({
 
             })
         builder.addCase(deleteAccount.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+        builder.addCase(getStoreTransaction.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(getStoreTransaction.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+
+            })
+        builder.addCase(getStoreTransaction.rejected, (state, action) => {
             state.error = action.error.message
         })
     }

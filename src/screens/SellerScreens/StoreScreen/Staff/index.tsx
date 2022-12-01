@@ -38,6 +38,7 @@ export const StaffScreen = (props: any): JSX.Element => {
   const filterStaff = staffList?.filter((data: any) => data?.user?.first_name.toLowerCase().includes(searchValue.toLowerCase()) || data?.user?.last_name.toLowerCase().includes(searchValue.toLowerCase()))
 
 
+
  
 
   useEffect(() => {
@@ -65,7 +66,6 @@ export const StaffScreen = (props: any): JSX.Element => {
     )
   }
 
-  console.log(Error)
 
   // console.log(AllStaffs)
 
@@ -93,7 +93,7 @@ export const StaffScreen = (props: any): JSX.Element => {
         <Input
             label={''}
             placeholder={"Search for staff"}
-            // onChangeText={(text) => dispatch(searchStaffs(text))}
+            onChangeText={(text) => setSearchValue(text)}
             searchInput
             containerStyle={{width: '100%'}}
         />

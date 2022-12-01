@@ -19,6 +19,7 @@ const RatingScreen = (props: any) => {
     const id = props?.route?.params?.params?.id
     const ownerId = props?.route?.params?.params?.ownerId
     const productRating = props?.route?.params?.params?.productRating
+    const overAllRating = props?.route?.params?.params?.ratings
 
 
     const excellent = productRating?.filter((data: any) => data?.rating === 5)
@@ -35,13 +36,13 @@ const RatingScreen = (props: any) => {
 
             <View>
                 <View style={styles.jt}>
-                    <Text text={'N/A'} fontSize={hp(36)} textAlign='center' fontWeight='bold' />
+                    <Text text={overAllRating ? overAllRating : 0} fontSize={hp(36)} textAlign='center' fontWeight='bold' />
                     <View style={{ justifyContent: 'center', alignItems: 'center', marginVertical: hp(10) }}>
                         <View style={{ width: hp(150) }}>
                             <StarRating
                                 maxStars={5}
                                 starSize={25}
-                                rating={2 || 0}
+                                rating={overAllRating ? overAllRating : 0}
                                 fullStarColor={colors.bazaraTint}
                                 disabled
                             />
@@ -49,10 +50,10 @@ const RatingScreen = (props: any) => {
                     </View>
                     
                     <View style={styles.bg}>
-                        <Text text='No review yet' color='black' textAlign='center' />
+                        <Text text={productRating?.length > 0 ? `${overAllRating ? overAllRating : 0} out of 5.0 Rating` : 'No review yet'} color='black' textAlign='center' />
                     </View>
                 </View>
-                <Text text={`${0} review`} style={{ marginTop: hp(20) }} fontWeight='bold' />
+                <Text text={`${productRating?.length} review`} style={{ marginTop: hp(20) }} fontWeight='bold' />
                 <View style={globalStyles.rowBetween}>
                     <View style={styles.textDiv2}>
                         <Text text='Excellent' fontSize={hp(16)} />

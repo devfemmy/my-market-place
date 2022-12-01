@@ -1,6 +1,6 @@
 import { View, StyleSheet, ScrollView, Image, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { hp, wp } from '../utils/helpers'
+import { capitalizeSentence, hp, wp } from '../utils/helpers'
 import MobileHeader from './Containers/MobileHeader'
 import { Text } from '../components/common'
 import { Input } from '../components/common/TextInput'
@@ -45,7 +45,7 @@ const AddProducts = ({ navigation }: any) => {
     const listCate = categoryList?.map(data => {
         return {
             key: data?.id,
-            value: data?.category
+            value: capitalizeSentence(data?.category)
         }
     })
 
