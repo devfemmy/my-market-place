@@ -20,6 +20,7 @@ import { BarChart, LineChart } from 'react-native-chart-kit'
 import { Select } from '../components/common/SelectInput'
 import { useIsFocused } from "@react-navigation/native";
 import { activityData, fetchActivityAnalysis, fetchProductAnalysis, fetchStoreAnalysis, fetchStoreSalesAnalysis, fetchViewAnalysis, fetchWalletAnalysis, productAnalysis, storeSales, viewData, walletData } from '../redux/slices/DashboardSlice'
+import { truncate } from '../utils/server'
 
 
 const MyStoreScreen = () => {
@@ -91,7 +92,7 @@ const MyStoreScreen = () => {
 
 
 
-const barLabels = productData?.map((data: any) => data?.name);
+const barLabels = productData?.map((data: any) =>  truncate(data?.name, 10));
 const barViews = productData?.map((data: any) => data?.views);
 
 const lineLabels = storeData?.map((data: any) => data?.month);

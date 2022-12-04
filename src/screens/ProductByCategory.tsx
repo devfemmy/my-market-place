@@ -11,6 +11,8 @@ import { colors } from '../utils/themes'
 import MobileProductContainer from './Containers/MobileProductContainer'
 import { FlatGrid } from 'react-native-super-grid';
 import MobileHeader from './Containers/MobileHeader'
+import EmptyState from './Containers/EmptyState'
+import { globalSearch, notify } from '../assets'
 
 
 
@@ -37,29 +39,38 @@ const ProductByCategory = (props: any, navigation: any) => {
         dispatch(getAllCategories())
     }, [])
 
-    var alteredList = filteredList?.filter(a => a?.product_variant_count > 0)
+    var alteredList = filteredList?.filter(a => a?.product_variant_count > 0) as []
 
     return (
         <SafeAreaView style={globalStyles.containerWrapper}>
             <MobileHeader categoryName={categoryName} props={props} />
-            <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-                <View>
-                    <FlatGrid
-                        itemDimension={130}
-                        data={alteredList}
-                        spacing={10}
-                        renderItem={({ item }) => (
-                            <MobileProductContainer data={item} />
-                        )}
-                    />
-                    {/* {
+            {
+                alteredList?.length > 0 && <ScrollView showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}>
+                    <View>
+                        <FlatGrid
+                            itemDimension={130}
+                            data={alteredList}
+                            spacing={10}
+                            renderItem={({ item }) => (
+                                <MobileProductContainer data={item} />
+                            )}
+                        />
+                        {/* {
                         filteredList?.filter(a => a?.product_variant_count > 0).map((data, j) => {
                             return <MobileProductContainer data={data} />
                         })
                     } */}
-                </View>
-            </ScrollView>
+                    </View>
+
+                </ScrollView>
+            }
+
+            {
+                alteredList?.length < 1 && <EmptyState icon={globalSearch} title={`No product available for ${categoryName}`} header={'Check your spelling for typing errors'}
+                />
+
+            }
 
         </SafeAreaView>
     )

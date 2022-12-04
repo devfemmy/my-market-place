@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { LoginFormData, SignupType, LoginState, OauthAction } from "../../utils/types";
-import { postAuthRequest } from "../../utils/server"
+import { deleteRequestNoPayload, postAuthRequest } from "../../utils/server"
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -131,6 +131,25 @@ export const signInUser = createAsyncThunk(
   }
 )
 
+export const deleteAccountInfo = createAsyncThunk(
+  'auth/deleteAccountInfo',
+  async () => {
+    try {
+      const response = await deleteRequestNoPayload("/auth/account/delete")
+      if (response?.status === 200) {
+       
+        return response?.data
+      }
+
+    }
+    catch (e) {
+     // return rejectWithValue(e?.response?.data?.message)
+    }
+
+  }
+)
+
+
 export const signOutUser = createAsyncThunk(
   'auth/signout',
   async () => {
@@ -205,6 +224,15 @@ export const AuthSlice = createSlice({
         state.userInfo = null
       })
     builder.addCase(signOutUser.rejected, (state, action) => {
+      // state.error = action.error.message
+    })
+    builder.addCase(deleteAccountInfo.pending, (state, action) => {
+      state.loading = true
+    }),
+      builder.addCase(deleteAccountInfo.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false
+      })
+    builder.addCase(deleteAccountInfo.rejected, (state, action) => {
       // state.error = action.error.message
     })
   }

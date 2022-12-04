@@ -41,3 +41,4 @@ export const unlock: ImageSourcePropType = require('../assets/unlock.png');
 export const lock: ImageSourcePropType = require('../assets/lock.png');
 export const money: ImageSourcePropType = require('../assets/money.png');
 export const globalSearch: ImageSourcePropType = require('../assets/global-search.png');
+export const notify: ImageSourcePropType = require('../assets/notification.png');

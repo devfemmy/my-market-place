@@ -19,9 +19,10 @@ import CustomModal from '../components/common/CustomModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getStoreBySlug, storeBySlug } from '../redux/slices/CategorySlice';
 import { Notifier, NotifierComponents } from 'react-native-notifier';
-import { signOutUser } from '../redux/slices/AuthSlice';
+import { deleteAccountInfo, signOutUser } from '../redux/slices/AuthSlice';
 import { useIsFocused } from "@react-navigation/native";
 import DeleteAccountModal from './Containers/DeleteAccountModal';
+import DeleteAccountInfoModal from './Containers/DeleteAccountInfoModal';
 
 
 
@@ -42,6 +43,35 @@ const SellerSettingScreen = ({ navigation }: any) => {
   const [checked, setChecked] = useState<string>(storeInfo?.status)
   const [deleteVisible, setDeleteVisible] = useState(false)
   const [deleteAccountLoader, setDeleteAccountLoader] = useState(false)
+  const [loader, setLoader] = useState(false)
+
+
+  const closeDelete = () => {
+    setDeleteVisible(false)
+  }
+
+  const deleteAccountData = async () => {
+    setLoader(true)
+    try {
+      var response = await dispatch(deleteAccountInfo())
+      if (deleteAccountInfo.fulfilled.match(response)) {
+        await AsyncStorage.clear()
+        setLoader(false)
+        return navigation.navigate("Home")
+      }
+      else {
+        // var errMsg = response as string
+        // toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      setLoader(false)
+      console.log({ e })
+    }
+  }
+
+
   const handleDeleteAccountClose = () => {
     setDeleteAccountVisible(false)
   }
@@ -208,10 +238,10 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
   const changeStore = async (item: any) => {
     // console.log({item})
-     AsyncStorage.setItem('activeId', item?.id)
-     AsyncStorage.setItem('activeSlug', item?.slug)
-     AsyncStorage.setItem('activeName', item?.brand_name)
-     AsyncStorage.setItem('role', item?.storeRole)
+    AsyncStorage.setItem('activeId', item?.id)
+    AsyncStorage.setItem('activeSlug', item?.slug)
+    AsyncStorage.setItem('activeName', item?.brand_name)
+    AsyncStorage.setItem('role', item?.storeRole)
 
     Notifier.showNotification({
       title: `You are switching over to ${item?.brand_name} store `,
@@ -228,7 +258,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
     dispatch(getStoreById(activeId))
     dispatch(getPersonalStore())
     // dispatch(getAssignedStoresRole())
-    
+
   }
 
 
@@ -238,7 +268,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
     var activeId = await AsyncStorage.getItem('activeId') as string
     const responseAction = await dispatch(deleteAccount(activeId))
     if (deleteAccount.fulfilled.match(responseAction)) {
-   
+
       handleDeleteAccountClose()
       setDeleteAccountLoader(false)
       Notifier.showNotification({
@@ -368,12 +398,17 @@ const SellerSettingScreen = ({ navigation }: any) => {
             </View>
         }
 
+        <Pressable onPress={() => setDeleteVisible(true)}>
+          <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
+            <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
+          </View>
+        </Pressable>
 
-        {/* <Pressable onPress={() => handleDeleteAccountOpen()}>
+        <Pressable onPress={() => handleDeleteAccountOpen()}>
           <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
             <Text text='Delete Store' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
           </View>
-        </Pressable> */}
+        </Pressable>
 
       </ScrollView>
 
@@ -391,6 +426,12 @@ const SellerSettingScreen = ({ navigation }: any) => {
         loading={deleteAccountLoader}
       />
 
+      <DeleteAccountInfoModal
+        deleteVisible={deleteVisible}
+        closeDelete={closeDelete}
+        deleteAction={deleteAccountData}
+        loading={loader}
+      />
 
     </SafeAreaView>
   )
