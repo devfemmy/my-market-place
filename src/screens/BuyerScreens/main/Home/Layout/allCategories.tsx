@@ -1,5 +1,5 @@
 import { View, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import React, { useEffect} from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView, Text } from '../../../../../components/common'
 import { globalStyles } from '../../../../../styles'
 import { useNavigation } from '@react-navigation/native'
@@ -9,46 +9,50 @@ import { Nav } from '../../../../../utils/types'
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks'
 import SubHeader from './subHeader'
 import { firstLetterUppercase } from '../../../../../utils/functions'
-import { getAllCategories, allCategories, loading } from '../../../../../redux/slices/sideHustleSlice'
 import { CATEGORIES_DATA, PRODUCTS_DATA } from '../../../DummyData'
-import { getCategories, categories } from '../../../../../redux/slices/productSlice'
+import { categoryData, getAllCategories } from '../../../../../redux/slices/CategorySlice'
+import { getProfile, profileInfo } from '../../../../../redux/slices/ProfileSlice'
+import { buyerProducts, getProductBuyer } from '../../../../../redux/slices/productSlice'
+import { truncate } from '../../../../../utils/server'
+import { useIsFocused } from "@react-navigation/native";
 
-const AllCategories = () => {
-    const  navigation = useNavigation<Nav>();
-
+const AllCategories = ({navigation}: any) => {
+   const nav = useNavigation();
     const dispatch = useAppDispatch()
-    const all_categories = useAppSelector(categories)
+    const categoryItems = useAppSelector(categoryData)
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        dispatch(getCategories())
-    }, [])
+        dispatch(getAllCategories())
+    }, [isFocused])
 
-    const renderItem = ({ item }) => (
+
+
+    const renderItem = ({ item, index }: any) => (
         <TouchableOpacity
-        onPress={() => navigation.navigate('Products', {title: firstLetterUppercase(item?.categoryName), data: PRODUCTS_DATA})}
-        style={styles.itemContainer}>
-            <View style={styles.imageCard}>
-                <Image source={{uri: item?.img_url}} resizeMode='cover' style={styles.imageContainer} />
-            </View>
-            <View style={{width: wp(70), alignItems: 'center', marginTop: hp(5)}}>
-                <Text 
-                text={firstLetterUppercase(item?.category)} 
-                fontSize={hp(13)}
-                color={colors.white}
-                textAlign={'center'}
-                numberOfLines={1}
-                />
+            key={index}
+           onPress={() => nav.navigate("ProductByCategory", {
+            params: { id: item?.id },
+          })}
+            style={styles.itemContainer}>
+            <View style={styles.CategoryDiv}>
+                <View style={styles.CatDiv}>
+                    <Image source={{ uri: item?.img_url }} resizeMode='cover' style={styles.imageContainer} />
+                    <Text text={truncate(item?.category, 17)} lineHeight={14} fontSize={hp(10)} textAlign='center' />
+                </View>
             </View>
         </TouchableOpacity>
     );
 
+
+
     return (
         <View style={[styles.comp]}>
-            <SubHeader name={'Categories'} onPress={() => navigation.navigate('Categories', {title: 'Bazara Categories', data: all_categories})} />
+            <SubHeader name={'Categories'} />
             <FlatList
-                data={all_categories}
+                data={categoryItems}
                 renderItem={renderItem}
-                keyExtractor={item => item._id}
+                keyExtractor={item => item.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}
             />
@@ -64,22 +68,23 @@ const styles = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
     },
-    imageCard: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 100,
-        width: wp(70),
-        height: wp(70),
-        backgroundColor: colors.dimBlack,
-        overflow: 'hidden'
-    },
     imageContainer: {
-        width: wp(70),
-        height: wp(70)
+        width: wp(60),
+        height: wp(60),
+        borderRadius: 50,
     },
     itemContainer: {
         marginTop: hp(15),
         alignItems: 'center',
         marginRight: hp(15),
+    },
+    CategoryDiv: {
+        marginHorizontal: wp(5)
+    },
+    CatDiv: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: 60,
     }
 })

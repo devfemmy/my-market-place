@@ -13,7 +13,7 @@ import { globalStyles } from "../../../styles/globalStyles"
 import { hp, wp } from '../../../utils/helpers';
 ;
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { addStoreImage, createStore, getStoreById, resetStoreImage, storebyId, storeImage, updateStore, myStore, getPersonalStore } from "../../../redux/slices/StoreSlice"
+import { createStore, getStoreById, storebyId, updateStore, myStore, getPersonalStore } from "../../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../../utils/types';
 import CustomModal from '../../../components/common/CustomModal';
 import { colors } from '../../../utils/themes';
@@ -27,6 +27,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { styles } from '../main/Product/AddProduct/styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Notifier, NotifierComponents } from 'react-native-notifier';
+import Editor from '../../../components/resuable/Editor';
 
 
 const EditStore = (): JSX.Element => {
@@ -35,6 +37,7 @@ const EditStore = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const myStoreList = useAppSelector(myStore)
   const [loading, setLoading] = useState(false)
+  const [imgLoader, setImgLoader] = useState(false)
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
   const [customMsg, setCustomMsg] = useState('')
@@ -45,38 +48,38 @@ const EditStore = (): JSX.Element => {
 
 
   useEffect(() => {
+    setLoader(true)
     loadActiveId()
   }, [activeId])
 
 
 
   useEffect(() => {
-      setEditImg(storeIdData?.imgUrl)
+    setEditImg(storeIdData?.imgUrl)
   }, [storeIdData])
 
   const loadActiveId = async () => {
-    const id = await AsyncStorage.getItem('activeId')
-    console.log(id)
-    if(!id){
+    const id = await AsyncStorage.getItem('activeId') as string
+
+    if (!id) {
       navigation.navigate('AuthStoreCreationScreen')
     }
-    setLoading(true)
     await dispatch(getPersonalStore())
     setActiveId(id)
     // dispatch(getStoreById(id))
-    const selectedStore = myStoreList?.filter((val) => {
-      if(val?.id == id){
+    const selectedStore = await myStoreList?.filter((val) => {
+      if (val?.id == id) {
         setEditImg(val?.img_url)
         setFieldValue('state', val?.state)
         setFieldValue('storeName', val?.brand_name)
         setFieldValue('description', val?.description)
         setFieldValue('phoneNumber', val?.phone_number)
         setFieldValue('street', val?.street)
-        setFieldValue('estimatedDelivery', val?.estimated_delivery_duration)
+        setFieldValue('estimatedDeliveryDuration', val?.estimated_delivery_duration)
         setFieldValue('city', val?.city)
       }
     })
-    setLoading(false)
+    setLoader(false)
   }
 
 
@@ -88,44 +91,50 @@ const EditStore = (): JSX.Element => {
     street: '',
     city: '',
     state: '',
-    estimatedDelivery: ''
+    // estimatedDeliveryDuration: ''
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
-
     const payload = {
-      brand_name: data.storeName,
+      id: activeId,
+      brandName: data.storeName,
       description: data.description,
-      img_url: imageData?.length > 1 ? imageData : editImg,
-      city: data.city,
-      street: data.street,
-      state: data.state,
-      phone_number: data.phoneNumber,
-      estimated_delivery_duration: data.estimatedDelivery,
-      id: activeId
+      coverImg: imageData?.length > 1 ? imageData : editImg,
+      address: data.street + " " + data.city + " " + data.state,
+      phoneNumber: data.phoneNumber.toString(),
+      // estimated_delivery_duration: data?.estimatedDeliveryDuration,
+      location: {
+        state: data.state,
+        city: data.city,
+        street: data.street,
+      },
     };
 
     setLoader(true)
     const resultAction = await dispatch(updateStore(payload))
     if (updateStore.fulfilled.match(resultAction)) {
       setLoader(false)
-      setVisibleBoolen(true)
-      setIsSuccessful(true)
-      setCustomMsg('Success')
+      Notifier.showNotification({
+        title: 'Success',
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
     } else {
-      if (resultAction.payload) {
-        setLoader(false)
-        setVisibleBoolen(true)
-        setIsSuccessful(false)
-        setCustomMsg('Error')
-        console.log('error1', `Update failed: ${resultAction?.payload}`)
-      } else {
-        setLoader(false)
-        setVisibleBoolen(true)
-        setIsSuccessful(false)
-        setCustomMsg('Error')
-        console.log('error', `Updated failed: ${resultAction?.payload}`)
-      }
+      var errMsg = resultAction?.payload as string
+      setLoader(false)
+      Notifier.showNotification({
+        title: errMsg,
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'error',
+        },
+      });
     }
   }
 
@@ -141,7 +150,7 @@ const EditStore = (): JSX.Element => {
       validationSchema: StoreFormSchema,
       onSubmit: (val: StoreFormData) => handleStoreSubmission(val),
       enableReinitialize: true
-  });
+    });
 
 
   const locationState = locationData?.map((data: locationProp) => data?.state);
@@ -153,20 +162,21 @@ const EditStore = (): JSX.Element => {
 
   const pickImage = async (index: number) => {
     ImagePicker.openPicker({
-        width: 500,
-        height: 600,
-        cropping: true,
-        mediaType: "photo",
-        multiple: false,
+      width: 500,
+      height: 600,
+      cropping: true,
+      mediaType: "photo",
+      multiple: false,
     }).then(async image => {
-        const ImageUrl = await pictureUpload(image)
-        setImageData(ImageUrl)
-        console.log({ImageUrl})
+      setImgLoader(true)
+      const ImageUrl = await pictureUpload(image)
+      setImageData(ImageUrl)
+      setImgLoader(false)
     });
-};
+  };
 
   const resetImage = () => {
-    dispatch(resetStoreImage())
+    setImageData('')
   }
 
   const removeImage = () => {
@@ -174,13 +184,13 @@ const EditStore = (): JSX.Element => {
   }
 
 
-  if(loading){
+  if (loader) {
     return (
-        <SafeAreaView>
-            <View style={[globalStyles.rowCenter, {flex: 1}]}>
-                <ActivityIndicator size={'small'}/>
-            </View>
-        </SafeAreaView>
+      <SafeAreaView>
+        <View style={[globalStyles.rowCenter, { flex: 1 }]}>
+          <ActivityIndicator size={'small'} />
+        </View>
+      </SafeAreaView>
     )
   }
 
@@ -200,8 +210,8 @@ const EditStore = (): JSX.Element => {
 
           <View style={gbStyles.formContainer}>
             {
-             editImg || imageData?.length > 1 ?
-                <Pressable onPress={editImg?.length > 1 ? () => removeImage() :() => resetImage()}>
+              editImg || imageData?.length > 1 ?
+                <Pressable onPress={editImg?.length > 1 ? () => removeImage() : () => resetImage()}>
                   <View style={gbStyles.image}>
                     <View style={gbStyles.round}>
                       <AntDesign name="minus" size={hp(15)} style={{ color: colors.white }} />
@@ -212,7 +222,10 @@ const EditStore = (): JSX.Element => {
                 :
                 <Pressable onPress={() => pickImage(1)}>
                   <View style={styles.imgStyle2} >
-                    <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                    {
+                      imgLoader ? <AntDesign name='loading1' /> : <AntDesign name="plus" size={hp(30)} style={{ color: colors.white }} />
+                    }
+
                   </View>
                 </Pressable>
             }
@@ -229,23 +242,31 @@ const EditStore = (): JSX.Element => {
               errorMsg={touched.storeName ? errors.storeName : undefined}
             />
 
-            <Input
-              label={'Description'}
+             <Editor
+              placeholder='Description'
               value={values.description}
-              multiline={true}
-              numberOfLines={4}
               onBlur={handleBlur('description')}
               onChangeText={handleChange('description')}
               errorMsg={touched.description ? errors.description : undefined}
             />
 
             <Input
+              number
               label={'Phone Number'}
               value={values.phoneNumber}
               onBlur={handleBlur('phoneNumber')}
               onChangeText={handleChange('phoneNumber')}
               errorMsg={touched.phoneNumber ? errors.phoneNumber : undefined}
             />
+            {/* <View>
+              <Select
+                placeholder='Estimated Delivery Date'
+                items={['1', '2', '3', '4', '5']}
+                defaultValue={values.estimatedDeliveryDuration}
+                setState={handleChange('estimatedDeliveryDuration')}
+                errorMsg={touched.estimatedDeliveryDuration ? errors.estimatedDeliveryDuration : undefined}
+              />
+            </View> */}
 
             <Text
               text="Store Location"
@@ -279,14 +300,6 @@ const EditStore = (): JSX.Element => {
               onBlur={handleBlur('street')}
               onChangeText={handleChange('street')}
               errorMsg={touched.street ? errors.street : undefined}
-            />
-
-            <Input
-              label={'Estimated delivery duration'}
-              value={values.estimatedDelivery}
-              onBlur={handleBlur('estimatedDelivery')}
-              onChangeText={handleChange('estimatedDelivery')}
-              errorMsg={touched.estimatedDelivery ? errors.estimatedDelivery : undefined}
             />
           </View>
 
@@ -334,7 +347,7 @@ const gbStyles = StyleSheet.create({
     paddingLeft: 5
   },
   imageBox: {
-    backgroundColor: colors.dimBlack,
+    backgroundColor: colors.black,
     height: hp(120),
     width: wp(120),
     borderRadius: 10,
@@ -343,7 +356,7 @@ const gbStyles = StyleSheet.create({
     alignItems: 'center'
   },
   round: {
-    backgroundColor: colors.cancelled,
+    backgroundColor: colors.red,
     width: hp(15),
     height: hp(15),
     justifySelf: 'flex-end',

@@ -11,6 +11,7 @@ export type AuthStackParamList = {
   StoreSuccessScreen: undefined;
   WelcomeScreen: undefined;
   Store: undefined;
+  Home: undefined;
   AuthStoreSuccess: undefined
 };
 export type UserDataToken = {

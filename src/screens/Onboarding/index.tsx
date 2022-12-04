@@ -59,7 +59,7 @@ export const OnboardScreen = (): JSX.Element => {
             style={{marginTop: hp(20)}}
             />
             <View style={[globalStyles.rowCenter, styles.btn]}>
-                <Button title={'Get Started'} style={styles.btn} onPress={() => navigation.replace('Login')} />
+                <Button title={'Get Started'} style={styles.btn} onPress={() => navigation.navigate("HomeScreen")} />
             </View>
           </View>
         </ImageBackground>
@@ -105,6 +105,6 @@ const styles = StyleSheet.create({
   btn: {
     width: screenWidth - hp(30),
     alignSelf: 'center',
-    marginTop: hp(20)
+    marginTop: hp(30)
   },
 });

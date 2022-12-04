@@ -13,7 +13,7 @@ import { globalStyles } from "../../../styles/globalStyles"
 import { hp, wp } from '../../../utils/helpers';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks"
-import { addStoreImage, createStore, resetStoreImage, storeImage, uploadImage, error } from "../../../redux/slices/StoreSlice"
+import { createStore,uploadImage, error } from "../../../redux/slices/StoreSlice"
 import { locationProp, Nav, StoreFormData } from '../../../utils/types';
 import CustomModal from '../../../components/common/CustomModal';
 import { colors } from '../../../utils/themes';
@@ -50,7 +50,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
     street: '',
     city: '',
     state: '',
-    estimatedDelivery: ''
+    // estimatedDelivery: ''
   };
 
   const handleStoreSubmission = async (data: StoreFormData) => {
@@ -68,7 +68,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
       street: data.street,
       state: data.state,
       phone_number: data.phoneNumber,
-      estimated_delivery_duration: data.estimatedDelivery
+      // estimated_delivery_duration: data.estimatedDelivery
     };
 
     setLoader(true)
@@ -107,7 +107,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
     useFormik({
       initialValues,
       validationSchema: StoreFormSchema,
-      onSubmit: (val: StoreFormData) => handleStoreSubmission(val),
+      onSubmit: (val: any) => handleStoreSubmission(val),
     });
 
 
@@ -204,6 +204,7 @@ const AuthStoreCreationScreen = (): JSX.Element => {
             />
 
             <Input
+              number
               label={'Phone Number'}
               value={values.phoneNumber}
               onBlur={handleBlur('phoneNumber')}

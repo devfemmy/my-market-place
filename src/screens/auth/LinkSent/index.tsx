@@ -32,7 +32,7 @@ const LinkSent = () => {
         <View style={[globalStyles.rowCenter, styles.btnContainer]}>
           <Button
             title={'Return to sign in'}
-            onPress={() => navigation.replace('Login')}
+            onPress={() => navigation.navigate('LoginScreen')}
           />
         </View>
       </View>

@@ -8,6 +8,8 @@ import { colors } from "../../utils/themes/themes"
 type TextProps = ComponentProps<typeof BaseText> & {
   text: string;
   fontSize?: number;
+  //textDecoration?: 'capitalize' | 'uppercase' | 'lowercase' | 'none';
+  // textTransform?: 'underline' | 'none';
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify';
   color?: string;
   lineHeight?: number;
@@ -35,6 +37,8 @@ export const Text = memo(
     textAlign,
     color = colors.white,
     fontWeight = '400',
+    // textTransform = 'none',
+    // textDecoration = 'none',
     style,
     ...rest
   }: TextProps) => {
@@ -45,6 +49,8 @@ export const Text = memo(
         textAlign,
         lineHeight,
         fontWeight,
+        // textDecoration,
+        // textTransform
       }),
       [color, textAlign, fontWeight, lineHeight, fontSize],
     );

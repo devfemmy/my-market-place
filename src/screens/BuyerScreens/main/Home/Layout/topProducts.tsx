@@ -13,33 +13,57 @@ import { getAllCategories, allCategories, loading } from '../../../../../redux/s
 import { PRODUCTS_DATA } from '../../../DummyData'
 import BuyerProductCard from '../../../../../components/resuable/BuyerProductCard'
 import { buyerProducts, getProductBuyer } from '../../../../../redux/slices/productSlice'
+import { categoryData } from '../../../../../redux/slices/CategorySlice'
+import { useIsFocused } from "@react-navigation/native";
+
 
 const TopProducts = () => {
     const navigation = useNavigation<Nav>();
-
+    const isFocused = useIsFocused();
     const dispatch = useAppDispatch()
-    const products = useAppSelector(buyerProducts)
+    const categoryItems = useAppSelector(categoryData)
+    const buyerProoductList = useAppSelector(buyerProducts)
 
     useEffect(() => {
+        dispatch(getAllCategories())
         dispatch(getProductBuyer())
-    }, [])
+    }, [isFocused])
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({item}: any) => (
         <BuyerProductCard item={item} />
+        
     );
+
+    const filterCategory = categoryItems?.map(bb => {
+        var list = buyerProoductList?.filter((aa, i) => aa.category === bb?.category)
+        if (list?.length > 0) {
+            return {
+                category: bb?.category,
+                id: bb?.id,
+                products: list.concat([""])
+            }
+        }
+
+    })
 
 
     return (
-        <View style={[styles.comp]}>
-            <SubHeader name={'Top Selling Products'} onPress={() => navigation.navigate('Products', {title: 'Top Selling Products', data: products})} />
-            <FlatList
-                data={products}
-                renderItem={renderItem}
-                keyExtractor={item => item._id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-            />
-        </View>
+       <View>
+        {
+            filterCategory?.map((data: any,i: number) => {
+                return data?.category && (<View key={i}  style={[styles.comp]}>
+                <SubHeader name={`Top Selling Products (${data?.category})`}/>
+                <FlatList
+                    data={data?.products}
+                    renderItem={renderItem}
+                    keyExtractor={(item: any) => item?.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                />
+            </View>)
+            })
+        }
+       </View>
     )
 }
 
@@ -57,7 +81,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         width: wp(70),
         height: wp(70),
-        backgroundColor: colors.dimBlack,
+        backgroundColor: colors.black,
         overflow: 'hidden'
     },
     imageContainer: {

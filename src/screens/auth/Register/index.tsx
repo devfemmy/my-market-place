@@ -209,7 +209,8 @@ const Register = (): JSX.Element => {
 
   return (
     <View style={globalStyles.wrapper}>
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         <Input
           label={'First Name'}
           value={values.first_name}
@@ -232,6 +233,7 @@ const Register = (): JSX.Element => {
           errorMsg={touched.email ? errors.email : undefined}
         />
         <Input
+          number
           label={'Phone Number'}
           value={values.phone_number}
           onBlur={handleBlur('phone_number')}

@@ -84,7 +84,8 @@ const AddShippingFee = () => {
   return (
     <SafeAreaView>
       <StatusBar translucent={true} backgroundColor={'white'} />
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
 
         <NavHeader
           icon='chevron-back-outline'

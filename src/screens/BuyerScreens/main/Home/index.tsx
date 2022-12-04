@@ -15,15 +15,16 @@ import { getAllCategories } from '../../../../redux/slices/sideHustleSlice';
 import { Banner } from '../../../../constants/images';
 import { colors } from '../../../../utils/themes';
 import { hp } from '../../../../utils/helpers';
+import { getProfile } from '../../../../redux/slices/ProfileSlice';
 
 export const Home = (): JSX.Element => {
   const {navigate} = useNavigation<Nav>();
-  const user = useAppSelector(userProfile)[0]
+  const user = useAppSelector(userProfile)
   const loader = useAppSelector(loading)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(getUserDetails())
+    dispatch(getProfile())
   }, [])
 
   if(loader){
@@ -37,10 +38,11 @@ export const Home = (): JSX.Element => {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: 'red'}}>
       <StatusBar translucent={true} backgroundColor={'white'} />
-      <UserHeader name={`${user?.fName}`} image={user?.imgUrl} />
-      <ScrollView>
+      <UserHeader name={`${user?.first_name}`} image={user?.img_url} />
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         <View style={styles.imageCard}>
             <Image source={Banner} resizeMode='contain' style={styles.imageContainer} />
         </View>
@@ -51,6 +53,7 @@ export const Home = (): JSX.Element => {
         
       </ScrollView>
     </SafeAreaView>
+
   );
 };
 
@@ -59,10 +62,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    height: hp(180),
+    height: hp(200),
     paddingHorizontal: hp(15)
   },
   imageContainer: {
-      width: '100%',
+      width: '100%'
   },
 })

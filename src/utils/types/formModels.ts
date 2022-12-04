@@ -8,265 +8,509 @@ import {
   ImageSourcePropType,
 } from 'react-native';
 
-export type LoginFormData = {
-  email: string;
-  password: string;
-};
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
-export type RegisterFormData = {
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  email: string;
-  password: string;
-  // confirmPassword: string;
-};
 
 export type Nav = {
-  goBack(): void;
-  navigate: (value: string) => void;
+    replace(arg0: string): unknown;
+    goBack(): void;
+    navigate: (value: string) => void;
+  }
+  
+export type LoginFormData = {
+    email: string;
+    password: string;
 }
-
+export type WishlistState = {
+    lists: any,
+    loading: boolean,
+    error: any,
+}
 
 export type ForgotPasswordFormData = {
-  email: string;
-};
+    email: string
+}
+export type SignupType = {
+    email: string;
+    password: string;
+    fName: string;
+    lName: string;
+    // mobile: string;
 
-export type AssignUserFormData = {
-  roleId: string;
-  email: string;
-  storeId: string;
-};
-
-export type StoreFormData = {
-  storeName: string;
-  description: string;
-  phoneNumber: string;
-  street: string;
-  city: string;
-  state: string;
-  estimatedDelivery: string;
-};
-
-export type CartFormData = {
-  cart: Array<any>;
-  loading: boolean;
-  error: any
-};
-
-export type NotificationFormData = {
-  notifications: Array<any>;
-  loading: boolean;
-  error: any
-};
-
-
-export type StoreState = {
-  myStore: Array<any>,
-  allStores: Array<any>,
-  permission: Array<any>,
-  payouts: Array<any>,
-  reviews: Array<any>,
-  filteredreviews: Array<any>,
-  allCategories: Array<any>,
-  storeById: any,
-  error: any,
-  loading: boolean,
-  storeImage: string,
-  staffs: any,
-  filteredStaffs: any,
-  wallet: any,
-  storeRoles: any
+}
+export type OauthAction = {
+    token: string;
+}
+export type RegisterFormData = {
+    firstName: string,
+    lastName: string,
+    // phoneNumber: string,
+    email: string,
+    password: string
+}
+export type DeliveryAddressFormData = {
+    address: string,
+    state: string,
+    city: string
 }
 
-
-
-export type OrderState = {
-  sellerOrders: Array<any>,
-  allOrders: Array<any>,
-  selectedOrders: Array<any>,
-  selected: string,
-  availableStatus: Array<string>,
-  error: any,
-  loading: boolean,
-  searching: boolean
-}
-
-export type SideHustleState = {
-  allCategories: Array<any>,
-  error: any,
-  loading: boolean,
-}
-
-
-export type UserState = {
-  userProfile: Array<any>,
-  notifications: Array<any>,
-  notificationStat: Array<any>,
-  error: any,
-  loading: boolean,
+export type LoginState = {
+    userData: [];
+    userInfo: any;
+    loading: boolean;
+    error: any
 }
 
 export type CartState = {
-  carts: Array<any>,
-  error: any,
-  loading: boolean,
+    carts: Array<any>;
+    loading: boolean;
+    error: any
 }
+
+export type AddressState = {
+    locations: Array<any>;
+    loading: boolean;
+    error: any
+}
+
+
+export type StoreState = {
+    myStore: Array<any>,
+    storeRatings: Array<any>,
+    allStores: Array<any>,
+    storeById: any,
+    error: any,
+    loading: boolean,
+    wallet: any,
+}
+
 
 export type ProductState = {
-  myProducts: Array<any>,
-  productVariants: Array<any>,
-  productSpec: Array<any>,
-  buyerProducts: Array<any>,
-  buyerProduct: Array<any>,
-  selectedProducts: Array<any>,
-  productBackground: Array<any>,
-  searching: boolean,
-  productBySlug: any,
-  editableSlug: any,
-  newSizes: Array<any>,
-  newColours: Array<any>,
-  newSizeColours: Array<any>,
-  images: Array<string>,
-  categories: Array<string>,
-  error: any,
-  loading: boolean
+    products: Array<any>,
+    buyerProducts: Array<any>,
+    productSpec: Array<any>,
+    productBySlug: any,
+    productVariants: any,
+    error: any,
+    loading: boolean
 }
 
-export type ProductVariant = {
-  size: any,
-  quantity: any,
-  color: string,
-  amount: any,
-  img_urls: Array<string>,
-  product_id?: string,
-  product_variant_id?: string
+
+export type ResetFormData = {
+    email: string;
 }
 
-export type StoreCreateFormData = {
-  brand_name: string,
-  description: string,
-  img_url: string,
-  city: string,
-  phone_number: string,
-  state?: string,
-  street: string,
-  estimated_delivery_duration: string
+export type Header = {
+    icon: string,
+    header: string
 }
 
-export type StoreUpdateFormData = {
-  id: string,
-  brand_name: string,
-  description: string,
-  img_url: string,
-  city: string,
-  street: string,
-  state: string,
-  phone_number: string,
-  estimated_delivery_duration: string,
+export type TextProps = {
+    text: string;
+    fontSize?: string;
+    textAlign?: 'left' | 'right' | 'center' | 'justify';
+    color?: string;
+    lineHeight?: string;
+    fontFamily?: string;
+    textDecoration?: 'none' | 'underline' | 'overline' | 'line-through' | 'underline overline';
+    textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase' | 'initial' | 'inherit';
+    fontWeight?:
+    | 'normal'
+    | 'bold'
+    | '100'
+    | '200'
+    | '300'
+    | '400'
+    | '500'
+    | '600'
+    | '700'
+    | '800'
+    | '900',
+    margin?: string
+};
+
+export type SignupFormData = {
+    firstName: string,
+    lastName: string,
+    // phoneNumber: string,
+    email: string,
+    password: string
 }
 
+export type StoreFormData = {
+    storeName: string;
+    description: string;
+    phoneNumber: string;
+    // estimatedDeliveryDuration: string;
+    street: string;
+    city: string;
+    state: string;
+}
 
 export type ProductCreateFormData = {
-  id?: string,
-  name?: string,
-  description?: string,
-  categories?: string,
-  variants?: Array<any>,
-  isDraft?: boolean,
-  status?: string
+    name: string,
+    description: string,
+    category_id: string,
+    estimated_delivery_duration: number,
+   store_id: string,
+  //  variants?: Array<any>,
+    // isDraft: boolean,
+    // status: string
 }
 
-export type locationProp = {
-  state: string,
-  city: Array<string>,
+export type HomeHeaderType = {
+    data: any
 }
 
-export type ArrayType = {
-  id: number,
-  title: string,
-  icon: ImageSourcePropType,
-  navigation?: string,
-  route?: string,
-  onPress?: any
+export type CategoryState = {
+    category: Array<any>,
+    storeBySlug: any,
+    storeByCategory: any,
+    error: any,
+    loading: boolean
+}
+export type ProductUpdateFormData = {
+    id: string,
+    name?: string,
+    description?: string,
+    category_id?: string,
+    estimated_delivery_duration: number,
+   // store_id?: string,
+   // variants?: Array<any>,
 }
 
-export type WelcomeType = {
-  id: number,
-  header: string,
-  type: string,
-  title: string
+export type ProductVariantFormData = {
+    img_urls: Array<string>,
+    color?: string,
+    product_id: string,
 }
 
-
-export type AuthButtonProps = ComponentProps<typeof BaseButton> & {
-  title: string;
-  image?: ImageSourcePropType;
-  isLoading?: boolean;
-  loaderColor?: string;
-  outlined?: boolean;
-  style?: StyleProp<ViewStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
-};
-
-export type ButtonProps = ComponentProps<typeof BaseButton> & {
-  title: string;
-  isLoading?: boolean;
-  small?: boolean;
-  loaderColor?: string;
-  outlined?: boolean;
-  style?: StyleProp<ViewStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
-};
-
-export type MiniButtonProps = ComponentProps<typeof BaseButton> & {
-  icon: string;
-  iconColor?: string;
-  iconSize?: number;
-  isLoading?: boolean;
-  loaderColor?: string;
-  outlined?: boolean;
-  style?: StyleProp<ViewStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
-};
-
-export type ProductFormData1 = {
-  name: string;
-  description: string;
-  category: string;
-  sizes: boolean;
-  colours: boolean;
-};
-
-export type StaffFormData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-};
-
-export type PayoutFormData = {
-  account?: string;
-  account_name: string;
-  _id?: string;
-  bank_account_number: string;
-  bank_name: string;
-  bankCode?: string;
-  store_id?: string;
-};
+export type ProductVariantSpecFormData = {
+    size?: string,
+    quantity: number,
+    amount: number,
+    product_variant_id: string,
+}
 
 export type DeliveryFormData = {
-  state: string;
-  price: string
-}
-
-export type DeliveryAddressFormData = {
-  address: string;
-  state: string;
-  city: string
+    state: string;
+    price: string
 }
 
 export type LandmarkFormData = {
-  city: string;
-  price: string
+    city: string;
+    price: string
+}
+
+export type StoreCreateFormData = {
+    brandName: string,
+    description: string,
+    coverImg: string,
+    address: string,
+    phoneNumber: string,
+    // estimated_delivery_duration: string,
+    location: {
+        state: string,
+        city: string,
+        street: string,
+    },
+    // isDraft?: boolean,
+    // status?: string
+}
+
+export type StoreUpdateFormData = {
+    id: string,
+    brandName: string,
+    description: string,
+    coverImg: string,
+    address: string,
+    phoneNumber: string,
+    // estimated_delivery_duration: string,
+    location: {
+        state: string,
+        city: string,
+        street: string,
+    },
+}
+
+
+export type WelcomeCardProp = {
+    id: number,
+    header: string,
+    type: string,
+    title: string
+}
+
+export type InputType = {
+    label: string,
+    value: string,
+    errorMsg?: string,
+    isMultiline?: boolean,
+    isPassword?: boolean,
+    disabled?: boolean,
+    type?: string,
+    required?: boolean,
+    handleClick?: (value?: any) => void,
+    onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
+    handleTextChange?: (value?: any) => void
+}
+
+export type NumberType = {
+    label: string,
+    value: number,
+    errorMsg?: string,
+    type?: string,
+    handleNumChange?: (value: string | ChangeEvent<any>) => void,
+    handleOnChange?: (value: number | string) => void
+      onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+   // onChange?: (values: NumberFormatValues, sourceInfo: SourceInfo) => void
+}
+
+
+export type locationProp = {
+    state: string,
+    city: Array<string>,
+}
+
+export type ArrayOptionType = {
+    id: number,
+    title: string,
+    icon: ImageSourcePropType
+}
+
+
+export type ButtonType = {
+    children: string,
+    isLoading?: boolean,
+    handlePress?: () => void,
+    type?: string,
+    disabled?: boolean
+}
+
+export type SelectType = {
+    onSearch?: (value: string) => void,
+    // onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
+    onChange?: (event: any ) => void
+    placeholder: string,
+    errorMsg?: string,
+    value: string,
+    type?: boolean,
+    data: Array<any>,
+}
+
+export type ModalType = {
+    title: string,
+    type: string,
+    modalVisible: boolean,
+    handlePress?: () => void,
+    setModalVisible: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+}
+
+export type ProductModalType = {
+    visible: boolean,
+    action?: () => void,
+    handlePress?: () => void,
+    setVisible: () => void
+}
+
+
+export type EditProductModalType = {
+    visible: boolean,
+    action?: () => void,
+    handlePress?: () => void,
+    setVisible: () => void,
+    editData?: any
+}
+
+export type AddStaffModalType = {
+    staffModalVisible: boolean, 
+    closeModal: () => void,
+}
+
+
+export type ImageType = {
+    source: string;
+    width?: number;
+    height?: number;
+    type?: string
+}
+
+
+export type ProductFormData = {
+    productName: string;
+    productDescription: string;
+    category: string;
+    estimated_delivery_duration: string
+}
+
+
+export type EditProductFormData = {
+    productName: string;
+    productDescription: string;
+    category: string;
+}
+
+export type ProductColorData = {
+    description: '';
+}
+
+export type ProductNoColorData = {
+    price: number
+}
+
+export type ProductSizeData = {
+    price: number;
+    size: string
+}
+
+export type DeliveryData = {
+    street: string;
+    state: string;
+    city: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone_number: number | null
+}
+
+
+export type OrdersState = {
+    sellerOrders: Array<any>,
+    buyerOrders: Array<any>,
+    sellerOrderDetails: any,
+    outOfStock: any,
+    error: any;
+    loading: boolean
+}
+
+export type AddStaffData = {
+    // firstName: string,
+    // lastName: string;
+    email: string;
+    role: string;
+}
+
+export type AddDesktopStaffData = {
+    // firstName: string,
+    // lastName: string;
+    email: string;
+}
+
+export type PayoutFormData = {
+    bankName: string,
+    bankNumber: string
+}
+
+export type PayoutState = {
+    payout: any,
+    loading: any,
+    error: any
+}
+
+export type PayoutBody = {
+    name: string,
+    account: string,
+    id: string,
+    bankName: string,
+}
+
+export type ProductColorAloneData = {
+    price: number;
+    description: string
+}
+
+
+export type PayoutModalData = {
+    visible: boolean,
+    setVisible: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void,
+    editPayout?: any,
+    setPayout?: (e: any) => void,
+}
+
+export type ProfileFormData = {
+    lName: string,
+    fName: string,
+    email: string,
+    mobile: string,
+    gender: string
+}
+
+export type BuyerProfileFormData = {
+    lName: string,
+    fName: string,
+    email: string,
+    mobile: string,
+    gender: string
+}
+
+export type ProductContainerType = {
+    data: any,
+    name?: string,
+    mini?: boolean,
+    slug?: string,
+}
+
+
+export type ProfileState = {
+    profile: any,
+    loading: boolean,
+    error: any
+}
+
+export type StaffState = {
+    staffs: any,
+    loading: boolean,
+    error: any,
+    storeRoles: any,
+}
+export type ReviewState = {
+    reviews: any,
+    loading: boolean,
+    error: any,
+}
+export type NotificationCardType = {
+    icon: ImageSourcePropType,
+    header: string,
+    duration: string,
+    action: string,
+}
+
+export type EmptyStateType = {
+    icon: ImageSourcePropType,
+    title: string,
+    header: string,
+    btn?: boolean,
+    route?: string,
+    btnText?: string,
+   }
+   
+
+export type NotificationState = {
+   notifications: Array<any>,
+    sellerStat: any,
+    loading: boolean,
+    error: any
+}
+
+export type MerchantFormData = {
+    firstName: string,
+    lastName: string,
+    email: string,
+    // mobile: string,
+    password: string,
+}
+
+export type DesktopCreateProduct = {
+    productName: string,
+    description: string,
+    category: string,
+}
+
+export type LayoutInputType = {
+    label: string, 
+    type: string, 
+    numberValue?: string, 
+    setNumberValue?: Dispatch<SetStateAction<number>>, 
+    textValue?: string, 
+    setTextValue?: Dispatch<SetStateAction<string>>
 }

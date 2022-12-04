@@ -12,12 +12,34 @@ export const updateSchema = yup.object().shape({
   fName: yup.string().required('First Name is required'),
   lName: yup.string().required('Last Name is required')
 });
+export const DeliverySchema = yup.object().shape({
+  first_name: yup.string().required('Receiver firstname is required'), 
+  last_name: yup.string().required('Receiver lastname is required'), 
+  email: yup.string().email().required('Receiver email is required'), 
+  street: yup.string().required('Street is required'),
+  state: yup.string().required('State is required'),
+  city: yup.string().required('City is required'),
+  phone_number: yup.number().required('Phone number is required')
+ });
+ export const PayoutSchema = yup.object().shape({
+  bankName: yup.string().required('Bank name is required'),
+  bankNumber: yup.string().required('Bank number is required'),
+
+ })
+export const AddStaffSchema = yup.object().shape({
+  email: yup.string().email().required('Email is required'),
+  role: yup.string().required('Role is required')
+ })
+ export const ProfileFormSchema = yup.object().shape({
+  lName: yup.string().required('Surname is required'),
+  fName: yup.string().required('First name is required'),
+  email: yup.string().email().required('Email is required'),
+  mobile: yup.string().required('Phone number is required'),
+ })
 
 export const RegisterSchema = yup.object().shape({
-  first_name: yup.string().required('First name is required'),
-  last_name: yup.string().required('Last name is required'),
-  phone_number: yup.string().min(7, ({min}) => `Phone must be at least ${min} characters`)
-  .required('Phone is required'),
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
   email: yup.string().email().required('Email is required'),
   password: yup
     .string()
@@ -40,8 +62,33 @@ export const StoreFormSchema = yup.object().shape({
   street: yup.string().required('Street name is required'),
   city: yup.string().required('City is required'),
   state: yup.string().required('State is required'),
-  estimatedDelivery: yup.string().required('Estimated delivery duration is required'),
+  // estimatedDeliveryDuration: yup.string().required('Estimated delivery duration is required'),
 });
+export const ProductColorAloneSchema = yup.object().shape({  
+  price: yup.number().min(500, ({min}) => `Price must be at least ${min}`).required('Price is required'),
+  description: yup.string().required('Description is required')
+});
+ 
+export const ProductNoColorSchema = yup.object().shape({  
+  price: yup.number().min(500, ({min}) => `Price must be at least ${min}`).required('Price is required')
+ });
+
+ export const ProductColorSchema = yup.object().shape({  
+  description: yup.string().required('Color description is required')
+ });
+ 
+export const ProductSizeSchema = yup.object().shape({  
+  price: yup.number().min(500, ({min}) => `Price must be at least ${min}`).required('Price is required'),
+  size: yup.string().required('Size is required')
+ });
+
+
+export const ProductSchema = yup.object().shape({  
+  productName: yup.string().required('Product name is required'),
+  productDescription: yup.string().required('Product description is required'),
+  category: yup.string().required('Category is required'),
+  estimated_delivery_duration: yup.string().required("Expected Delivery Duration is required")
+ });
 
 export const ProductFormData1Schema = yup.object().shape({
   name: yup.string().required('Product name is required'),

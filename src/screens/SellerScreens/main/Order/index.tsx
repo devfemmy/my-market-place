@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {SafeAreaView, Text} from '../../../../components/common';
 import {useNavigation} from '@react-navigation/native';
 import { Nav } from '../../../../utils/types';
@@ -10,27 +10,51 @@ import {hp,wp} from '../../../../utils/helpers';
 import {NoProducts} from '../../../../constants/images';
 import {NoOrder} from './Empty';
 import { Orders } from './Orders';
-import { selectedOrders, loading, error } from '../../../../redux/slices/orderSlice';
-import { getAllOrders } from '../../../../redux/slices/orderSlice';
+
 import { Input } from '../../../../components/common/TextInput';
 import { colors } from '../../../../utils/themes';
 import { SkeletonView } from '../../../../components/resuable/Skeleton';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { InfoCircle } from '../../../../constants/images';
 import { icons } from '../../../../utils/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getSellerOrders } from '../../../../redux/slices/orderSlice';
 
 export const Order = (): JSX.Element => {
   const {authContext: { signIn }} = useContext(AuthContext)
   const dispatch = useAppDispatch()
-  const orders = useAppSelector(selectedOrders)
-  const loader = useAppSelector(loading)
-  const Error = useAppSelector(error)
+  const [status, setStatus] = useState("All")
+  const [stateLoader, setStateLoader] = useState(false)
+  const [id, setId] = useState('')
+  const [sellerOrderList, setSellerOrderList] = useState<any>(null)
+
 
   useEffect(() => {
-    dispatch(getAllOrders())
+      const loadAsyn = async () => {
+          var id = await AsyncStorage.getItem('activeId') as string
+
+          setId(id)
+      }
+      loadAsyn()
   }, [])
 
-  if(loader){
+  const loadData = async () => {
+    const payload = {
+        id,
+        status
+    }
+    await dispatch(getSellerOrders(payload)).then(data => {
+        setSellerOrderList(data?.payload)
+    })
+    setStateLoader(false)
+}
+
+  useEffect(() => {
+    setStateLoader(true)
+    loadData()
+}, [id, status])
+
+  if(stateLoader){
     return (
       <SafeAreaView>
         <View style={[globalStyles.rowBetween, globalStyles.lowerContainer]}>
@@ -63,26 +87,26 @@ export const Order = (): JSX.Element => {
     
   }
 
-  if(Error){
-    return (
-        <SafeAreaView>
-            <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
-            <Image
-                source={InfoCircle}
-                style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
-            />
-            <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
-            <TouchableOpacity onPress={() => dispatch(getAllOrders())}>
-              <icons.Ionicons style={{marginTop: hp(20)}} name="refresh-circle" size={40} color={colors.bazaraTint} />
-            </TouchableOpacity>
-            </View>
-        </SafeAreaView>
-    )
-  }
+  // if(Error){
+  //   return (
+  //       <SafeAreaView>
+  //           <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
+  //           <Image
+  //               source={InfoCircle}
+  //               style={{width: hp(50), height: hp(50), marginBottom:hp(20)}}
+  //           />
+  //           <Text fontWeight="500" fontSize={hp(14)} text={'Seems something went wrong.'} />
+  //           <TouchableOpacity onPress={() => loadData()}>
+  //             <icons.Ionicons style={{marginTop: hp(20)}} name="refresh-circle" size={40} color={colors.bazaraTint} />
+  //           </TouchableOpacity>
+  //           </View>
+  //       </SafeAreaView>
+  //   )
+  // }
 
   return (
     <SafeAreaView>
-      {orders.length < 1 ? <NoOrder/> : <Orders data={orders}/>}
+      {sellerOrderList?.length < 1 ? <NoOrder/> : <Orders data={sellerOrderList}/>}
     </SafeAreaView>
   );
 };
