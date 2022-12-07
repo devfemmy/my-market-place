@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '../components/common/Button'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { forgetPassword, signOutUser, userState } from '../redux/slices/AuthSlice'
+import { deleteAccountInfo, forgetPassword, signOutUser, userState } from '../redux/slices/AuthSlice'
 import { getProfile, profileLoader, updateProfile } from '../redux/slices/ProfileSlice'
 import { getPersonalStore, myStore } from '../redux/slices/StoreSlice'
 import { ProfileFormData } from '../utils/types'
@@ -23,6 +23,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { pictureUpload } from '../utils/functions'
 import { deleteIcon, plus, remove } from '../assets'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import DeleteAccountInfoModal from './Containers/DeleteAccountInfoModal'
 
 
 
@@ -49,6 +50,34 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
   const [addressList, setAddressList] = useState<any>(null)
   const [visible, setVisible] = useState(false)
+
+  const [deleteVisible, setDeleteVisible] = useState(false)
+
+  const closeDelete = () => {
+    setDeleteVisible(false)
+  }
+
+  const deleteAccountData = async () => {
+    setLoader(true)
+    try {
+      var response = await dispatch(deleteAccountInfo())
+      if (deleteAccountInfo.fulfilled.match(response)) {
+        await AsyncStorage.clear()
+        setLoader(false)
+        return navigation.navigate("Home")
+      }
+      else {
+        // var errMsg = response as string
+        // toast.error(errMsg)
+        setLoader(false)
+      }
+    }
+    catch (e) {
+      setLoader(false)
+      console.log({ e })
+    }
+  }
+
 
   const openVisible = () => {
     setVisible(true)
@@ -198,11 +227,11 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
   const requestPassowrdChange = async () => {
     setLoader(true)
-   
+
     const data = {
       email: profileData?.email,
       redirect_url: `https://bazara.herokuapp.com/new-password`
-    } 
+    }
 
     try {
       var resultAction = await dispatch(forgetPassword(data))
@@ -343,7 +372,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView  showsVerticalScrollIndicator={false}
+      <ScrollView showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
         <View style={styles.containerBox}>
 
@@ -480,11 +509,11 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                         </View>
                       </Pressable>
                       {
-                        data?.type !== "STORE_ADDRESS" &&  <Pressable onPress={() => deleteDelivery(data)}>
+                        data?.type !== "STORE_ADDRESS" && <Pressable onPress={() => deleteDelivery(data)}>
                           <Image source={deleteIcon} />
-                      </Pressable>
+                        </Pressable>
                       }
-                     
+
                     </View>
                   })
                 }
@@ -511,8 +540,12 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                 }
 
 
+                <Pressable onPress={() => setDeleteVisible(true)}>
+                  <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(20) }} fontWeight='400' />
+                </Pressable>
+
                 <Pressable onPress={() => signOut()}>
-                  <Text text='Logout' fontSize={hp(14)} color={colors.bazaraTint} style={{marginVertical: hp(20)}} fontWeight='400' />
+                  <Text text='Logout' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(20) }} fontWeight='400' />
                 </Pressable>
               </View>
 
@@ -525,6 +558,13 @@ const BuyerProfileScreen = ({ navigation }: any) => {
           <DeliveryModal
             visible={visible}
             setVisible={closeVisible}
+          />
+
+          <DeleteAccountInfoModal
+            deleteVisible={deleteVisible}
+            closeDelete={closeDelete}
+            deleteAction={deleteAccountData}
+            loading={loader}
           />
 
         </View>

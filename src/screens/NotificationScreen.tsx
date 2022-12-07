@@ -8,6 +8,8 @@ import { getNotifications, markAsRead } from '../redux/slices/notificationSlice'
 import { Text } from '../components/common/Text';
 import { colors } from '../utils/themes';
 import { Image } from 'react-native-animatable';
+import EmptyState from './Containers/EmptyState';
+import { notify } from '../assets';
 
 
 
@@ -24,7 +26,8 @@ const NotificationScreen = ({ navigation }: any) => {
     }, [isFocused])
 
 
-    const buyerNotification = notification?.filter((data: any) => data?.type === "ORDER")
+    const buyerNotification = notification?.filter((data: any) => data?.type === "ORDER" && data?.status === "UNREAD")
+
 
 
     const routeNotification = async (item: any) => {
@@ -73,9 +76,9 @@ const NotificationScreen = ({ navigation }: any) => {
             }
 
             {
-                buyerNotification?.length < 1 && <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text text={'No notification available'} fontSize={hp(24)} lineHeight={22} style={{ marginVertical: hp(10) }} />
-                </View>
+                (buyerNotification?.length < 1 || buyerNotification === undefined) && <EmptyState icon={notify} title={'No notification available'} header={'All notifications will appear here once available'}                
+                />
+                
             }
         </View>
     )

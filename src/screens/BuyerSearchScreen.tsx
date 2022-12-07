@@ -49,9 +49,6 @@ const BuyerSearchScreen = (props: any) => {
   }, [searchValue])
 
 
-  console.log({searchResult, searchValue})
-
-
   return (
     <View style={styles.container}>
       <MobileHeader categoryName={'Explore'} props={props} />
@@ -71,12 +68,12 @@ const BuyerSearchScreen = (props: any) => {
           />
 
         }
-        {/* {
+        {
          (searchValue?.length > 0 && searchResult?.length < 1) && <EmptyState2 
           icon={globalSearch}
           header={`No product found for ${searchValue} `}
          />
-        } */}
+        }
         {
           searchValue?.length < 1 && <>
             <AllCategories navigation={props?.navigation} />

@@ -144,6 +144,7 @@ const OrderDetails = (props: any) => {
                 price: sellerOrderDetail?.amount,
                 quantity: sellerOrderDetail?.quantity,
                 size: sellerOrderDetail?.size,
+                slug: sellerOrderDetail?.meta?.product_details?.slug,
                 title: sellerOrderDetail?.meta?.product_details?.name,
             },
             receiver: {

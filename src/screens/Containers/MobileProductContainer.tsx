@@ -25,6 +25,8 @@ const MobileProductContainer = ({ data }: any) => {
                 </TouchableOpacity>
                     : null
             }
+
+            
         </View>
     )
 }
