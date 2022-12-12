@@ -95,11 +95,11 @@ const SellerChatScreen = ({ navigation }: any) => {
               <Pressable onPress={() => routeChat(data)}>
                 <View style={styles.container2} key={data?.id} >
                   <View style={styles.div1}>
-                    <Image source={{ uri: data?.image ? data?.image : "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} style={styles.img} />
+                    <Image source={{ uri: data?.image?.length > 10 ? data?.image : "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} style={styles.img} />
                   </View>
                   <View style={styles.div2}>
                     <Text text={truncate(data?.name, 35)} fontSize={hp(14)} />
-                    <Text text={truncate(data?.message, 35)} color={colors.gray} fontSize={hp(14)} />
+                    <Text text={truncate(data?.message ? data?.message : 'n/a', 35)} color={colors.gray} fontSize={hp(14)} />
                   </View>
                   <View style={styles.div3}>
                     <Text text={`${moment(new Date(data?.createdAt?.seconds * 1000)).calendar()}`} fontSize={hp(14)} />

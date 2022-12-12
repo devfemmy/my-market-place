@@ -22,7 +22,7 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
     const dispatch = useAppDispatch()
     const isFocused = useIsFocused();
 
-    const sellerNotification = notification?.filter((data: any) => data?.type !== "ORDER" && data?.status === "UNREAD")
+    const sellerNotification = notification?.filter((data: any) => data?.isStore && data?.status === "UNREAD")
 
 
     useEffect(() => {

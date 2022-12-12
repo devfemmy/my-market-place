@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { useIsFocused } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { globalStyles } from '../styles'
-import { getAddress, updateAddress } from '../redux/slices/AddressSlice'
+import { getAddress, updateAddress, updateAddressDefault } from '../redux/slices/AddressSlice'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import DeliveryModal from './Containers/DeliveryModal'
 import AddressBooklistModal from './Containers/AddressBooklistModal'
@@ -81,6 +81,8 @@ const DeliveryScreen = (props) => {
     loadPost()
 }, [cartsId, choosenAddress])
 
+
+
   const openPhoneVisible = () => {
     setPhoneModalVisible(true)
   }
@@ -106,13 +108,12 @@ const DeliveryScreen = (props) => {
 
   const updateDelivery = async (data) => {
     const payload = {
-      ...data,
-      default: !data?.default
+      id: data?.id
     }
 
     try {
-      var response = await dispatch(updateAddress(payload))
-      if (updateAddress.fulfilled.match(response)) {
+      var response = await dispatch(updateAddressDefault(payload))
+      if (updateAddressDefault.fulfilled.match(response)) {
         dispatch(getAddress()).then((data) => {
           var filterDefault = data?.payload?.find((d) => d.default)
           setActiveDelivery(filterDefault)

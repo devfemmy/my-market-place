@@ -10,7 +10,7 @@ import { colors } from '../utils/themes';
 import { Image } from 'react-native-animatable';
 import EmptyState from './Containers/EmptyState';
 import { notify } from '../assets';
-
+import moment from 'moment';
 
 
 const NotificationScreen = ({ navigation }: any) => {
@@ -26,21 +26,28 @@ const NotificationScreen = ({ navigation }: any) => {
     }, [isFocused])
 
 
-    const buyerNotification = notification?.filter((data: any) => data?.type === "ORDER" && data?.status === "UNREAD")
-
-
+    const buyerNotification = notification?.filter((data: any) => !data?.isStore)
 
     const routeNotification = async (item: any) => {
         const payload = {
             notification_id: item?.id
         }
         var response = await dispatch(markAsRead(payload))
-        if(markAsRead.fulfilled.match(response)){
-            return navigation.navigate('BuyerOrderDetail', {
-                params: {
-                    id: item?.reference
-                }
-            })
+        if (markAsRead.fulfilled.match(response)) {
+            if (item?.type === "ORDER") {
+                return navigation.navigate('BuyerOrderDetail', {
+                    params: {
+                        id: item?.reference
+                    }
+                })
+            }
+            else {
+                return navigation.navigate('BuyerOrderDetail', {
+                    params: {
+                        id: item?.reference
+                    }
+                })
+            }
         }
         
     }
@@ -65,7 +72,7 @@ const NotificationScreen = ({ navigation }: any) => {
                                     <Pressable onPress={() => routeNotification(item)}>
                                         <View style={{ borderBottomColor: colors.gray, borderBottomWidth: 1, paddingBottom: hp(15) }}>
                                             <Text text={item?.message} color={item?.status === "UNREAD" ? colors.bazaraTint : colors.gray} fontSize={hp(14)} lineHeight={22} style={{ marginVertical: hp(10) }} />
-                                            <Text text={getCurrentDate(item?.created_at)} fontSize={hp(13)} lineHeight={18} color={colors.gray} />
+                                            <Text text={moment(item?.created_at).calendar()} fontSize={hp(10)} lineHeight={18} color={colors.white} />
                                         </View>
                                     </Pressable>
                                 )

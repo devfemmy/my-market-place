@@ -34,7 +34,6 @@ const AddressBooklistModal = ({ visible, setVisible, openVisible, addressList, u
                         <Image source={cancel} />
                     </Pressable>
                 </View>
-
                 <Pressable onPress={() => newAddress()}>
                 <View style={styles.div}>
                     <View style={[styles.checkbox, { backgroundColor: 'transparent' }]} ></View>
@@ -46,16 +45,16 @@ const AddressBooklistModal = ({ visible, setVisible, openVisible, addressList, u
                 </Pressable>
 
                 <View style={styles.div2}>
-                    <View style={[styles.checkbox, { backgroundColor: 'transparent' }]} ></View>
+                    <View style={[styles.checkbox2, { backgroundColor: 'transparent' }]} ></View>
                     <View style={styles.subdiv}>
-                        <Text text='Address book' fontSize={hp(14)} fontWeight='600' lineHeight={19} />
-                        <Text text='Use from your existing address' fontSize={hp(12)} fontWeight='400' style={{marginBottom: hp(10)}} lineHeight={16} color={colors.gray} />
+                        {/* <Text text='Address book' fontSize={hp(14)} fontWeight='600' lineHeight={19} />
+                        <Text text='Use from your existing address' fontSize={hp(12)} fontWeight='400' style={{marginBottom: hp(10)}} lineHeight={16} color={colors.gray} /> */}
                         {
                             addressList?.map((data: any) => {
                                 return (
                                     <View>
                                         <Pressable onPress={() => handleUpdate(data)}>
-                                        <View style={[styles.mindiv,{borderWidth: selected?.id === data?.id && 1, borderColor: selected?.id === data?.id && colors?.bazaraTint }]} >
+                                        <View style={[styles.mindiv, {borderWidth: selected?.id === data?.id ? 1 : 0, borderColor: selected?.id === data?.id ? colors?.bazaraTint :'none'}]} >
                                             <Text text={data?.street + " " + data?.city + " " + data?.state} fontSize={hp(14)} fontWeight='600' lineHeight={19} />
                                             <View style={globalStyles.rowStart}>
                                                 <Text text={data?.state} fontSize={hp(10)} fontWeight='400' lineHeight={10} color={colors.gray} />
@@ -75,6 +74,7 @@ const AddressBooklistModal = ({ visible, setVisible, openVisible, addressList, u
 
                     </View>
                 </View>
+
 
             </View>
         </Modal>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     div2: {
         width: '100%',
         flexDirection: 'row',
-        marginTop: hp(20)
+        marginTop: hp(10)
     },
     checkbox: {
         width: wp(20),
@@ -111,6 +111,11 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         borderWidth: 1,
         borderColor: colors.bazaraTint,
+        marginRight: wp(10)
+    },
+    checkbox2: {
+        width: wp(20),
+        height: hp(20),
         marginRight: wp(10)
     },
     subdiv: {

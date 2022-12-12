@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useAppDispatch } from '../../redux/hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { activateProduct, deactivateProduct, getProduct } from '../../redux/slices/productSlice'
+import { activateProduct, deactivateProduct, deleteProduct, getProduct } from '../../redux/slices/productSlice'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { globalStyles } from '../../styles'
 import { Menu, Button } from 'react-native-paper';
@@ -87,6 +87,41 @@ const ProductCard = ({ data, setProductList, id }: any) => {
 
     }
 
+    const deleteProd = async (data: any) => {
+        try {
+          var res = await dispatch(deleteProduct(data?.id))
+          if (deleteProduct.fulfilled.match(res)) {
+            dispatch(getProduct(id)).then(data => {
+              setProductList(data?.payload)
+            })
+            Notifier.showNotification({
+                title: 'Product deleted successfully',
+                // description: "tghdddfdfd",
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'success',
+                },
+            });
+          }
+          else {
+            var errMsg = res?.payload as string
+            Notifier.showNotification({
+                title: errMsg,
+                // description: "tghdddfdfd",
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'error',
+                },
+            });
+          }
+        }
+        catch (e) {
+          console.log({ e })
+        }
+      }
+
 
     return (
         <View style={[globalStyles.rowBetween, styles.bbf]}>
@@ -134,7 +169,7 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                         }
                     })} title="Edit" />
                     <Menu.Item onPress={() => updateProductStatus(data)} title={data?.status === 'ACTIVE' ? 'Deactivate' : 'Activate'} />
-
+                    <Menu.Item onPress={() => deleteProd(data)} title="Delete" />
                 </Menu>
             </View>
         </View>

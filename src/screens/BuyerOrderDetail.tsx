@@ -38,9 +38,10 @@ const BuyerOrderDetail = (props: any) => {
     const userProfile = useAppSelector(profileInfo)
 
    
+   
 
     const [id, setId] = useState('')
-    const statusUpdate = filteredOrder?.status === 'PENDING' ? 'This order is pending' : filteredOrder?.status === 'PROCESSING' ? 'This order is been processed' : filteredOrder?.status === 'DISPATCHED' ? 'This order is been dispatched' : filteredOrder?.status === 'COMPLETED' ? 'This order is completed' : filteredOrder?.status === 'CANCELLED' ? 'This order has been cancelled' : filteredOrder?.status === 'Rejected' ? 'This order has been rejected' : null
+    const statusUpdate = filteredOrder?.status === 'PENDING' ? 'Your order is pending' : filteredOrder?.status === 'PROCESSING' ? 'Your order is been processed' : filteredOrder?.status === 'DISPATCHED' ? 'Your order is being dispatched' : filteredOrder?.status === 'COMPLETED' ? 'Your order has been completed' : filteredOrder?.status === 'CANCELLED' ? 'Sorry, your order was cancelled' : filteredOrder?.status === 'REJECTED' ? 'Sorry, your order was rejected' : null
     const [ratingModal, setRatingModal] = useState(false)
 
     const openRatingModal = () => {

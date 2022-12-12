@@ -62,9 +62,8 @@ const BuyerProfileScreen = ({ navigation }: any) => {
     try {
       var response = await dispatch(deleteAccountInfo())
       if (deleteAccountInfo.fulfilled.match(response)) {
-        await AsyncStorage.clear()
-        setLoader(false)
-        return navigation.navigate("Home")
+        signOut()
+        closeDelete()
       }
       else {
         // var errMsg = response as string
@@ -368,6 +367,9 @@ const BuyerProfileScreen = ({ navigation }: any) => {
     }
   }
 
+  const handleDeleteAccount = () => {
+    setDeleteVisible(true)
+  }
 
 
   return (
@@ -540,7 +542,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                 }
 
 
-                <Pressable onPress={() => setDeleteVisible(true)}>
+                <Pressable onPress={() => handleDeleteAccount()}>
                   <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(20) }} fontWeight='400' />
                 </Pressable>
 

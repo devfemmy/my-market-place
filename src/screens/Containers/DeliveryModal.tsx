@@ -124,6 +124,7 @@ const DeliveryModal = ({ visible, setVisible }: any) => {
 
                             <Input
                                 label='Receiver Phone number'
+                                number
                                 value={values.phone_number?.toString()}
                                 onChangeText={handleChange('phone_number')}
                                 errorMsg={touched.phone_number ? errors.phone_number : undefined}

@@ -222,6 +222,7 @@ const lineViews = storeData?.map((data: any) => data?.sales);
   }
 
 
+
   return (
     <View style={styles.container}>
       <View>

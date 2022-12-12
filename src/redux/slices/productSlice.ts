@@ -252,6 +252,20 @@ export const deleteProductVariant = createAsyncThunk(
     }
 )
 
+export const deleteProduct = createAsyncThunk(
+    'product/deleteProduct',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await deleteRequestNoPayload(`/product/delete?product_id=${payload}`)
+
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
 export const updateProductVariantSpec = createAsyncThunk(
     'product/updateProductVariantSpec',
     async (payload: { product_variant_spec_id: string, quantity: number, amount: number, size?: string }, { rejectWithValue }) => {
@@ -399,6 +413,15 @@ export const ProductSlice = createSlice({
             })
         builder.addCase(getProductBySlug.rejected, (state, action) => {
             state.error = action.error.message
+        })
+        builder.addCase(deleteProduct.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(deleteProduct.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(deleteProduct.rejected, (state, action) => {
+            state.loading = false
         })
         builder.addCase(getProductByCategory.pending, (state, action) => {
             state.loading = true,

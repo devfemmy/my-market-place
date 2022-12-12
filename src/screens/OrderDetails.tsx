@@ -33,7 +33,8 @@ const OrderDetails = (props: any) => {
     const [messageLoader, setMessageLoader] = useState(false)
     const [id, setId] = useState('')
 
-    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'This order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'This order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'This order is been dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'This order is completed' : sellerOrderDetail?.status === 'CANCELLED' ? 'This order has been cancelled' : sellerOrderDetail?.status === 'REJECTED' ? 'This order has been rejected' : null
+
+    const statusUpdate = sellerOrderDetail?.status === 'PENDING' ? 'Your order is pending' : sellerOrderDetail?.status === 'PROCESSING' ? 'Your order is been processed' : sellerOrderDetail?.status === 'DISPATCHED' ? 'Your order is being dispatched' : sellerOrderDetail?.status === 'COMPLETED' ? 'Your order has been completed' : sellerOrderDetail?.status === 'CANCELLED' ? 'Sorry, your order was cancelled' : sellerOrderDetail?.status === 'REJECTED' ? 'Sorry, your order was rejected' : null
 
 
     useEffect(() => {

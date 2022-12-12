@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { loading, getSellerNotificationsStat, notificationStat } from '../../redux/slices/userSilce';
 import NotificationCard from '../../components/resuable/NotificationCard';
 import * as Animatable from 'react-native-animatable';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -20,6 +21,17 @@ const screenHeight = Dimensions.get('window').height;
 
 export const OnboardScreen = (): JSX.Element => {
   const  navigation = useNavigation<Nav>();
+  const [token, setToken] = useState("")
+
+
+  useEffect(() => {
+      const loadToken = async () => {
+          var tokens = await AsyncStorage.getItem('token') as string
+          setToken(tokens)
+      }
+
+      loadToken()
+  }, [])
 
   return (
     <SafeAreaView>
@@ -59,7 +71,7 @@ export const OnboardScreen = (): JSX.Element => {
             style={{marginTop: hp(20)}}
             />
             <View style={[globalStyles.rowCenter, styles.btn]}>
-                <Button title={'Get Started'} style={styles.btn} onPress={() => navigation.navigate("HomeScreen")} />
+                <Button title={'Get Started'} style={styles.btn} onPress={token ? () => navigation.navigate("Home") : () => navigation.navigate("HomeScreen")} />
             </View>
           </View>
         </ImageBackground>
