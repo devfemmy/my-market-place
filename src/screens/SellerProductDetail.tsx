@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Pressable, useWindowDimensions, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ScrollView, Pressable, useWindowDimensions, ActivityIndicator, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { hp } from '../utils/helpers'
 import MobileHeader from './Containers/MobileHeader'
@@ -313,7 +313,7 @@ export default SellerProductDetail
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
         flex: 1,
         backgroundColor: 'black'
     },

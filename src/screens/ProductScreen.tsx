@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Pressable, TouchableOpacity, RefreshControl } from 'react-native'
+import { View, StyleSheet, ScrollView, Pressable, TouchableOpacity, RefreshControl, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -7,7 +7,7 @@ import { hp } from '../utils/helpers'
 import { Text } from '../components/common'
 import { Input } from '../components/common/TextInput'
 import EmptyState from './Containers/EmptyState'
-import { productLogo } from '../assets'
+import { notify, productLogo } from '../assets'
 import ProductCard from './Containers/ProductCard'
 import ButtonPlus from './Containers/ButtonPlus'
 import { myStore } from '../redux/slices/StoreSlice'
@@ -89,7 +89,7 @@ const ProductScreen = ({ navigation }: any) => {
                 <Input label={'Search for products'} value={searchValue} onChangeText={(e) => setSearchValue(e)} searchInput />
             </View>
             {filteredData?.length < 1 && <EmptyState
-                icon={productLogo}
+                icon={notify}
                 title="No Products Yet"
                 header='Add products to your store to start selling'
                 btn={true}
@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        paddingTop: hp(20),
-        padding: hp(10)
+        paddingTop: Platform.OS === 'ios' ? hp(25) : hp(20),
+        paddingHorizontal: hp(10)
     },
     lit: {
         flex: 1,

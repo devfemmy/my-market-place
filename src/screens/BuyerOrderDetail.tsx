@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Image, Pressable, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ScrollView, Image, Pressable, ActivityIndicator, Platform } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { hp, numberFormat, wp } from '../utils/helpers'
 import { globalStyles } from '../styles'
@@ -466,7 +466,7 @@ export default BuyerOrderDetail
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
         backgroundColor: 'black'
     },
     tag: {

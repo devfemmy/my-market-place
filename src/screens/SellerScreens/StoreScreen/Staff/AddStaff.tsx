@@ -138,7 +138,7 @@ const AddStaffScreen = ({ navigation }: any) => {
 
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={globalStyles.wrapper}>
       <MobileHeader
         props={navigation}
         cart

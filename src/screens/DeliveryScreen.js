@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable } from 'react-native'
+import { View, StyleSheet, Pressable, Platform } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { colors } from '../utils/themes'
 import MobileHeader from './Containers/MobileHeader'
@@ -327,7 +327,8 @@ export default DeliveryScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black'
+    backgroundColor: 'black',
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
   },
   div1: {},
   cod: {

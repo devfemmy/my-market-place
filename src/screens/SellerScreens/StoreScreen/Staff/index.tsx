@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { StatusBar, View, StyleSheet, ScrollView, Image, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { StatusBar, View, StyleSheet, ScrollView, Image, ActivityIndicator, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView, Text } from '../../../../components/common';
 import { colors } from '../../../../utils/themes';
 import { globalStyles } from "../../../../styles/globalStyles"
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    paddingTop: hp(10)
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
   },
   cart: {
     width: 20,

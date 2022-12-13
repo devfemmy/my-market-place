@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, FlatList, Image, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ScrollView, FlatList, Image, ActivityIndicator, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import StoreHeader from '../components/resuable/StoreHeader'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
@@ -306,7 +306,7 @@ export default MyStoreScreen
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'black',
-    paddingTop: hp(20),
+    paddingTop: Platform.OS === 'ios' ? hp(25) : hp(20),
     flex: 1
   },
   mt: {
