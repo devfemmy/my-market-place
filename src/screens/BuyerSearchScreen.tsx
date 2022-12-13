@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { hp } from '../utils/helpers'
 import MobileHeader from './Containers/MobileHeader'
@@ -90,8 +90,8 @@ export default BuyerSearchScreen
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: hp(10),
-    paddingVertical: hp(10),
+    paddingHorizontal: hp(5),
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10),
     backgroundColor: 'black',
     flex: 1,
   }

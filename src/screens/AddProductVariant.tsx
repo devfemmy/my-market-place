@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Pressable, ScrollView, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, Image, Pressable, ScrollView, ActivityIndicator, Platform } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { createProductVariant, createProductVariantSpec, deleteProductVariant, deleteProductVariantSpec, getProductBySlug, productBySlug, updateProductVariant, updateProductVariantSpec } from '../redux/slices/productSlice'
@@ -1312,7 +1312,7 @@ const styles = StyleSheet.create({
     },
     container: {
         width: '100%',
-        paddingTop: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
         paddingHorizontal: hp(15),
         backgroundColor: 'black',
         flex: 1

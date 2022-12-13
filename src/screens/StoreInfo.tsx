@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, useWindowDimensions, FlatList } from 'react-native'
+import { View, StyleSheet, Image, useWindowDimensions, FlatList, Platform } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { colors } from '../utils/themes'
 import MobileHeader from './Containers/MobileHeader'
@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        paddingHorizontal: hp(10)
+        paddingHorizontal: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
     },
     br: {
         marginVertical: hp(15)

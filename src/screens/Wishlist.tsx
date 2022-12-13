@@ -1,4 +1,4 @@
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native'
+import { Image, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch } from '../redux/hooks'
 import { getWishlist, removeFromWishlist } from '../redux/slices/Wishlist'
@@ -115,7 +115,7 @@ export default Wishlist
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: hp(15),
-        paddingVertical: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
         backgroundColor: 'black',
         flex: 1,
     },

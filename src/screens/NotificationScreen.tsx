@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, Pressable } from 'react-native'
+import { View, StyleSheet, FlatList, Pressable, Platform } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { getCurrentDate, hp } from '../utils/helpers'
 import MobileHeader from './Containers/MobileHeader'
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'black',
         flex: 1,
-        paddingHorizontal: hp(10)
+        paddingHorizontal: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(10) : hp(3)
     }
 })

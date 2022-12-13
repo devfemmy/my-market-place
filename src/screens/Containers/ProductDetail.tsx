@@ -604,13 +604,13 @@ const ProductDetail = (props: any) => {
                     <View style={[styles.rowDiv]}>
                         <Pressable onPress={() => decrement()}>
                             <View style={styles.box}>
-                                <Text text='-' fontWeight='bold' fontSize={hp(18)} />
+                                <Text text='-' fontWeight='bold' fontSize={hp(18)} textAlign='center' />
                             </View>
                         </Pressable>
                         <Text text={quantity?.toString()} fontSize={hp(18)} />
                         <Pressable onPress={() => increment()}>
                             <View style={styles.box}>
-                                <Text text='+' fontSize={hp(18)} />
+                                <Text text='+' fontSize={hp(18)} fontWeight='bold' textAlign='center' />
                             </View>
                         </Pressable>
                     </View>
@@ -811,8 +811,8 @@ const styles = StyleSheet.create({
         padding: wp(10)
     },
     box: {
-        // width: wp(50),
-        // height:hp(50)
+        width: wp(50),
+        //height:hp(50),
     },
     locationText: {
         marginBottom: hp(10)

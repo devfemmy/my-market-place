@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Image, ActivityIndicator, TextInput, ScrollView, SafeAreaView } from 'react-native'
+import { View, StyleSheet, Pressable, Image, ActivityIndicator, TextInput, ScrollView, SafeAreaView, Platform } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { getProfile, profileInfo } from '../redux/slices/ProfileSlice'
@@ -426,6 +426,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     paddingHorizontal: hp(1),
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
     paddingBottom: hp(30)
   },
   top: {

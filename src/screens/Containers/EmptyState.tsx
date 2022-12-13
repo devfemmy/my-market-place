@@ -21,10 +21,10 @@ const EmptyState: React.FC<EmptyStateType> = ({icon, title, header,btn, route, b
         <View style={styles.column}>
             <View style={styles.glob}>
                 <Image source={icon} resizeMode='contain' style={styles.image} />
-                <Text text={title} />
+                <Text text={title} style={{marginTop: hp(10)}} />
 
                 <View style={styles.div}>
-                <Text text={header} textAlign='center' />
+                <Text text={header} textAlign='center' style={{marginBottom: hp(10)}} />
                 </View>
                 {
                     btn && <View>
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     },
     div: {
         width: '80%',
-        marginVertical: '1%',
+        marginVertical: hp(10),
         marginHorizontal: 'auto'
     },
 })

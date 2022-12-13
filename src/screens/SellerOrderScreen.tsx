@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch } from '../redux/hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,7 +11,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { colors } from '../utils/themes'
 import { Input } from '../components/common/TextInput'
 import EmptyState from './Containers/EmptyState'
-import { productLogo } from '../assets'
+import { notify, productLogo } from '../assets'
 import OrderCard from './Containers/OrderCard'
 import { useIsFocused } from "@react-navigation/native";
 
@@ -83,7 +83,7 @@ const SellerOrderScreen = ({ navigation }: any) => {
                 <Input label={'Search for orders'} value={searchValue} onChangeText={(e: any) => setSearchValue(e)} searchInput />
             </View>
             {filterData?.length < 1 && <EmptyState
-                icon={productLogo}
+                icon={notify}
                 title="No Orders Yet"
                 header='All your store orders will be listed here'
 
@@ -125,8 +125,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        padding: hp(10),
-        paddingTop: hp(20)
+        paddingHorizontal: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(25) : hp(20)
     },
     txt: {
 

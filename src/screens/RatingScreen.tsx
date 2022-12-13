@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch } from '../redux/hooks'
 import { fetchReviews } from '../redux/slices/ReviewSlice'
@@ -139,7 +139,8 @@ export default RatingScreen
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'black',
-        padding: hp(10),
+        paddingHorizontal: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
         flex: 1,
     },
     textDiv2: {

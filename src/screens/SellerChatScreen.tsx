@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Pressable, Image } from 'react-native'
+import { View, StyleSheet, ScrollView, Pressable, Image, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Text } from '../components/common'
 import { hp, wp } from '../utils/helpers'
@@ -114,7 +114,7 @@ const SellerChatScreen = ({ navigation }: any) => {
         {messageData && messageData?.length < 1 && (
           <View style={styles.divbox}>
             <View style={styles.chatdiv}>
-              <Image source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} />
+              <Image source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} style={styles.img2} />
               <Text text='No Messages Yet' color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
               <Text text='All your messages will appear here' />
             </View>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    paddingTop: hp(10)
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10)
   },
   container2: {
     flexDirection: 'row',
@@ -171,5 +171,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: hp(500),
-  }
+  },
+  img2: {
+    width: wp(100),
+    height: hp(100),
+    borderRadius: 50
+  },
 })

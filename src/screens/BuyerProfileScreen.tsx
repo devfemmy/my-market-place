@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Switch, ScrollView, Image } from 'react-native'
+import { View, StyleSheet, Pressable, Switch, ScrollView, Image, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../components/common/Button'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -582,6 +582,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     paddingHorizontal: hp(1),
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10),
     paddingBottom: hp(30)
   },
   containerBox: {
