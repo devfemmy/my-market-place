@@ -8,7 +8,7 @@ import { Button } from '../../components/common/Button'
 import { colors } from '../../utils/themes'
 
 
-const DeleteAccountModal = ({ deleteVisible, closeDelete, deleteAction, loading }: any) => {
+const DeleteStoreModal = ({ deleteVisible, closeDelete, deleteAction, loading }: any) => {
     return (
         <Modal
             animationType="slide"
@@ -46,7 +46,7 @@ const DeleteAccountModal = ({ deleteVisible, closeDelete, deleteAction, loading 
     )
 }
 
-export default DeleteAccountModal
+export default DeleteStoreModal
 
 
 const styles = StyleSheet.create({

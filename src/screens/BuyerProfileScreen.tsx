@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Switch, ScrollView, Image } from 'react-native'
+import { View, StyleSheet, Pressable, Switch, ScrollView, Image, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../components/common/Button'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -62,9 +62,8 @@ const BuyerProfileScreen = ({ navigation }: any) => {
     try {
       var response = await dispatch(deleteAccountInfo())
       if (deleteAccountInfo.fulfilled.match(response)) {
-        await AsyncStorage.clear()
-        setLoader(false)
-        return navigation.navigate("Home")
+        signOut()
+        closeDelete()
       }
       else {
         // var errMsg = response as string
@@ -368,6 +367,9 @@ const BuyerProfileScreen = ({ navigation }: any) => {
     }
   }
 
+  const handleDeleteAccount = () => {
+    setDeleteVisible(true)
+  }
 
 
   return (
@@ -540,7 +542,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                 }
 
 
-                <Pressable onPress={() => setDeleteVisible(true)}>
+                <Pressable onPress={() => handleDeleteAccount()}>
                   <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(20) }} fontWeight='400' />
                 </Pressable>
 
@@ -580,6 +582,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     paddingHorizontal: hp(1),
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10),
     paddingBottom: hp(30)
   },
   containerBox: {

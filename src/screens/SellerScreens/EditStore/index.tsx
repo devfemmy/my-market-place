@@ -196,7 +196,7 @@ const EditStore = (): JSX.Element => {
 
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={globalStyles.wrapper}>
       <StatusBar translucent={true} backgroundColor={'white'} />
       <KeyboardAwareScrollView>
         <NavHeader

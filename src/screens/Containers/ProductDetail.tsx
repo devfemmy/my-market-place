@@ -197,7 +197,15 @@ const ProductDetail = (props: any) => {
 
     const increment = () => {
         if (quantity >= activeVariant?.quantity) {
-            //   toast.error("Quantity in stock exceeded")
+            Notifier.showNotification({
+                title: 'Quantity in stock exceeded',
+                // description: "tghdddfdfd",
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'error',
+                },
+            });
             return;
         }
         setQuantity(prev => prev + 1)
@@ -209,6 +217,18 @@ const ProductDetail = (props: any) => {
 
 
     const addItemToCart = async () => {
+        if(activeVariant?.quantity < 1){
+            Notifier.showNotification({
+                title: 'Product out of stock',
+                description: '',
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'error',
+                },
+            });
+            return
+        }
         const data = {
             product_id: productDetail?.id,
             quantity: quantity,
@@ -294,6 +314,18 @@ const ProductDetail = (props: any) => {
 
 
     const buyNow = async () => {
+        if(activeVariant?.quantity < 1){
+            Notifier.showNotification({
+                title: 'Product out of stock',
+                description: '',
+                Component: NotifierComponents.Alert,
+                hideOnPress: false,
+                componentProps: {
+                    alertType: 'error',
+                },
+            });
+            return
+        }
         const data = {
             product_id: productDetail?.id,
             quantity: quantity,
@@ -572,15 +604,19 @@ const ProductDetail = (props: any) => {
                     <View style={[styles.rowDiv]}>
                         <Pressable onPress={() => decrement()}>
                             <View style={styles.box}>
-                                <Text text='-' fontWeight='bold' fontSize={hp(18)} />
+                                <Text text='-' fontWeight='bold' fontSize={hp(18)} textAlign='center' />
                             </View>
                         </Pressable>
                         <Text text={quantity?.toString()} fontSize={hp(18)} />
                         <Pressable onPress={() => increment()}>
                             <View style={styles.box}>
-                                <Text text='+' fontSize={hp(18)} />
+                                <Text text='+' fontSize={hp(18)} fontWeight='bold' textAlign='center' />
                             </View>
                         </Pressable>
+                    </View>
+
+                    <View style={styles.tagDiv}>
+                        <Text text={`${activeVariant?.quantity ? activeVariant?.quantity : '0'} item left`} textAlign='center' fontSize={hp(14)} fontWeight="500" />
                     </View>
 
                     <View style={styles.contView}>
@@ -610,10 +646,7 @@ const ProductDetail = (props: any) => {
                             />
                         </ViewMoreText>
                     </View>
-                    <View style={styles.contView}>
-                        <Text text='Delivery & Returns' fontSize={hp(18)} />
-                        <Text fontSize={hp(16)} text='Lorem Ipsum is simply dummy text of the printing and typesetting industry.' />
-                    </View>
+
                     <View style={styles.contView}>
                         <Text text='Choose a Location' style={styles.locationText} fontSize={hp(18)} />
                         <View style={styles.dp}>
@@ -778,8 +811,8 @@ const styles = StyleSheet.create({
         padding: wp(10)
     },
     box: {
-        // width: wp(50),
-        // height:hp(50)
+        width: wp(50),
+        //height:hp(50),
     },
     locationText: {
         marginBottom: hp(10)
@@ -811,5 +844,11 @@ const styles = StyleSheet.create({
         backgroundColor: colors.bazaraTint,
     },
     wrapper: {
+    },
+    tagDiv: {
+        backgroundColor: 'rgba(255, 167, 219, 0.2)',
+        borderRadius: 5,
+        maxWidth: wp(80),
+        marginTop: hp(4)
     }
 })

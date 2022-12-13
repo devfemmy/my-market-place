@@ -14,14 +14,14 @@ import ListCard from '../components/resuable/ListCard';
 import { useNavigation } from '@react-navigation/native'
 import { Nav } from '../utils/types'
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { activateStore, deactivateStore, deleteAccount, getPersonalStore, getStoreById, myStore, storebyId, updateStore } from '../redux/slices/StoreSlice';
+import { activateStore, deactivateStore, deleteAccount, deleteStoreById, getPersonalStore, getStoreById, myStore, storebyId, updateStore } from '../redux/slices/StoreSlice';
 import CustomModal from '../components/common/CustomModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getStoreBySlug, storeBySlug } from '../redux/slices/CategorySlice';
 import { Notifier, NotifierComponents } from 'react-native-notifier';
 import { deleteAccountInfo, signOutUser } from '../redux/slices/AuthSlice';
 import { useIsFocused } from "@react-navigation/native";
-import DeleteAccountModal from './Containers/DeleteAccountModal';
+import DeleteStoreModal from './Containers/DeleteAccountModal';
 import DeleteAccountInfoModal from './Containers/DeleteAccountInfoModal';
 
 
@@ -55,9 +55,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
     try {
       var response = await dispatch(deleteAccountInfo())
       if (deleteAccountInfo.fulfilled.match(response)) {
-        await AsyncStorage.clear()
-        setLoader(false)
-        return navigation.navigate("Home")
+        LogOut()
       }
       else {
         // var errMsg = response as string
@@ -75,7 +73,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
   const handleDeleteAccountClose = () => {
     setDeleteAccountVisible(false)
   }
-  const handleDeleteAccountOpen = () => {
+  const handleDeleteStoreOpen = () => {
     setDeleteAccountVisible(true)
   }
 
@@ -92,24 +90,23 @@ const SellerSettingScreen = ({ navigation }: any) => {
       var modes = await AsyncStorage.getItem('mode') as string
       setMode(modes)
       dispatch(getStoreBySlug(activeSlug)).then(dd => {
+        if(dd?.payload?.status === "ACTIVE"){
+          setIsEnabled(true)
+        }
+        else {
+          setIsEnabled(false)
+        }
         setChecked(dd?.payload?.status)
       })
 
-      dispatch(getPersonalStore()).then(dd => console.log("paylod", dd?.payload))
+      dispatch(getPersonalStore())
       dispatch(getStoreById(id))
       setActiveId(id)
     }
     loadActiveId()
   }, [activeId, isFocused])
 
-  useEffect(() => {
-    const loadStatus = async () => {
-      const isEnab = storeIdData?.status === 'active' ? true : false
-
-      setIsEnabled(isEnab)
-    }
-    loadStatus()
-  }, [storeIdData])
+ 
 
 
   const onChange = async (check: boolean) => {
@@ -127,6 +124,12 @@ const SellerSettingScreen = ({ navigation }: any) => {
         });
         dispatch(getStoreBySlug(activeSlug)).then(dd => {
           setChecked(dd?.payload?.status)
+          if(dd?.payload?.status === "ACTIVE"){
+            setIsEnabled(true)
+          }
+          else {
+            setIsEnabled(false)
+          }
         })
       }
       else {
@@ -153,10 +156,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
             alertType: 'success',
           },
         });
-        setVisible(true)
-        dispatch(getStoreBySlug(activeSlug)).then(dd => {
-          setChecked(dd?.payload?.status)
-        })
+        setIsEnabled(true)
       }
       else {
         Notifier.showNotification({
@@ -168,7 +168,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
             alertType: 'error',
           },
         });
-        setVisible(true)
+     
       }
     }
   };
@@ -261,13 +261,16 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
   }
 
+  const handleDeleteAccount = () => {
+    setDeleteVisible(true)
+  }
 
 
-  const deleteAccountFunc = async () => {
+  const deleteStoreFunc = async () => {
     setDeleteAccountLoader(true)
     var activeId = await AsyncStorage.getItem('activeId') as string
-    const responseAction = await dispatch(deleteAccount(activeId))
-    if (deleteAccount.fulfilled.match(responseAction)) {
+    const responseAction = await dispatch(deleteStoreById(activeId))
+    if (deleteStoreById.fulfilled.match(responseAction)) {
 
       handleDeleteAccountClose()
       setDeleteAccountLoader(false)
@@ -299,7 +302,6 @@ const SellerSettingScreen = ({ navigation }: any) => {
     }
 
   }
-
 
 
   return (
@@ -398,18 +400,18 @@ const SellerSettingScreen = ({ navigation }: any) => {
             </View>
         }
 
-        <Pressable onPress={() => setDeleteVisible(true)}>
-          <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
-            <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
-          </View>
-        </Pressable>
-
-        <Pressable onPress={() => handleDeleteAccountOpen()}>
+        <Pressable onPress={() => handleDeleteStoreOpen()}>
           <View style={[globalStyles.rowStart, { marginHorizontal: hp(15) }]} >
             <Text text='Delete Store' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
           </View>
         </Pressable>
 
+        <Pressable  onPress={() => handleDeleteAccount()}>
+          <View style={[globalStyles.rowStart, { marginHorizontal: hp(15), marginBottom: hp(10) }]} >
+            <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
+          </View>
+        </Pressable>
+      
       </ScrollView>
 
       <CustomModal
@@ -419,10 +421,10 @@ const SellerSettingScreen = ({ navigation }: any) => {
         headerText={title}
       />
 
-      <DeleteAccountModal
+      <DeleteStoreModal
         deleteVisible={deleteAccountVisible}
         closeDelete={handleDeleteAccountClose}
-        deleteAction={deleteAccountFunc}
+        deleteAction={deleteStoreFunc}
         loading={deleteAccountLoader}
       />
 

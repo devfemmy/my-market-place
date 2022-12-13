@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Image, ActivityIndicator, TextInput, ScrollView, SafeAreaView } from 'react-native'
+import { View, StyleSheet, Pressable, Image, ActivityIndicator, TextInput, ScrollView, SafeAreaView, Platform } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { getProfile, profileInfo } from '../redux/slices/ProfileSlice'
@@ -71,6 +71,7 @@ const SellerChatBox = (props: any) => {
 
   const sendMessage = async () => {
     var activeId = await AsyncStorage.getItem('activeId')
+    var activeName = await AsyncStorage.getItem('activeName')
     var data = message?.replace(/^\s+|\s+$/gm, '');
     if (message?.length < 1 || message === "" || data === '' || data === undefined) {
       return;
@@ -84,13 +85,13 @@ const SellerChatBox = (props: any) => {
           createdAt: firestore.FieldValue.serverTimestamp(),
           receiver: {
             id: id,
-            imageUrl: receiverImage,
+            imageUrl: receiverImage ? receiverImage : null,
             name: receiverName
           },
           sender: {
-            id: userProfile?.id,
+            id: activeId,
             imageUrl: userProfile?.img_url,
-            name: userProfile?.first_name
+            name: activeName
           }
         })
         .then( async () => {
@@ -126,6 +127,7 @@ const SellerChatBox = (props: any) => {
 
   const submitKeyMessage = async (e: any) => {
     var activeId = await AsyncStorage.getItem('activeId')
+    var activeName = await AsyncStorage.getItem('activeName')
     var data = message?.replace(/^\s+|\s+$/gm, '');
     if (message?.length < 1 || message === "" || data === '' || data === undefined) {
       return;
@@ -140,13 +142,13 @@ const SellerChatBox = (props: any) => {
             createdAt: firestore.FieldValue.serverTimestamp(),
             receiver: {
               id: id,
-              imageUrl: receiverImage,
+              imageUrl: receiverImage ? receiverImage : null,
               name: receiverName
             },
             sender: {
-              id: userProfile?.id,
+              id: activeId,
               imageUrl: userProfile?.img_url,
-              name: userProfile?.first_name
+              name: activeName
             }
           })
           .then(() => {
@@ -182,6 +184,9 @@ const SellerChatBox = (props: any) => {
   };
 
   const pickImage = async (index: number) => {
+    var activeId = await AsyncStorage.getItem('activeId')
+    var activeName = await AsyncStorage.getItem('activeName')
+
     ImagePicker.openPicker({
       width: 500,
       height: 600,
@@ -189,9 +194,8 @@ const SellerChatBox = (props: any) => {
       mediaType: "photo",
       multiple: false,
     }).then(async image => {
-    setBtnDisabled(true)
+      setBtnDisabled(true)
       const ImageUrl = await pictureUpload(image)
-      var activeId = await AsyncStorage.getItem('activeId')
       await firestore()
         .collection('messaging')
         .add({
@@ -200,13 +204,13 @@ const SellerChatBox = (props: any) => {
           attachment: ImageUrl,
           receiver: {
             id: id,
-            imageUrl: receiverImage,
+            imageUrl: receiverImage ? receiverImage : null,
             name: receiverName
           },
           sender: {
-            id: userProfile?.id,
+            id: activeId,
             imageUrl: userProfile?.img_url,
-            name: userProfile?.first_name
+            name: activeName,
           }
         })
         .then(async () => {
@@ -234,6 +238,7 @@ const SellerChatBox = (props: any) => {
             })
           })
         });
+     
 
 
     })
@@ -291,19 +296,19 @@ const SellerChatBox = (props: any) => {
 
                     <View style={styles.senderDiv} key={i}>
                       <View style={{ marginLeft: "2%" }}>
-                        {data?.attachment && (
+                        {data?.attachment ? (
                           <Image
                             source={{ uri: data?.attachment }}
                             style={{ width: wp(300), height: hp(200) }}
                           />
-                        )}
+                        ) : null }
                        
                         {
                           data?.message ? <View style={styles.senderText}><Text text={data?.message} /></View> : null
                         }
 
                         {
-                          (data?.message || data?.attachment) && (
+                          (data?.message || data?.attachment) ? (
                             <View style={styles.time}>
                               {data?.attachment && <AntDesign name="download" />}
                               <View>
@@ -315,7 +320,7 @@ const SellerChatBox = (props: any) => {
                               <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).calendar()}`} fontSize={hp(10)} />
 
                             </View>
-                          )
+                          ) : null
                         }
                        
                       </View>
@@ -357,17 +362,17 @@ const SellerChatBox = (props: any) => {
                     }
                     <View style={styles.receiverDiv} key={i}>
                       <View>
-                        {data?.attachment && (
+                        {data?.attachment ? (
                           <Image
                             source={{ uri: data?.attachment }}
                             style={{ width: wp(300), height: hp(200) }}
                           />
-                        )}
-                        {data?.message && (
+                        ) : null }
+                        {data?.message ? (
                           <View style={styles.receiverText}><Text text={data?.message} /></View>
-                        )}
+                        ) : null}
                         {
-                          (data?.message || data?.attachment) && (
+                          (data?.message || data?.attachment) ? (
                             <View style={styles.receiverTime}>
                               {data?.attachment && <AntDesign name="download" />}
                               <View>
@@ -378,7 +383,7 @@ const SellerChatBox = (props: any) => {
                               </View>
                               <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).calendar()}`} fontSize={hp(10)} />
                             </View>
-                          )}
+                          ) : null }
                       </View>
                     </View>
                   </>
@@ -428,7 +433,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     paddingHorizontal: hp(1),
-    paddingBottom: hp(30)
+    paddingBottom: hp(30),
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
   },
   top: {
     flex: 7,

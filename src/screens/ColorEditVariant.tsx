@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Image, ScrollView } from 'react-native'
+import { View, StyleSheet, Pressable, Image, ScrollView, Platform } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
@@ -1125,7 +1125,7 @@ const styles = StyleSheet.create({
     },
     container: {
         width: '100%',
-        paddingTop: hp(10),
+        paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
         paddingHorizontal: hp(15),
         backgroundColor: 'black',
         flex: 1

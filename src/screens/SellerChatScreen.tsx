@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Pressable, Image } from 'react-native'
+import { View, StyleSheet, ScrollView, Pressable, Image, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Text } from '../components/common'
 import { hp, wp } from '../utils/helpers'
@@ -95,11 +95,11 @@ const SellerChatScreen = ({ navigation }: any) => {
               <Pressable onPress={() => routeChat(data)}>
                 <View style={styles.container2} key={data?.id} >
                   <View style={styles.div1}>
-                    <Image source={{ uri: data?.image ? data?.image : "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} style={styles.img} />
+                    <Image source={{ uri: data?.image?.length > 10 ? data?.image : "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} style={styles.img} />
                   </View>
                   <View style={styles.div2}>
                     <Text text={truncate(data?.name, 35)} fontSize={hp(14)} />
-                    <Text text={truncate(data?.message, 35)} color={colors.gray} fontSize={hp(14)} />
+                    <Text text={truncate(data?.message ? data?.message : 'n/a', 35)} color={colors.gray} fontSize={hp(14)} />
                   </View>
                   <View style={styles.div3}>
                     <Text text={`${moment(new Date(data?.createdAt?.seconds * 1000)).calendar()}`} fontSize={hp(14)} />
@@ -114,7 +114,7 @@ const SellerChatScreen = ({ navigation }: any) => {
         {messageData && messageData?.length < 1 && (
           <View style={styles.divbox}>
             <View style={styles.chatdiv}>
-              <Image source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} />
+              <Image source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1637242678/Group_10396_lekrzj.png" }} style={styles.img2} />
               <Text text='No Messages Yet' color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
               <Text text='All your messages will appear here' />
             </View>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    paddingTop: hp(10)
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10)
   },
   container2: {
     flexDirection: 'row',
@@ -171,5 +171,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: hp(500),
-  }
+  },
+  img2: {
+    width: wp(100),
+    height: hp(100),
+    borderRadius: 50
+  },
 })

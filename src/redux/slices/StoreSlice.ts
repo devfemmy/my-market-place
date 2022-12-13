@@ -157,8 +157,8 @@ export const deleteStoreById = createAsyncThunk(
 
 export const deleteAccount = createAsyncThunk(
     'store/deleteAccount',
-    async (payload: string) => {
-        const response = await deleteRequestNoPayload(`/store/delete?store_id=${payload}`)
+    async () => {
+        const response = await deleteRequestNoPayload(`/auth/account/delete`)
         postRequest(`/auth/delete-account`)
         try {
             if (response?.status === 200) {

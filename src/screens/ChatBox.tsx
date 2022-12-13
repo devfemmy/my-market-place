@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Image, ActivityIndicator, TextInput, ScrollView, SafeAreaView } from 'react-native'
+import { View, StyleSheet, Pressable, Image, ActivityIndicator, TextInput, ScrollView, SafeAreaView, Platform } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { getProfile, profileInfo } from '../redux/slices/ProfileSlice'
@@ -91,8 +91,8 @@ const ChatBox = (props: any) => {
             name: userProfile?.first_name
           }
         })
-        .then( async (item) => {
-         await dispatch(getProfile()).then(async (dd: any) => {
+        .then(async (item) => {
+          await dispatch(getProfile()).then(async (dd: any) => {
             setMessage('')
             firestore().collection('messaging').orderBy('createdAt', 'asc').onSnapshot((documentSnapshot: any) => {
               const arr: any = []
@@ -191,6 +191,7 @@ const ChatBox = (props: any) => {
       setBtnDisabled(true)
       const ImageUrl = await pictureUpload(image)
 
+
       await firestore()
         .collection('messaging')
         .add({
@@ -209,9 +210,11 @@ const ChatBox = (props: any) => {
           }
         })
         .then(() => {
+
           dispatch(getProfile()).then(async (dd: any) => {
             setMessage('')
             setBtnDisabled(false)
+
             firestore().collection('messaging').onSnapshot((documentSnapshot: any) => {
               const arr: any = []
               documentSnapshot?.forEach((doc: any) => {
@@ -234,9 +237,6 @@ const ChatBox = (props: any) => {
         });
     })
   }
-
-
-  // console.log({ messageData })
 
 
 
@@ -289,19 +289,19 @@ const ChatBox = (props: any) => {
 
                     <View style={styles.senderDiv} key={i}>
                       <View style={{ marginLeft: "2%" }}>
-                        {data?.attachment && (
+                        {data?.attachment ? (
                           <Image
                             source={{ uri: data?.attachment }}
                             style={{ width: wp(300), height: hp(200) }}
                           />
-                        )}
-                       
+                        ) : null}
+
                         {
                           data?.message ? <View style={styles.senderText}><Text text={data?.message} /></View> : null
                         }
 
                         {
-                          (data?.message || data?.attachment) && (
+                          (data?.message || data?.attachment) ? (
                             <View style={styles.time}>
                               {data?.attachment && <AntDesign name="download" />}
                               <View>
@@ -313,9 +313,9 @@ const ChatBox = (props: any) => {
                               <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).calendar()}`} fontSize={hp(10)} />
 
                             </View>
-                          )
+                          ) : null
                         }
-                       
+
                       </View>
 
                     </View>
@@ -355,17 +355,17 @@ const ChatBox = (props: any) => {
                     }
                     <View style={styles.receiverDiv} key={i}>
                       <View>
-                        {data?.attachment && (
+                        {data?.attachment ? (
                           <Image
                             source={{ uri: data?.attachment }}
                             style={{ width: wp(300), height: hp(200) }}
                           />
-                        )}
-                        {data?.message && (
+                        ) : null}
+                        {data?.message ? (
                           <View style={styles.receiverText}><Text text={data?.message} /></View>
-                        )}
+                        ) : null}
                         {
-                          (data?.message || data?.attachment) && (
+                          (data?.message || data?.attachment) ? (
                             <View style={styles.receiverTime}>
                               {data?.attachment && <AntDesign name="download" />}
                               <View>
@@ -376,7 +376,7 @@ const ChatBox = (props: any) => {
                               </View>
                               <Text text={`sent ${moment(new Date(data?.createdAt?.seconds * 1000)).calendar()}`} fontSize={hp(10)} />
                             </View>
-                          )}
+                          ) : null}
                       </View>
                     </View>
                   </>
@@ -426,6 +426,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     paddingHorizontal: hp(1),
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
     paddingBottom: hp(30)
   },
   top: {
