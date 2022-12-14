@@ -43,7 +43,7 @@ const ProductScreen = ({ navigation }: any) => {
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
-    const filteredData = productList?.filter((dd: any )=> dd?.name?.toLowerCase().includes(searchValue.toLowerCase()))
+    const filteredData = productList?.filter((dd: any) => dd?.name?.toLowerCase().includes(searchValue.toLowerCase()))
 
 
     useEffect(() => {
@@ -97,12 +97,14 @@ const ProductScreen = ({ navigation }: any) => {
                 btnText="Add Product"
             />
             }
-
-            <ButtonPlus handleClick={() => navigation.navigate('AddProduct')} />
+            <TouchableOpacity onPress={() => navigation.navigate('AddProduct')} style={[globalStyles.floating_button, { bottom: hp(20), right: hp(20) }]}>
+                <Entypo name={'plus'} size={hp(35)} style={{ color: colors.white }} />
+            </TouchableOpacity>
+            {/* <ButtonPlus handleClick={() => navigation.navigate('AddProduct')} /> */}
             <View style={{ zIndex: -3, elevation: -3 }}>
                 <ScrollView
-                 showsVerticalScrollIndicator={false}
-                 showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
@@ -135,8 +137,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        paddingTop: Platform.OS === 'ios' ? hp(25) : hp(20),
-        paddingHorizontal: hp(10)
+        paddingTop: Platform.OS === 'ios' ? hp(25) : hp(25),
+        paddingHorizontal: hp(15)
     },
     lit: {
         flex: 1,

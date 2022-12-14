@@ -46,12 +46,12 @@ const AddProductVariant = ({ navigation }: any) => {
     const [sizeList, setSizeList] = useState([])
     const [sizeLists, setSizeLists] = useState<any>()
     const [multipleUpload, setMultipleUpload] = useState<any>([])
-    const [quantity, setQuantity] = useState(1)
+    const [quantity, setQuantity] = useState<string>("1")
     const [price, setPrice] = useState()
     const [dummyUploadImage, setDummyUploadImage] = useState([""])
     const [getSlug, setGetSlug] = useState<any>()
     const [editSizeData, setEditSizeData] = useState<{ amount: number, size: string }>()
-    const [modalQuantity, setModalQuantity] = useState(1)
+    const [modalQuantity, setModalQuantity] = useState<string>("1")
     const [editDataId, setEditDataId] = useState('')
     const [color, setColor] = useState()
     const [prodVarId, setProdVarId] = useState<any>()
@@ -295,14 +295,14 @@ const AddProductVariant = ({ navigation }: any) => {
 
     const editSize = (data: any, index: any) => {
 
-        setModalQuantity(data?.quantity)
+        setModalQuantity(data?.quantity.toString())
         setEditSizeData({ size: data?.size, amount: data?.amount })
         setEditDataId(data?.id)
         showModal2()
     }
 
     const editSize1 = (data: any, index: any) => {
-        setModalQuantity(data?.quantity)
+        setModalQuantity(data?.quantity.toString())
         setEditSizeData({ size: data?.size, amount: data?.amount })
         setEditDataId(data?.id)
         showModal()
@@ -403,16 +403,18 @@ const AddProductVariant = ({ navigation }: any) => {
     }
 
     const modalIncrement = () => {
-        const qt = modalQuantity + 1
-        setModalQuantity(qt)
+        const qt = parseInt(modalQuantity) + 1
+        var bb = qt.toString()
+        setModalQuantity(bb)
     }
 
     const modalDecrement = () => {
-        if (modalQuantity === 1) {
+        if (parseInt(modalQuantity) === 1) {
             return;
         }
-        const qt = modalQuantity - 1
-        setModalQuantity(qt)
+        const qt = parseInt(modalQuantity) - 1
+        var bb = qt.toString()
+        setModalQuantity(bb)
     }
 
     const handleModalFormSubmit = async (data: any) => {
@@ -431,14 +433,14 @@ const AddProductVariant = ({ navigation }: any) => {
         const payload = {
             size: data?.size,
             amount: parseInt(data?.price),
-            quantity: modalQuantity,
+            quantity: parseInt(modalQuantity),
             product_variant_id: prodVarId
         }
 
         const editPayload = {
             size: data?.size,
             amount: parseInt(data?.price),
-            quantity: modalQuantity,
+            quantity: parseInt(modalQuantity),
             product_variant_spec_id: editDataId
         }
         setLoader(true)
@@ -463,7 +465,7 @@ const AddProductVariant = ({ navigation }: any) => {
                             setSizeLists(filterData?.product_variant_specs)
                             handleCancel()
                             modalResetForm()
-                            setModalQuantity(1)
+                            setModalQuantity("1")
                             setLoader(false)
                         })
 
@@ -522,7 +524,7 @@ const AddProductVariant = ({ navigation }: any) => {
                             setSizeLists(filterData?.product_variant_specs)
                             handleCancel()
                             modalResetForm()
-                            setModalQuantity(1)
+                            setModalQuantity("1")
                             setLoader(false)
                         })
 
@@ -647,16 +649,19 @@ const AddProductVariant = ({ navigation }: any) => {
     }
 
     const increment = () => {
-        const qt = quantity + 1
-        setQuantity(qt)
+        const qt = parseInt(quantity) + 1 
+        var bb = qt.toString()
+        setQuantity(bb)
     }
 
     const decrement = () => {
-        if (quantity === 1) {
+
+        if (parseInt(quantity) === 1) {
             return
         }
-        const qt = quantity - 1
-        setQuantity(qt)
+        const qt = parseInt(quantity) - 1
+        var bb = qt.toString()
+        setQuantity(bb)
     }
 
     const addAnotherColor = async () => {
@@ -711,13 +716,13 @@ const AddProductVariant = ({ navigation }: any) => {
                 setProdVarId(result?.payload?.data?.id)
                 var newPayload = {
                     amount: colorValues.price,
-                    quantity: quantity,
+                    quantity: parseInt(quantity),
                     product_variant_id: result?.payload?.data?.id
                 }
                 var secondResult = await dispatch(createProductVariantSpec(newPayload))
                 if (createProductVariantSpec.fulfilled.match(secondResult)) {
                     setLoader(false)
-                    setQuantity(1)
+                    setQuantity("1")
                     colorResetForm()
                     setMultipleUpload([])
                     setDummyUploadImage([""])
@@ -830,7 +835,7 @@ const AddProductVariant = ({ navigation }: any) => {
                 console.log({ result, payload })
                 var newPayload = {
                     amount: parseInt(data?.price),
-                    quantity: quantity,
+                    quantity: parseInt(quantity),
                     product_variant_id: result?.payload?.data?.id
                 }
                 var secondResult = await dispatch(createProductVariantSpec(newPayload))
@@ -1058,6 +1063,8 @@ const AddProductVariant = ({ navigation }: any) => {
                                 <Input
                                     label='Quantity'
                                     // type='controlled'
+                                   
+                                    number
                                     value={quantity?.toString()}
                                     onChangeText={(e: any) => setQuantity(e)}
                                     errorMsg={undefined}
@@ -1126,6 +1133,8 @@ const AddProductVariant = ({ navigation }: any) => {
                             <View style={styles.subdiv}>
                                 <Input
                                     label='Quantity'
+                                   
+                                    number
                                     // type='controlled'
                                     value={quantity?.toString()}
                                 />
@@ -1279,6 +1288,8 @@ const AddProductVariant = ({ navigation }: any) => {
                             <View style={styles.subdiv}>
                                 <Input
                                     label='Quantity'
+                                   
+                                    number
                                     value={modalQuantity?.toString()}
                                 />
                             </View>

@@ -7,19 +7,19 @@ import { Text } from '../common'
 
 
 
-function TransactionHistory({ type, amount }: any) {
+function TransactionHistory({ description, type, amount }: any) {
     return (
         <View style={styles.container}>
             <View style={styles.div}>
                 <Image source={type === "RECEIVE" ? withdraw : type === "TRANSFER" ? money : lock} />
-                <Text text={capitalizeSentence(type)} style={{marginHorizontal: hp(15)}} />
+                <Text text={capitalizeSentence(description)} lineHeight={22} style={{marginHorizontal: hp(15)}} />
             </View>
-            <Text
+            {/* <Text
             text={`₦${numberFormat(Number(amount) || 0)}`}
             fontSize={hp(16)}
             numberOfLines={1}
             fontWeight={'600'}
-          />
+          /> */}
           
         </View>
     )

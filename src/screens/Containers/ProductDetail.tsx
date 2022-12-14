@@ -27,10 +27,11 @@ import { useIsFocused } from "@react-navigation/native";
 import { icons } from '../../utils/constants'
 import { Select } from '../../components/common/SelectInput'
 import { Button } from '../../components/common/Button'
-
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { love } from '../../assets'
 import { addToWishlist } from '../../redux/slices/Wishlist'
+import Entypo from 'react-native-vector-icons/Entypo'
+import HTMLView from 'react-native-htmlview';
 
 const ProductDetail = (props: any) => {
     const dispatch = useAppDispatch()
@@ -217,7 +218,7 @@ const ProductDetail = (props: any) => {
 
 
     const addItemToCart = async () => {
-        if(activeVariant?.quantity < 1){
+        if (activeVariant?.quantity < 1) {
             Notifier.showNotification({
                 title: 'Product out of stock',
                 description: '',
@@ -314,7 +315,7 @@ const ProductDetail = (props: any) => {
 
 
     const buyNow = async () => {
-        if(activeVariant?.quantity < 1){
+        if (activeVariant?.quantity < 1) {
             Notifier.showNotification({
                 title: 'Product out of stock',
                 description: '',
@@ -441,27 +442,9 @@ const ProductDetail = (props: any) => {
         </Pressable>
     }
     const sizeVarList = variantList?.filter((a: any) => a['color'] !== null)
+    const htmlContent = `${productDetail?.description}`;
 
-    const source = {
-        html: `${productDetail?.description}`,
-    };
-    const tagsStyles = {
-        body: {
-            color: 'white',
-            whiteSpace: 'normal'
-        },
-        a: {
-            color: 'blue'
-        },
-        ul: {
-            color: "white"
-        },
-        li: {
-            color: "white"
-        }
-    };
-
-
+    console.log({htmlContent})
 
     const renderViewMore = (onPress: any) => {
         return (
@@ -604,13 +587,15 @@ const ProductDetail = (props: any) => {
                     <View style={[styles.rowDiv]}>
                         <Pressable onPress={() => decrement()}>
                             <View style={styles.box}>
-                                <Text text='-' fontWeight='bold' fontSize={hp(18)} textAlign='center' />
+                                <Entypo name={'minus'} size={hp(30)} style={{ color: colors.white }} />
+                                {/* <Text text='-' fontWeight='bold' fontSize={hp(18)} textAlign='center' /> */}
                             </View>
                         </Pressable>
                         <Text text={quantity?.toString()} fontSize={hp(18)} />
                         <Pressable onPress={() => increment()}>
                             <View style={styles.box}>
-                                <Text text='+' fontSize={hp(18)} fontWeight='bold' textAlign='center' />
+                                <Entypo name={'plus'} size={hp(30)} style={{ color: colors.white }} />
+                                {/* <Text text='+' fontSize={hp(18)} fontWeight='bold' textAlign='center' /> */}
                             </View>
                         </Pressable>
                     </View>
@@ -634,17 +619,10 @@ const ProductDetail = (props: any) => {
                     </View>
                     <View style={styles.contView}>
                         <Text text='Description' fontSize={hp(18)} />
-                        <ViewMoreText
-                            numberOfLines={1}
-                            renderViewMore={renderViewMore}
-                            renderViewLess={renderViewLess}
-                        >
-                            <RenderHtml
-                                contentWidth={width}
-                                source={source}
-                                tagsStyles={tagsStyles}
-                            />
-                        </ViewMoreText>
+                        <HTMLView 
+                            value={htmlContent}
+                            stylesheet={styles}
+                        />
                     </View>
 
                     <View style={styles.contView}>
@@ -811,6 +789,8 @@ const styles = StyleSheet.create({
         padding: wp(10)
     },
     box: {
+        justifyContent: 'center',
+        alignItems: 'center',
         width: wp(50),
         //height:hp(50),
     },
@@ -850,5 +830,21 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         maxWidth: wp(80),
         marginTop: hp(4)
+    },
+    p: {
+        fontWeight: '300',
+        color: 'white',
+    },
+    div: {
+        color: 'white'
+    },
+    a: {
+        color: colors.bazaraTint
+    },
+    li: {
+        color: 'white'
+    },
+    ul: {
+        color: 'white'
     }
 })

@@ -13,10 +13,11 @@ import { copyToClipboard } from '../../utils/functions'
 import { useAppDispatch } from '../../redux/hooks'
 import { getNotifications } from '../../redux/slices/notificationSlice'
 import { Badge } from 'react-native-paper'
+import config from '../../config/config'
 
 
-const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
-    const  { navigate } = useNavigation<Nav>();
+const StoreHeader: React.FC<StoreHeaderProps> = ({ name, slug }) => {
+    const { navigate } = useNavigation<Nav>();
 
     const [notification, setNotification] = useState<any>()
     const dispatch = useAppDispatch()
@@ -30,38 +31,38 @@ const StoreHeader:React.FC<StoreHeaderProps> = ({name, slug}) => {
 
     }, [isFocused])
 
-    const link = `https://bazara.co/store/${slug}`
+    const link = `${config.url}/store/${slug}`
     return (
-            <View style={[globalStyles.container, globalStyles.rowBetween, styles.comp]}>
-                <View style={styles.container}>
-                    <View style={styles.imageCard}>
-                        <Image source={storeImage} style={styles.imageContainer} />
-                    </View>
-                    <View style={styles.textCard}>
-                        <Text text={name} fontSize={hp(14)} style={{textTransform: 'capitalize'}} />
-                        <View style={styles.copyCard}>
+        <View style={[globalStyles.container, globalStyles.rowBetween, styles.comp]}>
+            <View style={styles.container}>
+                <View style={styles.imageCard}>
+                    <Image source={storeImage} style={styles.imageContainer} />
+                </View>
+                <View style={styles.textCard}>
+                    <Text text={name} fontSize={hp(14)} style={{ textTransform: 'capitalize' }} />
+                    <View style={styles.copyCard}>
                         <TouchableOpacity onPress={() => copyToClipboard(link)}>
                             <Ionicons
                                 name={"copy-outline"}
                                 size={hp(15)}
                                 color={'white'}
                             />
-                             </TouchableOpacity>
-                            <Text text="Copy store link" fontSize={hp(12)} fontWeight='600' style={styles.div} />
-                        </View>
+                        </TouchableOpacity>
+                        <Text text="Copy store link" fontSize={hp(12)} fontWeight='600' style={styles.div} />
                     </View>
                 </View>
-                <TouchableOpacity onPress={() => navigate('SellerNotification')} style={styles.iconCard}>
-                    {
-                        sellerNotification?.length > 0 && <Badge size={10} style={styles.bg2}></Badge>
-                    }
-                    <Ionicons
-                        name={'notifications-outline'}
-                        size={25}
-                        color={'white'}
-                    />
-                </TouchableOpacity>
             </View>
+            <TouchableOpacity onPress={() => navigate('SellerNotification')} style={styles.iconCard}>
+                {
+                    sellerNotification?.length > 0 && <Badge size={10} style={styles.bg2}></Badge>
+                }
+                <Ionicons
+                    name={'notifications-outline'}
+                    size={25}
+                    color={'white'}
+                />
+            </TouchableOpacity>
+        </View>
     )
 }
 
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
         padding: 5,
         marginTop: 3,
         borderRadius: 5,
-        width: 110,
+        width: hp(120),
     },
     iconCard: {
         height: '100%',

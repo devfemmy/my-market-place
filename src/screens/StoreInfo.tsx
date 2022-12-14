@@ -122,12 +122,6 @@ const StoreInfo = (props: any) => {
             <Text text='Seller Performance' fontSize={hp(18)} fontWeight='400' />
             <View style={styles.meld}>
                 <View style={globalStyles.rowBetween}>
-                    <Text text='Order fulfilment rate:' />
-                    <Text text='Excellent' />
-                </View>
-            </View>
-            <View style={styles.meld}>
-                <View style={globalStyles.rowBetween}>
                     <Text text='Successful order rate:' />
                     <Text text='Excellent' />
                 </View>

@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
-        paddingHorizontal: hp(10),
+        paddingHorizontal: hp(15),
         paddingTop: Platform.OS === 'ios' ? hp(25) : hp(20)
     },
     txt: {
