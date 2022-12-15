@@ -100,9 +100,7 @@ const AddProducts = ({ navigation }: any) => {
     }, [productSlug])
 
     useEffect(() => {
-       if(getSlug) {
         dispatch(getProductBySlug(getSlug)).then(data => setProductSlug(data?.payload))
-       }
     }, [getSlug])
 
 
@@ -291,6 +289,7 @@ const AddProducts = ({ navigation }: any) => {
         }
     }
 
+    console.log({getSlug})
 
 
     const addAnotherColor = async () => {
@@ -383,7 +382,11 @@ const AddProducts = ({ navigation }: any) => {
                         <View style={styles.divs}>
                             <Text text='Product Colours' fontSize={hp(14)} fontWeight='400' />
                         </View>
-                        <Pressable onPress={() => addAnotherColor()}>
+                       
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
+                            {renderColorVariety()}
+                            <Pressable onPress={() => addAnotherColor()}>
                             <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]} >
                                 <Image
                                     source={plusBig}
@@ -391,9 +394,6 @@ const AddProducts = ({ navigation }: any) => {
                                 <Text text='Add Another Colour' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' />
                             </View>
                         </Pressable>
-                        <ScrollView showsVerticalScrollIndicator={false}
-                            showsHorizontalScrollIndicator={false}>
-                            {renderColorVariety()}
                         </ScrollView>
 
 
