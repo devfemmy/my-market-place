@@ -20,6 +20,7 @@ import { checkbox, plus, plusBig } from '../assets'
 import { Button } from '../components/common/Button'
 import { sizes } from '../utils/constants/sizes'
 import Editor from '../components/resuable/Editor'
+import { useIsFocused } from '@react-navigation/native'
 
 const AddProducts = ({ navigation }: any) => {
     const [loader, setLoader] = useState(false)
@@ -27,6 +28,7 @@ const AddProducts = ({ navigation }: any) => {
     const [size, setSize] = useState(productInDraft?.isSize ? productInDraft?.isSize : false)
     const [color, setColor] = useState(productInDraft?.isColor ? productInDraft?.isColor : false)
     const dispatch = useAppDispatch()
+    const isFocused = useIsFocused();
     const [productSlug, setProductSlug] = useState<any>()
     const [productVar, setProductVar] = useState(productSlug?.variants)
     const [activeId, setActiveId] = useState<any>()
@@ -74,7 +76,7 @@ const AddProducts = ({ navigation }: any) => {
             setColorSizeVariants(colorSizeVariant)
         }
         loadAsyn()
-    }, [productSlug, prodId])
+    }, [productSlug, prodId, isFocused])
 
     useEffect(() => {
         dispatch(getAllCategories())
@@ -92,7 +94,7 @@ const AddProducts = ({ navigation }: any) => {
             setColorAloneVar(dList)
 
         })
-    }, [productSlug])
+    }, [productSlug, isFocused])
 
 
     useEffect(() => {
@@ -101,7 +103,7 @@ const AddProducts = ({ navigation }: any) => {
 
     useEffect(() => {
         dispatch(getProductBySlug(getSlug)).then(data => setProductSlug(data?.payload))
-    }, [getSlug])
+    }, [getSlug, isFocused])
 
 
 

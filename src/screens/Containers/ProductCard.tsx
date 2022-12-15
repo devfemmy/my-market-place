@@ -41,6 +41,11 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                 dispatch(getProduct(id)).then((data) => {
                     setProductList(data?.payload)
                 })
+                await AsyncStorage.removeItem('prodId')
+                await AsyncStorage.removeItem('slug')
+                await AsyncStorage.removeItem('prodVarId')
+                await AsyncStorage.removeItem('productDraft')
+                await AsyncStorage.removeItem('editableId')
             }
             else {
                 var errMsg = resultAction?.payload as string
@@ -70,6 +75,11 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                 dispatch(getProduct(id)).then((data) => {
                     setProductList(data?.payload)
                 })
+                await AsyncStorage.removeItem('prodId')
+                await AsyncStorage.removeItem('slug')
+                await AsyncStorage.removeItem('prodVarId')
+                await AsyncStorage.removeItem('productDraft')
+                await AsyncStorage.removeItem('editableId')
             }
             else {
                 var errMsg = resultAction?.payload as string
@@ -103,6 +113,11 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                     alertType: 'success',
                 },
             });
+            await AsyncStorage.removeItem('prodId')
+            await AsyncStorage.removeItem('slug')
+            await AsyncStorage.removeItem('prodVarId')
+            await AsyncStorage.removeItem('productDraft')
+            await AsyncStorage.removeItem('editableId')
           }
           else {
             var errMsg = res?.payload as string
@@ -115,6 +130,11 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                     alertType: 'error',
                 },
             });
+            await AsyncStorage.removeItem('prodId')
+            await AsyncStorage.removeItem('slug')
+            await AsyncStorage.removeItem('prodVarId')
+            await AsyncStorage.removeItem('productDraft')
+            await AsyncStorage.removeItem('editableId')
           }
         }
         catch (e) {
