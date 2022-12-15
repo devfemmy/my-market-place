@@ -444,7 +444,7 @@ const ProductDetail = (props: any) => {
     const sizeVarList = variantList?.filter((a: any) => a['color'] !== null)
     const htmlContent = `${productDetail?.description}`;
 
-    console.log({htmlContent})
+  
 
     const renderViewMore = (onPress: any) => {
         return (

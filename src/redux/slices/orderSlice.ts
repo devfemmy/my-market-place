@@ -117,6 +117,21 @@ export const rejectAndCancelOrder = createAsyncThunk(
     }
 )
 
+export const orderSuccessRate = createAsyncThunk(
+    'orders/orderSuccessRate',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await getRequest(`/order/order_success?${payload}}`)
+            return response?.data?.data
+
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
 export const orderSearch = createAsyncThunk(
     'orders/orderSearch',
     async (payload: any, { rejectWithValue }) => {
@@ -230,6 +245,17 @@ export const SellerOrderSlice = createSlice({
             state.loading = false,
                 state.error = action.error.message
         })
+        builder.addCase(orderSuccessRate.pending, (state, action) => {
+            // state.loading = true
+        }),
+        builder.addCase(orderSuccessRate.fulfilled, (state, action: PayloadAction<any>) => {
+            // state.loading = false,
+            // state.sellerOrderDetails = action.payload
+        })
+    builder.addCase(orderSuccessRate.rejected, (state, action) => {
+        // state.loading = false,
+        state.error = action.error.message
+    })
 
     }
 })
