@@ -9,7 +9,7 @@ import { getProduct, products } from '../redux/slices/productSlice'
 import { getStaff, staffsData } from '../redux/slices/StaffSlice'
 import { getStoreById, storeWallet, storeWalletData } from '../redux/slices/StoreSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { bank, groupUser, productLogo } from '../assets'
+import { bank, groupUser, notify, productLogo } from '../assets'
 import { Text } from '../components/common'
 import { hp, numberFormat, wp } from '../utils/helpers'
 import ListCard from './Containers/ListCard'
@@ -193,6 +193,12 @@ const lineViews = storeData?.map((data: any) => data?.sales);
       title: "Staff",
       value: staffList?.length,
       icon: Profile,
+    },
+    {
+      id: 3,
+      title: "Orders",
+      value: sellerOrderList?.length,
+      icon: notify,
     }
 
   ]
@@ -226,7 +232,7 @@ const lineViews = storeData?.map((data: any) => data?.sales);
   return (
     <View style={styles.container}>
       <View>
-        <StoreHeader name={activeName} slug={storebyIdData?.slug} />
+        <StoreHeader name={activeName} slug={activeSlug} />
         {
           stateLoader ? null : <ScrollView  showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
@@ -306,7 +312,7 @@ export default MyStoreScreen
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'black',
-    paddingTop: Platform.OS === 'ios' ? hp(25) : hp(20),
+    paddingTop: Platform.OS === 'ios' ? hp(25) : hp(25),
     flex: 1
   },
   mt: {

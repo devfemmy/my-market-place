@@ -7,12 +7,12 @@ export const globalStyles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: colors.primaryBg,
-    paddingTop: Platform.OS === 'ios' ? hp(15) : hp(10)
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10)
   },
   containerWrapper: {
     backgroundColor: 'black',
     height: '100%',
-    paddingTop: Platform.OS === 'ios' ? hp(15) : hp(10)
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10)
   },
   container: {
     paddingHorizontal: wp(10),

@@ -224,14 +224,14 @@ const BuyerSignUpScreen = ({ navigation }: any) => {
                         <View style={[styles.width100]}>
                             <AuthButton
                                 image={GoogleLogo}
-                                title={'Sign in with Google'}
+                                title={'Create account using Google'}
                                 style={styles.btnAuth}
                                 onPress={googleSignUp}
                             />
-                            {Platform.OS !== 'ios' ?
+                            {Platform.OS === 'ios' ?
                                 <AuthButton
                                     image={AppleLogo}
-                                    title={'Sign in with Apple'}
+                                    title={'Create account using Apple'}
                                     style={styles.btnAuth}
                                     onPress={AppleSignUp}
                                 /> : null

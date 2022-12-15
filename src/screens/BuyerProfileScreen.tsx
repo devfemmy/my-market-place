@@ -24,6 +24,7 @@ import { pictureUpload } from '../utils/functions'
 import { deleteIcon, plus, remove } from '../assets'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DeleteAccountInfoModal from './Containers/DeleteAccountInfoModal'
+import config from '../config/config'
 
 
 
@@ -183,7 +184,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
         setStateLoader(false)
         setEdit(false)
         Notifier.showNotification({
-          title: "Profile Image updated successfully",
+          title: "Profile updated successfully",
           description: '',
           Component: NotifierComponents.Alert,
           hideOnPress: false,
@@ -229,7 +230,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
 
     const data = {
       email: profileData?.email,
-      redirect_url: `https://bazara.herokuapp.com/new-password`
+      redirect_url: `${config.url}/new-password`
     }
 
     try {

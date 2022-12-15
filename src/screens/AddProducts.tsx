@@ -27,7 +27,7 @@ const AddProducts = ({ navigation }: any) => {
     const [size, setSize] = useState(productInDraft?.isSize ? productInDraft?.isSize : false)
     const [color, setColor] = useState(productInDraft?.isColor ? productInDraft?.isColor : false)
     const dispatch = useAppDispatch()
-    const productSlug = useAppSelector(productBySlug)
+    const [productSlug, setProductSlug] = useState<any>()
     const [productVar, setProductVar] = useState(productSlug?.variants)
     const [activeId, setActiveId] = useState<any>()
     const [getSlug, setGetSlug] = useState<any>()
@@ -100,8 +100,11 @@ const AddProducts = ({ navigation }: any) => {
     }, [productSlug])
 
     useEffect(() => {
-        dispatch(getProductBySlug(getSlug))
+       if(getSlug) {
+        dispatch(getProductBySlug(getSlug)).then(data => setProductSlug(data?.payload))
+       }
     }, [getSlug])
+
 
 
     const handleFormSubmit = async (data: any) => {

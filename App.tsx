@@ -34,7 +34,6 @@ const App = (): JSX.Element => {
       <UIKittenProvider {...eva} theme={eva.light}>
         <Provider store={store}>
           <SafeAreaProvider style={{ backgroundColor: 'black' }}>
-            <StatusBar barStyle="dark-content" />
             <NotifierWrapper>
               <BodyContaner />
             </NotifierWrapper>

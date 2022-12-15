@@ -36,6 +36,7 @@ const Account = ({ navigation }: any) => {
   const [transactionHistory, setTransactionHistory] = useState([])
 
 
+
   useEffect(() => {
     const loadAsync = async () => {
       var id = await AsyncStorage.getItem('activeId') as string
@@ -150,7 +151,7 @@ const Account = ({ navigation }: any) => {
                 <ScrollView showsVerticalScrollIndicator={false}>
                   {
                     payout !== null && payout !== undefined && transactionHistory?.length > 0 && transactionHistory?.map((data: any) => {
-                      return <TransactionHistory type={data?.type} amount={data?.amount} />
+                      return <TransactionHistory type={data?.type} description={data?.description} amount={data?.amount} />
                     })
                   }
                 </ScrollView>

@@ -129,14 +129,22 @@ const CreateStoreScreen = (): JSX.Element => {
 
 
   const locationState: Array<any> = locationData && locationData?.map((data: locationProp, index: number) => {
-    return data?.state
+    return {
+      key: data?.state,
+      value: data?.state
+    }
   });
 
   const locationCity = locationData?.find(
     (data: locationProp) => data?.state === values.state,
   );
 
-  const newCity = locationCity?.city
+  const newCity = locationCity?.city?.map(data => {
+    return {
+      key: data,
+      value: data
+    }
+  })
 
 
 
@@ -164,8 +172,7 @@ const CreateStoreScreen = (): JSX.Element => {
 
 
   return (
-    <SafeAreaView style={globalStyles.wrapper}>
-      <StatusBar translucent={true} backgroundColor={'white'} />
+    <SafeAreaView>
       <View style={[globalStyles.rowBetween, gbStyle.StoreCard]}>
         <Ionicons
           name={'chevron-back-outline'}
