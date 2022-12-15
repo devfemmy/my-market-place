@@ -14,6 +14,10 @@ import { getProductBuyer } from '../redux/slices/productSlice'
 
 import BuyerProductCard from '../components/resuable/BuyerProductCard'
 import { ActivityIndicator } from 'react-native-paper'
+import { orderSuccessRate } from '../redux/slices/orderSlice'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import StarRating from 'react-native-star-rating'
+import HTMLView from 'react-native-htmlview'
 
 const StoreInfo = (props: any) => {
     const info = props?.route.params.params.store
@@ -22,11 +26,13 @@ const StoreInfo = (props: any) => {
     const dispatch = useAppDispatch()
     const [products, setProducts] = useState<any>(null)
     const [loader, setLoader] = useState(false)
+    const [success, setSuccess] = useState<number>()
 
 
     useEffect(() => {
         setLoader(true)
         const loadData = async () => {
+            var activeId = await AsyncStorage.getItem('activeId') as string
             dispatch(getAllStoreBySlugBuyer(info?.slug)).then(async data => {
                 setStoreInfo(data?.payload)
                 await dispatch(getProductBuyer()).then(dd => {
@@ -34,6 +40,11 @@ const StoreInfo = (props: any) => {
                     setLoader(false)
                 }
                 )
+            })
+            dispatch(orderSuccessRate(activeId)).then(data => {
+                var rate = (data?.payload?.order_success_rating / 100) * 5
+                var pp = Math.round(rate * 10) / 10
+                setSuccess(pp)
             })
         }
         loadData()
@@ -53,6 +64,8 @@ const StoreInfo = (props: any) => {
     const source = {
         html: `${storeInfo?.description ? storeInfo?.description : 'N/A'}`,
     };
+    const htmlContent = `${storeInfo?.description ? storeInfo?.description : 'N/A'}`;
+
     const tagsStyles = {
         body: {
             color: 'white',
@@ -64,13 +77,13 @@ const StoreInfo = (props: any) => {
 
     const pdList = products?.filter((bb: any) => bb?.store?.slug === info?.slug)
 
-    const renderItem = ({item}: any) => (
+    const renderItem = ({ item }: any) => (
         <BuyerProductCard item={item} />
-        
+
     );
 
-    if(loader){
-        return  <View style={styles.container}>
+    if (loader) {
+        return <View style={styles.container}>
             <ActivityIndicator />
         </View>
     }
@@ -83,7 +96,7 @@ const StoreInfo = (props: any) => {
             />
             <View style={styles.br} />
             <View style={globalStyles.rowStart}>
-                <View style={styles.div}>
+                <View style={styles.div1}>
                     <Image style={styles.img} source={{ uri: info?.img_url }} />
                 </View>
                 <View style={styles.div2}>
@@ -107,7 +120,7 @@ const StoreInfo = (props: any) => {
             </View>
             <View style={styles.br} />
             <Text text='Store Description' fontSize={hp(18)} fontWeight='400' />
-            <ViewMoreText
+            {/* <ViewMoreText
                 numberOfLines={1}
                 renderViewMore={renderViewMore}
                 renderViewLess={renderViewLess}
@@ -117,29 +130,40 @@ const StoreInfo = (props: any) => {
                     source={source}
                     tagsStyles={tagsStyles}
                 />
-            </ViewMoreText>
+            </ViewMoreText> */}
+            <HTMLView
+                value={htmlContent}
+                stylesheet={styles}
+            />
             <View style={styles.br} />
             <Text text='Seller Performance' fontSize={hp(18)} fontWeight='400' />
             <View style={styles.meld}>
                 <View style={globalStyles.rowBetween}>
                     <Text text='Successful order rate:' />
-                    <Text text='Excellent' />
+                    {/* <Text text='Excellent' /> */}
+                    <StarRating
+                        maxStars={5}
+                        starSize={20}
+                        rating={success ? success : 0}
+                        fullStarColor={colors.bazaraTint}
+                        disabled
+                    />
                 </View>
             </View>
-            <View style={styles.meld}>
+            {/* <View style={styles.meld}>
                 <View style={globalStyles.rowBetween}>
                     <Text text='Customer rating:' />
                     <Text text='Excellent' />
                 </View>
-            </View>
+            </View> */}
             <View style={styles.br} />
             <Text text='Other Items' fontSize={hp(18)} fontWeight='400' />
-            <FlatList 
-             data={pdList}
-             renderItem={renderItem}
-             keyExtractor={(item: any) => item?.id}
-             horizontal
-             showsHorizontalScrollIndicator={false}
+            <FlatList
+                data={pdList}
+                renderItem={renderItem}
+                keyExtractor={(item: any) => item?.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
             />
         </View>
     )
@@ -162,7 +186,7 @@ const styles = StyleSheet.create({
         height: hp(130),
         borderRadius: 65,
     },
-    div: {
+    div1: {
         width: '45%',
     },
     div2: {
@@ -170,5 +194,21 @@ const styles = StyleSheet.create({
     },
     meld: {
         marginVertical: hp(8)
+    },
+    p: {
+        fontWeight: '300',
+        color: 'white',
+    },
+    div: {
+        color: 'white'
+    },
+    a: {
+        color: colors.bazaraTint
+    },
+    li: {
+        color: 'white'
+    },
+    ul: {
+        color: 'white'
     }
 })

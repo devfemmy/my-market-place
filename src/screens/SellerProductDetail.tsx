@@ -16,6 +16,7 @@ import RenderHtml from 'react-native-render-html';
 import { ProgressBar } from 'react-native-paper'
 import { fetchReviews } from '../redux/slices/ReviewSlice'
 import * as Progress from 'react-native-progress'
+import HTMLView from 'react-native-htmlview'
 
 
 const SellerProductDetail = (props: any) => {
@@ -132,6 +133,9 @@ const SellerProductDetail = (props: any) => {
         html: `${productBySlugData?.description}`,
     };
 
+    const htmlContent = `${productBySlugData?.description}`;
+
+
     // const getStat = (num: number) => {
     //     const stat = []
     //     for(var i = 0; i < reviewData.length; i++){
@@ -148,163 +152,167 @@ const SellerProductDetail = (props: any) => {
     const terrible = productRating?.filter((data: any) => data?.rating === 1)
 
 
-    if(stateLoader) {
-        return  <View style={styles.container}><ActivityIndicator /></View>
+    if (stateLoader) {
+        return <View style={styles.container}><ActivityIndicator /></View>
     }
 
     return (
         <View style={styles.container}>
-                    <View style={styles.container}>
-                        <MobileHeader
-                            categoryName={'Product Detail'}
-                            props={props}
-                        />
-                        <View style={styles.top}>
-                            <ScrollView  showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-                                <View>
-                                    <View style={[styles.div, { backgroundColor: productBySlugData?.status === 'ACTIVE' ? colors.green : productBySlugData?.status === 'INACTIVE' ? colors.red : colors.orange }]} >
-                                        <Text style={{ textTransform: 'capitalize' }} textAlign='center' text={productBySlugData?.status} fontSize={hp(14)} />
-                                    </View>
+            <View style={styles.container}>
+                <MobileHeader
+                    categoryName={'Product Detail'}
+                    props={props}
+                />
+                <View style={styles.top}>
+                    <ScrollView showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}>
+                        <View>
+                            <View style={[styles.div1, { backgroundColor: productBySlugData?.status === 'ACTIVE' ? colors.green : productBySlugData?.status === 'INACTIVE' ? colors.red : colors.orange }]} >
+                                <Text style={{ textTransform: 'capitalize' }} textAlign='center' text={productBySlugData?.status} fontSize={hp(14)} />
+                            </View>
+                        </View>
+                        <View style={{ backgroundColor: 'rgb(23, 23, 23)', padding: hp(10), borderRadius: 5 }}>
+
+
+
+                            <View style={[globalStyles.rowStart]}>
+                                <View style={styles.minidiv}>
+                                    <Text text='Product Name' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
+                                    <Text text={productBySlugData?.name} fontSize={hp(12)} fontWeight='600' />
                                 </View>
-                                <View style={{ backgroundColor: 'rgb(23, 23, 23)', padding: hp(10), borderRadius: 5 }}>
-
-
-
-                                    <View style={[globalStyles.rowStart]}>
-                                        <View style={styles.minidiv}>
-                                            <Text text='Product Name' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
-                                            <Text text={productBySlugData?.name} fontSize={hp(12)} fontWeight='600' />
-                                        </View>
-                                    </View>
-                                    <View style={styles.br}></View>
-                                    <View style={globalStyles.rowStart}>
-                                        <View style={styles.minidiv}>
-                                            <Text text='Description' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
-                                            <View style={styles.descDiv}>
-                                                {/* {renderHTML(`<div>${productBySlugData?.description}</div>`)} */}
-                                                <RenderHtml
+                            </View>
+                            <View style={styles.br}></View>
+                            <View style={globalStyles.rowStart}>
+                                <View style={styles.minidiv}>
+                                    <Text text='Description' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
+                                    <View style={styles.descDiv}>
+                                        {/* {renderHTML(`<div>${productBySlugData?.description}</div>`)} */}
+                                        {/* <RenderHtml
                                                     contentWidth={width}
                                                     source={source}
                                                     tagsStyles={tagsStyles}
-                                                />
-                                            </View>
+                                                /> */}
+                                        <HTMLView
+                                            value={htmlContent}
+                                            stylesheet={styles}
+                                        />
+                                    </View>
 
 
-                                        </View>
-                                    </View>
-                                    <View style={styles.br}></View>
-                                    <View style={globalStyles.rowStart}>
-                                        <View style={styles.minidiv}>
-                                            <Text text='Category' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
-                                            <Text text={productBySlugData?.category} fontSize={hp(12)} fontWeight='600' />
-                                        </View>
-                                    </View>
-                                    <View style={styles.br}></View>
-                                    <View style={globalStyles.rowStart}>
-                                        <View style={styles.minidiv}>
-                                            <Text text='Expected delivery duration' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
-                                            <Text text={`${productBySlugData?.estimated_delivery_duration} Day(s)`} fontSize={hp(12)} fontWeight='600' />
-                                        </View>
-                                    </View>
-                                    <View style={styles.br}></View>
                                 </View>
+                            </View>
+                            <View style={styles.br}></View>
+                            <View style={globalStyles.rowStart}>
+                                <View style={styles.minidiv}>
+                                    <Text text='Category' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
+                                    <Text text={productBySlugData?.category} fontSize={hp(12)} fontWeight='600' />
+                                </View>
+                            </View>
+                            <View style={styles.br}></View>
+                            <View style={globalStyles.rowStart}>
+                                <View style={styles.minidiv}>
+                                    <Text text='Expected delivery duration' fontSize={hp(12)} fontWeight='600' color={colors.gray} />
+                                    <Text text={`${productBySlugData?.estimated_delivery_duration} Day(s)`} fontSize={hp(12)} fontWeight='600' />
+                                </View>
+                            </View>
+                            <View style={styles.br}></View>
+                        </View>
 
-                                <Text text='Colours' fontSize={hp(14)} fontWeight='400' style={{ marginVertical: hp(10) }} />
-                                <View style={[styles.subdiv, { backgroundColor: 'rgb(23, 23, 23)', padding: hp(10), borderRadius: 5 }]}>
-                                    {
-                                        productBySlugData?.product_variants?.map((data: any, i: any) => {
-                                            return <ProductVariantCard key={i} name={productBySlugData?.name} price={data?.product_variant_specs[0]?.amount} image={data?.img_urls[0]} />
-                                        })
+                        <Text text='Colours' fontSize={hp(14)} fontWeight='400' style={{ marginVertical: hp(10) }} />
+                        <View style={[styles.subdiv, { backgroundColor: 'rgb(23, 23, 23)', padding: hp(10), borderRadius: 5 }]}>
+                            {
+                                productBySlugData?.product_variants?.map((data: any, i: any) => {
+                                    return <ProductVariantCard key={i} name={productBySlugData?.name} price={data?.product_variant_specs[0]?.amount} image={data?.img_urls[0]} />
+                                })
+                            }
+                        </View>
+                        <View style={{ marginVertical: hp(10) }} />
+                        <View style={{ backgroundColor: 'rgb(23, 23, 23)', padding: hp(10), borderRadius: 5 }}>
+                            <View style={globalStyles.rowBetween}>
+                                <Text text='Reviews & Rating' fontSize={hp(14)} fontWeight='400' style={{ marginVertical: hp(10) }} />
+                                <Pressable onPress={() => props?.navigation.navigate("Ratings", {
+                                    params: {
+                                        id: productBySlugData?.id,
+                                        ownerId: productBySlugData?.user_id,
+                                        productRating: productRating,
+                                        ratings: productBySlugData?.rating
                                     }
+                                })}>
+                                    <Text text='view more' fontSize={hp(14)} fontWeight='400' color={colors?.bazaraTint} style={{ marginVertical: hp(10) }} />
+                                </Pressable>
+                            </View>
+                            <View style={globalStyles.rowBetween}>
+                                <View style={styles.textDiv2}>
+                                    <Text text='Excellent' fontSize={hp(16)} />
                                 </View>
-                                <View style={{ marginVertical: hp(10) }} />
-                                <View style={{ backgroundColor: 'rgb(23, 23, 23)', padding: hp(10), borderRadius: 5 }}>
-                                    <View style={globalStyles.rowBetween}>
-                                        <Text text='Reviews & Rating' fontSize={hp(14)} fontWeight='400' style={{ marginVertical: hp(10) }} />
-                                        <Pressable onPress={() => props?.navigation.navigate("Ratings", {
-                                            params: {
-                                                id: productBySlugData?.id,
-                                                ownerId: productBySlugData?.user_id,
-                                                productRating: productRating,
-                                                ratings: productBySlugData?.rating
-                                            }
-                                        })}>
-                                            <Text text='view more' fontSize={hp(14)} fontWeight='400' color={colors?.bazaraTint} style={{ marginVertical: hp(10) }} />
-                                        </Pressable>
-                                    </View>
-                                    <View style={globalStyles.rowBetween}>
-                                        <View style={styles.textDiv2}>
-                                            <Text text='Excellent' fontSize={hp(16)} />
-                                        </View>
-                                        <View style={styles.progressDiv}>
-                                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={excellent ? (excellent?.length / 1000) : 0} width={200} />
-                                        </View>
-                                        <View>
-                                            <Text text={excellent ? excellent?.length : 0} fontSize={hp(16)} />
-                                        </View>
-                                    </View>
-                                    <View style={globalStyles.rowBetween}>
-                                        <View style={styles.textDiv2}>
-                                            <Text text='Very good' fontSize={hp(16)} />
-                                        </View>
-                                        <View style={styles.progressDiv}>
-                                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={good ? (good?.length / 1000) : 0} width={200} />
-                                        </View>
-                                        <View>
-                                            <Text text={good ? good?.length : 0} fontSize={hp(16)} />
-                                        </View>
-                                    </View>
-                                    <View style={globalStyles.rowBetween}>
-                                        <View style={styles.textDiv2}>
-                                            <Text text='Average' fontSize={hp(16)} />
-                                        </View>
-                                        <View style={styles.progressDiv}>
-                                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={average ? (average?.length / 1000) : 0} width={200} />
-                                        </View>
-                                        <View>
-                                            <Text text={average ? average?.length : 0} fontSize={hp(16)} />
-                                        </View>
-                                    </View>
-                                    <View style={globalStyles.rowBetween}>
-                                        <View style={styles.textDiv2}>
-                                            <Text text='Poor' fontSize={hp(16)} />
-                                        </View>
-                                        <View style={styles.progressDiv}>
-                                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={poor ? (poor?.length / 1000) : 0} width={200} />
-                                        </View>
-                                        <View>
-                                            <Text text={poor ? poor?.length : 0} fontSize={hp(16)} />
-                                        </View>
-                                    </View>
-                                    <View style={globalStyles.rowBetween}>
-                                        <View style={styles.textDiv2}>
-                                            <Text text='Terrible' fontSize={hp(16)} />
-                                        </View>
-                                        <View style={styles.progressDiv}>
-                                            <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={terrible ? (terrible?.length / 1000) : 0} width={200} />
-                                        </View>
-                                        <View>
-                                            <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
-                                        </View>
-                                    </View>
+                                <View style={styles.progressDiv}>
+                                    <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={excellent ? (excellent?.length / 1000) : 0} width={200} />
                                 </View>
-                            </ScrollView >
+                                <View>
+                                    <Text text={excellent ? excellent?.length : 0} fontSize={hp(16)} />
+                                </View>
+                            </View>
+                            <View style={globalStyles.rowBetween}>
+                                <View style={styles.textDiv2}>
+                                    <Text text='Very good' fontSize={hp(16)} />
+                                </View>
+                                <View style={styles.progressDiv}>
+                                    <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={good ? (good?.length / 1000) : 0} width={200} />
+                                </View>
+                                <View>
+                                    <Text text={good ? good?.length : 0} fontSize={hp(16)} />
+                                </View>
+                            </View>
+                            <View style={globalStyles.rowBetween}>
+                                <View style={styles.textDiv2}>
+                                    <Text text='Average' fontSize={hp(16)} />
+                                </View>
+                                <View style={styles.progressDiv}>
+                                    <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={average ? (average?.length / 1000) : 0} width={200} />
+                                </View>
+                                <View>
+                                    <Text text={average ? average?.length : 0} fontSize={hp(16)} />
+                                </View>
+                            </View>
+                            <View style={globalStyles.rowBetween}>
+                                <View style={styles.textDiv2}>
+                                    <Text text='Poor' fontSize={hp(16)} />
+                                </View>
+                                <View style={styles.progressDiv}>
+                                    <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={poor ? (poor?.length / 1000) : 0} width={200} />
+                                </View>
+                                <View>
+                                    <Text text={poor ? poor?.length : 0} fontSize={hp(16)} />
+                                </View>
+                            </View>
+                            <View style={globalStyles.rowBetween}>
+                                <View style={styles.textDiv2}>
+                                    <Text text='Terrible' fontSize={hp(16)} />
+                                </View>
+                                <View style={styles.progressDiv}>
+                                    <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={terrible ? (terrible?.length / 1000) : 0} width={200} />
+                                </View>
+                                <View>
+                                    <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
+                                </View>
+                            </View>
                         </View>
-                        <View style={{marginVertical: hp(20)}} />
-                        <View style={styles.bottom}>
-                            <Button isLoading={loader} title='Edit Product' onPress={() => props?.navigation.navigate('ProductDetailEdit', {
-                                params: {
-                                    slug: productSlug
-                                }
-                            })} />
-                            <Pressable onPress={productBySlugData?.status === 'ACTIVE' ? () => updateProductStatus('INACTIVE') : () => updateProductStatus('ACTIVE')}>
-                                <View style={styles.textDiv}>
-                                    {loader2 ? <AntDesign name='loading1' /> : <Text text={productBySlugData?.status === 'ACTIVE' ? 'Deactivate' : 'Activate'} />}
-                                </View>
-                            </Pressable>
+                    </ScrollView >
+                </View>
+                <View style={{ marginVertical: hp(20) }} />
+                <View style={styles.bottom}>
+                    <Button isLoading={loader} title='Edit Product' onPress={() => props?.navigation.navigate('ProductDetailEdit', {
+                        params: {
+                            slug: productSlug
+                        }
+                    })} />
+                    <Pressable onPress={productBySlugData?.status === 'ACTIVE' ? () => updateProductStatus('INACTIVE') : () => updateProductStatus('ACTIVE')}>
+                        <View style={styles.textDiv}>
+                            {loader2 ? <AntDesign name='loading1' /> : <Text text={productBySlugData?.status === 'ACTIVE' ? 'Deactivate' : 'Activate'} />}
                         </View>
-                    </View >
+                    </Pressable>
+                </View>
+            </View >
         </View>
     )
 }
@@ -317,7 +325,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'black'
     },
-    div: {
+    div1: {
         marginTop: hp(20),
         marginBottom: hp(10),
         height: hp(40),
@@ -364,4 +372,20 @@ const styles = StyleSheet.create({
     progressDiv: {
         width: '50%'
     },
+    p: {
+        fontWeight: '300',
+        color: 'white',
+    },
+    div: {
+        color: 'white'
+    },
+    a: {
+        color: colors.bazaraTint
+    },
+    li: {
+        color: 'white'
+    },
+    ul: {
+        color: 'white'
+    }
 })
