@@ -55,12 +55,12 @@ const AddColorVariant = ({ navigation }: any) => {
   const [sizeLists, setSizeLists] = useState<any>()
   const [multipleUpload, setMultipleUpload] = useState<any>([])
   const [description, setDescription] = useState("")
-  const [quantity, setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState<string>("1")
   const [price, setPrice] = useState()
   const [dummyUploadImage, setDummyUploadImage] = useState([""])
   const [getSlug, setGetSlug] = useState<any>()
   const [editSizeData, setEditSizeData] = useState<{ amount: number, size: string }>()
-  const [modalQuantity, setModalQuantity] = useState(1)
+  const [modalQuantity, setModalQuantity] = useState<string>("1")
   const [editDataId, setEditDataId] = useState('')
   const [color, setColor] = useState()
   const [prodVarId, setProdVarId] = useState<any>()
@@ -104,7 +104,7 @@ const AddColorVariant = ({ navigation }: any) => {
           setDummyUploadImage([...filterData?.img_urls, ""])
           setPrice(filterData?.product_variant_specs[0]?.amount)
           setDescription(filterData?.color)
-          setQuantity(filterData?.product_variant_specs[0]?.quantity)
+          setQuantity(filterData?.product_variant_specs[0]?.quantity.toString())
           setSpecId(filterData?.product_variant_specs[0]?.id)
 
         }
@@ -398,14 +398,14 @@ const AddColorVariant = ({ navigation }: any) => {
 
   const editSize = (data: any, index: any) => {
 
-    setModalQuantity(data?.quantity)
+    setModalQuantity(data?.quantity.toString())
     setEditSizeData({ size: data?.size, amount: data?.amount })
     setEditDataId(data?.id)
     showModal2()
   }
 
   const editSize1 = (data: any, index: any) => {
-    setModalQuantity(data?.quantity)
+    setModalQuantity(data?.quantity.toString())
     setEditSizeData({ size: data?.size, amount: data?.amount })
     setEditDataId(data?.id)
     showModal()
@@ -506,16 +506,18 @@ const AddColorVariant = ({ navigation }: any) => {
   }
 
   const modalIncrement = () => {
-    const qt = modalQuantity + 1
-    setModalQuantity(qt)
+    const qt = parseInt(modalQuantity) + 1
+    var bb = qt.toString()
+    setModalQuantity(bb)
   }
 
   const modalDecrement = () => {
-    if (modalQuantity === 1) {
+    if (parseInt(modalQuantity) === 1) {
       return;
     }
-    const qt = modalQuantity - 1
-    setModalQuantity(qt)
+    const qt = parseInt(modalQuantity) - 1
+    var bb = qt.toString()
+    setModalQuantity(bb)
   }
 
   const handleModalFormSubmit = async (data: any) => {
@@ -534,14 +536,14 @@ const AddColorVariant = ({ navigation }: any) => {
     const payload = {
       size: data?.size,
       amount: parseInt(data?.price),
-      quantity: modalQuantity,
+      quantity: parseInt(modalQuantity),
       product_variant_id: prodVarId
     }
 
     const editPayload = {
       size: data?.size,
       amount: parseInt(data?.price),
-      quantity: modalQuantity,
+      quantity: parseInt(modalQuantity),
       product_variant_spec_id: editDataId
     }
     setLoader(true)
@@ -566,7 +568,7 @@ const AddColorVariant = ({ navigation }: any) => {
               setSizeLists(filterData?.product_variant_specs)
               handleCancel()
               modalResetForm()
-              setModalQuantity(1)
+              setModalQuantity("1")
               setLoader(false)
             })
 
@@ -625,7 +627,7 @@ const AddColorVariant = ({ navigation }: any) => {
               setSizeLists(filterData?.product_variant_specs)
               handleCancel()
               modalResetForm()
-              setModalQuantity(1)
+              setModalQuantity("1")
               setLoader(false)
             })
 
@@ -750,16 +752,18 @@ const AddColorVariant = ({ navigation }: any) => {
   }
 
   const increment = () => {
-    const qt = quantity + 1
-    setQuantity(qt)
+    const qt = parseInt(quantity) + 1
+    var bb = qt.toString()
+    setQuantity(bb)
   }
 
   const decrement = () => {
-    if (quantity === 1) {
+    if (parseInt(quantity) === 1) {
       return
     }
-    const qt = quantity - 1
-    setQuantity(qt)
+    const qt = parseInt(quantity) - 1
+    var bb = qt.toString()
+    setQuantity(bb)
   }
 
   const addAnotherColor = async () => {
@@ -814,13 +818,13 @@ const AddColorVariant = ({ navigation }: any) => {
         setProdVarId(result?.payload?.data?.id)
         var newPayload = {
           amount: colorValues.price,
-          quantity: quantity,
+          quantity: parseInt(quantity),
           product_variant_id: result?.payload?.data?.id
         }
         var secondResult = await dispatch(createProductVariantSpec(newPayload))
         if (createProductVariantSpec.fulfilled.match(secondResult)) {
           setLoader(false)
-          setQuantity(1)
+          setQuantity("1")
           colorResetForm()
           setMultipleUpload([])
           setDummyUploadImage([""])
@@ -946,7 +950,7 @@ const AddColorVariant = ({ navigation }: any) => {
       if (updateProductVariant.fulfilled.match(bigR)) {
         const payloadData = {
           product_variant_spec_id: specId,
-          quantity: quantity,
+          quantity: parseInt(quantity),
           amount: parseInt(data?.price)
         }
 
@@ -1020,7 +1024,7 @@ const AddColorVariant = ({ navigation }: any) => {
         console.log({ result, payload })
         var newPayload = {
           amount: parseInt(data?.price),
-          quantity: quantity,
+          quantity: parseInt(quantity),
           product_variant_id: result?.payload?.data?.id
         }
         var secondResult = await dispatch(createProductVariantSpec(newPayload))
@@ -1244,6 +1248,7 @@ const AddColorVariant = ({ navigation }: any) => {
               <View style={styles.subdiv}>
                 <Input
                   label='Quantity'
+                  number
                   // type='controlled'
                   value={quantity?.toString()}
                 />
@@ -1296,17 +1301,18 @@ const AddColorVariant = ({ navigation }: any) => {
 
             <ScrollView showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}>
+             
+              {
+                renderSizeList()
+              } 
               <Pressable onPress={showModal2}>
-                <View style={[globalStyles.rowStart, {marginVertical: hp(10)}]}>
+                <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]}>
                   <Image
                     source={plusBig}
                   />
                   <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
                 </View>
               </Pressable>
-              {
-                renderSizeList()
-              }
             </ScrollView>
 
             {/* <View style={styles.br}></View> */}
@@ -1384,6 +1390,7 @@ const AddColorVariant = ({ navigation }: any) => {
               <View style={styles.subdiv}>
                 <Input
                   label='Quantity'
+                  number
                   value={modalQuantity?.toString()}
                 />
               </View>
