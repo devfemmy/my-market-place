@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '../components/common'
-import { Banner } from '../constants/images'
+import { Banner, Banner1 } from '../constants/images'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { getProfile } from '../redux/slices/ProfileSlice'
 import { userProfile } from '../redux/slices/userSilce'
@@ -41,7 +41,7 @@ const HomeScreen = (navigation: any) => {
       <ScrollView  showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
         <View style={styles.imageCard}>
-          <Image source={Banner} resizeMode='contain' style={styles.imageContainer} />
+          <Image source={Banner1} resizeMode='contain'  style={styles.imageContainer} />
         </View>
        
         <AllCategories navigation={navigation} />
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: hp(15)
   },
   imageContainer: {
-    width: '100%'
+    width: '100%',
+    height: "100%"
   },
 })

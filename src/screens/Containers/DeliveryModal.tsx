@@ -77,11 +77,23 @@ const DeliveryModal = ({ visible, setVisible }: any) => {
             enableReinitialize: true
         });
 
-    const locationState = locationData?.map((data: locationProp) => data?.state);
+    const locationState = locationData?.map((data: locationProp) => {
+        return {
+            key: data?.state,
+            value: data?.state
+        }
+    });
 
     const locationCity = locationData?.find(
         (data: locationProp) => data?.state === values.state,
-    )?.city;
+    )
+
+    const newCity = locationCity?.city?.map(data => {
+        return {
+          key: data,
+          value: data
+        }
+      })
 
 
     return (
@@ -134,15 +146,17 @@ const DeliveryModal = ({ visible, setVisible }: any) => {
                                 items={locationState}
                                 defaultValue={values.state}
                                 placeholder="Select State"
+                                search={true}
                                 setState={handleChange('state')}
                                 errorMsg={touched.state ? errors.state : undefined}
                             />
 
                             {
                                 values?.state?.length > 0 && <Select
-                                    items={locationCity}
+                                    items={newCity}
                                     defaultValue={values.city}
                                     placeholder="Select City"
+                                    search={false}
                                     setState={handleChange('city')}
                                     errorMsg={touched.city ? errors.city : undefined}
                                 />

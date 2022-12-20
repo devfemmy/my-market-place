@@ -14,6 +14,7 @@ import EmptyState from './Containers/EmptyState'
 import { notify, productLogo } from '../assets'
 import OrderCard from './Containers/OrderCard'
 import { useIsFocused } from "@react-navigation/native";
+import { truncate } from '../utils/server'
 
 const BuyerOrderScreen = ({ navigation }: any) => {
   const dispatch = useAppDispatch()
@@ -63,6 +64,7 @@ const BuyerOrderScreen = ({ navigation }: any) => {
   )
 
 
+
   if (stateLoader) {
     return <View style={styles.container}>
       <ActivityIndicator />
@@ -107,11 +109,11 @@ const BuyerOrderScreen = ({ navigation }: any) => {
                       <View style={globalStyles.rowStart}>
                         <Image style={styles.img} source={{ uri: data?.variant_img_url }} />
                         <View style={styles.maldiv}>
-                          <Text text={data?.meta?.product_details?.name} fontWeight='600' fontSize={hp(12)} />
+                          <Text text={truncate(data?.meta?.product_details?.name, 40)} fontWeight='600' fontSize={hp(12)} />
                           <View style={globalStyles.rowStart}>
                             <View style={globalStyles.rowStart}>
                               <Text text='Size - ' fontWeight='400' fontSize={hp(10)} />
-                              <Text text={data?.size} color={colors.bazaraTint} fontWeight='400' fontSize={hp(10)} style={{ marginLeft: hp(5) }} />
+                              <Text text={data?.size ? data?.size : 'N/A '} color={colors.bazaraTint} fontWeight='400' fontSize={hp(10)} style={{ marginLeft: hp(5) }} />
                             </View>
                             <Text
                               text={`₦${numberFormat(Number(data?.amount * data?.quantity))}`}
@@ -127,7 +129,7 @@ const BuyerOrderScreen = ({ navigation }: any) => {
                       </View>
                     </View>
                     <View style={styles.subdiv2}>
-                      <View style={{ backgroundColor: data?.status === "PENDING" ? colors.antdOrange : data?.status === "PROCESSING" ? colors.antdBlue : data?.status === "DISPATCHED" ? colors.antdPurple : data?.status === "CANCELLED" ? colors.antdRed : data?.status === "REJECTED" ? colors.antdRed : colors.antdGreen }}>
+                      <View style={{borderWidth: 1,padding: hp(5), borderColor: data?.status === "PENDING" ? colors.antdOrange : data?.status === "PROCESSING" ? colors.antdBlue : data?.status === "DISPATCHED" ? colors.antdPurple : data?.status === "CANCELLED" ? colors.antdRed : data?.status === "REJECTED" ? colors.antdRed : colors.antdGreen }}>
                         <Text text={data?.status} style={{ textTransform: 'capitalize' }} color={data?.status === "PENDING" ? colors.antdOrange : data?.status === "PROCESSING" ? colors.antdBlue : data?.status === "DISPATCHED" ? colors.antdPurple : data?.status === "CANCELLED" ? colors.antdRed : data?.status === "REJECTED" ? colors.antdRed : colors.antdGreen} />
                       </View>
                     </View>
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    paddingHorizontal: hp(10),
+    paddingHorizontal: hp(15),
     paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
   },
   txt: {
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.lightwhite,
   },
   subdiv: {
-    width: '100%'
+    width: '70%',
   },
   img: {
     width: wp(40),

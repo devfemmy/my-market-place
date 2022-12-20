@@ -44,6 +44,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
   const [deleteVisible, setDeleteVisible] = useState(false)
   const [deleteAccountLoader, setDeleteAccountLoader] = useState(false)
   const [loader, setLoader] = useState(false)
+  const [storeSwitch, setStoreSwitch] = useState(false)
 
 
   const closeDelete = () => {
@@ -110,6 +111,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
 
   const onChange = async (check: boolean) => {
+    console.log({check})
     if (!check) {
       const resultAction = await dispatch(deactivateStore(activeId))
       if (deactivateStore.fulfilled.match(resultAction)) {
@@ -148,7 +150,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
       const resultAction = await dispatch(activateStore(activeId))
       if (activateStore.fulfilled.match(resultAction)) {
         Notifier.showNotification({
-          title: 'Store deactivated successfully',
+          title: 'Store activated successfully',
           description: '',
           Component: NotifierComponents.Alert,
           hideOnPress: false,
@@ -366,8 +368,8 @@ const SellerSettingScreen = ({ navigation }: any) => {
             <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
               <Text text='Activate / Deactivate Store' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
               <Switch
-                trackColor={{ false: colors.black, true: colors.bazaraTint }}
-                thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+                trackColor={{ false: colors.black, true: colors.black }}
+                thumbColor={isEnabled ? colors.green : colors.white}
                 ios_backgroundColor={colors.black}
                 onValueChange={onChange}
                 value={isEnabled}
@@ -376,12 +378,24 @@ const SellerSettingScreen = ({ navigation }: any) => {
           </View>
 
         }
+        {/* <View>
+            <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+              <Text text='Activate / Deactivate Store' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
+              <Switch
+                trackColor={{ false: colors.black, true: colors.bazaraTint }}
+                thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+                ios_backgroundColor={colors.black}
+                onValueChange={onChange}
+                value={isEnabled}
+              />
+            </View>
+          </View> */}
         {
           mode === "Buyer" ? <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
             <Text text='Switch to Seller' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
             <Switch
-              trackColor={{ false: colors.black, true: colors.bazaraTint }}
-              thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+              trackColor={{ false: colors.black, true: colors.black }}
+              thumbColor={storeSwitch ? colors.green : colors.white}
               ios_backgroundColor={colors.black}
               onValueChange={() => changeMode('Seller')}
             // value={isEnabled}
@@ -391,8 +405,8 @@ const SellerSettingScreen = ({ navigation }: any) => {
             <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
               <Text text='Switch to Buyer' fontSize={hp(16)} fontWeight="400" lineHeight={28} />
               <Switch
-                trackColor={{ false: colors.black, true: colors.bazaraTint }}
-                thumbColor={isEnabled ? colors.bazaraTint : colors.white}
+                trackColor={{ false: colors.black, true: colors.black }}
+                thumbColor={storeSwitch ? colors.green : colors.white}
                 ios_backgroundColor={colors.black}
                 onValueChange={() => changeMode('Buyer')}
               // value={isEnabled}

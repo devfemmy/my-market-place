@@ -16,6 +16,7 @@ import { styles } from './auth/Login/styles';
 import MobileHeader from './Containers/MobileHeader';
 import { forgetPassword } from '../redux/slices/AuthSlice';
 import { useAppDispatch } from '../redux/hooks';
+import config from '../config/config';
 
 const ForgotPassword = () => {
     const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ const ForgotPassword = () => {
 
         const payload = {
             email: data?.email,
-            redirect_url: `https://bazara.herokuapp.com/new-password`
+            redirect_url: `${config.url}/new-password`
         }
 
         setLoading(true)

@@ -56,6 +56,7 @@ import ChatBox from '../screens/ChatBox';
 import SellerChatBox from '../screens/SellerChatBox';
 import RatingScreen from '../screens/RatingScreen';
 import { OnboardScreen } from '../screens/Onboarding';
+import Feather from 'react-native-vector-icons/Feather';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -180,7 +181,7 @@ const TokenStackNavigation = () => {
                         if (route.name === 'Store') {
                             iconName = focused ? 'ios-home' : 'ios-home-outline';
                         } else if (route.name === 'Products') {
-                            iconName = 'search';
+                            iconName = 'box';
                         } else if (route.name === 'Orders') {
                             iconName = focused ? 'cart' : 'cart-outline';
                         }
@@ -190,7 +191,7 @@ const TokenStackNavigation = () => {
                         if (route.name === 'Settings') {
                             iconName = focused ? 'settings' : 'settings-outline';
                         }
-                        return <Ionicons name={iconName} size={size} color={color} />;
+                        return route.name === "Products" ? <Feather name={iconName} size={size} color={color} /> : <Ionicons name={iconName} size={size} color={color} />;
                     },
                     tabBarActiveTintColor: colors.bazaraTint,
                     tabBarInactiveTintColor: colors.gray,

@@ -20,6 +20,7 @@ type IProp = {
   defaultValue: string,
   placeholder: string,
   errorMsg?: string,
+  search?: boolean,
   setState: (value: string) => void;
   roleSelector?: boolean,
 };
@@ -27,7 +28,7 @@ type IProp = {
 
 export const Select = (props: IProp) => {
   const dispatch = useAppDispatch()
-  const { items, setState, placeholder, defaultValue, errorMsg, roleSelector } = props;
+  const { items, setState, placeholder, defaultValue, errorMsg,search, roleSelector } = props;
 
   return (
     // <View style={[styles.containerStyle]}>
@@ -85,6 +86,7 @@ export const Select = (props: IProp) => {
         boxStyles={{ borderRadius: 5, height: hp(60), alignItems: 'center' }}
         inputStyles={{ color: 'white' }}
         dropdownTextStyles={{ color: 'white' }}
+        search={search}
         arrowicon={<icons.Ionicons name="chevron-down" size={hp(12)} color="white" />}
         searchicon={<icons.Ionicons name="search" size={hp(12)} color="white" />}
         data={items}

@@ -12,12 +12,14 @@ import { globalStyles } from '../styles'
 import MobileHeader from './Containers/MobileHeader'
 import { Text } from '../components/common'
 import { colors } from '../utils/themes'
-import { deleteIc } from '../assets'
+import { carty, deleteIc } from '../assets'
 import EmptyState from './Containers/EmptyState'
 import { Button } from '../components/common/Button'
 import { useIsFocused } from "@react-navigation/native";
 import AddToCartModal from './Containers/AddToCartModal'
 import { truncate } from '../utils/server'
+import Entypo from 'react-native-vector-icons/Entypo'
+import { ActivityIndicator } from 'react-native-paper'
 
 const CartScreen = (props: any,) => {
     const [quantity, setQuantity] = useState(0)
@@ -309,8 +311,6 @@ const incrementLive = async (index: any, data: any) => {
     }
     setSet(index)
     setIncrementLoader(true)
-    setSet(index)
-    setIncrementLoader(true)
     var response = await dispatch(updateCart(payload))
     if (updateCart.fulfilled.match(response)) {
         dispatch(getCarts()).then((data) => {
@@ -441,13 +441,13 @@ return (
                                                     <View style={[styles.rowDiv]}>
                                                         <Pressable onPress={() => decrement(i, data?.quantity)}>
                                                             <View style={styles.box}>
-                                                                <Text text='-' fontWeight='bold' fontSize={hp(18)} />
+                                                            <Entypo name={'minus'} size={hp(20)} style={{ color: colors.white }} />
                                                             </View>
                                                         </Pressable>
                                                         <Text text={data?.quantity?.toString()} fontSize={hp(18)} />
                                                         <Pressable onPress={() => increment(i, data?.quantity, data)}>
                                                             <View style={styles.box}>
-                                                                <Text text='+' fontSize={hp(18)} />
+                                                            <Entypo name={'plus'} size={hp(20)} style={{ color: colors.white }} />
                                                             </View>
                                                         </Pressable>
                                                     </View>
@@ -531,13 +531,15 @@ return (
                                                     <View style={[styles.rowDiv]}>
                                                         <Pressable onPress={() => decrementLive(i, data)}>
                                                             <View style={styles.box}>
-                                                                <Text text='-' fontWeight='bold' fontSize={hp(18)} />
+                                                                <Entypo name={'minus'} size={hp(20)} style={{ color: colors.white }} />
                                                             </View>
                                                         </Pressable>
-                                                        <Text text={data?.quantity?.toString()} fontSize={hp(18)} />
+                                                        {
+                                                            incrementLoader && set === i  ? <ActivityIndicator size={15} color='white' /> :  <Text text={data?.quantity?.toString()} fontSize={hp(18)} />
+                                                        }
                                                         <Pressable onPress={() => incrementLive(i, data)}>
                                                             <View style={styles.box}>
-                                                                <Text text='+' fontSize={hp(18)} />
+                                                            <Entypo name={'plus'} size={hp(20)} style={{ color: colors.white }} />
                                                             </View>
                                                         </Pressable>
                                                     </View>
@@ -603,7 +605,7 @@ return (
         {
             (getCartFromStorage?.length < 1 || getCartFromStorage === undefined || getCartFromStorage === null) && getCartData?.length < 1 && <View style={styles.tgt}>
                 <EmptyState
-                    icon={deleteIc}
+                    icon={carty}
                     title={'No Item In Cart Yet'}
                     header={'Items will appear here once added to cart'}
                 />
@@ -678,6 +680,8 @@ const styles = StyleSheet.create({
         padding: wp(8)
     },
     box: {
+        justifyContent: 'center',
+        alignItems: 'center'
         // width: wp(50),
         // height:hp(50)
     },

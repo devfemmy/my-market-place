@@ -33,6 +33,8 @@ export const OnboardScreen = (): JSX.Element => {
       loadToken()
   }, [])
 
+  console.log({token})
+
   return (
     <SafeAreaView>
       <View style={styles.imgCont}>
@@ -71,7 +73,7 @@ export const OnboardScreen = (): JSX.Element => {
             style={{marginTop: hp(20)}}
             />
             <View style={[globalStyles.rowCenter, styles.btn]}>
-                <Button title={'Get Started'} style={styles.btn} onPress={token ? () => navigation.navigate("Home") : () => navigation.navigate("HomeScreen")} />
+                <Button title={'Get Started'} style={styles.btn} onPress={token ? () => navigation.navigate("BuyerScreen","Home") : () => navigation.navigate("HomeScreen")} />
             </View>
           </View>
         </ImageBackground>

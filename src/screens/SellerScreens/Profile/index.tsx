@@ -23,6 +23,7 @@ import { pictureUpload } from '../../../utils/functions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MobileHeader from '../../Containers/MobileHeader';
 import { plus, remove } from '../../../assets';
+import config from '../../../config/config';
 
 
 
@@ -137,7 +138,7 @@ const Profile = ({ navigation }: any) => {
             setStateLoader(false)
             setEdit(false)
             Notifier.showNotification({
-              title: "Profile Image updated successfully",
+              title: "Profile updated successfully",
               description: '',
               Component: NotifierComponents.Alert,
               hideOnPress: false,
@@ -189,7 +190,7 @@ const Profile = ({ navigation }: any) => {
         setLoader(true)
         const data = {
             email: profileData?.email,
-            redirect_url:  `https://bazara.herokuapp.com/new-password`
+            redirect_url: `${config.url}/new-password`
         }
         try {
             var resultAction = await dispatch(forgetPassword(data))

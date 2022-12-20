@@ -190,7 +190,7 @@ const DeliveryScreen = (props) => {
   const requiredAddress = () => {
     if (activeDelivery === null || activeDelivery === undefined) {
       return Notifier.showNotification({
-        title: 'Delivery address is required to complete this transaction',
+        title: 'Delivery address information is not complete for this transaction',
         description: '',
         Component: NotifierComponents.Alert,
         hideOnPress: false,
@@ -300,7 +300,7 @@ const DeliveryScreen = (props) => {
         />
 
         {
-          getCartData?.length > 0 && activeDelivery ? <Button title='Pay Now' onPress={() => paystackWebViewRef.current.startTransaction()} />
+          getCartData?.length > 0 && activeDelivery?.email && activeDelivery?.phone_number ? <Button title='Pay Now' onPress={() => paystackWebViewRef.current.startTransaction()} />
             : <Button title='Pay Now' onPress={() => requiredAddress()} />
 
         }
@@ -329,6 +329,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     paddingTop: Platform.OS === 'ios' ? hp(20) : hp(15),
+    paddingHorizontal: hp(15)
   },
   div1: {},
   cod: {
