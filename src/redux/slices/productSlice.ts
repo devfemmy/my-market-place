@@ -1,432 +1,515 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "../store";
-import { ProductState, ProductCreateFormData } from "../../utils/types";
-import {getRequest, sendPost} from "../../utils/server"
-import { boolean } from "yup";
+import { ProductCreateFormData, ProductState, ProductUpdateFormData, ProductVariantFormData, ProductVariantSpecFormData, StoreCreateFormData } from "../../utils/types";
+import { postRequest, getRequest, uploadImageFunc, deleteRequestNoPayload } from "../../utils/server"
+
+
+
 
 const initialState: ProductState = {
-    myProducts: [],
-    selectedProducts: [],
-    productBackground: [],
-    searching: false,
+    products: [],
+    productVariants: null,
+    productSpec: [],
+    buyerProducts: [],
     productBySlug: null,
-    editableSlug: null,
-    newSizes: [],
-    newColours: [],
-    newSizeColours: [],
-    images: ["", "", "", "", "", ""],
-    categories: [],
     loading: false,
     error: null
 }
 
-export const getAllProducts = createAsyncThunk(
-    'product/allProducts',
+
+
+export const createProduct = createAsyncThunk(
+    'product/createProduct',
+    async (payload: ProductCreateFormData, { rejectWithValue }) => {
+        const payloadData = {
+            name: payload?.name,
+            description: payload?.description,
+            category_id: payload?.category_id,
+            estimated_delivery_duration: payload?.estimated_delivery_duration,
+            store_id: payload?.store_id
+        }
+
+
+        try {
+            const response = await postRequest(`/product/create`, payloadData)
+            
+            return response?.data
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
+
+export const updateProduct = createAsyncThunk(
+    'product/updateProduct',
+    async (payload: ProductUpdateFormData, { rejectWithValue }) => {
+        const payloadData = {
+            name: payload?.name,
+            description: payload?.description,
+            category_id: payload?.category_id,
+            estimated_delivery_duration: payload?.estimated_delivery_duration
+            //store_id: payload?.store_id
+        }
+        try {
+            const response = await postRequest(`/product/update/?product_id=${payload.id}`, payloadData)
+            console.log("=======",{response})
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
+export const elasticSearch = createAsyncThunk(
+    'product/elasticSearch',
+    async (payload: { search: string }, { rejectWithValue }) => {
+        try {
+            const response = await getRequest(`/product/search?search_string=${payload.search}`)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+export const activateProduct = createAsyncThunk(
+    'product/activateProduct',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await postRequest(`/product/activate/?product_id=${payload}`, payload)
+
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+export const deactivateProduct = createAsyncThunk(
+    'product/deactivateProduct',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await postRequest(`/product/deactivate/?product_id=${payload}`, payload)
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+    }
+)
+
+
+
+export const getProduct = createAsyncThunk(
+    'product/getProduct',
     async (payload: string) => {
-        const response = await getRequest("/sidehustle/" + payload + "/products")
+        const response = await getRequest(`/product/seller?store_id=${payload}`)
         if (response?.status === 200) {
             return response?.data?.data
         }
     }
 )
 
-export const searchProducts = createAsyncThunk(
-    'product/searchingProduct',
-    (payload: string) => {
-        return payload
+export const getProductBuyer = createAsyncThunk(
+    'product/getProductBuyer',
+    async () => {
+        const response = await getRequest(`/product`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
     }
 )
 
 export const getProductBySlug = createAsyncThunk(
-    'product/allProduct',
+    'product/getProductBySlug',
     async (payload: string) => {
-        const response = await getRequest(`/sidehustle/product/?slug=${payload}`)
+        const response = await getRequest(`/product/seller?slug=${payload}`)
         if (response?.status === 200) {
             return response?.data?.data
         }
     }
 )
 
-export const getPayoutBackground = createAsyncThunk(
-    'product/allProductBack',
-    async () => {
-        const response = await getRequest(`/sidehustle/account/payouts`)
+export const getProductBySlugBuyer = createAsyncThunk(
+    'product/getProductBySlugBuyer',
+    async (payload: string) => {
+        const response = await getRequest(`/product?slug=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+export const getProductVariants = createAsyncThunk(
+    'product/getProductVariants',
+    async (payload: string) => {
+        const response = await getRequest(`/product/variant/?product_id=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+export const getProductVariantSpec = createAsyncThunk(
+    'product/getProductVariantSpec',
+    async (payload: string) => {
+        const response = await getRequest(`/product/variant/spec?product_variant_id=${payload}`)
         if (response?.status === 200) {
             return response?.data?.data
         }
     }
 )
 
-export const createProduct = createAsyncThunk(
-    'product/createProduct',
-    async (payload: ProductCreateFormData) => {
-        const payloadData = {
-            name: payload?.name,
-            description: payload?.description,
-            categories: payload?.categories,
-            variants: payload?.variants,
-            isDraft: payload?.isDraft,
-            status: payload?.status
-        }
-        const response = await sendPost(`/sidehustle/${payload.id}/products/add`, payloadData)
-        console.log(response?.data)
-        return response?.data
-    }
-)
-
-export const updateProduct = createAsyncThunk(
-    'product/updateProduct',
-    async (payload: ProductCreateFormData) => {
-        // const response = await sendPost(`/sidehustle/product/${payload.id}/update`, payload, 'v2')
-        // console.log(response?.data)
+export const createProductVariantSpec = createAsyncThunk(
+    'product/createProductVariantSpec',
+    async (payload: ProductVariantSpecFormData, { rejectWithValue }) => {
         try {
-            const response = await sendPost(`/sidehustle/product/${payload.id}/update`, payload)
-            console.log(response?.data)
+            const response = await postRequest(`/product/variant/spec/create`, payload)
             return response?.data
-        } catch (error) {
-            console.log(error)
-            console.log(error?.message)
-            console.log(error?.status)
-            console.log(error?.data)
         }
-        
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
     }
 )
 
-export const addImage = createAsyncThunk(
-    'product/images',
-    (payload: {index: number, uri: string}) => {
-        return payload
+export const createProductVariant = createAsyncThunk(
+    'product/createProductVariant',
+    async (payload: ProductVariantFormData, { rejectWithValue }) => {
+
+        try {
+            const response = await postRequest(`/product/variant/create`, payload)
+            return response?.data
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
     }
 )
 
-export const UpdateEditableSlug = createAsyncThunk(
-    'product/updateEditableSlug',
-    (payload: any) => {
-        return payload
+export const activateProductVariant = createAsyncThunk(
+    'product/activateProductVariant',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await postRequest(`/product/variant/activate/?product_variant_id=${payload}`, payload)
+
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
     }
 )
 
-export const addSize = createAsyncThunk(
-    'product/sizesadd',
-    (payload: {size: string, price: number, quantity: number}) => {
-        return payload
+export const deactivateProductVariant = createAsyncThunk(
+    'product/deactivateProductVariant',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await postRequest(`/product/variant/deactivate/?product_variant_id=${payload}`, payload)
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
     }
 )
 
-export const addColour = createAsyncThunk(
-    'product/coloursadd',
-    (payload: {colour: string, price: number, quantity: number, images: Array<string>}) => {
-        return payload
-    }
-)
+export const updateProductVariant = createAsyncThunk(
+    'product/updateProductVariant',
+    async (payload: any, { rejectWithValue }) => {
+        const payloadData = {
+            color: payload?.color,
+            img_urls: payload?.img_urls,
+        }
+        try {
+            const response = await postRequest(`/product/variant/update?product_variant_id=${payload?.id}`, payloadData)
 
-export const addSizeColour = createAsyncThunk(
-    'product/sizecoloursadd',
-    (payload: {colour: string, size: Array<any>, images: Array<string>}) => {
-        return payload
-    }
-)
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
 
-export const editSize = createAsyncThunk(
-    'product/sizesedit',
-    (payload: {index: number, item: {size: string, price: number, quantity: number}}) => {
-        return payload
-    }
-)
-
-export const editColour = createAsyncThunk(
-    'product/coloursedit',
-    (payload: {index: number, item: {colour: string, price: number, quantity: number, images: Array<string>}}) => {
-        return payload
-    }
-)
-
-export const deleteSize = createAsyncThunk(
-    'product/sizesdelete',
-    (payload: number) => {
-        return payload
-    }
-)
-
-export const deleteColour = createAsyncThunk(
-    'product/coloursdelete',
-    (payload: number) => {
-        return payload
-    }
-)
-
-export const deleteSizeColour = createAsyncThunk(
-    'product/sizecoloursdelete',
-    (payload: number) => {
-        return payload
     }
 )
 
 
-export const resetImage = createAsyncThunk(
-    'product/resetimages',
-    () => {
-        return ["", "", "", "", "", ""]
+export const deleteProductVariant = createAsyncThunk(
+    'product/deleteProductVariant',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await deleteRequestNoPayload(`/product/variant/delete?product_variant_id=${payload}`)
+
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
+export const deleteProduct = createAsyncThunk(
+    'product/deleteProduct',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await deleteRequestNoPayload(`/product/delete?product_id=${payload}`)
+
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
+export const updateProductVariantSpec = createAsyncThunk(
+    'product/updateProductVariantSpec',
+    async (payload: { product_variant_spec_id: string, quantity: number, amount: number, size?: string }, { rejectWithValue }) => {
+        const payloadData = {
+            quantity: payload?.quantity,
+            amount: payload?.amount,
+            size: payload?.size
+        }
+
+        try {
+            const response = await postRequest(`/product/variant/spec/update?product_variant_spec_id=${payload?.product_variant_spec_id}`, payloadData)
+            return response?.data?.data
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
+export const deleteProductVariantSpec = createAsyncThunk(
+    'product/deleteProductVariantSpec',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await deleteRequestNoPayload(`/product/variant/spec/delete?product_variant_spec_id=${payload}`)
+
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
+
+    }
+)
+
+export const getProductByCategory = createAsyncThunk(
+    'product/getProductByCategory',
+    async (payload: string) => {
+        const response = await getRequest(`/product?category_id=${payload}`)
+        if (response?.status === 200) {
+            return response?.data?.data
+        }
+    }
+)
+
+export const searchProduct = createAsyncThunk(
+    'product/searchProduct',
+    async (payload: { search: string, id: string }, { rejectWithValue }) => {
+        try {
+            const response = await getRequest(`/sidehustle/seller/product/search?searchString=${payload.search}&sidehustleId=${payload.id}`)
+            if (response?.status === 200) {
+                return response?.data?.data
+            }
+        }
+        catch (e: any) {
+            return rejectWithValue(e?.response?.data?.message)
+        }
     }
 )
 
 
 export const ProductSlice = createSlice({
-    name: 'auth',
+    name: 'products',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        // IMAGES
-        builder.addCase(addImage.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(addImage.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.images[action.payload.index] = action.payload.uri
-        })
-        builder.addCase(addImage.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-        // EDITABLE SLUG
-        builder.addCase(UpdateEditableSlug.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(UpdateEditableSlug.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.editableSlug = action.payload
-        })
-        builder.addCase(UpdateEditableSlug.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-
-        // SIZES
-        builder.addCase(addSize.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(addSize.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newSizes = state.newSizes.concat([action.payload])
-        })
-        builder.addCase(addSize.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-        builder.addCase(editSize.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(editSize.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newSizes[action.payload.index] = action.payload.item
-        })
-        builder.addCase(editSize.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-        builder.addCase(deleteSize.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(deleteSize.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newSizes.splice(action.payload, 1)
-        })
-        builder.addCase(deleteSize.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-        
-
-        builder.addCase(resetImage.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(resetImage.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.images = action.payload
-        })
-        builder.addCase(resetImage.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-        // COLOURS
-        builder.addCase(addColour.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(addColour.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newColours = state.newColours.concat([action.payload])
-        })
-        builder.addCase(addColour.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-
-        builder.addCase(editColour.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(editColour.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newColours[action.payload.index] = action.payload.item
-        })
-        builder.addCase(editColour.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-
-        builder.addCase(deleteColour.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(deleteColour.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newColours.splice(action.payload, 1)
-        })
-        builder.addCase(deleteColour.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-        // SIZE COLOURS
-
-        builder.addCase(addSizeColour.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(addSizeColour.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newSizeColours = state.newSizeColours.concat([action.payload])
-            state.newSizes = []
-        })
-        builder.addCase(addSizeColour.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-
-        builder.addCase(deleteSizeColour.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(deleteSizeColour.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.newSizeColours.splice(action.payload, 1)
-        })
-        builder.addCase(deleteSizeColour.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-        // GET PRODUCTS
-        builder.addCase(getAllProducts.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(getAllProducts.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.myProducts = action.payload
-            state.selectedProducts = action.payload
-        })
-        builder.addCase(getAllProducts.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-
-        builder.addCase(getPayoutBackground.pending, (state) => {
-            state.loading = true
-        })
-        builder.addCase(getPayoutBackground.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.productBackground = action.payload
-        })
-        builder.addCase(getPayoutBackground.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-
-        builder.addCase(searchProducts.pending, (state) => {
-            state.searching = true
-        })
-        builder.addCase(searchProducts.fulfilled, (state, action: PayloadAction<any>) => {
-            state.selectedProducts = state.myProducts.filter(function(val: any){
-                if(val?.name.toLowerCase().startsWith(action.payload.toLowerCase())){
-                    return val
-                }
-            })
-            state.searching = false
-        })
-        builder.addCase(searchProducts.rejected, (state, action) => {
-            state.error = action.error.message
-        })
-
-
-        builder.addCase(getProductBySlug.pending, (state, action) => {
-            state.loading = true,
-            state.productBySlug = null
-        }),
-        builder.addCase(getProductBySlug.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false,
-            state.productBySlug = action.payload
-        })
-        builder.addCase(getProductBySlug.rejected, (state, action) => {
-            state.error = action.error.message,
-            state.productBySlug = null
-        })
-
-
-        //CREATE PRODUCTS
-
         builder.addCase(createProduct.pending, (state, action) => {
             state.loading = true
+        }),
+            builder.addCase(createProduct.fulfilled, (state, action) => {
+                state.loading = false
+            }),
+            builder.addCase(createProduct.rejected, (state, action) => {
+                state.loading = false,
+                    state.error = action.payload
+            }),
+            builder.addCase(updateProduct.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(updateProduct.fulfilled, (state, action) => {
+                state.loading = false
+            }),
+            builder.addCase(updateProduct.rejected, (state, action) => {
+                state.loading = false,
+                    state.error = action.payload
+            }),
+            builder.addCase(activateProduct.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(activateProduct.fulfilled, (state, action) => {
+                state.loading = false
+            }),
+            builder.addCase(activateProduct.rejected, (state, action) => {
+                state.loading = false,
+                    state.error = action.payload
+            }),
+            builder.addCase(deactivateProduct.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(deactivateProduct.fulfilled, (state, action) => {
+                state.loading = false
+            }),
+            builder.addCase(deactivateProduct.rejected, (state, action) => {
+                state.loading = false,
+                    state.error = action.payload
+            }),
+            builder.addCase(getProduct.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(getProduct.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false,
+                    state.products = action.payload
+            })
+        builder.addCase(getProduct.rejected, (state, action) => {
+            state.products = []
+            state.error = action.error.message
+        }),
+            builder.addCase(getProductBuyer.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(getProductBuyer.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false,
+                    state.buyerProducts = action.payload
+            })
+        builder.addCase(getProductBuyer.rejected, (state, action) => {
+            state.buyerProducts = []
+            state.error = action.error.message
+        }),
+            builder.addCase(searchProduct.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(searchProduct.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false,
+                    state.products = action.payload
+            })
+        builder.addCase(searchProduct.rejected, (state, action) => {
+            state.products = []
+            state.error = action.error.message
+        }),
+            builder.addCase(getProductBySlug.pending, (state, action) => {
+                state.loading = true
+            }),
+            builder.addCase(getProductBySlug.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false,
+                    state.productBySlug = action.payload
+            })
+        builder.addCase(getProductBySlug.rejected, (state, action) => {
+            state.error = action.error.message
         })
-        builder.addCase(createProduct.fulfilled, (state, action) => {
-            state.loading = false
-            state.productBySlug = action.payload?.message
-            state.newSizes = []
-            state.newColours = []
-            state.newSizeColours = []
-            state.images = ["", "", "", "", "", ""]
-        })
-        builder.addCase(createProduct.rejected, (state, action) => {
-            state.loading = false,
-            state.error = action.payload
-        })
-
-        builder.addCase(updateProduct.pending, (state, action) => {
+        builder.addCase(deleteProduct.pending, (state, action) => {
             state.loading = true
-        })
-        builder.addCase(updateProduct.fulfilled, (state, action) => {
+        }),
+            builder.addCase(deleteProduct.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(deleteProduct.rejected, (state, action) => {
             state.loading = false
-            state.newSizes = []
-            state.newColours = []
-            state.newSizeColours = []
-            state.images = ["", "", "", "", "", ""]
         })
-        builder.addCase(updateProduct.rejected, (state, action) => {
+        builder.addCase(getProductByCategory.pending, (state, action) => {
+            state.loading = true,
+                state.buyerProducts = []
+        }),
+            builder.addCase(getProductByCategory.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false,
+                    state.buyerProducts = action.payload
+            })
+        builder.addCase(getProductByCategory.rejected, (state, action) => {
+            state.buyerProducts = [],
+                state.error = action.error.message
+        })
+        builder.addCase(createProductVariant.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(createProductVariant.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(createProductVariant.rejected, (state, action) => {
+            state.loading = false
+
+        })
+        builder.addCase(updateProductVariant.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(updateProductVariant.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(updateProductVariant.rejected, (state, action) => {
+            state.loading = false
+        })
+        builder.addCase(updateProductVariantSpec.pending, (state, action) => {
+
+        }),
+            builder.addCase(updateProductVariantSpec.fulfilled, (state, action: PayloadAction<any>) => {
+
+            })
+        builder.addCase(updateProductVariantSpec.rejected, (state, action) => {
+
+        })
+        builder.addCase(getProductVariants.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(getProductVariants.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false,
+                    state.productVariants = action.payload
+            })
+        builder.addCase(getProductVariants.rejected, (state, action) => {
             state.loading = false,
-            state.error = action.payload
+                state.error = action.error.message
+        })
+        builder.addCase(getProductVariantSpec.pending, (state, action) => {
+
+        }),
+            builder.addCase(getProductVariantSpec.fulfilled, (state, action: PayloadAction<any>) => {
+                state.productSpec = action.payload
+            })
+        builder.addCase(getProductVariantSpec.rejected, (state, action) => {
+
+        })
+        builder.addCase(deleteProductVariant.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(deleteProductVariant.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(deleteProductVariant.rejected, (state, action) => {
+            state.loading = false
+        })
+        builder.addCase(elasticSearch.pending, (state, action) => {
+            state.loading = true
+        }),
+            builder.addCase(elasticSearch.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+            })
+        builder.addCase(elasticSearch.rejected, (state, action) => {
+            
         })
     }
 })
 
-export const images = (state: RootState) => state.product.images;
-export const editableSlug = (state: RootState) => state.product.editableSlug;
-export const myProducts = (state: RootState) => state.product.myProducts;
-export const productBackground = (state: RootState) => state.product.productBackground;
-export const selectedProducts = (state: RootState) => state.product.selectedProducts;
-export const loading = (state: RootState) => state.product.loading;
-export const searching = (state: RootState) => state.product.searching;
+export const products = (state: RootState) => state.product.products;
+export const productVar = (state: RootState) => state.product.productVariants;
+export const buyerProducts = (state: RootState) => state.product.buyerProducts;
+
+
 export const productBySlug = (state: RootState) => state.product.productBySlug;
-export const newSizes = (state: RootState) => state.product.newSizes;
-export const newColours = (state: RootState) => state.product.newColours;
-export const newSizeColours = (state: RootState) => state.product.newSizeColours;
+
 
 export default ProductSlice.reducer;

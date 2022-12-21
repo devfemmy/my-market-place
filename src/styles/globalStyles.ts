@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 // import {colors} from '../constants';
 import {colors} from '../utils/themes';
 import {wp, hp} from '../utils/helpers/index';
@@ -7,9 +7,15 @@ export const globalStyles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: colors.primaryBg,
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10)
+  },
+  containerWrapper: {
+    backgroundColor: 'black',
+    height: '100%',
+    paddingTop: Platform.OS === 'ios' ? hp(20) : hp(10)
   },
   container: {
-    paddingHorizontal: wp(15),
+    paddingHorizontal: wp(10),
     flexGrow: 1,
   },
   itemContainer: {
@@ -25,6 +31,10 @@ export const globalStyles = StyleSheet.create({
   },
   rowCenter: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  colCenter: {
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -256,6 +266,12 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.black
-  }
+  },
+  labelPlaceholder: {
+    height: hp(25),
+    width: 130,
+    borderRadius: 5,
+    marginTop: hp(10)
+  },
 
 });

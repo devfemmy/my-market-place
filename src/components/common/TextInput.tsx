@@ -16,6 +16,9 @@ type InputProps = ComponentProps<typeof BaseInput> & {
   placeholder?: string;
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
+  iconMarginTop?: number,
+  disabled?: boolean,
+  number?: boolean
 };
 
 export const Input = memo(
@@ -25,7 +28,10 @@ export const Input = memo(
     searchInput = false,
     containerStyle,
     placeholder,
+    disabled,
     label,
+    number,
+    iconMarginTop,
     ...rest
   }: InputProps) => {
     const {secureTextEntry, toggleEntry} = useSecureTextEntry(isPassword);
@@ -38,7 +44,9 @@ export const Input = memo(
           placeholderTextColor={colors.white}
           secureTextEntry={secureTextEntry}
           autoCapitalize="none"
+          disabled={disabled}
           autoCorrect={false}
+          keyboardType={number ? 'numeric' : "default"}
           outlineColor={searchInput ? "transparent" : colors.gray}
           theme={{
             roundness: 7,
@@ -62,9 +70,10 @@ export const Input = memo(
             searchInput ? (
               <BaseInput.Icon
                 color={colors.white}
-                onPress={toggleEntry}
+                // onPress={toggleEntry}
                 name={'magnify'}
                 size={hp(25)}
+                style={{marginTop: iconMarginTop}}
               />
             ) : null
           }
@@ -100,7 +109,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     marginBottom: hp(20),
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
   },
   errorHold: {

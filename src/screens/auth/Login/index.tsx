@@ -8,7 +8,7 @@ import {View, Alert, Platform} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
-import {LoginScreenNavigationProp} from '../../../navigations/types';
+import {LoginScreenNavigationProp} from '../../../navigations/Seller/types';
 import {appleAuth} from '@invertase/react-native-apple-authentication';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import { LoginFormData } from '../../../utils/types';
@@ -36,7 +36,7 @@ const Login = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [visibleBoolean, setVisibleBoolen] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
-  const {signIn} = useContext(AuthContext)
+  const {authContext: { signIn }} = useContext(AuthContext)
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const initialValues: LoginFormData = {
     email: '',
@@ -175,10 +175,10 @@ const Login = (): JSX.Element => {
     setLoading(true)
     try{
       const response = await doPost(data, `/auth/login`)
-      if(response.data.success === true){
+      if(response.data.data.accessToken){
         try{
-          await AsyncStorage.setItem("token", response.data.token);
-          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          await AsyncStorage.setItem("token", response.data.data.accessToken);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
           Notifier.showNotification({
             title: 'Login Successful!',
             // description: "tghdddfdfd",
@@ -188,9 +188,9 @@ const Login = (): JSX.Element => {
               alertType: 'success',
             },
           });
-          console.log(response.data.token)
-          signIn(response.data.token)
-          console.log(response.data.user)
+          console.log(response.data.data.accessToken)
+          signIn(response.data.data.accessToken)
+          console.log(response.data.data)
         } catch (error){
           console.log(error)
         }
@@ -215,28 +215,7 @@ const Login = (): JSX.Element => {
   }, [visibleBoolean]);
 
   return (
-    <SafeAreaView>
-      <View style={[globalStyles.rowBetween, styles.width90]}>
-        <AuthButton
-          image={GoogleLogo}
-          title={'Google'}
-          style={styles.btn}
-          onPress={googleSignIn}
-        />
-        {Platform.OS === 'ios' ? 
-            <AuthButton
-            image={AppleLogo}
-            title={'Apple'}
-            style={styles.btn}
-            onPress={AppleSignIn}
-          /> : null    
-      }
-      </View>
-      <Separator />
-      <View style={[globalStyles.rowStart, styles.lowerContainer]}>
-        <Text fontWeight="500" fontSize={hp(16)} text="Sign in with your:" />
-      </View>
-
+    <View style={globalStyles.wrapper}>
       <Input
         label={'Email'}
         value={values.email}
@@ -252,7 +231,7 @@ const Login = (): JSX.Element => {
         isPassword
         errorMsg={touched.password ? errors.password : undefined}
       />
-      <View style={[globalStyles.rowStart, styles.width90]}>
+      <View style={[globalStyles.rowEnd, styles.width90]}>
         <Text
           onPress={() => navigation.navigate('ForgotPassword')}
           fontWeight="500"
@@ -260,24 +239,47 @@ const Login = (): JSX.Element => {
           text="Forgot password?"
         />
       </View>
+      <View style={globalStyles.rowCenter}>
+          <Button isLoading={loading} title={'Sign in'} style={styles.btn} onPress={handleSubmit} />
+      </View>
+      <Separator />
+      <View style={[styles.width90]}>
+        <AuthButton
+          image={GoogleLogo}
+          title={'Sign in with Google'}
+          style={styles.btnAuth}
+          onPress={googleSignIn}
+        />
+        {Platform.OS === 'ios' ? 
+            <AuthButton
+            image={AppleLogo}
+            title={'Sign in with Apple'}
+            style={styles.btnAuth}
+            onPress={AppleSignIn}
+          /> : null    
+      }
+      </View>
       <CustomModal 
         msg="You have successfully updated your store information" 
         headerText="Success" 
         visibleBoolean={visibleBoolean} handleVisible={handleVisible} 
         isSuccess={isSuccessful} />
-      <View style={globalStyles.footer}>
-        <View style={globalStyles.rowCenter}>
-          <Button isLoading={loading} title={'Sign in'} style={styles.btn} onPress={handleSubmit} />
-        </View>
+      <View style={[globalStyles.footer, {alignItems: 'center'}]}>
         <View style={[globalStyles.rowCenter, styles.width90, styles.margTop]}>
           <Text
             onPress={() => navigation.navigate('Register')}
-            fontWeight="500"
-            text="Create an account?"
+            fontWeight="300"
+            text="Create an account"
           />
         </View>
+        <Text
+          fontWeight="300"
+          text="Sell on Bazara"
+          style={{marginTop: hp(30)}}
+        />
       </View>
-    </SafeAreaView>
+      
+    </View>
   );
 };
 

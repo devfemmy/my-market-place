@@ -11,11 +11,21 @@ import { Nav } from '../../utils/types'
 
 
 
-const ListCard: React.FC<ListCardProps> = ({ title, icon, route, isActive }) => {
+const ListCard: React.FC<ListCardProps> = ({ title, icon, route, isActive, props}) => {
     const navigation = useNavigation<Nav>()
 
     const handlePress = (data: string) => {
-      return navigation.navigate(data)
+        if(data === 'Staffs'){
+            return props.navigate(data, {
+                params: {
+                    random: 'none'
+                }
+            })
+        }
+        else {
+             return props.navigate(data)
+        }
+     
     }
 
     return (
@@ -50,6 +60,7 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
         marginRight: 15,
+        tintColor: colors.bazaraTint
     },
     cardContainer: {
         flexDirection: 'column',
@@ -57,7 +68,7 @@ const styles = StyleSheet.create({
     },
     underline: {
         borderBottomWidth: 0.4,
-        borderBottomColor: colors.gray,
+        // borderBottomColor: colors.gray,
         paddingVertical: 10
     },
     text: {

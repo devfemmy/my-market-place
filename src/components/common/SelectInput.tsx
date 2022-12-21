@@ -3,65 +3,95 @@ import { StyleSheet, View, StatusBar } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDropdown from 'react-native-select-dropdown';
+import SelectDropdownWithSearch from 'react-native-select-dropdown-with-search'
 import { hp } from '../../utils/helpers';
 import { globalStyles } from '../../styles';
 import { Text } from './Text';
 import { colors } from '../../utils/themes';
 import { useAppDispatch } from '../../redux/hooks'
-import {getStorePermission} from '../../redux/slices/StoreSlice'
+//import {getStorePermission} from '../../redux/slices/StoreSlice'
 import { getArchtype } from 'immer/dist/internal';
-
+import SelectList from 'react-native-dropdown-select-list'
+import { icons } from '../../utils/constants'
 
 
 type IProp = {
-  items: Array<string> | undefined,
+  items: Array<any> | undefined,
   defaultValue: string,
   placeholder: string,
   errorMsg?: string,
+  search?: boolean,
   setState: (value: string) => void;
-  roleSelector?: boolean
+  roleSelector?: boolean,
 };
 
 
 export const Select = (props: IProp) => {
   const dispatch = useAppDispatch()
-  const { items, setState, placeholder, defaultValue, errorMsg, roleSelector } = props;
+  const { items, setState, placeholder, defaultValue, errorMsg,search, roleSelector } = props;
 
   return (
-    <View style={[styles.containerStyle]}>
-      <StatusBar translucent={false}/>
-      <View style={styles.contain}>
-        <View style={[{}, styles.input]}>
-          <SelectDropdown
-            defaultValue={defaultValue}
-            data={items === undefined ? [] : items}
-            onSelect={(selectedItem: string) => {
-              setState(selectedItem);
-              if(roleSelector){
-                dispatch(getStorePermission(selectedItem))
-              }
-            }}
-            defaultButtonText={placeholder}
-            buttonStyle={styles.input}
-            buttonTextStyle={styles.inputText}
-            dropdownStyle={styles.dropdownStyle}
-            rowStyle={styles.rowStyle}
-            rowTextStyle={styles.rowTextStyle}
-            dropdownOverlayColor={'transparent'}
-            buttonTextAfterSelection={(selectedItem: string) => {
-              return selectedItem;
-            }}
-            rowTextForSelection={(item: string) => {
-              return item;
-            }}
-            renderDropdownIcon={() => {
-              return (
-                <Ionicons name={'chevron-down-outline'} size={20} color={'white'} />
-              );
-            }}
-          />
-        </View>
-      </View>
+    // <View style={[styles.containerStyle]}>
+    //   <StatusBar translucent={false}/>
+    //   <View style={styles.contain}>
+    //     <View style={[{}, styles.input]}>
+    //       <SelectDropdown
+    //         defaultValue={defaultValue}
+    //         data={items === undefined ? [] : items}
+    //         onSelect={(selectedItem: string) => {
+    //           setState(selectedItem);
+    //           if(roleSelector){
+    //            // dispatch(getStorePermission(selectedItem))
+    //           }
+    //         }}
+    //         defaultButtonText={placeholder}
+    //         buttonStyle={styles.input}
+    //         buttonTextStyle={styles.inputText}
+    //         dropdownStyle={styles.dropdownStyle}
+    //         rowStyle={styles.rowStyle}
+    //         rowTextStyle={styles.rowTextStyle}
+    //         dropdownOverlayColor={'transparent'}
+    //         buttonTextAfterSelection={(selectedItem: string) => {
+    //           return selectedItem;
+    //         }}
+    //         rowTextForSelection={(item: string) => {
+    //           return item;
+    //         }}
+    //         renderDropdownIcon={() => {
+    //           return (
+    //             <Ionicons name={'chevron-down-outline'} size={20} color={'white'} />
+    //           );
+    //         }}
+    //       />
+    //     </View>
+    //   </View>
+
+    //   {errorMsg !== undefined ? (
+    //     <View style={[globalStyles.rowStart, styles.errorHold]}>
+    //       <Text
+    //         text={errorMsg}
+    //         category="s1"
+    //         fontSize={hp(12)}
+    //         style={styles.error}
+    //         textAlign="left"
+    //       />
+    //     </View>
+    //   ) : null}
+    // </View>
+    <View style={{marginBottom: hp(15)}}>
+      <SelectList
+        placeholder={defaultValue ? defaultValue : placeholder}
+        value={defaultValue}
+        setSelected={setState}
+        boxStyles={{ borderRadius: 5, height: hp(60), alignItems: 'center' }}
+        inputStyles={{ color: 'white' }}
+        dropdownTextStyles={{ color: 'white' }}
+        search={search}
+        arrowicon={<icons.Ionicons name="chevron-down" size={hp(12)} color="white" />}
+        searchicon={<icons.Ionicons name="search" size={hp(12)} color="white" />}
+        data={items}
+        onSelect={() => console.log(defaultValue)} 
+        />
 
       {errorMsg !== undefined ? (
         <View style={[globalStyles.rowStart, styles.errorHold]}>
@@ -88,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderRadius: hp(7),
     width: '100%',
-    borderColor: colors.darkGrey,
+    borderColor: colors.artBoard,
     borderWidth: 0.4,
   },
   inputText: {
@@ -125,7 +155,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     marginBottom: hp(20),
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
   },
 });

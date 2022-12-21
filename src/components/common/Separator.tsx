@@ -45,7 +45,7 @@ export const Separator = memo(
 const styles = StyleSheet.create({
   lineContainer: {
     paddingHorizontal: '5%',
-    marginBottom: hp(30),
+    marginVertical: hp(20),
     flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',

@@ -10,7 +10,7 @@ import {View, ScrollView, Alert, Platform} from 'react-native';
 import {globalStyles} from '../../../styles';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
-import {RegisterScreenNavigationProp} from '../../../navigations/types';
+import {RegisterScreenNavigationProp} from '../../../navigations/Seller/types';
 import { RegisterFormData } from '../../../utils/types';
 import { RegisterSchema } from '../../../utils/constants';
 import { colors } from '../../../utils/themes';
@@ -27,15 +27,14 @@ import {Notifier, NotifierComponents} from 'react-native-notifier';
 
 const Register = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
-  const {signIn} = useContext(AuthContext)
+  const {authContext: { signIn }} = useContext(AuthContext)
   const navigation = useNavigation<RegisterScreenNavigationProp>();
   const initialValues: RegisterFormData = {
-    fName: '',
-    lName: '',
-    phoneNumber: '',
+    first_name: '',
+    last_name: '',
+    phone_number: '',
     email: '',
     password: '',
-    confirmPassword: '',
   };
   const {values, errors, touched, handleChange, handleSubmit, handleBlur} =
     useFormik({
@@ -47,10 +46,15 @@ const Register = (): JSX.Element => {
   const handleCredentialSubmit = async(data : RegisterFormData) => {
       setLoading(true)
       try{
-        const response = await doPost(data, `/auth/regUser`)
-        if(response.data.success === true){
-          await AsyncStorage.setItem("token", response.data.token);
-          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        
+        // delete data.confirmPassword
+        // delete data.phoneNumber
+        console.log(data)
+
+        const response = await doPost(data, `/auth`)
+        if(response.data.data.accessToken){
+          await AsyncStorage.setItem("token", response.data.data.accessToken);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
           Notifier.showNotification({
             title: 'Registration Successful!',
             // description: "tghdddfdfd",
@@ -62,14 +66,14 @@ const Register = (): JSX.Element => {
           });
           navigation.navigate('StoreCreationScreen')
         //   setTimeout(function(){
-        //     signIn(response.data.token) 
+        //     signIn(response.data.data.accessToken) 
         //  }, 2000);
         }
         setLoading(false)
       }catch (e){
         Notifier.showNotification({
           title: 'Registration failed!',
-          description: e.message,
+          description: e?.message,
           Component: NotifierComponents.Alert,
           hideOnPress: false,
           componentProps: {
@@ -97,10 +101,10 @@ const Register = (): JSX.Element => {
         }
       }
       const response = await doPost(payload, '/auth/login/oAuthGo')
-      if(response.data.success === true){
+      if(response.data.data.accessToken){
         try{
-          await AsyncStorage.setItem("token", response.data.token);
-          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+          await AsyncStorage.setItem("token", response.data.data.accessToken);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
           Notifier.showNotification({
             title: 'Registration Successful!',
             // description: "tghdddfdfd",
@@ -112,9 +116,9 @@ const Register = (): JSX.Element => {
           });
           navigation.navigate('StoreCreationScreen')
         //   setTimeout(function(){
-        //     signIn(response.data.token) 
+        //     signIn(response.data.data.accessToken) 
         //  }, 2000);
-          console.log(response.data.user)
+          console.log(response.data.data)
         } catch (error){
           console.log(error)
         }
@@ -155,10 +159,10 @@ const Register = (): JSX.Element => {
           //"authType":"Apple",
         }
         const response = await doPost(payload, '/auth/login/oAuthApple')
-        if(response.data.success === true){
+        if(response.data.data.accessToken){
           try{
-            await AsyncStorage.setItem("token", response.data.token);
-            await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+            await AsyncStorage.setItem("token", response.data.data.accessToken);
+            await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.data));
             Notifier.showNotification({
               title: 'Registration Successful!',
               // description: "tghdddfdfd",
@@ -170,9 +174,9 @@ const Register = (): JSX.Element => {
             });
             navigation.navigate('StoreCreationScreen')
             // setTimeout(function(){
-            //     signIn(response.data.token) 
+            //     signIn(response.data.data.accessToken) 
             // }, 2000);
-            console.log(response.data.user)
+            console.log(response.data.data)
           } catch (error){
             console.log(error)
           }
@@ -204,42 +208,22 @@ const Register = (): JSX.Element => {
   };
 
   return (
-    <SafeAreaView>
-      <View style={[globalStyles.rowBetween, styles.width90]}>
-        <AuthButton
-          image={GoogleLogo}
-          title={'Google'}
-          style={styles.btn}
-          onPress={googleSignUp}
-        />
-        {Platform.OS === 'ios' ? 
-        <AuthButton
-        image={AppleLogo}
-        title={'Apple'}
-        style={styles.btn}
-        onPress={AppleSignUp}
-      /> : null    
-      }
-      </View>
-      <ScrollView>
-        <Separator />
-        <View style={[globalStyles.rowStart, styles.lowerContainer]}>
-          <Text fontWeight="500" fontSize={hp(16)} text="Get started with" />
-        </View>
-
+    <View style={globalStyles.wrapper}>
+      <ScrollView  showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         <Input
           label={'First Name'}
-          value={values.fName}
-          onBlur={handleBlur('fName')}
-          onChangeText={handleChange('fName')}
-          errorMsg={touched.fName ? errors.fName : undefined}
+          value={values.first_name}
+          onBlur={handleBlur('first_name')}
+          onChangeText={handleChange('first_name')}
+          errorMsg={touched.first_name ? errors.first_name : undefined}
         />
         <Input
           label={'Last Name'}
-          value={values.lName}
-          onBlur={handleBlur('lName')}
-          onChangeText={handleChange('lName')}
-          errorMsg={touched.lName ? errors.lName : undefined}
+          value={values.last_name}
+          onBlur={handleBlur('last_name')}
+          onChangeText={handleChange('last_name')}
+          errorMsg={touched.last_name ? errors.last_name : undefined}
         />
         <Input
           label={'Email Address'}
@@ -249,11 +233,12 @@ const Register = (): JSX.Element => {
           errorMsg={touched.email ? errors.email : undefined}
         />
         <Input
+          number
           label={'Phone Number'}
-          value={values.phoneNumber}
-          onBlur={handleBlur('phoneNumber')}
-          onChangeText={handleChange('phoneNumber')}
-          errorMsg={touched.phoneNumber ? errors.phoneNumber : undefined}
+          value={values.phone_number}
+          onBlur={handleBlur('phone_number')}
+          onChangeText={handleChange('phone_number')}
+          errorMsg={touched.phone_number ? errors.phone_number : undefined}
         />
         <Input
           label={'Password'}
@@ -263,6 +248,31 @@ const Register = (): JSX.Element => {
           isPassword
           errorMsg={touched.password ? errors.password : undefined}
         />
+        <View style={globalStyles.rowCenter}>
+            <Button
+              title={'Sign up'}
+              isLoading={loading} 
+              style={styles.btn}
+              onPress={handleSubmit}
+            />
+        </View>
+        <Separator />
+        <View style={[styles.width90]}>
+          <AuthButton
+            image={GoogleLogo}
+            title={'Sign in with Google'}
+            style={styles.btnAuth}
+            onPress={googleSignUp}
+          />
+          {Platform.OS === 'ios' ? 
+          <AuthButton
+          image={AppleLogo}
+          title={'Sign in with Apple'}
+          style={styles.btnAuth}
+          onPress={AppleSignUp}
+        /> : null    
+        }
+        </View>
         {/* <Input
           label={'Confirm Password'}
           value={values.confirmPassword}
@@ -274,14 +284,6 @@ const Register = (): JSX.Element => {
           }
         /> */}
         <View>
-          <View style={globalStyles.rowCenter}>
-            <Button
-              title={'Sign up'}
-              isLoading={loading} 
-              style={styles.btn}
-              onPress={handleSubmit}
-            />
-          </View>
           <View
             style={[
               globalStyles.rowCenter,
@@ -299,7 +301,7 @@ const Register = (): JSX.Element => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

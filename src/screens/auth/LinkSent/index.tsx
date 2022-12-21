@@ -6,7 +6,7 @@ import {styles} from './styles';
 import {Button} from '../../../components/common/Button';
 import {globalStyles} from '../../../styles';
 
-import {LinkSentScreenNavigationProp} from '../../../navigations/types';
+import {LinkSentScreenNavigationProp} from '../../../navigations/Seller/types';
 import { colors } from '../../../utils/themes';
 import { hp } from '../../../utils/helpers';
 import { LinkLogo } from '../../../constants/images';
@@ -32,7 +32,7 @@ const LinkSent = () => {
         <View style={[globalStyles.rowCenter, styles.btnContainer]}>
           <Button
             title={'Return to sign in'}
-            onPress={() => navigation.replace('Login')}
+            onPress={() => navigation.navigate('LoginScreen')}
           />
         </View>
       </View>

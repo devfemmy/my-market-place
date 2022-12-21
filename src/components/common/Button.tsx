@@ -3,7 +3,7 @@ import {StyleSheet, View, StyleProp, ViewStyle, ActivityIndicator} from 'react-n
 import {Button as BaseButton} from '@ui-kitten/components';
 import { colors } from '../../utils/themes';
 import { hp, wp } from '../../utils/helpers';
-import{ ButtonProps } from '../../utils/types'
+// import{ ButtonProps } from '../../utils/types'
 
 
 export const Button = memo(
@@ -13,10 +13,11 @@ export const Button = memo(
     outlined,
     style,
     containerStyle,
+    small,
     ...rest
-  }: ButtonProps) => {
+  }: any) => {
     return (
-      <View style={[containerStyle, styles.container]}>
+      <View style={[small ? styles.container2 : styles.container, containerStyle]}>
         <BaseButton
           disabled={isLoading}
           status={outlined ? 'control' : 'primary'}
@@ -38,7 +39,10 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   container: {
-    width: '90%',
+    width: '100%',
+    alignSelf: 'center',
+  },
+  container2: {
     alignSelf: 'center',
   },
 });

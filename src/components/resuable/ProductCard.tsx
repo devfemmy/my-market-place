@@ -30,19 +30,18 @@ const ProductCard: React.FC<OrderCardProps> = ({ onIconPress, item }) => {
         }
     }
 
-
     return (
         <View style={[styles.cardContainer, globalStyles.rowBetween]}>
             <View style={[globalStyles.rowStart]}>
 
                 <TouchableOpacity style={globalStyles.rowStartNoOverflow}>
-                    <Image defaultSource={require('../../assets/images/phoneImg.jpeg')} source={{uri: item?.variants[0]?.variantImg[0]}} style={styles.image} />
+                    <Image defaultSource={require('../../assets/images/phoneImg.jpeg')} source={{uri: item?.img_url}} style={styles.image} />
                 </TouchableOpacity>
                 <View style={styles.detContainer}>
                     <Text text={item?.name} numberOfLines={1} fontWeight={"600"} fontSize={hp(17)} style={styles.text} />
                     <View style={globalStyles.rowStart}>
                         <Text
-                            text={currencyFormat(item?.variants[0]?.spec[0]?.price)}
+                            text={currencyFormat(item?.price)}
                             numberOfLines={1}
                             fontWeight={"500"}
                             color={colors.darkGrey}
