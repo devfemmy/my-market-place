@@ -4,7 +4,7 @@ import { SafeAreaView, Text } from '../../../../../components/common'
 import { globalStyles } from '../../../../../styles'
 import { useNavigation } from '@react-navigation/native'
 import { colors } from '../../../../../utils/themes'
-import { hp, wp } from '../../../../../utils/helpers'
+import { capitalizeSentence, hp, wp } from '../../../../../utils/helpers'
 import { Nav } from '../../../../../utils/types'
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks'
 import SubHeader from './subHeader'
@@ -52,7 +52,7 @@ const TopProducts = () => {
         {
             filterCategory?.map((data: any,i: number) => {
                 return data?.category && (<View key={i}  style={[styles.comp]}>
-                <SubHeader name={`Top Selling Products (${data?.category})`}/>
+                <SubHeader name={`Top Selling Products (${capitalizeSentence(data?.category)})`}/>
                 <FlatList
                     data={data?.products}
                     renderItem={renderItem}
