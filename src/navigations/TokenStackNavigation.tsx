@@ -57,6 +57,7 @@ import SellerChatBox from '../screens/SellerChatBox';
 import RatingScreen from '../screens/RatingScreen';
 import { OnboardScreen } from '../screens/Onboarding';
 import Feather from 'react-native-vector-icons/Feather';
+import { AppVersion } from '../config/config';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -72,7 +73,7 @@ const TokenStackNavigation = () => {
         const loadAsync = async () => {
              var data = await AsyncStorage.getItem('type') || null
              var token = await AsyncStorage.getItem('token') || null
-            // console.log({data})
+    
             var cartCheck = await AsyncStorage.getItem('checking') || null
             var userType = await AsyncStorage.getItem('mode') || null
             var response = await dispatch(getPersonalStore())
@@ -159,7 +160,9 @@ const TokenStackNavigation = () => {
             >
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Explore" component={BuyerSearchScreen} />
-                <Tab.Screen name="Order" component={BuyerOrderScreen} />
+                {
+                    AppVersion !== 3 && <Tab.Screen name="Order" component={BuyerOrderScreen} />
+                }
                 <Tab.Screen name="Chat" component={BuyerChatScreen} />
                 <Tab.Screen name="Profile" component={BuyerProfileScreen} />
             </Tab.Navigator>
@@ -200,7 +203,10 @@ const TokenStackNavigation = () => {
             >
                 <Tab.Screen name="Store" component={MyStoreScreen} />
                 <Tab.Screen name="Products" component={ProductScreen} />
-                <Tab.Screen name="Orders" component={SellerOrderScreen} />
+                {
+                    AppVersion !== 3 && <Tab.Screen name="Orders" component={SellerOrderScreen} />
+                }
+                
                 <Tab.Screen name="Chat" component={SellerChatScreen} />
                 <Tab.Screen name="Settings" component={SellerSettingScreen} />
 

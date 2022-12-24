@@ -23,6 +23,7 @@ import { deleteAccountInfo, signOutUser } from '../redux/slices/AuthSlice';
 import { useIsFocused } from "@react-navigation/native";
 import DeleteStoreModal from './Containers/DeleteAccountModal';
 import DeleteAccountInfoModal from './Containers/DeleteAccountInfoModal';
+import { AppVersion } from '../config/config';
 
 
 
@@ -238,6 +239,16 @@ const SellerSettingScreen = ({ navigation }: any) => {
 
   ]
 
+  const quickActionPersonal2 = [
+    {
+      id: 1,
+      title: "Profile",
+      icon: blueUser,
+      route: 'Profile'
+    }
+
+  ]
+
   const changeStore = async (item: any) => {
     // console.log({item})
     AsyncStorage.setItem('activeId', item?.id)
@@ -325,13 +336,23 @@ const SellerSettingScreen = ({ navigation }: any) => {
         <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
           <Text text='Personal Information' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
         </View>
-        <View style={[localStyle.mTop, styles.width90]}>
+        {
+          AppVersion !== 3 ? <View style={[localStyle.mTop, styles.width90]}>
           {
             quickActionPersonal?.map((data: any) => {
               return <ListCard key={data?.id} {...data} props={navigation} />
             })
           }
         </View>
+        :
+        <View style={[localStyle.mTop, styles.width90]}>
+          {
+            quickActionPersonal2?.map((data: any) => {
+              return <ListCard key={data?.id} {...data} props={navigation} />
+            })
+          }
+        </View>
+        }
         <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
           <Text text='Stores' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
         </View>

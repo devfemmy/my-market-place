@@ -18,12 +18,12 @@ export const hp = (value: number): number => {
 
 
 export const capitalizeSentence = (data: string) => {
-  const arr = data.toLowerCase().split(" ");
-  for (var i = 0; i < arr.length; i++) {
+  const arr = data?.toLowerCase().split(" ");
+  for (var i = 0; i < arr?.length; i++) {
       arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
   
   }
-  var str2 = arr.join(" ");
+  var str2 = arr?.join(" ");
   return str2
 }
 

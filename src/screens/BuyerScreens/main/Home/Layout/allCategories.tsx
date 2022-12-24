@@ -4,7 +4,7 @@ import { SafeAreaView, Text } from '../../../../../components/common'
 import { globalStyles } from '../../../../../styles'
 import { useNavigation } from '@react-navigation/native'
 import { colors } from '../../../../../utils/themes'
-import { hp, wp } from '../../../../../utils/helpers'
+import { capitalizeSentence, hp, wp } from '../../../../../utils/helpers'
 import { Nav } from '../../../../../utils/types'
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks'
 import SubHeader from './subHeader'
@@ -38,7 +38,7 @@ const AllCategories = ({navigation}: any) => {
             <View style={styles.CategoryDiv}>
                 <View style={styles.CatDiv}>
                     <Image source={{ uri: item?.img_url }} resizeMode='cover' style={styles.imageContainer} />
-                    <Text text={truncate(item?.category, 17)} lineHeight={14} fontSize={hp(10)} textAlign='center' />
+                    <Text text={truncate(capitalizeSentence(item?.category), 17)} lineHeight={14} fontSize={hp(10)} textAlign='center' />
                 </View>
             </View>
         </TouchableOpacity>

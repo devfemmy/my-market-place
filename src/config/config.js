@@ -1,5 +1,6 @@
 
 const SETCONFIG = 'DEV';
+export const AppVersion = 3
 
 const config = {
   DEV: {

@@ -21,6 +21,7 @@ import { Select } from '../components/common/SelectInput'
 import { useIsFocused } from "@react-navigation/native";
 import { activityData, fetchActivityAnalysis, fetchProductAnalysis, fetchStoreAnalysis, fetchStoreSalesAnalysis, fetchViewAnalysis, fetchWalletAnalysis, productAnalysis, storeSales, viewData, walletData } from '../redux/slices/DashboardSlice'
 import { truncate } from '../utils/server'
+import { AppVersion } from '../config/config'
 
 
 const MyStoreScreen = () => {
@@ -164,6 +165,24 @@ const lineViews = storeData?.map((data: any) => data?.sales);
 
   ]
 
+  const quickActionArray2 = [
+    {
+      id: 1,
+      title: "Add your first product",
+      icon: productLogo,
+      route: 'AddProduct',
+      isActive: productList?.length > 0 ? true : false
+    },
+    {
+      id: 2,
+      title: "Add users / staff to your store",
+      icon: groupUser,
+      route: 'AddStaff',
+      isActive: staffList?.length > 0 ? true : false
+    },
+
+  ]
+
 
   const AnalyticsData = [
     {
@@ -233,7 +252,9 @@ const lineViews = storeData?.map((data: any) => data?.sales);
     <View style={styles.container}>
       <View>
         <StoreHeader name={activeName} slug={activeSlug} />
-        {
+       {
+        AppVersion !== 3 && <>
+         {
           stateLoader ? null : <ScrollView  showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
             {
@@ -301,6 +322,57 @@ const lineViews = storeData?.map((data: any) => data?.sales);
             }
           </ScrollView>
         }
+        </>
+       }
+
+       {
+        AppVersion === 3 && <>
+        {
+          stateLoader ? null : <ScrollView  showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+            {
+              productList?.length < 1 ? <View style={styles.mt}>
+
+                <Text text='Quick Actions' style={styles.txt} fontSize={hp(16)} fontWeight='600' />
+
+                {quickActionArray2?.map((data: any) => {
+                  return <ListCard key={data?.id} {...data} />
+                })
+                }
+              </View>
+                : null
+            }
+            {
+              productList?.length > 0 && <View>
+                
+                <FlatList
+                  data={StoreInfoData}
+                  renderItem={StoreInfoRender}
+                  keyExtractor={item => item.id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                />
+               
+                <View style={styles.graphHolder2}>
+                  <View style={[globalStyles.lowerContainer, { width: wp(300) }]}>
+                    <Text text="Store Views" fontWeight='600' fontSize={hp(15)} />
+                  </View>
+                  <BarChart
+                    style={styles.graphStyle}
+                    data={ViewsData}
+                    width={wp(310)}
+                    height={hp(400)}
+                    withInnerLines={false}
+                    chartConfig={chartConfig2}
+                    verticalLabelRotation={90}
+                  />
+                </View>
+              </View>
+            }
+          </ScrollView>
+        }
+        </>
+       }
 
       </View>
     </View>

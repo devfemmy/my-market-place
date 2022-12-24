@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { View, StyleSheet, Pressable, Switch, ScrollView, Image, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../components/common/Button'
@@ -24,7 +27,7 @@ import { pictureUpload } from '../utils/functions'
 import { deleteIcon, plus, remove } from '../assets'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DeleteAccountInfoModal from './Containers/DeleteAccountInfoModal'
-import config from '../config/config'
+import config, { AppVersion } from '../config/config'
 
 
 
@@ -495,7 +498,9 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                 </View>
               </View>
               <View style={styles.br} />
-              <View style={styles.subdiv}>
+            {
+              AppVersion !== 3 && <>
+                <View style={styles.subdiv}>
                 <View style={globalStyles.rowBetween}>
                   <Text text="Delivery Address" fontSize={hp(14)} fontWeight="400" />
                 </View>
@@ -503,8 +508,8 @@ const BuyerProfileScreen = ({ navigation }: any) => {
               </View>
               <View style={styles.div1}>
                 {
-                  addressList?.map((data: any) => {
-                    return <View style={styles.rowBtw}>
+                  addressList?.map((data: any, i: number) => {
+                    return <View key={i} style={styles.rowBtw}>
                       <Pressable onPress={() => updateDelivery(data)}>
                         <View style={[globalStyles.rowStart, styles.mindiv]}>
                           <View style={[styles.checkbox, { backgroundColor: data?.default ? colors.bazaraTint : 'transparent' }]} ></View>
@@ -525,6 +530,8 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                   <Text style={{ marginVertical: hp(10) }} text='+  Add delivery Address' fontSize={hp(12)} color={colors.bazaraTint} fontWeight='600' />
                 </Pressable>
               </View>
+              </>
+            }
 
               <View style={styles.divbox}>
                 {
