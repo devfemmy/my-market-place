@@ -94,12 +94,45 @@ export const oauthLogin = createAsyncThunk(
     }
   }
 )
+export const oauthAppleLogin = createAsyncThunk(
+  'auth/oauthAppleLogin',
+  async (payload: OauthAction, { rejectWithValue }) => {
+    try {
+      var response = await postAuthRequest('/auth/oAuth/apple', payload)
+      if (response?.status === 200) {
+         await AsyncStorage.setItem("token", response?.data?.data?.accessToken)
+        return response?.data?.data
+      }
+
+    }
+    catch (e: any) {
+      return rejectWithValue(e?.response?.data?.message)
+    }
+  }
+)
+
 
 export const oauthSignup = createAsyncThunk(
   'auth/oauthSignup',
   async (payload: OauthAction, { rejectWithValue }) => {
     try {
       var response = await postAuthRequest('/auth/oAuth/google/register', payload)
+      if (response?.status === 200) {
+        await AsyncStorage.setItem("token", response?.data?.data?.accessToken)
+        return response?.data?.data
+      }
+
+    }
+    catch (e: any) {
+      return rejectWithValue(e?.response?.data?.message)
+    }
+  }
+)
+export const oauthAppleSignup = createAsyncThunk(
+  'auth/oauthAppleSignup',
+  async (payload: OauthAction, { rejectWithValue }) => {
+    try {
+      var response = await postAuthRequest('/auth/oAuth/apple/register', payload)
       if (response?.status === 200) {
         await AsyncStorage.setItem("token", response?.data?.data?.accessToken)
         return response?.data?.data

@@ -16,7 +16,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import appleAuth from '@invertase/react-native-apple-authentication'
 import { useAppDispatch } from '../redux/hooks'
-import { createUser, oauthSignup } from '../redux/slices/AuthSlice'
+import { createUser, oauthAppleSignup, oauthSignup } from '../redux/slices/AuthSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const BuyerSignUpScreen = ({ navigation }: any) => {
@@ -129,11 +129,28 @@ const BuyerSignUpScreen = ({ navigation }: any) => {
             try {
                 const payload = {
                     //"email": result.email,
-                    "familyName": result?.fullName?.familyName,
-                    "givenName": result?.fullName?.givenName,
-                    "identityToken": result?.identityToken,
+                    "family_name": 'test user',
+                    "given_name": 'test user',
+                    "identity_token": result?.identityToken,
                     "user": result.user
                     //"authType":"Apple",
+                }
+                var resultAction = await dispatch(oauthAppleSignup(payload))
+                if (oauthAppleSignup.fulfilled.match(resultAction)) {
+                    await AsyncStorage.setItem('userInfo', JSON.stringify(resultAction?.payload))
+                    setLoading(false)
+                    return navigation.navigate('BuyerScreen')
+                } else {
+                    const errorMsg = resultAction.payload as string
+                    Notifier.showNotification({
+                        title: errorMsg,
+                        description: '',
+                        Component: NotifierComponents.Alert,
+                        hideOnPress: false,
+                        componentProps: {
+                            alertType: 'error',
+                        },
+                    });
                 }
                 // const response = await doPost(payload, '/auth/login/oAuthApple')
                 // if(response.data.data.accessToken){
@@ -160,7 +177,7 @@ const BuyerSignUpScreen = ({ navigation }: any) => {
                 // }
                 // setLoading(false)
             } catch (error) {
-
+                console.log('error here', error)
             }
             // user is authenticated
         } else {

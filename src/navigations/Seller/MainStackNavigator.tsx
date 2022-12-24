@@ -164,7 +164,7 @@ export const SellerMainStackNavigator = (): JSX.Element => {
         name="NotificationScreen"
         component={NotificationScreen}
         options={() => ({
-          title: 'Notifications',
+          title: 'Notification',
           headerShown: true,
         })}
       />

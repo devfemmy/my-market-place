@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Pressable } from 'react-native'
+import { View, StyleSheet, Image, Pressable, Platform } from 'react-native'
 import React from 'react'
 import { globalStyles } from '../../styles'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -31,7 +31,9 @@ export default MobileHeader
 
 const gbStyle = StyleSheet.create({
     mdTop: {
-        paddingVertical: hp(10)
+        paddingVertical: hp(10),
+        // backgroundColor: 'red',
+        marginTop: Platform.OS === 'ios' ? hp(20) : 0,
     },
     img: {
         width: wp(25)

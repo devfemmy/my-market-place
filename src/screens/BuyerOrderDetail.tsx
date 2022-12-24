@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { View, StyleSheet, ScrollView, Image, Pressable, ActivityIndicator, Platform } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { hp, numberFormat, wp } from '../utils/helpers'
 import { globalStyles } from '../styles'
 import { Text } from '../components/common'
 import MobileHeader from './Containers/MobileHeader'
+import firebase from '@react-native-firebase/app';
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { changeOrderStatus, getBuyerOrders, getSellerOrders, orderLoader } from '../redux/slices/orderSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -204,6 +206,19 @@ const BuyerOrderDetail = (props: any) => {
 
 
     const messageSeller = async () => {
+        console.log('MESSAGE SELLER NIW')
+        if (!firebase.apps.length) {
+            firebase.initializeApp({
+                apiKey: "AIzaSyCicX4foYtKhhR2A4VObeakIfCVK6mitS8",
+                authDomain: "chat-and-messaging-66e6e.firebaseapp.com",
+                databaseURL: "https://chat-and-messaging-66e6e-default-rtdb.firebaseio.com",
+                projectId: "chat-and-messaging-66e6e",
+                storageBucket: "chat-and-messaging-66e6e.appspot.com",
+                messagingSenderId: "962853764584",
+                appId: "1:962853764584:web:31d3dfa59bc269c8acf85d",
+                measurementId: "G-W9TY1FG8D5"
+            });
+          }
 
         try {
             setMessageLoader(true)
