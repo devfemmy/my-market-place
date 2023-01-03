@@ -61,12 +61,12 @@ const ColorEditVariant = (props: any) => {
         price: editSizeData ? editSizeData?.amount : 0,
         size: editSizeData ? editSizeData?.size : "Select new Size",
     };
-    const [modalQuantity, setModalQuantity] = useState(1)
+    const [modalQuantity, setModalQuantity] = useState<string>("1")
     const [size, setSize] = useState(sizes)
 
     const [color, setColor] = useState()
     const [price, setPrice] = useState<number>()
-    const [quantity, setQuantity] = useState<any>()
+    const [quantity, setQuantity] = useState<string>("1")
     const [imageLoader, setImageLoader] = useState(false)
     const newSize = size?.map(data => {
         return {
@@ -107,7 +107,7 @@ const ColorEditVariant = (props: any) => {
                     setMultipleUpload(filterData?.img_urls)
                     setDummyUploadImage([...filterData?.img_urls, ""])
                     setPrice(filterData?.product_variant_specs[0]?.amount)
-                    setQuantity(filterData?.product_variant_specs[0]?.quantity)
+                    setQuantity(filterData?.product_variant_specs[0]?.quantity.toString())
                     setSpecId(filterData?.product_variant_specs[0]?.id)
                     setDescription(filterData?.color)
                     return
@@ -117,7 +117,7 @@ const ColorEditVariant = (props: any) => {
                     setMultipleUpload(filterData?.img_urls)
                     setDummyUploadImage([...filterData?.img_urls, ""])
                     setPrice(filterData?.product_variant_specs[0]?.amount)
-                    setQuantity(filterData?.product_variant_specs[0]?.quantity)
+                    setQuantity(filterData?.product_variant_specs[0]?.quantity.toString())
                     setSpecId(filterData?.product_variant_specs[0]?.id)
                     return
                 }
@@ -401,7 +401,7 @@ const ColorEditVariant = (props: any) => {
 
 
     const editSize = (data: any, index: any) => {
-        setModalQuantity(data?.quantity)
+        setModalQuantity(data?.quantity.toString())
         setEditSizeData({ size: data?.size, amount: data?.amount })
         setEditDataId(data?.id)
         showModal()
@@ -415,16 +415,18 @@ const ColorEditVariant = (props: any) => {
     };
 
     const modalIncrement = () => {
-        const qt = modalQuantity + 1
-        setModalQuantity(qt)
+        const qt = parseInt(modalQuantity) + 1
+        var bb = qt.toString()
+        setModalQuantity(bb)
     }
 
     const modalDecrement = () => {
-        if (modalQuantity === 1) {
+        if (parseInt(modalQuantity) === 1) {
             return;
         }
-        const qt = modalQuantity - 1
-        setModalQuantity(qt)
+        const qt = parseInt(modalQuantity) - 1
+        var bb = qt.toString()
+        setModalQuantity(bb)
     }
 
     const renderSizeList = () => {
@@ -485,14 +487,14 @@ const ColorEditVariant = (props: any) => {
         const payload = {
             size: data?.size,
             amount: parseInt(data?.price),
-            quantity: modalQuantity,
+            quantity: parseInt(modalQuantity),
             product_variant_id: editableItem
         }
 
         const editPayload = {
             size: data?.size,
             amount: parseInt(data?.price),
-            quantity: modalQuantity,
+            quantity: parseInt(modalQuantity),
             product_variant_spec_id: editDataId
         }
         setLoader(true)
@@ -517,7 +519,7 @@ const ColorEditVariant = (props: any) => {
                             setSizeLists(filterData?.product_variant_specs)
                             handleCancel()
                             modalResetForm()
-                            setModalQuantity(1)
+                            setModalQuantity("1")
                             setLoader(false)
                         })
 
@@ -576,7 +578,7 @@ const ColorEditVariant = (props: any) => {
                             setSizeLists(filterData?.product_variant_specs)
                             handleCancel()
                             modalResetForm()
-                            setModalQuantity(1)
+                            setModalQuantity("1")
                             setLoader(false)
                         })
 
@@ -604,16 +606,18 @@ const ColorEditVariant = (props: any) => {
     }
 
     const increment = () => {
-        const qt = quantity + 1
-        setQuantity(qt)
+        const qt = parseInt(quantity) + 1
+        var bb = qt.toString()
+        setQuantity(bb)
     }
 
     const decrement = () => {
-        if (quantity === 1) {
+        if (parseInt(quantity) === 1) {
             return
         }
-        const qt = quantity - 1
-        setQuantity(qt)
+        const qt = parseInt(quantity) - 1
+        var bb = qt.toString()
+        setQuantity(bb)
     }
 
     const sizeAloneSubmission = async () => {
@@ -705,7 +709,7 @@ const ColorEditVariant = (props: any) => {
             if (updateProductVariant.fulfilled.match(bigR)) {
                 const payloadData = {
                     product_variant_spec_id: specId,
-                    quantity: quantity,
+                    quantity: parseInt(quantity),
                     amount: parseInt(data?.price)
                 }
 
@@ -772,7 +776,7 @@ const ColorEditVariant = (props: any) => {
             if (updateProductVariant.fulfilled.match(result)) {
                 var newPayload = {
                     amount: parseInt(data?.price),
-                    quantity: quantity,
+                    quantity: parseInt(quantity),
                     product_variant_spec_id: specId
                 }
                 var secondResult = await dispatch(updateProductVariantSpec(newPayload))
@@ -913,6 +917,7 @@ const ColorEditVariant = (props: any) => {
                             <View style={styles.subdiv}>
                                 <Input
                                     label='Quantity'
+                                    number
                                     // type='controlled'
                                     value={quantity?.toString()}
                                     onChangeText={(e: any) => setQuantity(e)}
@@ -940,6 +945,11 @@ const ColorEditVariant = (props: any) => {
                         <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
                         <ScrollView showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}>
+
+                            {/* <View style={styles.bigDiv}>
+                                {renderSizeList()}
+                            </View> */}
+                            {renderSizeList()}
                             <Pressable onPress={showModal}>
                                 <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]}>
                                     <Image
@@ -949,10 +959,6 @@ const ColorEditVariant = (props: any) => {
                                     <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
                                 </View>
                             </Pressable>
-                            <View style={styles.bigDiv}>
-                                {renderSizeList()}
-                            </View>
-
                         </ScrollView>
 
                     </>
@@ -982,6 +988,7 @@ const ColorEditVariant = (props: any) => {
                             <View style={styles.subdiv}>
                                 <Input
                                     label='Quantity'
+                                    number
                                     // type='controlled'
                                     value={quantity?.toString()}
                                 />
@@ -1013,6 +1020,10 @@ const ColorEditVariant = (props: any) => {
                         />
                         <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
                         <ScrollView showsVerticalScrollIndicator={false}>
+
+                            {
+                                renderSizeList()
+                            }
                             <Pressable onPress={showModal2}>
                                 <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]}>
                                     <Image
@@ -1021,9 +1032,6 @@ const ColorEditVariant = (props: any) => {
                                     <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
                                 </View>
                             </Pressable>
-                            {
-                                renderSizeList()
-                            }
                         </ScrollView>
 
                         {/* <View style={styles.br}></View> */}
@@ -1091,6 +1099,7 @@ const ColorEditVariant = (props: any) => {
                             <View style={styles.subdiv}>
                                 <Input
                                     label='Quantity'
+                                    number
                                     value={modalQuantity?.toString()}
                                 />
                             </View>

@@ -40,16 +40,16 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ name, slug }) => {
                 </View>
                 <View style={styles.textCard}>
                     <Text text={name} fontSize={hp(14)} style={{ textTransform: 'capitalize' }} />
-                    <View style={styles.copyCard}>
-                        <TouchableOpacity onPress={() => copyToClipboard(link)}>
+                    <TouchableOpacity onPress={() => copyToClipboard(link)}>
+                        <View style={styles.copyCard}>
                             <Ionicons
                                 name={"copy-outline"}
                                 size={hp(15)}
                                 color={'white'}
                             />
-                        </TouchableOpacity>
-                        <Text text="Copy store link" fontSize={hp(12)} fontWeight='600' style={styles.div} />
-                    </View>
+                            <Text text="Copy store link" fontSize={hp(12)} fontWeight='600' style={styles.div} />
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
             <TouchableOpacity onPress={() => navigate('SellerNotification')} style={styles.iconCard}>

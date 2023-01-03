@@ -20,6 +20,7 @@ import { checkbox, plus, plusBig } from '../assets'
 import { Button } from '../components/common/Button'
 import { sizes } from '../utils/constants/sizes'
 import Editor from '../components/resuable/Editor'
+import { useIsFocused } from '@react-navigation/native'
 
 const AddProducts = ({ navigation }: any) => {
     const [loader, setLoader] = useState(false)
@@ -27,6 +28,7 @@ const AddProducts = ({ navigation }: any) => {
     const [size, setSize] = useState(productInDraft?.isSize ? productInDraft?.isSize : false)
     const [color, setColor] = useState(productInDraft?.isColor ? productInDraft?.isColor : false)
     const dispatch = useAppDispatch()
+    const isFocused = useIsFocused();
     const [productSlug, setProductSlug] = useState<any>()
     const [productVar, setProductVar] = useState(productSlug?.variants)
     const [activeId, setActiveId] = useState<any>()
@@ -74,7 +76,7 @@ const AddProducts = ({ navigation }: any) => {
             setColorSizeVariants(colorSizeVariant)
         }
         loadAsyn()
-    }, [productSlug, prodId])
+    }, [productSlug, prodId, isFocused])
 
     useEffect(() => {
         dispatch(getAllCategories())
@@ -92,7 +94,7 @@ const AddProducts = ({ navigation }: any) => {
             setColorAloneVar(dList)
 
         })
-    }, [productSlug])
+    }, [productSlug, isFocused])
 
 
     useEffect(() => {
@@ -100,10 +102,8 @@ const AddProducts = ({ navigation }: any) => {
     }, [productSlug])
 
     useEffect(() => {
-       if(getSlug) {
         dispatch(getProductBySlug(getSlug)).then(data => setProductSlug(data?.payload))
-       }
-    }, [getSlug])
+    }, [getSlug, isFocused])
 
 
 
@@ -291,6 +291,7 @@ const AddProducts = ({ navigation }: any) => {
         }
     }
 
+    console.log({getSlug})
 
 
     const addAnotherColor = async () => {
@@ -383,7 +384,11 @@ const AddProducts = ({ navigation }: any) => {
                         <View style={styles.divs}>
                             <Text text='Product Colours' fontSize={hp(14)} fontWeight='400' />
                         </View>
-                        <Pressable onPress={() => addAnotherColor()}>
+                       
+                        <ScrollView showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}>
+                            {renderColorVariety()}
+                            <Pressable onPress={() => addAnotherColor()}>
                             <View style={[globalStyles.rowStart, { marginVertical: hp(10) }]} >
                                 <Image
                                     source={plusBig}
@@ -391,9 +396,6 @@ const AddProducts = ({ navigation }: any) => {
                                 <Text text='Add Another Colour' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' />
                             </View>
                         </Pressable>
-                        <ScrollView showsVerticalScrollIndicator={false}
-                            showsHorizontalScrollIndicator={false}>
-                            {renderColorVariety()}
                         </ScrollView>
 
 

@@ -253,7 +253,6 @@ const AddProductVariant = ({ navigation }: any) => {
         }
 
         if (prodVarId) {
-            // setIsModalVisible(true);
             refRBSheet.current.open()
             return;
         }
@@ -649,7 +648,7 @@ const AddProductVariant = ({ navigation }: any) => {
     }
 
     const increment = () => {
-        const qt = parseInt(quantity) + 1 
+        const qt = parseInt(quantity) + 1
         var bb = qt.toString()
         setQuantity(bb)
     }
@@ -1063,7 +1062,7 @@ const AddProductVariant = ({ navigation }: any) => {
                                 <Input
                                     label='Quantity'
                                     // type='controlled'
-                                   
+
                                     number
                                     value={quantity?.toString()}
                                     onChangeText={(e: any) => setQuantity(e)}
@@ -1091,6 +1090,11 @@ const AddProductVariant = ({ navigation }: any) => {
                         <Text text='Size Options' fontSize={hp(16)} fontWeight='400' />
                         <ScrollView showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}>
+
+                            {/* <View style={styles.bigDiv}>
+                                {renderSizeList()}
+                            </View> */}
+                            {renderSizeList()}
                             <Pressable onPress={showModal}>
                                 <View style={[globalStyles.rowStart, { marginVertical: hp(5) }]}>
                                     <Image
@@ -1100,9 +1104,6 @@ const AddProductVariant = ({ navigation }: any) => {
                                     <Text text='Add Sizes' color={colors.bazaraTint} fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
                                 </View>
                             </Pressable>
-                            <View style={styles.bigDiv}>
-                                {renderSizeList()}
-                            </View>
 
                         </ScrollView>
 
@@ -1133,7 +1134,7 @@ const AddProductVariant = ({ navigation }: any) => {
                             <View style={styles.subdiv}>
                                 <Input
                                     label='Quantity'
-                                   
+
                                     number
                                     // type='controlled'
                                     value={quantity?.toString()}
@@ -1184,19 +1185,20 @@ const AddProductVariant = ({ navigation }: any) => {
                             errorMsg={_touched.description ? _errors.description : undefined}
                         />
                         <Text text='Colour Sizes' fontSize={hp(16)} fontWeight='400' />
-                        <Pressable onPress={showModal2}>
-                            <View style={[globalStyles.rowStart, { marginVertical: hp(5) }]}>
-                                <Image
-                                    source={plusBig}
-                                />
-                                <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
-                            </View>
-                        </Pressable>
+
                         <ScrollView showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}>
                             {
                                 renderSizeList()
                             }
+                            <Pressable onPress={showModal2}>
+                                <View style={[globalStyles.rowStart, { marginVertical: hp(5) }]}>
+                                    <Image
+                                        source={plusBig}
+                                    />
+                                    <Text text='Add Sizes' fontSize={hp(14)} fontWeight='400' style={{ marginLeft: hp(5) }} />
+                                </View>
+                            </Pressable>
                         </ScrollView>
 
                         {/* <View style={styles.br}></View> */}
@@ -1288,7 +1290,7 @@ const AddProductVariant = ({ navigation }: any) => {
                             <View style={styles.subdiv}>
                                 <Input
                                     label='Quantity'
-                                   
+
                                     number
                                     value={modalQuantity?.toString()}
                                 />
