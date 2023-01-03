@@ -5,7 +5,7 @@ import { colors } from '../utils/themes';
 import { View } from 'react-native';
 import { Text } from '../components/common';
 import HomeScreen from '../screens/HomeScreen';
-import ProductByCategory from '../screens/PzroductByCategory';
+import ProductByCategory from '../screens/ProductByCategory';
 import ProductDetail from '../screens/Containers/ProductDetail';
 import CartScreen from '../screens/CartScreen';
 import BuyerSignUpScreen from '../screens/BuyerSignUpScreen';

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { View, StyleSheet, ScrollView, Pressable, TouchableOpacity, RefreshControl, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
@@ -84,7 +86,13 @@ const ProductScreen = ({ navigation }: any) => {
         setSearchValue(e.target.value)
     }
 
-    const routePage = () => {
+    const routePage = async () => {
+        await AsyncStorage.removeItem('prodId')
+        await AsyncStorage.removeItem('slug')
+        await AsyncStorage.removeItem('prodVarId')
+        await AsyncStorage.removeItem('productDraft')
+        await AsyncStorage.removeItem('editableId')
+        
         return navigation.navigate('AddProduct')
     }
     return (
