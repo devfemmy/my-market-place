@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { View, StyleSheet, ScrollView, Pressable, TouchableOpacity, RefreshControl, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
@@ -82,6 +83,10 @@ const ProductScreen = ({ navigation }: any) => {
     const handleChange = (e: any) => {
         setSearchValue(e.target.value)
     }
+
+    const routePage = () => {
+        return navigation.navigate('AddProduct')
+    }
     return (
         <View style={styles.container}>
             <View>
@@ -97,7 +102,7 @@ const ProductScreen = ({ navigation }: any) => {
                 btnText="Add Product"
             />
             }
-            <TouchableOpacity onPress={() => navigation.navigate('AddProduct')} style={[globalStyles.floating_button, { bottom: hp(20), right: hp(20) }]}>
+            <TouchableOpacity onPress={() => routePage()} style={[globalStyles.floating_button, { bottom: hp(20), right: hp(20) }]}>
                 <Entypo name={'plus'} size={hp(35)} style={{ color: colors.white }} />
             </TouchableOpacity>
             {/* <ButtonPlus handleClick={() => navigation.navigate('AddProduct')} /> */}
