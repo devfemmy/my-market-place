@@ -23,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import ProductVariantCard from './Containers/ProductVariantCard'
 import ImagePicker from 'react-native-image-crop-picker';
 import { pictureUpload } from '../utils/functions'
+import DeleteModal from './Containers/DeleteModal'
 
 
 
@@ -59,6 +60,20 @@ const ProductDetailEditVariant = (props: any) => {
             value: data?.type
         }
     })
+
+    const [deleteAct,setDeleteAct] = useState(false)
+	const [deleteInfo,setDeleteInfo] = useState(null)
+	const [deleteLoader, setDeleteLoader] = useState(false)
+
+const handleDeleteOpen = (data: any) => {
+ setDeleteAct(true)
+setDeleteInfo(data)
+}
+
+const handleDeleteClose = () => {
+ setDeleteAct(false)
+setDeleteInfo(null)
+}
 
 
 
@@ -167,7 +182,7 @@ const ProductDetailEditVariant = (props: any) => {
     }
 
     const deleteSize = async (info: any) => {
-        console.log({ info })
+        setDeleteLoader(true)
         try {
             var result = await dispatch(deleteProductVariantSpec(info))
             if (deleteProductVariantSpec.fulfilled.match(result)) {
@@ -175,6 +190,8 @@ const ProductDetailEditVariant = (props: any) => {
                     setMultipleUpload(dd?.payload?.product_variants[0]?.img_urls)
                     setDummyUploadImage([...dd?.payload?.product_variants[0]?.img_urls, ""])
                     setSizeLists(dd?.payload?.product_variants[0]?.product_variant_specs)
+                    setDeleteLoader(false)
+                    handleDeleteClose()
                 })
             }
             else {
@@ -188,11 +205,12 @@ const ProductDetailEditVariant = (props: any) => {
                         alertType: 'error',
                     },
                 });
-
+                setDeleteLoader(false)
             }
         }
         catch (e) {
             console.log({ e })
+            setDeleteLoader(false)
         }
     }
 
@@ -225,7 +243,7 @@ const ProductDetailEditVariant = (props: any) => {
                                 <Image source={edits} />
                             </Pressable>
                             <Text text='' style={{ marginHorizontal: hp(5) }} />
-                            <Pressable onPress={() => deleteSize(data?.id)}>
+                            <Pressable onPress={() => handleDeleteOpen(data?.id)}>
                                 <Image source={del} />
                             </Pressable>
                         </View>
@@ -1280,6 +1298,13 @@ const ProductDetailEditVariant = (props: any) => {
 
                 </View>
             </RBSheet>
+
+            <DeleteModal
+        deleteVisible={deleteAct}
+        closeDelete={handleDeleteClose}
+        deleteAction={() => deleteSize(deleteInfo)}
+        loading={deleteLoader}
+      />
         </View>
     )
 }

@@ -21,6 +21,7 @@ import { Button } from '../components/common/Button'
 import { sizes } from '../utils/constants/sizes'
 import Editor from '../components/resuable/Editor'
 import { useIsFocused } from '@react-navigation/native'
+import DeleteModal from './Containers/DeleteModal'
 
 const AddProducts = ({ navigation }: any) => {
     const [loader, setLoader] = useState(false)
@@ -50,6 +51,20 @@ const AddProducts = ({ navigation }: any) => {
             value: capitalizeSentence(data?.category)
         }
     })
+    const [deleteAct,setDeleteAct] = useState(false)
+	const [deleteInfo,setDeleteInfo] = useState(null)
+	const [deleteLoader, setDeleteLoader] = useState(false)
+
+const handleDeleteOpen = (data: any) => {
+ setDeleteAct(true)
+setDeleteInfo(data)
+}
+
+const handleDeleteClose = () => {
+ setDeleteAct(false)
+setDeleteInfo(null)
+}
+
 
     const initialValues: ProductFormData = {
         productName: productSlug ? productSlug?.name : "",
@@ -173,6 +188,7 @@ const AddProducts = ({ navigation }: any) => {
     }
 
     const removeVariant = async (data: any) => {
+        setDeleteLoader(true)
         try {
             var result = await dispatch(deleteProductVariant(data?.product_variant_id))
             if (deleteProductVariant.fulfilled.match(result)) {
@@ -188,7 +204,8 @@ const AddProducts = ({ navigation }: any) => {
                         }
                     })
                     setColorAloneVar(dList)
-
+                    setDeleteLoader(false)
+                    handleDeleteClose()
                 })
             }
             else {
@@ -202,24 +219,25 @@ const AddProducts = ({ navigation }: any) => {
                         alertType: 'error',
                     },
                 });
-
+                setDeleteLoader(false)
             }
         }
         catch (e) {
             console.log({ e })
+            setDeleteLoader(false)
         }
     }
 
 
     const renderColorVariety = () => {
         return colorAloneVar?.map((data: any, i) => {
-            return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => removeVariant(data)} handleEditClick={() => editVariant({ data, i })} image={data?.img_urls} name={productSlug?.name} price={data?.amount} />
+            return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => handleDeleteOpen(data)} handleEditClick={() => editVariant({ data, i })} image={data?.img_urls} name={productSlug?.name} price={data?.amount} />
         })
 
     }
 
 
-    const handleRessponseModalClose = () => {
+    const handleResponseModalClose = () => {
         setResponseModal(false)
         if (type === 'Error') {
             return;
@@ -410,6 +428,14 @@ const AddProducts = ({ navigation }: any) => {
             </View>
            </ScrollView>
 
+
+              
+      <DeleteModal
+        deleteVisible={deleteAct}
+        closeDelete={handleDeleteClose}
+        deleteAction={() => removeVariant(deleteInfo)}
+        loading={deleteLoader}
+      />  
         </View>
     )
 }

@@ -24,6 +24,7 @@ import { Button } from '../components/common/Button'
 import RBSheet from "react-native-raw-bottom-sheet";
 import { Select } from '../components/common/SelectInput'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import DeleteModal from './Containers/DeleteModal'
 
 
 const AddProductVariant = ({ navigation }: any) => {
@@ -64,6 +65,20 @@ const AddProductVariant = ({ navigation }: any) => {
             value: data?.type
         }
     })
+
+       const [deleteAct,setDeleteAct] = useState(false)
+	const [deleteInfo,setDeleteInfo] = useState(null)
+	const [deleteLoader, setDeleteLoader] = useState(false)
+
+const handleDeleteOpen = (data: any) => {
+ setDeleteAct(true)
+setDeleteInfo(data)
+}
+
+const handleDeleteClose = () => {
+ setDeleteAct(false)
+setDeleteInfo(null)
+}
 
     const initialValues: ProductNoColorData = {
         price: 0
@@ -773,11 +788,14 @@ const AddProductVariant = ({ navigation }: any) => {
 
 
     const deleteVariant = async (data: any) => {
+        setDeleteLoader(true)
         try {
             var result = await dispatch(deleteProductVariant(data?.id))
             if (deleteProductVariant.fulfilled.match(result)) {
                 dispatch(getProductBySlug(getSlug)).then(dd => {
                     setColorAloneVar(dd?.payload)
+                    setDeleteLoader(false)
+                    handleDeleteClose()
                 })
             }
             else {
@@ -791,17 +809,19 @@ const AddProductVariant = ({ navigation }: any) => {
                         alertType: 'error',
                     },
                 });
+                 setDeleteLoader(false)
             }
         }
         catch (e) {
             console.log({ e })
+             setDeleteLoader(false)
         }
     }
 
 
     const renderColorVariety = () => {
         return colorAloneVar?.product_variants?.map((data: any, i: number) => {
-            return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => deleteVariant(data)} handleEditClick={() => editVariant({ data })} image={data?.img_urls[0]} name={productSlug?.name} price={data?.product_variant_specs[0]?.amount} />
+            return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => handleDeleteOpen(data)} handleEditClick={() => editVariant({ data })} image={data?.img_urls[0]} name={productSlug?.name} price={data?.product_variant_specs[0]?.amount} />
         })
 
     }
@@ -1311,6 +1331,14 @@ const AddProductVariant = ({ navigation }: any) => {
 
                 </View>
             </RBSheet>
+
+
+            <DeleteModal
+        deleteVisible={deleteAct}
+        closeDelete={handleDeleteClose}
+        deleteAction={() => deleteVariant(deleteInfo)}
+        loading={deleteLoader}
+      /> 
         </View>
     )
 }
