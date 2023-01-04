@@ -21,6 +21,7 @@ import { Button } from '../components/common/Button'
 import { sizes } from '../utils/constants/sizes'
 import { NavigationContainer } from '@react-navigation/native'
 import Editor from '../components/resuable/Editor'
+import DeleteModal from './Containers/DeleteModal'
 
 const ProductDetailEdit = (props: any) => {
     const productSlug = props?.route?.params?.params?.slug
@@ -317,7 +318,6 @@ setDeleteInfo(null)
             </View>
 
 
-            
             <DeleteModal
         deleteVisible={deleteAct}
         closeDelete={handleDeleteClose}
