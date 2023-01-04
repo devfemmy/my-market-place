@@ -69,6 +69,9 @@ const AddProductVariant = ({ navigation }: any) => {
        const [deleteAct,setDeleteAct] = useState(false)
 	const [deleteInfo,setDeleteInfo] = useState(null)
 	const [deleteLoader, setDeleteLoader] = useState(false)
+    const [deleteActSize,setDeleteActSize] = useState(false)
+	const [deleteInfoSize,setDeleteInfoSize] = useState(null)
+	const [deleteLoaderSize, setDeleteLoaderSize] = useState(false)
 
 const handleDeleteOpen = (data: any) => {
  setDeleteAct(true)
@@ -78,6 +81,17 @@ setDeleteInfo(data)
 const handleDeleteClose = () => {
  setDeleteAct(false)
 setDeleteInfo(null)
+}
+
+
+const handleDeleteSizeOpen = (data: any) => {
+ setDeleteActSize(true)
+setDeleteInfoSize(data)
+}
+
+const handleDeleteSizeClose = () => {
+ setDeleteActSize(false)
+setDeleteInfoSize(null)
 }
 
     const initialValues: ProductNoColorData = {
@@ -323,6 +337,7 @@ setDeleteInfo(null)
     }
 
     const deleteSize = async (info: any) => {
+        setDeleteLoaderSize(true)
         try {
             var result = await dispatch(deleteProductVariantSpec(info))
             if (deleteProductVariantSpec.fulfilled.match(result)) {
@@ -330,6 +345,8 @@ setDeleteInfo(null)
                     setMultipleUpload(dd?.payload?.product_variants[0]?.img_urls)
                     setDummyUploadImage([...dd?.payload?.product_variants[0]?.img_urls, ""])
                     setSizeLists(dd?.payload?.product_variants[0]?.product_variant_specs)
+                setDeleteLoaderSize(false)
+                handleDeleteSizeClose()
                 })
             }
             else {
@@ -343,12 +360,13 @@ setDeleteInfo(null)
                         alertType: 'error',
                     },
                 });
-
+setDeleteLoaderSize(false)
 
             }
         }
         catch (e) {
             console.log({ e })
+            setDeleteLoaderSize(false)
         }
     }
 
@@ -382,7 +400,7 @@ setDeleteInfo(null)
                                 <Image source={edits} />
                             </Pressable>
                             <Text text='' style={{ marginHorizontal: hp(5) }} />
-                            <Pressable onPress={() => deleteSize(data?.id)}>
+                            <Pressable onPress={() => handleDeleteSizeOpen(data?.id)}>
                                 <Image source={del} />
                             </Pressable>
                         </View>
@@ -1338,6 +1356,14 @@ setDeleteInfo(null)
         closeDelete={handleDeleteClose}
         deleteAction={() => deleteVariant(deleteInfo)}
         loading={deleteLoader}
+      /> 
+
+      
+            <DeleteModal
+        deleteVisible={deleteActSize}
+        closeDelete={handleDeleteSizeClose}
+        deleteAction={() => deleteSize(deleteInfoSize)}
+        loading={deleteLoaderSize}
       /> 
         </View>
     )

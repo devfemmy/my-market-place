@@ -24,6 +24,7 @@ import { Button } from '../components/common/Button'
 import RBSheet from "react-native-raw-bottom-sheet";
 import { Select } from '../components/common/SelectInput'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import DeleteModal from './Containers/DeleteModal'
 
 const AddColorVariant = ({ navigation }: any) => {
   const [loader, setLoader] = useState(false)
@@ -73,6 +74,35 @@ const AddColorVariant = ({ navigation }: any) => {
       value: data?.type
     }
   })
+
+  const [deleteAct,setDeleteAct] = useState(false)
+	const [deleteInfo,setDeleteInfo] = useState(null)
+	const [deleteLoader, setDeleteLoader] = useState(false)
+  const [deleteActSize,setDeleteActSize] = useState(false)
+	const [deleteInfoSize,setDeleteInfoSize] = useState(null)
+	const [deleteLoaderSize, setDeleteLoaderSize] = useState(false)
+
+
+const handleDeleteOpen = (data: any) => {
+ setDeleteAct(true)
+setDeleteInfo(data)
+}
+
+const handleDeleteClose = () => {
+ setDeleteAct(false)
+setDeleteInfo(null)
+}
+
+const handleDeleteSizeOpen = (data: any) => {
+  setDeleteActSize(true)
+ setDeleteInfoSize(data)
+ }
+ 
+ const handleDeleteSizeClose = () => {
+  setDeleteActSize(false)
+ setDeleteInfoSize(null)
+ }
+
 
   const initialValues: ProductNoColorData = {
     price: 0
@@ -412,6 +442,7 @@ const AddColorVariant = ({ navigation }: any) => {
   }
 
   const deleteSize = async (info: any) => {
+    setDeleteLoaderSize(true)
     try {
       var result = await dispatch(deleteProductVariantSpec(info))
       if (deleteProductVariantSpec.fulfilled.match(result)) {
@@ -419,6 +450,9 @@ const AddColorVariant = ({ navigation }: any) => {
           setMultipleUpload(dd?.payload?.product_variants[0]?.img_urls)
           setDummyUploadImage([...dd?.payload?.product_variants[0]?.img_urls, ""])
           setSizeLists(dd?.payload?.product_variants[0]?.product_variant_specs)
+          setDeleteLoaderSize(false)
+          handleDeleteSizeClose()
+        
         })
       }
       else {
@@ -433,11 +467,12 @@ const AddColorVariant = ({ navigation }: any) => {
           },
         });
 
-
+        setDeleteLoaderSize(false)
       }
     }
     catch (e) {
       console.log({ e })
+      setDeleteLoaderSize(false)
     }
   }
 
@@ -471,7 +506,7 @@ const AddColorVariant = ({ navigation }: any) => {
                 <Image source={edits} />
               </Pressable>
               <Text text='' style={{ marginHorizontal: hp(5) }} />
-              <Pressable onPress={() => deleteSize(data?.id)}>
+              <Pressable onPress={() => handleDeleteSizeOpen(data?.id)}>
                 <Image source={del} />
               </Pressable>
             </View>
@@ -880,11 +915,14 @@ const AddColorVariant = ({ navigation }: any) => {
 
 
   const deleteVariant = async (data: any) => {
+    setDeleteLoader(true)
     try {
       var result = await dispatch(deleteProductVariant(data?.id))
       if (deleteProductVariant.fulfilled.match(result)) {
         dispatch(getProductBySlug(getSlug)).then(dd => {
           setColorAloneVar(dd?.payload)
+          setDeleteLoader(false)
+          handleDeleteClose()
         })
       }
       else {
@@ -898,17 +936,19 @@ const AddColorVariant = ({ navigation }: any) => {
             alertType: 'error',
           },
         });
+        setDeleteLoader(false)
       }
     }
     catch (e) {
       console.log({ e })
+      setDeleteLoader(false)
     }
   }
 
 
   const renderColorVariety = () => {
     return colorAloneVar?.product_variants?.map((data: any, i: number) => {
-      return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => deleteVariant(data)} handleEditClick={() => editVariant({ data })} image={data?.img_urls[0]} name={productSlug?.name} price={data?.product_variant_specs[0]?.amount} />
+      return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => handleDeleteOpen(data)} handleEditClick={() => editVariant({ data })} image={data?.img_urls[0]} name={productSlug?.name} price={data?.product_variant_specs[0]?.amount} />
     })
 
   }
@@ -1410,6 +1450,21 @@ const AddColorVariant = ({ navigation }: any) => {
 
         </View>
       </RBSheet>
+
+      <DeleteModal
+        deleteVisible={deleteAct}
+        closeDelete={handleDeleteClose}
+        deleteAction={() => deleteVariant(deleteInfo)}
+        loading={deleteLoader}
+      /> 
+
+      
+            <DeleteModal
+        deleteVisible={deleteActSize}
+        closeDelete={handleDeleteSizeClose}
+        deleteAction={() => deleteSize(deleteInfoSize)}
+        loading={deleteLoaderSize}
+      /> 
     </View>
   )
 }

@@ -64,6 +64,10 @@ const ProductDetailEditVariant = (props: any) => {
     const [deleteAct,setDeleteAct] = useState(false)
 	const [deleteInfo,setDeleteInfo] = useState(null)
 	const [deleteLoader, setDeleteLoader] = useState(false)
+    const [deleteActSize,setDeleteActSize] = useState(false)
+	const [deleteInfoSize,setDeleteInfoSize] = useState(null)
+	const [deleteLoaderSize, setDeleteLoaderSize] = useState(false)
+
 
 const handleDeleteOpen = (data: any) => {
  setDeleteAct(true)
@@ -75,6 +79,16 @@ const handleDeleteClose = () => {
 setDeleteInfo(null)
 }
 
+
+const handleDeleteSizeOpen = (data: any) => {
+    setDeleteActSize(true)
+   setDeleteInfoSize(data)
+   }
+   
+   const handleDeleteSizeClose = () => {
+    setDeleteActSize(false)
+   setDeleteInfoSize(null)
+   }
 
 
     const [sizeList, setSizeList] = useState([])
@@ -759,11 +773,14 @@ setDeleteInfo(null)
     }
 
     const deleteVariant = async (data: any) => {
+        setDeleteLoaderSize(true)
         try {
             var result = await dispatch(deleteProductVariant(data?.id))
             if (deleteProductVariant.fulfilled.match(result)) {
                 dispatch(getProductBySlug(getSlug)).then(dd => {
                     setColorAloneVar(dd?.payload)
+                    setDeleteLoaderSize(false)
+                    handleDeleteSizeClose()
                 })
             }
             else {
@@ -777,10 +794,12 @@ setDeleteInfo(null)
                         alertType: 'error',
                     },
                 });
+                setDeleteLoaderSize(false)
             }
         }
         catch (e) {
             console.log({ e })
+            setDeleteLoaderSize(false)
         }
     }
 
@@ -788,7 +807,7 @@ setDeleteInfo(null)
 
     const renderColorVariety = () => {
         return colorAloneVar?.product_variants?.map((data: any, i: number) => {
-            return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => deleteVariant(data)} handleEditClick={() => editVariant({ data })} image={data?.img_urls[0]} name={productSlug?.name} price={data?.product_variant_specs[0]?.amount} />
+            return <ProductVariantCard key={i} edit={true} handleDeleteClick={() => handleDeleteSizeOpen(data)} handleEditClick={() => editVariant({ data })} image={data?.img_urls[0]} name={productSlug?.name} price={data?.product_variant_specs[0]?.amount} />
         })
 
     }
@@ -1305,6 +1324,14 @@ setDeleteInfo(null)
         deleteAction={() => deleteSize(deleteInfo)}
         loading={deleteLoader}
       />
+
+      
+<DeleteModal
+        deleteVisible={deleteActSize}
+        closeDelete={handleDeleteSizeClose}
+        deleteAction={() => deleteVariant(deleteInfoSize)}
+        loading={deleteLoaderSize}
+      /> 
         </View>
     )
 }
