@@ -25,7 +25,7 @@ const DeliveryScreen = (props) => {
   const profileData = useAppSelector(profileInfo)
   const [addressList, setAddressList] = useState(null)
   const [set, setSet] = useState(null)
-  const choosenAddress = addressList?.find((ab) => ab.default)
+  const [choosenAddress, setChoosenAddress] = useState(null)
   const isFocused = useIsFocused();
   const [activeDelivery, setActiveDelivery] = useState('')
   const [phoneModalVisible, setPhoneModalVisible] = useState(false)
@@ -56,6 +56,7 @@ const DeliveryScreen = (props) => {
       var filterDefault = data?.payload?.find((d) => d.default)
       setActiveDelivery(filterDefault)
       setAddressList(data?.payload)
+      setChoosenAddress(filterDefault)
     })
     dispatch(getProfile())
 
@@ -147,7 +148,7 @@ const DeliveryScreen = (props) => {
 
     const payload = {
       cart_ids: cartsId,
-      address_book_id: activeDelivery?.id,
+      address_book_id: choosenAddress?.id,
       payment_reference: response?.transactionRef?.reference,
     }
 
@@ -199,6 +200,17 @@ const DeliveryScreen = (props) => {
         },
       });
   }
+  else if (!profileData?.mobile) {
+    return Notifier.showNotification({
+      title: 'Kindly update your phone number in your profile settings to proceed',
+      description: '',
+      Component: NotifierComponents.Alert,
+      hideOnPress: false,
+      componentProps: {
+        alertType: 'error',
+      },
+    });
+}
   else {
     Notifier.showNotification({
       title: 'No Item in cart',
@@ -286,9 +298,9 @@ const DeliveryScreen = (props) => {
         </View>
         <Paystack
           paystackKey={config.payStack.testSecretKey}
-          billingEmail={activeDelivery?.email}
+          billingEmail={profileData?.email}
           amount={(subTotal + totalDeliveryFee)}
-          billingMobile={activeDelivery?.phone_number}
+          billingMobile={profileData?.mobile}
           onCancel={(e) => {
             // handle response here
           }}
@@ -300,7 +312,7 @@ const DeliveryScreen = (props) => {
         />
 
         {
-          getCartData?.length > 0 && activeDelivery?.email && activeDelivery?.phone_number ? <Button title='Pay Now' onPress={() => paystackWebViewRef.current.startTransaction()} />
+          getCartData?.length > 0 && profileData ? <Button title='Pay Now' onPress={() => paystackWebViewRef.current.startTransaction()} />
             : <Button title='Pay Now' onPress={() => requiredAddress()} />
 
         }
@@ -309,6 +321,7 @@ const DeliveryScreen = (props) => {
       <DeliveryModal
         visible={visible}
         setVisible={closeVisible}
+        setChoosenAddress={(e) => setChoosenAddress(e)}
       />
 
       <AddressBooklistModal

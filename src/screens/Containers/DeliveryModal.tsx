@@ -16,7 +16,13 @@ import { Input } from '../../components/common/TextInput'
 import { Select } from '../../components/common/SelectInput'
 import { Button } from '../../components/common/Button'
 
-const DeliveryModal = ({ visible, setVisible }: any) => {
+type IDeliveryModal = {
+    visible: boolean,
+    setVisible: (e?: any) => void,
+    setChoosenAddress?: (value?: any) => void
+}
+
+const DeliveryModal = ({ visible, setVisible, setChoosenAddress }: IDeliveryModal) => {
     const dispatch = useAppDispatch()
     const [loader, setLoader] = useState(false)
     const [isDefault, setIsDefault] = useState(false)
@@ -24,7 +30,7 @@ const DeliveryModal = ({ visible, setVisible }: any) => {
     const initialValues: DeliveryData = {
         first_name: "",
         last_name: "",
-        email: "",
+        // email: "",
         phone_number: null,
         street: "",
         state: "",
@@ -44,7 +50,11 @@ const DeliveryModal = ({ visible, setVisible }: any) => {
                 setVisible()
                 setLoader(false)
                 setIsDefault(false)
-                dispatch(getAddress()).then(data => console.log({ data }))
+                dispatch(getAddress())
+                setChoosenAddress({
+                    ...data,
+                    id: response?.payload?.id
+                })
                 resetForm()
             }
             else {
@@ -127,12 +137,12 @@ const DeliveryModal = ({ visible, setVisible }: any) => {
                                 onChangeText={handleChange('last_name')}
                                 errorMsg={touched.last_name ? errors.last_name : undefined}
                             />
-                            <Input
+                            {/* <Input
                                 label='Receiver Email'
                                 value={values.email}
                                 onChangeText={handleChange('email')}
                                 errorMsg={touched.email ? errors.email : undefined}
-                            />
+                            /> */}
 
                             <Input
                                 label='Receiver Phone number'

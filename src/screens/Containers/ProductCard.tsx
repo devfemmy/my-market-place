@@ -13,12 +13,26 @@ import { Text } from '../../components/common'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { truncate } from '../../utils/server'
+import DeleteModal from './DeleteModal'
 
 const ProductCard = ({ data, setProductList, id }: any) => {
     const dispatch = useAppDispatch()
     const navigation = useNavigation()
     //const [id, setId] = useState('')
     const [visible, setVisible] = React.useState(false);
+    const [deleteAct,setDeleteAct] = useState(false)
+	const [deleteInfo,setDeleteInfo] = useState(null)
+	const [deleteLoader, setDeleteLoader] = useState(false)
+
+const handleDeleteOpen = (data: any) => {
+ setDeleteAct(true)
+setDeleteInfo(data)
+}
+
+const handleDeleteClose = () => {
+ setDeleteAct(false)
+setDeleteInfo(null)
+}
 
     const openMenu = () => setVisible(true);
 
@@ -41,6 +55,11 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                 dispatch(getProduct(id)).then((data) => {
                     setProductList(data?.payload)
                 })
+                await AsyncStorage.removeItem('prodId')
+                await AsyncStorage.removeItem('slug')
+                await AsyncStorage.removeItem('prodVarId')
+                await AsyncStorage.removeItem('productDraft')
+                await AsyncStorage.removeItem('editableId')
             }
             else {
                 var errMsg = resultAction?.payload as string
@@ -70,6 +89,11 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                 dispatch(getProduct(id)).then((data) => {
                     setProductList(data?.payload)
                 })
+                await AsyncStorage.removeItem('prodId')
+                await AsyncStorage.removeItem('slug')
+                await AsyncStorage.removeItem('prodVarId')
+                await AsyncStorage.removeItem('productDraft')
+                await AsyncStorage.removeItem('editableId')
             }
             else {
                 var errMsg = resultAction?.payload as string
@@ -88,11 +112,14 @@ const ProductCard = ({ data, setProductList, id }: any) => {
     }
 
     const deleteProd = async (data: any) => {
+        setDeleteLoader(true)
         try {
           var res = await dispatch(deleteProduct(data?.id))
           if (deleteProduct.fulfilled.match(res)) {
             dispatch(getProduct(id)).then(data => {
               setProductList(data?.payload)
+              setDeleteLoader(false)
+              handleDeleteClose()
             })
             Notifier.showNotification({
                 title: 'Product deleted successfully',
@@ -103,6 +130,11 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                     alertType: 'success',
                 },
             });
+            await AsyncStorage.removeItem('prodId')
+            await AsyncStorage.removeItem('slug')
+            await AsyncStorage.removeItem('prodVarId')
+            await AsyncStorage.removeItem('productDraft')
+            await AsyncStorage.removeItem('editableId')
           }
           else {
             var errMsg = res?.payload as string
@@ -115,10 +147,17 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                     alertType: 'error',
                 },
             });
+            setDeleteLoader(false)
+            await AsyncStorage.removeItem('prodId')
+            await AsyncStorage.removeItem('slug')
+            await AsyncStorage.removeItem('prodVarId')
+            await AsyncStorage.removeItem('productDraft')
+            await AsyncStorage.removeItem('editableId')
           }
         }
         catch (e) {
           console.log({ e })
+          setDeleteLoader(false)
         }
       }
 
@@ -169,9 +208,17 @@ const ProductCard = ({ data, setProductList, id }: any) => {
                         }
                     })} title="Edit" />
                     <Menu.Item onPress={() => updateProductStatus(data)} title={data?.status === 'ACTIVE' ? 'Deactivate' : 'Activate'} />
-                    <Menu.Item onPress={() => deleteProd(data)} title="Delete" />
+                    <Menu.Item onPress={() => handleDeleteOpen(data)} title="Delete" />
                 </Menu>
             </View>
+
+
+    <DeleteModal
+        deleteVisible={deleteAct}
+        closeDelete={handleDeleteClose}
+        deleteAction={() => deleteProd(deleteInfo)}
+        loading={deleteLoader}
+      />  
         </View>
     )
 }

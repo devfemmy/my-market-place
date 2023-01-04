@@ -369,7 +369,7 @@ export type DeliveryData = {
     city: string;
     first_name: string;
     last_name: string;
-    email: string;
+    // email: string;
     phone_number: number | null
 }
 
