@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { getProfile, profileInfo } from '../redux/slices/ProfileSlice'
 // import { collection, getDocs } from 'firebase/firestore'
 // import { db } from '../firebase/firebase'
+import firebase from '@react-native-firebase/app';
 import MobileHeader from './Containers/MobileHeader'
 import { truncate } from '../utils/server'
 import { colors } from '../utils/themes'
@@ -31,7 +32,18 @@ const BuyerChatScreen = ({ navigation }: any) => {
     const loadData = async () => {
       // const arr: any = []
       await dispatch(getProfile()).then(async (dd: any) => {
-
+        if (!firebase.apps.length) {
+          firebase.initializeApp({
+              apiKey: "AIzaSyCicX4foYtKhhR2A4VObeakIfCVK6mitS8",
+              authDomain: "chat-and-messaging-66e6e.firebaseapp.com",
+              databaseURL: "https://chat-and-messaging-66e6e-default-rtdb.firebaseio.com",
+              projectId: "chat-and-messaging-66e6e",
+              storageBucket: "chat-and-messaging-66e6e.appspot.com",
+              messagingSenderId: "962853764584",
+              appId: "1:962853764584:web:31d3dfa59bc269c8acf85d",
+              measurementId: "G-W9TY1FG8D5"
+          });
+        }
         firestore().collection('messaging').onSnapshot((documentSnapshot: any) => {
           const arr: any = []
           documentSnapshot?.forEach((doc: any) => {
