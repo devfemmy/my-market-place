@@ -112,6 +112,7 @@ const LoginScreen = ({ navigation }: any) => {
                 //   "authType":"Apple",
                 }
                 var response = await dispatch(oauthAppleLogin(payload))
+                console.log('Response', response);
                 if (oauthAppleLogin.fulfilled.match(response)) {
                     setLoading(false)
                     await AsyncStorage.setItem('userInfo', JSON.stringify(response?.payload))
@@ -140,9 +141,10 @@ const LoginScreen = ({ navigation }: any) => {
                 else {
                     setLoading(false)
                     var errMsg = response?.payload as string
+                    console.log('error apple', errMsg)
                     Notifier.showNotification({
-                        title: errMsg,
-                        description: '',
+                        title: 'Error',
+                        description: 'Error Logging in through Apple',
                         Component: NotifierComponents.Alert,
                         hideOnPress: false,
                         componentProps: {

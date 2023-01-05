@@ -119,22 +119,24 @@ const BuyerSignUpScreen = ({ navigation }: any) => {
     const AppleSignUp = async () => {
         const appleAuthRequestResponse = await appleAuth.performRequest({
             requestedOperation: appleAuth.Operation.LOGIN,
-            requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+            requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL,],
         });
         const credentialState = await appleAuth.getCredentialStateForUser(
             appleAuthRequestResponse.user,
         );
         if (credentialState === appleAuth.State.AUTHORIZED) {
             const result = appleAuthRequestResponse;
+            console.log('result', result)
             try {
                 const payload = {
                     //"email": result.email,
-                    "family_name": 'test user',
-                    "given_name": 'test user',
+                    "family_name": result?.fullName?.familyName,
+                    "given_name": result?.fullName?.givenName,
                     "identity_token": result?.identityToken,
                     "user": result.user
                     //"authType":"Apple",
                 }
+
                 var resultAction = await dispatch(oauthAppleSignup(payload))
                 if (oauthAppleSignup.fulfilled.match(resultAction)) {
                     await AsyncStorage.setItem('userInfo', JSON.stringify(resultAction?.payload))

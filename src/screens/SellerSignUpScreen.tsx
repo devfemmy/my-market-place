@@ -118,11 +118,12 @@ const SellerSignUpScreen = ({ navigation }: any) => {
         );
         if (credentialState === appleAuth.State.AUTHORIZED) {
             const result = appleAuthRequestResponse;
+            console.log('sign in', result)
             try {
                 const payload = {
                     //"email": result.email,
-                    "family_name": 'test user',
-                    "given_name": 'test user',
+                    "family_name": result?.fullName?.familyName,
+                    "given_name": result?.fullName?.givenName,
                     "identity_token": result?.identityToken,
                     "user": result.user
                     //"authType":"Apple",

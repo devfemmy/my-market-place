@@ -6,6 +6,7 @@ import { Text } from '../common';
 import { hp } from '../../utils/helpers';
 import { colors } from '../../utils/themes';
 import { globalStyles } from '../../styles';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 const Editor = ({ errorMsg, placeholder, value, onChangeText,onBlur }: any) => {
@@ -19,7 +20,7 @@ const Editor = ({ errorMsg, placeholder, value, onChangeText,onBlur }: any) => {
         
       };
     return (
-        <View>
+        <KeyboardAwareScrollView>
             <View style={{ borderColor: colors.gray, borderWidth: 1, marginBottom: hp(20), borderRadius: hp(5) }}>
 
                { editorAttached &&  <RichToolbar
@@ -64,7 +65,7 @@ const Editor = ({ errorMsg, placeholder, value, onChangeText,onBlur }: any) => {
                 </View>
             ) : null}
 
-        </View>
+        </KeyboardAwareScrollView>
     )
 }
 
