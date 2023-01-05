@@ -25,7 +25,7 @@ export const getAddress = createAsyncThunk(
 
 export const addAddress = createAsyncThunk(
     'address/addAddress',
-    async (payload: { state: string, street: string, city: string, first_name: string, last_name: string, email: string, phone_number: string, default: boolean }, { rejectWithValue }) => {
+    async (payload: { state: string, street: string, city: string, first_name: string, last_name: string, phone_number: string, default: boolean }, { rejectWithValue }) => {
         try {
             const response = await postRequest(`/addressBook/create`, payload)
             if (response?.status === 200) {

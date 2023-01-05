@@ -33,7 +33,7 @@ const gbStyle = StyleSheet.create({
     mdTop: {
         paddingVertical: hp(10),
         // backgroundColor: 'red',
-        marginTop: Platform.OS === 'ios' ? hp(20) : 0,
+        marginTop: Platform.OS === 'ios' ? hp(10) : 0,
     },
     img: {
         width: wp(25)

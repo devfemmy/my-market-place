@@ -21,6 +21,7 @@ import { Button } from '../components/common/Button'
 import { sizes } from '../utils/constants/sizes'
 import { NavigationContainer } from '@react-navigation/native'
 import Editor from '../components/resuable/Editor'
+import DeleteModal from './Containers/DeleteModal'
 
 const ProductDetailEdit = (props: any) => {
     const productSlug = props?.route?.params?.params?.slug
@@ -55,6 +56,23 @@ const ProductDetailEdit = (props: any) => {
             value: capitalizeSentence(data?.category)
         }
     })
+
+    const [deleteAct,setDeleteAct] = useState(false)
+	const [deleteInfo,setDeleteInfo] = useState(null)
+	const [deleteLoader, setDeleteLoader] = useState(false)
+
+
+const handleDeleteOpen = (data: any) => {
+ setDeleteAct(true)
+setDeleteInfo(data)
+}
+
+const handleDeleteClose = () => {
+ setDeleteAct(false)
+setDeleteInfo(null)
+}
+
+
 
     const initialValues: ProductFormData = {
         productName: productBySlugData?.name,
@@ -190,10 +208,13 @@ const ProductDetailEdit = (props: any) => {
     }
 
     const removeVariant = async (data: any) => {
+        setDeleteLoader(true)
         try {
             var result = await dispatch(deleteProductVariant(data?.id))
             if (deleteProductVariant.fulfilled.match(result)) {
                 dispatch(getProductBySlug(productSlug))
+                setDeleteLoader(false)
+                handleDeleteClose()
             }
             else {
                 var errMsg = result?.payload as string
@@ -206,10 +227,12 @@ const ProductDetailEdit = (props: any) => {
                         alertType: 'error',
                     },
                 });
+                setDeleteLoader(false)
             }
         }
         catch (e) {
             console.log({ e })
+            setDeleteLoader(false)
         }
     }
 
@@ -273,7 +296,7 @@ const ProductDetailEdit = (props: any) => {
                 <View style={styles.subdiv}>
                     {
                         productBySlugData?.product_variants?.map((data: any, i: number) => {
-                            return <ProductVariantCard edit key={i} handleDeleteClick={() => removeVariant(data)} handleEditClick={() => editVariant(data)} name={productBySlugData?.name} price={data?.product_variant_specs[0]?.amount} image={data?.img_urls[0]} />
+                            return <ProductVariantCard edit key={i} handleDeleteClick={() => handleDeleteOpen(data)} handleEditClick={() => editVariant(data)} name={productBySlugData?.name} price={data?.product_variant_specs[0]?.amount} image={data?.img_urls[0]} />
                         })
                     }
                 </View>
@@ -293,6 +316,16 @@ const ProductDetailEdit = (props: any) => {
             <View style={styles.bottomContainer}>
                 <Button isLoading={loader} title='Update Product' onPress={handleSubmit} />
             </View>
+
+
+            <DeleteModal
+        deleteVisible={deleteAct}
+        closeDelete={handleDeleteClose}
+        deleteAction={() => removeVariant(deleteInfo)}
+        loading={deleteLoader}
+      /> 
+
+     
 
         </View>
     )

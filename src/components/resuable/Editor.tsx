@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import React, { useState } from 'react'
 
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
@@ -20,7 +20,8 @@ const Editor = ({ errorMsg, placeholder, value, onChangeText,onBlur }: any) => {
         
       };
     return (
-        <KeyboardAwareScrollView>
+        <Pressable style={styles.pressable} onPress={() => richText?.current?.blurContentEditor()} >
+            {/* <Text text='close editor' onPress={() => richText?.current?.blurContentEditor()} /> */}
             <View style={{ borderColor: colors.gray, borderWidth: 1, marginBottom: hp(20), borderRadius: hp(5) }}>
 
                { editorAttached &&  <RichToolbar
@@ -42,7 +43,7 @@ const Editor = ({ errorMsg, placeholder, value, onChangeText,onBlur }: any) => {
                     ref={richText}
                     placeholder={placeholder}
                     onChange={onChangeText}
-                    onBlur={onBlur}
+                    onBlur={() => richText?.current?.blurContentEditor()}
                     initialContentHTML={value}
                     initialHeight={70}
                     editorInitializedCallback={editorInitializedCallback}
@@ -65,7 +66,7 @@ const Editor = ({ errorMsg, placeholder, value, onChangeText,onBlur }: any) => {
                 </View>
             ) : null}
 
-        </KeyboardAwareScrollView>
+        </Pressable>
     )
 }
 
@@ -82,4 +83,7 @@ const styles = StyleSheet.create({
         marginTop: hp(-15),
         marginBottom: hp(20)
     },
+    pressable: {
+        paddingTop: hp(20)
+    }
 });

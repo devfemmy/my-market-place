@@ -15,7 +15,7 @@ export const updateSchema = yup.object().shape({
 export const DeliverySchema = yup.object().shape({
   first_name: yup.string().required('Receiver firstname is required'), 
   last_name: yup.string().required('Receiver lastname is required'), 
-  email: yup.string().email().required('Receiver email is required'), 
+  // email: yup.string().email().required('Receiver email is required'), 
   street: yup.string().required('Street is required'),
   state: yup.string().required('State is required'),
   city: yup.string().required('City is required'),

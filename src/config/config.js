@@ -1,38 +1,57 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import {API_URL_VERSION,
+    API_URL_STAGING_VERIFICATION,
+    API_URL_DEV_URL,
+    API_URL_DEV_URL_V2,
+    API_URL_DEV_PAY_STACK_TEST,
+    API_URL_STAGING_URL,
+    API_URL_DEV_UPLOAD_URL,
+    API_URL_STAGING_URL_V2,
+    API_URL_DEV_VERIFICATION,
+    API_URL_STAGING_UPLOAD_URL,
+    API_URL_STAGING_PAY_STACK_TEST,
+    API_URL_PRODUCTION_URL,
+    API_URL_PRODUCTION_URL_V2,
+    API_URL_PRODUCTION_UPLOAD_URL,
+    API_URL_PRODUCTION_PAY_STACK_TEST,
+    API_URL_PRODUCTION_VERIFICATION 
+  } from "@env"
+
 
 const SETCONFIG = 'DEV';
-export const AppVersion = 2
+export const AppVersion = API_URL_VERSION
 
 const config = {
   DEV: {
-    databaseUrl: 'https://api.bazara.co/api/v2',
-    databaseUrl2: 'https://api.bazara.co/api/v2',
-    databaseUpload: 'https://prod.bazara.co/upload-microservice/v1/upload/img',
-    secretOrKey: 'sk_live_8f334a99611a4cf0245c8e4f1bbc3fddb1861d80',
+    databaseUrl: API_URL_DEV_URL,
+    databaseUrl2: API_URL_DEV_URL_V2,
+    databaseUpload: API_URL_DEV_UPLOAD_URL,
+    secretOrKey: API_URL_DEV_VERIFICATION,
     url: "https://staging.bazara.co/",
     payStack: {
-      testSecretKey: 'pk_test_84d450ead211f32c1d444c98dd6c7fcfd27f897c',
+      testSecretKey: API_URL_DEV_PAY_STACK_TEST,
       baseUrl: "https://api.paystack.co/bank/resolve",
     }
   },
   STAGING: {
-    databaseUrl: 'https://api.bazara.co/api/v1/staging',
-    databaseUrl2: 'https://api.bazara.co/api/v1/staging',
-    databaseUpload: 'https://prod.bazara.co/upload-microservice/v1/upload/img',
-    secretOrKey: 'sk_live_8f334a99611a4cf0245c8e4f1bbc3fddb1861d80',
+    databaseUrl: API_URL_STAGING_URL,
+    databaseUrl2: API_URL_STAGING_URL_V2,
+    databaseUpload: API_URL_STAGING_UPLOAD_URL,
+    secretOrKey: API_URL_STAGING_VERIFICATION,
     url: "https://bazara.co/",
     payStack: {
-      testSecretKey: 'pk_test_84d450ead211f32c1d444c98dd6c7fcfd27f897c',
+      testSecretKey: API_URL_STAGING_PAY_STACK_TEST,
       baseUrl: "https://api.paystack.co/bank/resolve",
     }
   },
   PROD: {
-    databaseUrl: 'https://prod.bazara.co/api/v1/prod',
-    databaseUrl2: 'https://prod.bazara.co/api/v1/prod',
-    databaseUpload: 'https://prod.bazara.co/upload-microservice/v1/upload/img',
-    secretOrKey: 'sk_live_8f334a99611a4cf0245c8e4f1bbc3fddb1861d80',
+    databaseUrl: API_URL_PRODUCTION_URL,
+    databaseUrl2: API_URL_PRODUCTION_URL_V2,
+    databaseUpload: API_URL_PRODUCTION_UPLOAD_URL,
+    secretOrKey: API_URL_PRODUCTION_VERIFICATION,
     url: "https://bazara.co/",
     payStack: {
-      testSecretKey: 'pk_live_673d282a2ea6f32939b9b27b162e20f03eff65fd',
+      testSecretKey: API_URL_PRODUCTION_PAY_STACK_TEST,
       baseUrl: "https://api.paystack.co/bank/resolve",
     }
   },

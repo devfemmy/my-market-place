@@ -9,6 +9,7 @@ import { useAppSelector } from '../../redux/hooks'
 import { userState } from '../../redux/slices/AuthSlice'
 import { Home } from '../BuyerScreens'
 import HomeScreen from '../HomeScreen'
+import { WebView } from 'react-native-webview';
 
 const BodyContaner = () => {
     const [loading, setLoading] = useState(true);
@@ -40,6 +41,7 @@ const BodyContaner = () => {
 
 
     return (
+     //   <WebView source={{ uri: 'https://staging.bazara.co/' }} />
         <NavigationContainer>
             {/* {
                 auth || token ? <TokenStackNavigation /> : <StackNavigation />

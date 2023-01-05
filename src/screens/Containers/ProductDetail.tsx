@@ -471,6 +471,7 @@ const ProductDetail = (props: any) => {
   }
 
   const saveForLater = async () => {
+    console.log('clicked save for later')
     try {
       const payload = {
         product_id: productDetail?.id,
@@ -549,9 +550,8 @@ const ProductDetail = (props: any) => {
     }
 
 }
-
   return (
-    <SafeAreaView style={globalStyles.containerWrapper}>
+    <View style={globalStyles.containerWrapper}>
       <MobileHeader categoryName={'Product Detail'} props={props} />
 
       <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
@@ -589,7 +589,7 @@ const ProductDetail = (props: any) => {
                 <Text style={styles.txt} text="Visit Store" fontSize={hp(18)} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <View>
               <View
                 style={{
                   flexDirection: 'row',
@@ -608,7 +608,7 @@ const ProductDetail = (props: any) => {
                   </Pressable>
                 )}
               </View>
-            </TouchableOpacity>
+            </View>
           </View>
           <View>
             <Text
@@ -868,7 +868,7 @@ const ProductDetail = (props: any) => {
           />
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
