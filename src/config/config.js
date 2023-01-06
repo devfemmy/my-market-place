@@ -21,7 +21,7 @@ import {API_URL_VERSION,
 const SETCONFIG = 'PROD';
 export const AppVersion = API_URL_VERSION
 
-// console.log({SETCONFIG, API_URL_STAGING_URL_V2})
+// console.log({SETCONFIG, API_URL_PRODUCTION_URL_V2})
 
 const config = {
   DEV: {
