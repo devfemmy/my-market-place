@@ -18,7 +18,7 @@ import {API_URL_VERSION,
   } from "@env"
 
 
-const SETCONFIG = 'DEV';
+const SETCONFIG = 'PROD';
 export const AppVersion = API_URL_VERSION
 
 const config = {
