@@ -206,7 +206,6 @@ const BuyerOrderDetail = (props: any) => {
 
 
     const messageSeller = async () => {
-        console.log('MESSAGE SELLER NIW')
         if (!firebase.apps.length) {
             firebase.initializeApp({
                 apiKey: "AIzaSyCicX4foYtKhhR2A4VObeakIfCVK6mitS8",
