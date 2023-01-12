@@ -58,6 +58,7 @@ import RatingScreen from '../screens/RatingScreen';
 import { OnboardScreen } from '../screens/Onboarding';
 import Feather from 'react-native-vector-icons/Feather';
 import { AppVersion } from '../config/config';
+import MobileSearch from '../screens/MobileSearch';
 
 const TokenStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -268,6 +269,7 @@ const TokenStackNavigation = () => {
             <Stack.Screen name="ChatBox" component={ChatBox} />
             <Stack.Screen name="SellerChatBox" component={SellerChatBox} />
             <Stack.Screen name="Ratings" component={RatingScreen} />
+            <Stack.Screen name="NoAuthSearch" component={MobileSearch} />
         </Stack.Navigator>
     )
 }

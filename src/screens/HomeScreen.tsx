@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -12,11 +14,13 @@ import AllCategories from './BuyerScreens/main/Home/Layout/allCategories'
 import UserHeader from './BuyerScreens/main/Home/Layout/header'
 import TopProducts from './BuyerScreens/main/Home/Layout/topProducts'
 import { useIsFocused } from "@react-navigation/native";
+import SearchComponent from '../components/SearchComponent/SearchComponent'
 
 
 const HomeScreen = (navigation: any) => {
   const dispatch = useAppDispatch()
   const [user, setUser] = useState<any>(null)
+  const [searchValue, setSearchValue] = useState("")
   const isFocused = useIsFocused();
 
 
@@ -34,10 +38,23 @@ const HomeScreen = (navigation: any) => {
    loadUser()
   }, [isFocused])
 
+// const submitKeyMessage = (e: any) => {
+//   console.log("keys", e?.nativeEvent.key)
+//  // return navigation.navigate("NoAuthSearch")
+ 
+// }
 
+const  submitKeyMessage = ({ nativeEvent: { key: keyValue } }) => {
+  console.log(keyValue);
+  if(keyValue === 'Enter')
+  {
+    console.log("enter");
+  }
+};
   return (
     <SafeAreaView style={globalStyles.containerWrapper}>
       <UserHeader name={`${user?.first_name}`} image={user?.img_url} />
+      {/* <SearchComponent searchValue={searchValue} setSearchValue={setSearchValue} submitKeyMessage={(e: any) => submitKeyMessage(e)} /> */}
       <ScrollView  showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
         <View style={styles.imageCard}>
