@@ -1,4 +1,4 @@
-package com.bazara.sidehustle.newarchitecture;
+package com.bazara.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.bazara.sidehustle.BuildConfig;
-import com.bazara.sidehustle.newarchitecture.components.MainComponentsRegistry;
-import com.bazara.sidehustle.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.bazara.BuildConfig;
+import com.bazara.newarchitecture.components.MainComponentsRegistry;
+import com.bazara.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

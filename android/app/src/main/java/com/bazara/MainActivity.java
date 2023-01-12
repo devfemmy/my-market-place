@@ -1,4 +1,4 @@
-package com.bazara.sidehustle;
+package com.bazara;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

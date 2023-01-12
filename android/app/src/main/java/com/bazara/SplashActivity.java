@@ -1,4 +1,4 @@
-package com.bazara.sidehustle;
+package com.bazara;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
