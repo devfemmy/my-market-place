@@ -1,4 +1,4 @@
-package com.bazara.newarchitecture.modules;
+package com.bazara.sidehustle.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

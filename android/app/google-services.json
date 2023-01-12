@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:962853764584:android:abf768ed8d23a66cacf85d",
         "android_client_info": {
-          "package_name": "com.bazara"
+          "package_name": "com.bazara.sidehustle"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "962853764584-gpo9snlh6jja431m3thn67sprqvj4fgv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bazara",
+            "package_name": "com.bazara.sidehustle",
             "certificate_hash": "a0adfe346f41eac2023e4dbf0f6f36a4bf2fbf37"
           }
         },
@@ -55,7 +55,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:962853764584:android:f8922583dd7cc5baacf85d",
         "android_client_info": {
-          "package_name": "com.bazara.sidehustle"
+          "package_name": "com.bazara.sidehustle.sidehustle"
         }
       },
       "oauth_client": [
@@ -63,7 +63,7 @@
           "client_id": "962853764584-e95poiti306lan9g4ue042q7igja21se.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bazara.sidehustle",
+            "package_name": "com.bazara.sidehustle.sidehustle",
             "certificate_hash": "b2e8a15ec5572bb0cc4e5ace30d94e587f02fb5d"
           }
         },
@@ -71,7 +71,7 @@
           "client_id": "962853764584-ku0r6ui7f2479ptc0seggdev7onvuqqu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bazara.sidehustle",
+            "package_name": "com.bazara.sidehustle.sidehustle",
             "certificate_hash": "a0adfe346f41eac2023e4dbf0f6f36a4bf2fbf37"
           }
         },
@@ -79,7 +79,7 @@
           "client_id": "962853764584-seo0ngtksm7sha69n5tsv52hkdacsbdg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bazara.sidehustle",
+            "package_name": "com.bazara.sidehustle.sidehustle",
             "certificate_hash": "58badbde97d61f84c80759e825ca6313b5e31743"
           }
         },
