@@ -3,11 +3,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import { hp, wp} from '../../utils/helpers';
+import { colors } from '../../utils/themes';
+import { Text } from '../common';
 import {Input} from '../common/TextInput';
 
 
-const SearchComponent = ({searchValue, setSearchValue, submitKeyMessage}: any) => {
+const SearchComponent = ({searchValue, setSearchValue, submitKeyMessage, submitSearch}: any) => {
   return (
     <View style={styles.view}>
       <View style={styles.div2}>
@@ -20,7 +24,11 @@ const SearchComponent = ({searchValue, setSearchValue, submitKeyMessage}: any) =
           onKeyPress={e => submitKeyMessage(e)}
         />
         </View>
-    
+        <View style={styles.box}>
+        <Pressable onPress={() => submitSearch()}>
+        <EvilIcons name='search' size={20} color="white" />
+        </Pressable> 
+        </View>
       </View>
     </View>
   );
@@ -37,12 +45,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: '2%',
   },
   input: {
-    width: '100%',
+    width: '80%',
+    marginRight: "1%"
+
   },
   div2: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+  },
+  box: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "15%",
+    padding: hp(20),
+    backgroundColor: colors.bazaraTint,
+    marginTop: hp(-10),
+    borderRadius: hp(10)
   },
 });

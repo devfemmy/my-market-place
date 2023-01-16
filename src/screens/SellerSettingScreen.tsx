@@ -446,6 +446,24 @@ const SellerSettingScreen = ({ navigation }: any) => {
             <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
           </View>
         </Pressable>
+        <View style={[globalStyles.rowBetween, styles.width90, localStyle.mTop]}>
+          <Text text='App Info' fontSize={hp(16)} fontWeight="600" lineHeight={28} />
+        </View>
+        <Pressable  onPress={() => handleDeleteAccount()}>
+          <View style={[globalStyles.rowStart, { marginHorizontal: hp(15), marginBottom: hp(10) }]} >
+            <Text text='Terms and Conditions' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
+          </View>
+        </Pressable>
+        <Pressable  onPress={() => handleDeleteAccount()}>
+          <View style={[globalStyles.rowStart, { marginHorizontal: hp(15), marginBottom: hp(10) }]} >
+            <Text text='Privacy Policies' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
+          </View>
+        </Pressable>
+        <Pressable  onPress={() => handleDeleteAccount()}>
+          <View style={[globalStyles.rowStart, { marginHorizontal: hp(15), marginBottom: hp(10) }]} >
+            <Text text='About us' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
+          </View>
+        </Pressable>
       
       </ScrollView>
 

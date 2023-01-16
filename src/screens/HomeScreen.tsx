@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react'
@@ -17,7 +18,7 @@ import { useIsFocused } from "@react-navigation/native";
 import SearchComponent from '../components/SearchComponent/SearchComponent'
 
 
-const HomeScreen = (navigation: any) => {
+const HomeScreen = ({navigation}: any) => {
   const dispatch = useAppDispatch()
   const [user, setUser] = useState<any>(null)
   const [searchValue, setSearchValue] = useState("")
@@ -45,16 +46,26 @@ const HomeScreen = (navigation: any) => {
 // }
 
 const  submitKeyMessage = ({ nativeEvent: { key: keyValue } }) => {
-  console.log(keyValue);
+
   if(keyValue === 'Enter')
   {
     console.log("enter");
   }
 };
+
+const submitSearch = () => {
+    if(searchValue?.length > 0){
+      return navigation.navigate("NoAuthSearch", {
+        params: {
+          search: searchValue
+        }
+      })
+    }
+}
   return (
     <SafeAreaView style={globalStyles.containerWrapper}>
       <UserHeader name={`${user?.first_name}`} image={user?.img_url} />
-      {/* <SearchComponent searchValue={searchValue} setSearchValue={setSearchValue} submitKeyMessage={(e: any) => submitKeyMessage(e)} /> */}
+      <SearchComponent submitSearch={submitSearch} searchValue={searchValue} setSearchValue={setSearchValue} submitKeyMessage={(e: any) => submitKeyMessage(e)} />
       <ScrollView  showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
         <View style={styles.imageCard}>
