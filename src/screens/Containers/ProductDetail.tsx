@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import React, {Component, useEffect, useRef, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {addToCart, CartData, getCarts} from '../../redux/slices/cartSlice';
 import {getStoreRating, storeRatings} from '../../redux/slices/StoreSlice';
@@ -509,6 +510,18 @@ const ProductDetail = (props: any) => {
 
 
   const messageSeller = async () => {
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+          apiKey: "AIzaSyCicX4foYtKhhR2A4VObeakIfCVK6mitS8",
+          authDomain: "chat-and-messaging-66e6e.firebaseapp.com",
+          databaseURL: "https://chat-and-messaging-66e6e-default-rtdb.firebaseio.com",
+          projectId: "chat-and-messaging-66e6e",
+          storageBucket: "chat-and-messaging-66e6e.appspot.com",
+          messagingSenderId: "962853764584",
+          appId: "1:962853764584:web:31d3dfa59bc269c8acf85d",
+          measurementId: "G-W9TY1FG8D5"
+      });
+    }
     try {
         setMessageLoader(true)
         const docRef =  await firestore().collection('messaging').add({
