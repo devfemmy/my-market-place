@@ -471,6 +471,19 @@ const ProductDetail = (props: any) => {
   }
 
   const saveForLater = async () => {
+    if(!userProfile){
+      Notifier.showNotification({
+        title: 'You need to be authenticated',
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+
+      return props.navigation.navigate("LoginScreen")
+    }
     try {
       const payload = {
         product_id: productDetail?.id,
@@ -508,6 +521,19 @@ const ProductDetail = (props: any) => {
 
 
   const messageSeller = async () => {
+    if(!userProfile){
+      Notifier.showNotification({
+        title: 'You need to be authenticated',
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+
+      return props.navigation.navigate("LoginScreen")
+    }
     try {
         setMessageLoader(true)
         const docRef =  await firestore().collection('messaging').add({

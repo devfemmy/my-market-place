@@ -45,7 +45,9 @@ const MobileSearch = (props: any) => {
         search: searchValue,
         rating: rate
     }
+  
     var response = await dispatch(elasticSearch(payload))
+
     if(elasticSearch.fulfilled.match(response)){
         setSearchResult(response?.payload)
         handleModalClose()
