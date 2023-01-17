@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -10,7 +11,10 @@ import { Button } from "../common/Button"
 import { Text } from "../common/Text"
 
 const FilterModal = ({modalVisible, closeModal, action, loading, rate, setRate}: any) => {
+   
+
     const handleRateSelect = (data:any) => {
+
         if(data === rate){
             setRate(0)
         }
@@ -36,36 +40,37 @@ const FilterModal = ({modalVisible, closeModal, action, loading, rate, setRate}:
                     <View style={styles.mandiv}>
                         <View style={styles.ratdiv}>
                             <Pressable onPress={() => handleRateSelect(5)} >
-                            <View style={[styles.circle, {backgroundColor: rate === 5 ? colors.bazaraTint : ""}]} />
+                            <View style={[styles.circle, {backgroundColor: rate === 5 ? colors.bazaraTint : "black"}]} />
                             </Pressable>
-                            <Text text='5 stars' fontSize={hp(20)} fontWeight='bold'  />
+                            <Text text='5 stars' fontSize={hp(16)} fontWeight='bold'  />
                         </View>
                         <View style={styles.ratdiv}>
                             <Pressable onPress={() => handleRateSelect(4)} >
-                            <View style={[styles.circle, {backgroundColor: rate === 4 ? colors.bazaraTint : ""}]} />
+                            <View style={[styles.circle, {backgroundColor: rate === 4 ? colors.bazaraTint : "black"}]} />
                             </Pressable>
-                            <Text text='4 stars' fontSize={hp(20)} fontWeight='bold'  />
+                            <Text text='4 stars' fontSize={hp(16)} fontWeight='bold'  />
                         </View>
                         <View style={styles.ratdiv}>
                             <Pressable onPress={() => handleRateSelect(3)} >
-                            <View style={[styles.circle, {backgroundColor: rate === 3 ? colors.bazaraTint : ""}]} />
+                            <View style={[styles.circle, {backgroundColor: rate === 3 ? colors.bazaraTint : "black"}]} />
                             </Pressable>
-                            <Text text='3 stars' fontSize={hp(20)} fontWeight='bold'  />
+                            <Text text='3 stars' fontSize={hp(16)} fontWeight='bold'  />
                         </View>
                         <View style={styles.ratdiv}>
                             <Pressable onPress={() => handleRateSelect(2)} >
-                            <View style={[styles.circle, {backgroundColor: rate === 2 ? colors.bazaraTint : ""}]} />
+                            <View style={[styles.circle, {backgroundColor: rate === 2 ? colors.bazaraTint : "black"}]} />
                             </Pressable>
-                            <Text text='2 stars' fontSize={hp(20)} fontWeight='bold'  />
+                            <Text text='2 stars' fontSize={hp(16)} fontWeight='bold'  />
                         </View>
                         <View style={styles.ratdiv}>
                             <Pressable onPress={() => handleRateSelect(1)} >
-                            <View style={[styles.circle, {backgroundColor: rate === 1 ? colors.bazaraTint : ""}]} />
+                            <View style={[styles.circle, {backgroundColor: rate === 1 ? colors.bazaraTint : "black"}]} />
                             </Pressable>
-                            <Text text='1 stars' fontSize={hp(20)} fontWeight='bold'  />
+                            <Text text='1 stars' fontSize={hp(16)} fontWeight='bold'  />
                         </View>
                     </View>
                 </View>
+                <View style={{marginVertical: hp(20)}} />
                 <Button isLoading={loading} title={"Filter"} onPress={() => action()} />
             </View>
 
@@ -97,16 +102,16 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
     },
     activeBox: {
-        width: wp(20),
-        height: hp(20),
+        width: wp(16),
+        height: hp(16),
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: colors.bazaraTint,
         borderRadius: 50
     },
     inactiveBox: {
-        width: wp(20),
-        height: hp(20),
+        width: wp(16),
+        height: hp(16),
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: colors.darkBlack,
