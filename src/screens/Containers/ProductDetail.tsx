@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -20,7 +23,7 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {deliveryFee} from '../../redux/slices/AddressSlice';
 import * as Progress from 'react-native-progress';
-import {fetchReviews} from '../../redux/slices/ReviewSlice';
+import {addReview, fetchReviews} from '../../redux/slices/ReviewSlice';
 import CommentCard from './CommentCard';
 import {getProductBySlugBuyer} from '../../redux/slices/productSlice';
 import {locationData} from '../../utils/constants';
@@ -47,6 +50,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import HTMLView from 'react-native-htmlview';
 import {AppVersion} from '../../config/config';
 import { profileInfo } from '../../redux/slices/ProfileSlice';
+import ReviewContainer from './ReviewContainer';
 
 const ProductDetail = (props: any) => {
   const dispatch = useAppDispatch();
@@ -80,17 +84,82 @@ const ProductDetail = (props: any) => {
   const [deliveryFeeData, setDeliveryFeeData] = useState(0);
   const [productRating, setProductRating] = useState<any>(null);
   const [stateLoader, setStateLoader] = useState(false);
+  const [comment, setComment] = useState('')
+  const [commentValue, setCommentValue] = useState('')
+  const [rateValue, setRateValue] = useState<number>(0)
+  const [rateLoader, setRateLoader] = useState(false)
 
   const initialValues = {
     state: '',
     city: '',
   };
 
+  const handleRateSubmit = async () => {
+    if(rateValue < 1) {
+        Notifier.showNotification({
+          title: 'Please rate this product',
+          // description: "tghdddfdfd",
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+        return
+    }
+
+    const payload = {
+        rating: rateValue,
+        product_id: productDetail?.id,
+        comment: commentValue
+    }
+    setRateLoader(true)
+    try {
+        const response = await dispatch(addReview(payload))
+        if(addReview.fulfilled.match(response)){
+            setRateLoader(false)
+              dispatch(fetchReviews(productDetail?.id)).then((dd) => {
+                setProductRating(dd?.payload);
+              });
+              setRateValue(0)
+              setCommentValue("")
+            Notifier.showNotification({
+              title: 'Review submitted successfully',
+              // description: "tghdddfdfd",
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'success',
+              },
+            });
+
+        }
+        else {
+            // eslint-disable-next-line prefer-const
+            let errMsg = response?.payload as string
+            setRateLoader(false)
+            Notifier.showNotification({
+              title: errMsg,
+              // description: "tghdddfdfd",
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'error',
+              },
+            });
+        }
+    }
+    catch(e) {
+        console.log({e})
+    }
+}
+
+
   const handleLandMark = (data: any) => {};
 
   useEffect(() => {
     const loadToken = async () => {
-      var token = (await AsyncStorage.getItem('token')) as string;
+      let token = (await AsyncStorage.getItem('token')) as string;
       setGetUserToken(token);
     };
     loadToken();
@@ -117,11 +186,11 @@ const ProductDetail = (props: any) => {
       };
 
       try {
-        var response = await dispatch(deliveryFee(payload));
+        let response = await dispatch(deliveryFee(payload));
         if (deliveryFee.fulfilled.match(response)) {
           setDeliveryFeeData(response?.payload?.delivery_Fee);
         } else {
-          var errMsg = response.payload as string;
+          let errMsg = response.payload as string;
           //   toast.error(errMsg)
         }
       } catch (e) {
@@ -146,7 +215,7 @@ const ProductDetail = (props: any) => {
   useEffect(() => {
     const loadData = async () => {
       setStateLoader(true);
-      var response = await dispatch(getProductBySlugBuyer(slugName));
+      let response = await dispatch(getProductBySlugBuyer(slugName));
       if (getProductBySlugBuyer.fulfilled.match(response)) {
         const act = response?.payload?.product_variants?.filter(
           (dd: any) => dd.status === 'ACTIVE',
@@ -169,7 +238,7 @@ const ProductDetail = (props: any) => {
         setProductDetail(response.payload);
         setStateLoader(false);
       } else {
-        var errMsg = response?.payload as string;
+        let errMsg = response?.payload as string;
         console.log({errMsg});
         setStateLoader(false);
       }
@@ -260,7 +329,7 @@ const ProductDetail = (props: any) => {
 
     setLoader(true);
     if (getUserToken) {
-      var res = await dispatch(addToCart(data));
+      let res = await dispatch(addToCart(data));
       if (addToCart.fulfilled.match(res)) {
         setLoader(false);
         console.log({res});
@@ -290,7 +359,7 @@ const ProductDetail = (props: any) => {
         // toast.error(errMsg)
       }
     } else {
-      var getExisting =
+      let getExisting =
         (await AsyncStorage.getItem('cart')
           .then((req: any) => JSON.parse(req))
           .then(json => json)
@@ -345,7 +414,7 @@ const ProductDetail = (props: any) => {
 
     setLoader2(true);
     if (getUserToken) {
-      var res = await dispatch(addToCart(data));
+      let res = await dispatch(addToCart(data));
       if (addToCart.fulfilled.match(res)) {
         setLoader2(false);
         props.navigation.navigate('CartScreen', {
@@ -377,7 +446,7 @@ const ProductDetail = (props: any) => {
         // toast.error(errMsg)
       }
     } else {
-      var getExisting =
+      let getExisting =
         (await AsyncStorage.getItem('cart')
           .then((req: any) => JSON.parse(req))
           .then(json => json)
@@ -489,7 +558,7 @@ const ProductDetail = (props: any) => {
         product_id: productDetail?.id,
       };
       setLoader(true);
-      var response = await dispatch(addToWishlist(payload));
+      let response = await dispatch(addToWishlist(payload));
       if (addToWishlist.fulfilled.match(response)) {
         setLoader(false);
         Notifier.showNotification({
@@ -503,7 +572,7 @@ const ProductDetail = (props: any) => {
         });
       } else {
         setLoader(false);
-        var errMsg = response?.payload as string;
+        let errMsg = response?.payload as string;
         Notifier.showNotification({
           title: errMsg,
           description: '',
@@ -841,21 +910,24 @@ const ProductDetail = (props: any) => {
               <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
             </View>
           </View>
-          {productRating?.map((data: any) => {
-            return (
-              <CommentCard
-                image={data?.user?.img_url}
-                name={data?.user?.first_name + ' ' + data?.user?.last_name}
-                comment={data?.comment?.comment}
-                date={data?.created_at}
-                rate={data?.rating}
-                id={data?._id}
-                reply={data?.comment?.reply}
-                commentId={data?.comment?.id}
-                productOwner={productDetail?.user_id}
-              />
-            );
-          })}
+
+         <Pressable onPress={() => props?.navigation.navigate("Ratings", {
+                                    params: {
+                                        id: productDetail?.id,
+                                        ownerId: productDetail?.user_id,
+                                        productRating: productRating,
+                                        ratings: productDetail?.rating
+                                    }
+                                })}>
+         <View style={{marginTop: hp(10)}}>
+            <Text text='All Comments' color={colors.bazaraTint} textAlign="center" />
+          </View>
+         </Pressable>
+          <View style={styles.br}></View>
+          {
+            AppVersion === 3 && userProfile && <ReviewContainer rate={rateValue} setRate={setRateValue} comment={commentValue} setComment={(e) => setCommentValue(e)} loader={rateLoader} handleRateSubmit={handleRateSubmit}  />
+          }
+
           <View style={styles.br}></View>
         </View>
       </ScrollView>
