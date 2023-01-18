@@ -21,7 +21,7 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {deliveryFee} from '../../redux/slices/AddressSlice';
 import * as Progress from 'react-native-progress';
-import {fetchReviews} from '../../redux/slices/ReviewSlice';
+import {addReview, fetchReviews} from '../../redux/slices/ReviewSlice';
 import CommentCard from './CommentCard';
 import {getProductBySlugBuyer} from '../../redux/slices/productSlice';
 import {locationData} from '../../utils/constants';
@@ -48,6 +48,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import HTMLView from 'react-native-htmlview';
 import {AppVersion} from '../../config/config';
 import { profileInfo } from '../../redux/slices/ProfileSlice';
+import ReviewContainer from './ReviewContainer';
 
 const ProductDetail = (props: any) => {
   const dispatch = useAppDispatch();
@@ -81,6 +82,10 @@ const ProductDetail = (props: any) => {
   const [deliveryFeeData, setDeliveryFeeData] = useState(0);
   const [productRating, setProductRating] = useState<any>(null);
   const [stateLoader, setStateLoader] = useState(false);
+  const [commentValue, setCommentValue] = useState('')
+  const [rateValue, setRateValue] = useState<number>(0)
+  const [rateLoader, setRateLoader] = useState(false)
+
 
   const initialValues = {
     state: '',
@@ -105,6 +110,67 @@ const ProductDetail = (props: any) => {
     }),
     onSubmit: (data: {state: string; city: string}) => handleLandMark(data),
   });
+
+  const handleRateSubmit = async () => {
+    if(rateValue < 1) {
+        Notifier.showNotification({
+          title: 'Please rate this product',
+          description: '',
+          Component: NotifierComponents.Alert,
+          hideOnPress: false,
+          componentProps: {
+            alertType: 'error',
+          },
+        });
+        return
+    }
+
+    const payload = {
+        rating: rateValue,
+        product_id: productDetail?.id,
+        comment: commentValue
+    }
+    setRateLoader(true)
+    try {
+        var response = await dispatch(addReview(payload))
+        if(addReview.fulfilled.match(response)){
+            setRateLoader(false)
+           
+              dispatch(fetchReviews(productDetail?.id)).then((dd) => {
+                setProductRating(dd?.payload);
+              });
+              setRateValue(0)
+              setCommentValue("")
+            Notifier.showNotification({
+              title: 'Review submitted successfully',
+              description: '',
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'success',
+              },
+            });
+
+        }
+        else {
+            var errMsg = response?.payload as string
+            setRateLoader(false)
+            Notifier.showNotification({
+              title: errMsg,
+              description: '',
+              Component: NotifierComponents.Alert,
+              hideOnPress: false,
+              componentProps: {
+                alertType: 'error',
+              },
+            });
+        }
+    }
+    catch(e) {
+        console.log({e})
+    }
+}
+
 
   useEffect(() => {
     const getDeliveryFee = async () => {
@@ -472,7 +538,18 @@ const ProductDetail = (props: any) => {
   }
 
   const saveForLater = async () => {
-    console.log('clicked save for later')
+    if(!userProfile){
+      Notifier.showNotification({
+        title: 'You need to be authenticated',
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+      return props.navigation.navigate("LoginScreen")
+    }
     try {
       const payload = {
         product_id: productDetail?.id,
@@ -510,6 +587,18 @@ const ProductDetail = (props: any) => {
 
 
   const messageSeller = async () => {
+    if(!userProfile){
+      Notifier.showNotification({
+        title: 'You need to be authenticated',
+        description: '',
+        Component: NotifierComponents.Alert,
+        hideOnPress: false,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+      return props.navigation.navigate("LoginScreen")
+    }
     if (!firebase.apps.length) {
       firebase.initializeApp({
           apiKey: "AIzaSyCicX4foYtKhhR2A4VObeakIfCVK6mitS8",
@@ -828,24 +917,26 @@ const ProductDetail = (props: any) => {
               <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
             </View>
           </View>
-          {productRating?.map((data: any) => {
-            return (
-              <CommentCard
-                image={data?.user?.img_url}
-                name={data?.user?.first_name + ' ' + data?.user?.last_name}
-                comment={data?.comment?.comment}
-                date={data?.created_at}
-                rate={data?.rating}
-                id={data?._id}
-                reply={data?.comment?.reply}
-                commentId={data?.comment?.id}
-                productOwner={productDetail?.user_id}
-              />
-            );
-          })}
+         <Pressable onPress={() => props?.navigation.navigate("Ratings", {
+                                    params: {
+                                        id: productDetail.id,
+                                        ownerId: productDetail?.user_id,
+                                        productRating: productRating,
+                                        ratings: productDetail?.rating
+                                    }
+                                })}>
+         <View style={{marginTop: hp(10)}}>
+            <Text text='All Comments' color={colors.bazaraTint} textAlign="center" />
+          </View>
+         </Pressable>
           <View style={styles.br}></View>
         </View>
+        {
+            AppVersion === 3 && userProfile && <ReviewContainer rate={rateValue} setRate={setRateValue} comment={commentValue} setComment={(e) => setCommentValue(e)} loader={rateLoader} handleRateSubmit={handleRateSubmit}  />
+          }
+
       </ScrollView>
+
       {AppVersion !== 3 ? (
         <View style={styles.btn}>
           <Button
