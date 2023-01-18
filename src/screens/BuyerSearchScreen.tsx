@@ -13,6 +13,7 @@ import { FlatGrid } from 'react-native-super-grid';
 import Search from '../components/Search'
 import EmptyState2 from '../components/common/EmptyState'
 import { globalSearch } from '../assets'
+import FilterModal from '../components/FilterModal/FilterModal'
 
 
 const BuyerSearchScreen = (props: any) => {
@@ -20,6 +21,36 @@ const BuyerSearchScreen = (props: any) => {
   const dispatch = useAppDispatch()
 
   const [searchResult, setSearchResult] = useState<any>([])
+    const [modalVisible, setModalVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [rate, setRate] = useState(0)
+
+  const handleModalOpen = () => {
+    setModalVisible(true)
+  }
+
+  const handleModalClose = () => {
+    setModalVisible(false)
+  }
+
+  const handleFilterAct = async () => {
+    setLoading(true)
+    const payload = {
+        search: searchValue,
+        rating: rate
+    }
+    var response = await dispatch(elasticSearch(payload))
+    if(elasticSearch.fulfilled.match(response)){
+        setSearchResult(response?.payload)
+        handleModalClose()
+        setLoading(false)
+    }
+    else {
+        var errMsg = response?.payload as string
+        handleModalClose()
+        setLoading(false)
+    }
+  }
 
 
   useEffect(() => {
@@ -53,7 +84,7 @@ const BuyerSearchScreen = (props: any) => {
     <View style={styles.container}>
       <MobileHeader categoryName={'Explore'} props={props} />
       <View>
-        <Input searchInput label={'Search top selling products'} value={searchValue} onChangeText={(e) => setSearchValue(e)} />
+        <Input  label={'Search top selling products'} value={searchValue} onChangeText={(e) => setSearchValue(e)} isFilter handleFilter={() => handleModalOpen()} />
       </View>
       <ScrollView  showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
@@ -82,6 +113,8 @@ const BuyerSearchScreen = (props: any) => {
         }
 
       </ScrollView>
+
+        <FilterModal modalVisible={modalVisible} rate={rate} setRate={setRate} closeModal={handleModalClose} action={() => handleFilterAct()} loading={loading} />
     </View>
   )
 }

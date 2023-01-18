@@ -446,6 +446,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
             <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(10) }} />
           </View>
         </Pressable>
+
       
       </ScrollView>
 

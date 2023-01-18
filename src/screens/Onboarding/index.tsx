@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import {StatusBar, View, StyleSheet, ScrollView, ActivityIndicator, FlatList, Image, ImageBackground, Dimensions} from 'react-native';
+import {StatusBar, View, StyleSheet, ScrollView, ActivityIndicator, FlatList, Image, ImageBackground, Dimensions, Pressable} from 'react-native';
 import {SafeAreaView, Text} from '../../components/common';
 import { colors } from '../../utils/themes';
 import { onboard1, onboard2, onboard3, onboard4, onboard5, onboard6, onboard7, onboard8, onboard9, onboarBackground } from '../../constants/images';
@@ -33,7 +33,6 @@ export const OnboardScreen = (): JSX.Element => {
       loadToken()
   }, [])
 
-  console.log({token})
 
   return (
     <SafeAreaView>
@@ -72,6 +71,9 @@ export const OnboardScreen = (): JSX.Element => {
             lineHeight={hp(25)}
             style={{marginTop: hp(20)}}
             />
+            <Pressable onPress={() => console.log("i press")}>
+              <Text text="hello world" />
+            </Pressable>
             <View style={[globalStyles.rowCenter, styles.btn]}>
                 <Button title={'Get Started'} style={styles.btn} onPress={token ? () => navigation.navigate("BuyerScreen","Home") : () => navigation.navigate("HomeScreen")} />
             </View>

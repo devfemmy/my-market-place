@@ -12,6 +12,8 @@ type InputProps = ComponentProps<typeof BaseInput> & {
   errorMsg?: string;
   label: string;
   isPassword?: boolean;
+  handleFilter?: (value?: any) => void;
+  isFilter?: boolean;
   searchInput?: boolean;
   placeholder?: string;
   containerStyle?: StyleProp<ViewStyle>;
@@ -25,12 +27,14 @@ export const Input = memo(
   ({
     errorMsg,
     isPassword = false,
+    isFilter = false,
     searchInput = false,
     containerStyle,
     placeholder,
     disabled,
     label,
     number,
+    handleFilter,
     iconMarginTop,
     ...rest
   }: InputProps) => {
@@ -63,6 +67,14 @@ export const Input = memo(
                 color={colors.white}
                 onPress={toggleEntry}
                 name={secureTextEntry ? 'eye-off' : 'eye'}
+              />
+            ) : isFilter ? (
+              <BaseInput.Icon
+                color={colors.white}
+                onPress={handleFilter}
+                name={'filter'}
+                size={hp(25)}
+                style={{marginTop: iconMarginTop}}
               />
             ) : null
           }
