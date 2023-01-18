@@ -221,6 +221,21 @@ const lineViews = storeData?.map((data: any) => data?.sales);
     }
 
   ]
+  const StoreInfoData2 = [
+    {
+      id: 1,
+      title: "Product",
+      value: productList?.length,
+      icon: Union,
+    },
+    {
+      id: 2,
+      title: "Staff",
+      value: staffList?.length,
+      icon: Profile,
+    }
+
+  ]
 
 
   const AnalyticsRender = ({ item }: any) => (
@@ -346,7 +361,7 @@ const lineViews = storeData?.map((data: any) => data?.sales);
               productList?.length > 0 && <View>
                 
                 <FlatList
-                  data={StoreInfoData}
+                  data={StoreInfoData2}
                   renderItem={StoreInfoRender}
                   keyExtractor={item => item.id}
                   horizontal
