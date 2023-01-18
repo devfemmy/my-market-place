@@ -310,7 +310,7 @@ const SellerChatBox = (props: any) => {
                               <Text text={`Size: ${data?.details?.size}`} fontSize={hp(14)} />
                               <Text text={`Quantity: ${data?.details?.quantity}`} fontSize={hp(14)} style={{ marginHorizontal: hp(10) }} />
                               <Text
-                                text={`₦${numberFormat(Number(data?.details?.price) || 0)}`}
+                                text={`₦${numberFormat(Number(data?.details?.price * data?.details?.quantity) || 0)}`}
                                 fontSize={hp(16)}
                                 color={colors.accent}
                                 numberOfLines={1}
@@ -377,7 +377,7 @@ const SellerChatBox = (props: any) => {
                               <Text text={`Size: ${data?.details?.size}`} fontSize={hp(14)} />
                               <Text text={`Quantity: ${data?.details?.quantity}`} fontSize={hp(14)} style={{ marginHorizontal: hp(10) }} />
                               <Text
-                                text={`₦${numberFormat(Number(data?.details?.price) || 0)}`}
+                                text={`₦${numberFormat(Number(data?.details?.price * data?.details?.quantity) || 0)}`}
                                 fontSize={hp(16)}
                                 color={colors.accent}
                                 numberOfLines={1}
