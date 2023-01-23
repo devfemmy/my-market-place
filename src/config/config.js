@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable radix */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {API_URL_VERSION,
     API_URL_STAGING_VERIFICATION,
     API_URL_DEV_URL,
+    API_URL_NODE_ENV,
     API_URL_DEV_URL_V2,
     API_URL_DEV_PAY_STACK_TEST,
     API_URL_STAGING_URL,
@@ -18,7 +21,7 @@ import {API_URL_VERSION,
   } from "@env"
 
 
-const SETCONFIG = 'PROD';
+const SETCONFIG = API_URL_NODE_ENV;
 export const AppVersion = parseInt(API_URL_VERSION)
 
 // console.log({SETCONFIG, API_URL_PRODUCTION_URL_V2})
