@@ -550,7 +550,7 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                   </Pressable>
                 }
 
-<Pressable onPress={() => {Linking.openURL('https://bazara.co/privacy-policy')}}>
+<Pressable onPress={() => {Linking.openURL('https://bazara.co/privacy')}}>
                   <Text text='Privacy and Policy' fontSize={hp(14)} color={colors.antdPurple} style={{ marginVertical: hp(20) }} fontWeight='400' />
                 </Pressable>
                 <Pressable onPress={() => handleDeleteAccount()}>
