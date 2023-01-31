@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -45,11 +46,13 @@ const HomeScreen = ({navigation}: any) => {
  
 // }
 
-const  submitKeyMessage = ({ nativeEvent: { key: keyValue } }) => {
-
-  if(keyValue === 'Enter')
-  {
-    console.log("enter");
+const  submitKeyMessage = (e) => {
+  if(searchValue?.length > 0){
+    return navigation.navigate("NoAuthSearch", {
+      params: {
+        search: searchValue
+      }
+    })
   }
 };
 
