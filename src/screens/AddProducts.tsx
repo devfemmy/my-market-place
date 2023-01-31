@@ -309,7 +309,6 @@ setDeleteInfo(null)
         }
     }
 
-    console.log({getSlug})
 
 
     const addAnotherColor = async () => {
@@ -457,15 +456,15 @@ const styles = StyleSheet.create({
         paddingVertical: hp(5)
     },
     activeBox: {
-        width: wp(20),
-        height: hp(20),
+        width: wp(15),
+        height: hp(15),
         alignItems: 'center',
         backgroundColor: colors.bazaraTint,
         borderRadius: 5
     },
     inactiveBox: {
-        width: wp(20),
-        height: hp(20),
+        width: wp(15),
+        height: hp(15),
         alignItems: 'center',
         backgroundColor: colors.darkBlack,
         borderRadius: 5,

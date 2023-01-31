@@ -56,35 +56,35 @@ const RatingScreen = (props: any) => {
                 <Text text={`${productRating?.length} review`} style={{ marginTop: hp(20) }} fontWeight='bold' />
                 <View style={globalStyles.rowBetween}>
                     <View style={styles.textDiv2}>
-                        <Text text='Excellent' fontSize={hp(16)} />
+                        <Text text='Excellent' fontSize={hp(13)} />
                     </View>
                     <View style={styles.progressDiv}>
                         <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={excellent ? (excellent?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={excellent ? excellent?.length : 0} fontSize={hp(16)} />
+                        <Text text={excellent ? excellent?.length : 0} fontSize={hp(13)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
                     <View style={styles.textDiv2}>
-                        <Text text='Very good' fontSize={hp(16)} />
+                        <Text text='Very good' fontSize={hp(13)} />
                     </View>
                     <View style={styles.progressDiv}>
                         <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={good ? (good?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={good ? good?.length : 0} fontSize={hp(16)} />
+                        <Text text={good ? good?.length : 0} fontSize={hp(13)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
                     <View style={styles.textDiv2}>
-                        <Text text='Average' fontSize={hp(16)} />
+                        <Text text='Average' fontSize={hp(13)} />
                     </View>
                     <View style={styles.progressDiv}>
                         <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={average ? (average?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={average ? average?.length : 0} fontSize={hp(16)} />
+                        <Text text={average ? average?.length : 0} fontSize={hp(13)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
@@ -95,18 +95,18 @@ const RatingScreen = (props: any) => {
                         <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={poor ? (poor?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={poor ? poor?.length : 0} fontSize={hp(16)} />
+                        <Text text={poor ? poor?.length : 0} fontSize={hp(13)} />
                     </View>
                 </View>
                 <View style={globalStyles.rowBetween}>
                     <View style={styles.textDiv2}>
-                        <Text text='Terrible' fontSize={hp(16)} />
+                        <Text text='Terrible' fontSize={hp(13)} />
                     </View>
                     <View style={styles.progressDiv}>
                         <Progress.Bar style={styles.progress} height={8} color={colors.bazaraTint} progress={terrible ? (terrible?.length / 1000) : 0} width={200} />
                     </View>
                     <View>
-                        <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
+                        <Text text={terrible ? terrible?.length : 0} fontSize={hp(13)} />
                     </View>
                 </View>
             </View>
