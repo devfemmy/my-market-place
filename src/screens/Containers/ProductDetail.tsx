@@ -677,7 +677,7 @@ const ProductDetail = (props: any) => {
           </Slick>
         </View>
         <View style={{paddingHorizontal: hp(10)}}>
-          <Text text={productDetail?.name} style={{marginVertical: hp(10)}} />
+          <Text text={productDetail?.name} fontSize={hp(16)} style={{marginVertical: hp(10)}} />
           <View style={[globalStyles.rowBetween, styles.pd]}>
             <TouchableOpacity
               onPress={() =>
@@ -688,7 +688,7 @@ const ProductDetail = (props: any) => {
                 })
               }>
               <View>
-                <Text style={styles.txt} text="Visit Store" fontSize={hp(18)} />
+                <Text style={styles.txt} text="Visit Store" fontSize={hp(16)} />
               </View>
             </TouchableOpacity>
             <View>
@@ -715,7 +715,7 @@ const ProductDetail = (props: any) => {
           <View>
             <Text
               text={`₦${numberFormat(Number(activeVariant?.price) || 0)}`}
-              fontSize={hp(18)}
+              fontSize={hp(16)}
               color={colors.accent}
               numberOfLines={1}
               fontWeight={'600'}
@@ -724,7 +724,7 @@ const ProductDetail = (props: any) => {
           </View>
           {variantList?.some((vd: any) => vd['color'] !== null) && (
             <View style={styles.contView}>
-              <Text style={styles.sizeText} text="Available Colors" fontSize={hp(18)} />
+              <Text style={styles.sizeText} text="Available Colors" fontSize={hp(16)} />
               <FlatList
                 data={sizeVarList}
                 keyExtractor={item => item?.id}
@@ -736,7 +736,7 @@ const ProductDetail = (props: any) => {
           )}
           {variantSpec?.some((vd: any) => vd['size'] !== null) && (
             <View style={styles.contView}>
-              <Text style={styles.sizeText} text="Available Sizes" fontSize={hp(18)} />
+              <Text style={styles.sizeText} text="Available Sizes" fontSize={hp(16)} />
               <FlatList
                 data={variantSpec}
                 keyExtractor={item => item?.id}
@@ -766,7 +766,7 @@ const ProductDetail = (props: any) => {
             </Pressable>
           </View>
 
-          <View style={styles.tagDiv}>
+          <View style={[styles.tagDiv, {marginTop: hp(10)}]}>
             <Text
               text={`${activeVariant?.quantity ? activeVariant?.quantity : '0'} item left`}
               textAlign="center"
@@ -777,7 +777,7 @@ const ProductDetail = (props: any) => {
 
           <View style={styles.contView}>
             <Text
-              fontSize={hp(18)}
+              fontSize={hp(16)}
               text={`Delivery in ${
                 productDetail?.estimated_deliery_duration
                   ? productDetail?.estimated_deliery_duration
@@ -799,13 +799,13 @@ const ProductDetail = (props: any) => {
             />
           </View>
           <View style={styles.contView}>
-            <Text text="Description" fontSize={hp(18)} />
+            <Text text="Description" fontSize={hp(16)} />
             <HTMLView value={htmlContent} stylesheet={styles} />
           </View>
 
          {
             AppVersion !== 3 &&  <View style={styles.contView}>
-            <Text text="Choose a Location" style={styles.locationText} fontSize={hp(18)} />
+            <Text text="Choose a Location" style={styles.locationText} fontSize={hp(16)} />
             <View style={styles.dp}>
               <Select
                 items={locationState}
@@ -829,12 +829,12 @@ const ProductDetail = (props: any) => {
           </View>
          }
           <View>
-            <Text text="Customers Feedback" fontSize={hp(18)} />
+            <Text text="Customers Feedback" fontSize={hp(16)} />
             <Text text={`${productRating ? productRating?.length : 0} review`} />
           </View>
           <View style={globalStyles.rowBetween}>
             <View style={styles.textDiv}>
-              <Text text="Excellent" fontSize={hp(16)} />
+              <Text text="Excellent" fontSize={hp(12)} />
             </View>
             <View style={styles.progressDiv}>
               <Progress.Bar
@@ -846,12 +846,12 @@ const ProductDetail = (props: any) => {
               />
             </View>
             <View>
-              <Text text={excellent ? excellent?.length : 0} fontSize={hp(16)} />
+              <Text text={excellent ? excellent?.length : 0} fontSize={hp(12)} />
             </View>
           </View>
           <View style={globalStyles.rowBetween}>
             <View style={styles.textDiv}>
-              <Text text="Very good" fontSize={hp(16)} />
+              <Text text="Very good" fontSize={hp(12)} />
             </View>
             <View style={styles.progressDiv}>
               <Progress.Bar
@@ -863,12 +863,12 @@ const ProductDetail = (props: any) => {
               />
             </View>
             <View>
-              <Text text={good ? good?.length : 0} fontSize={hp(16)} />
+              <Text text={good ? good?.length : 0} fontSize={hp(12)} />
             </View>
           </View>
           <View style={globalStyles.rowBetween}>
             <View style={styles.textDiv}>
-              <Text text="Average" fontSize={hp(16)} />
+              <Text text="Average" fontSize={hp(12)} />
             </View>
             <View style={styles.progressDiv}>
               <Progress.Bar
@@ -880,12 +880,12 @@ const ProductDetail = (props: any) => {
               />
             </View>
             <View>
-              <Text text={average ? average?.length : 0} fontSize={hp(16)} />
+              <Text text={average ? average?.length : 0} fontSize={hp(12)} />
             </View>
           </View>
           <View style={globalStyles.rowBetween}>
             <View style={styles.textDiv}>
-              <Text text="Poor" fontSize={hp(16)} />
+              <Text text="Poor" fontSize={hp(12)} />
             </View>
             <View style={styles.progressDiv}>
               <Progress.Bar
@@ -897,12 +897,12 @@ const ProductDetail = (props: any) => {
               />
             </View>
             <View>
-              <Text text={poor ? poor?.length : 0} fontSize={hp(16)} />
+              <Text text={poor ? poor?.length : 0} fontSize={hp(12)} />
             </View>
           </View>
           <View style={globalStyles.rowBetween}>
             <View style={styles.textDiv}>
-              <Text text="Terrible" fontSize={hp(16)} />
+              <Text text="Terrible" fontSize={hp(12)} />
             </View>
             <View style={styles.progressDiv}>
               <Progress.Bar
@@ -914,7 +914,7 @@ const ProductDetail = (props: any) => {
               />
             </View>
             <View>
-              <Text text={terrible ? terrible?.length : 0} fontSize={hp(16)} />
+              <Text text={terrible ? terrible?.length : 0} fontSize={hp(12)} />
             </View>
           </View>
          <Pressable onPress={() => props?.navigation.navigate("Ratings", {
@@ -1055,6 +1055,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: hp(50)
   },
   br: {
     marginBottom: hp(10),

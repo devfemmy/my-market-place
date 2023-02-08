@@ -16,10 +16,10 @@ const Search = ({ data, image, name, amount, slug, mini }: any) => {
                 }
             })}>
                 <Image source={{uri: image}} style={styles.img} />
-                <Text text={truncate(name, 16)} />
+                <Text text={truncate(name, 16)} fontSize={hp(14)} style={{marginTop: hp(5)}} />
                 <Text
                     text={`₦${numberFormat(Number(amount) || 0)}`}
-                    fontSize={hp(18)}
+                    fontSize={hp(12)}
                     color={colors.accent}
                     numberOfLines={1}
                     fontWeight={'600'}

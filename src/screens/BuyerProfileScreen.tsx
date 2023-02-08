@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { View, StyleSheet, Pressable, Switch, ScrollView, Image, Platform } from 'react-native'
+import { View, StyleSheet, Pressable, Switch, ScrollView, Image, Platform, Linking } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../components/common/Button'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -549,9 +550,11 @@ const BuyerProfileScreen = ({ navigation }: any) => {
                   </Pressable>
                 }
 
-
+<Pressable onPress={() => {Linking.openURL('https://bazara.co/privacy')}}>
+                  <Text text='Privacy and Policy' fontSize={hp(14)} color={colors.antdPurple} style={{ marginVertical: hp(20) }} fontWeight='400' />
+                </Pressable>
                 <Pressable onPress={() => handleDeleteAccount()}>
-                  <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginVertical: hp(20) }} fontWeight='400' />
+                  <Text text='Delete Account' fontSize={hp(14)} color={colors.bazaraTint} style={{ marginBottom: hp(20) }} fontWeight='400' />
                 </Pressable>
 
                 <Pressable onPress={() => signOut()}>

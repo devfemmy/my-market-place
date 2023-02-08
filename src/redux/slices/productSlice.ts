@@ -67,9 +67,9 @@ export const updateProduct = createAsyncThunk(
 
 export const elasticSearch = createAsyncThunk(
     'product/elasticSearch',
-    async (payload: { search: string }, { rejectWithValue }) => {
+    async (payload: { search: string,rating?: number }, { rejectWithValue }) => {
         try {
-            const response = await getRequest(`/product/search?search_string=${payload.search}`)
+            const response = await getRequest(`/product/search?search_string=${payload.search}&rating=${payload?.rating}`)
             if (response?.status === 200) {
                 return response?.data?.data
             }

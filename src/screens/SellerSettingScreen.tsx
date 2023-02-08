@@ -7,7 +7,7 @@ import { styles } from '../screens/auth/Register/styles';
 import { Button } from '../components/common/Button';
 
 import { AuthContext } from '../context/context';
-import { hp, wp } from '../utils/helpers';
+import { capitalizeSentence, hp, wp } from '../utils/helpers';
 import { colors } from '../utils/themes';
 import { blueUni, blueUser, storeActive, truckLogo, universityLogo, usersLogo } from '../assets';
 import ListCard from '../components/resuable/ListCard';
@@ -365,7 +365,7 @@ const SellerSettingScreen = ({ navigation }: any) => {
                     <View style={globalStyles.rowBetween}>
                       <View style={localStyle.menudiv}>
                         <Text text={data?.brand_name} />
-                        <Text text={data?.store_role} color={colors.gray} />
+                        <Text text={capitalizeSentence(data?.store_role)} color={colors.gray} />
                       </View>
                       {
                         data?.id === activeId && <Image style={localStyle.image} source={{ uri: "https://res.cloudinary.com/doouwbecx/image/upload/v1659439185/Group_10652_tia6rl.png" }} />

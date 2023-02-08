@@ -71,9 +71,6 @@ export const OnboardScreen = (): JSX.Element => {
             lineHeight={hp(25)}
             style={{marginTop: hp(20)}}
             />
-            <Pressable onPress={() => console.log("i press")}>
-              <Text text="hello world" />
-            </Pressable>
             <View style={[globalStyles.rowCenter, styles.btn]}>
                 <Button title={'Get Started'} style={styles.btn} onPress={token ? () => navigation.navigate("BuyerScreen","Home") : () => navigation.navigate("HomeScreen")} />
             </View>

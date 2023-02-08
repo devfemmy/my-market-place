@@ -20,8 +20,10 @@ const SearchComponent = ({searchValue, setSearchValue, submitKeyMessage, submitS
           searchInput
           label={'Search for products'}
           value={searchValue}
+          keyboardType= "default"
           onChangeText={e => setSearchValue(e)}
-          onKeyPress={e => submitKeyMessage(e)}
+          returnKeyType = "go"
+          onSubmitEditing={e => submitKeyMessage(e)}
         />
         </View>
         <View style={styles.box}>
@@ -46,8 +48,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '80%',
-    marginRight: "1%"
-
+    marginRight: "1%",
   },
   div2: {
     flexDirection: 'row',
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     width: "15%",
     padding: hp(20),
     backgroundColor: colors.bazaraTint,
-    marginTop: hp(-10),
-    borderRadius: hp(10)
+    marginTop: hp(-13),
+    borderRadius: hp(5)
   },
 });

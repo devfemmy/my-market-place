@@ -42,7 +42,7 @@ const MobileSearch = (props: any) => {
   const handleFilterAct = async () => {
     setLoading(true)
     const payload = {
-        search: searchValue,
+        search: searchValue || product,
         rating: rate
     }
   
